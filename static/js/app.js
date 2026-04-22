@@ -1,0 +1,503 @@
+/**
+ * Safari — Frontend Application
+ * ==============================
+ * Handles map, calendar, form interactions, and API calls.
+ */
+
+// ─── State ───────────────────────────────────────────────────────────────────
+const state = {
+    budget: 3000,
+    currency: 'SAR',
+    origin: 'riyadh',
+    destination: 'coast',
+    travelMode: 'car',
+    vehicleType: 'default',
+    days: 4,
+    tripData: null,
+};
+
+// ─── Map Setup ───────────────────────────────────────────────────────────────
+const map = L.map('map', {
+    center: [24.0, 44.0],
+    zoom: 6,
+    zoomControl: false,
+});
+
+L.control.zoom({ position: 'topright' }).addTo(map);
+
+// Dark map tiles
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 19,
+}).addTo(map);
+
+let routeLine = null;
+let markers = [];
+
+const CITY_COORDS = {};
+
+// Load coordinates on start
+fetch('/api/coords')
+    .then(r => r.json())
+    .then(data => Object.assign(CITY_COORDS, data));
+
+// ─── DOM Elements ────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+
+const budgetInput = $('budget-input');
+const budgetSlider = $('budget-slider');
+const budgetDisplay = $('budget-display');
+const currencySelect = $('currency-select');
+const originSelect = $('origin-select');
+const vehicleSelect = $('vehicle-select');
+const vehicleGroup = $('vehicle-group');
+const daysValue = $('days-value');
+const daysMinus = $('days-minus');
+const daysPlus = $('days-plus');
+const planBtn = $('plan-btn');
+const tripForm = $('trip-form');
+const loadingOverlay = $('loading-overlay');
+
+// Map overlays
+const tripInfo = $('trip-info');
+const budgetBar = $('budget-bar');
+
+// Right panel
+const itineraryList = $('itinerary-list');
+const budgetDetails = $('budget-details');
+const budgetTable = $('budget-table');
+const warningsBox = $('warnings-box');
+
+// ─── Format Number ───────────────────────────────────────────────────────────
+function fmt(n) {
+    return Math.round(n).toLocaleString('en-US');
+}
+
+// ─── Budget Input Sync ──────────────────────────────────────────────────────
+budgetInput.addEventListener('input', () => {
+    const v = parseInt(budgetInput.value) || 500;
+    state.budget = v;
+    budgetSlider.value = Math.min(v, 15000);
+    budgetDisplay.textContent = fmt(v);
+});
+
+budgetSlider.addEventListener('input', () => {
+    const v = parseInt(budgetSlider.value);
+    state.budget = v;
+    budgetInput.value = v;
+    budgetDisplay.textContent = fmt(v);
+});
+
+currencySelect.addEventListener('change', () => {
+    state.currency = currencySelect.value;
+});
+
+originSelect.addEventListener('change', () => {
+    state.origin = originSelect.value;
+});
+
+vehicleSelect.addEventListener('change', () => {
+    state.vehicleType = vehicleSelect.value;
+});
+
+// ─── Vibe Cards ──────────────────────────────────────────────────────────────
+document.querySelectorAll('.vibe-card').forEach(card => {
+    card.addEventListener('click', () => {
+        document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        state.destination = card.dataset.vibe;
+    });
+});
+
+// ─── Travel Mode ─────────────────────────────────────────────────────────────
+document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state.travelMode = btn.dataset.mode;
+        vehicleGroup.classList.toggle('hidden', btn.dataset.mode !== 'car');
+    });
+});
+
+// ─── Days ────────────────────────────────────────────────────────────────────
+daysMinus.addEventListener('click', () => {
+    if (state.days > 1) {
+        state.days--;
+        daysValue.textContent = state.days;
+    }
+});
+
+daysPlus.addEventListener('click', () => {
+    if (state.days < 30) {
+        state.days++;
+        daysValue.textContent = state.days;
+    }
+});
+
+// ─── Calendar ────────────────────────────────────────────────────────────────
+function renderCalendar(tripStartDay, tripDays) {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const today = now.getDate();
+
+    const startDay = tripStartDay || today + 1;
+
+    $('cal-month').textContent = now.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const grid = $('cal-grid');
+    grid.innerHTML = '';
+
+    // Day headers
+    ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(d => {
+        const cell = document.createElement('div');
+        cell.className = 'cal-cell header';
+        cell.textContent = d;
+        grid.appendChild(cell);
+    });
+
+    // Empty cells before first day
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cal-cell';
+        grid.appendChild(cell);
+    }
+
+    // Day cells
+    for (let d = 1; d <= daysInMonth; d++) {
+        const cell = document.createElement('div');
+        cell.className = 'cal-cell';
+        cell.textContent = d;
+
+        if (d === today) cell.classList.add('today');
+
+        if (tripDays > 0) {
+            const tripEnd = startDay + tripDays - 1;
+            if (d >= startDay && d <= tripEnd) {
+                cell.classList.add('trip-day');
+                if (d === startDay) cell.classList.add('trip-start');
+                if (d === tripEnd) cell.classList.add('trip-end');
+            }
+        }
+
+        grid.appendChild(cell);
+    }
+}
+
+// Initial calendar
+renderCalendar(null, 0);
+
+// ─── Map Helpers ─────────────────────────────────────────────────────────────
+function clearMap() {
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+    if (routeLine) {
+        map.removeLayer(routeLine);
+        routeLine = null;
+    }
+}
+
+function createIcon(emoji) {
+    return L.divIcon({
+        className: 'custom-marker',
+        html: `<span style="font-size:28px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6))">${emoji}</span>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+    });
+}
+
+function drawRoute(originCoords, destCoords, originName, destName, data) {
+    clearMap();
+
+    const oLatLng = [originCoords.lat, originCoords.lng];
+    const dLatLng = [destCoords.lat, destCoords.lng];
+
+    const waypoints = [oLatLng];
+
+    // Origin marker
+    const originMarker = L.marker(oLatLng, { icon: createIcon('📍') })
+        .addTo(map)
+        .bindPopup(`
+            <div class="popup-title">${originName}</div>
+            <div class="popup-detail">Starting point</div>
+        `);
+    markers.push(originMarker);
+
+    // Hotel marker
+    const hotel = data.activities.hotel;
+    if (hotel && hotel.lat && hotel.lng) {
+        const hLatLng = [hotel.lat, hotel.lng];
+        waypoints.push(hLatLng);
+        const hotelMarker = L.marker(hLatLng, { icon: createIcon('🏨') })
+            .addTo(map)
+            .bindPopup(`
+                <div class="popup-title">${hotel.name}</div>
+                <div class="popup-detail">Recommended Hotel</div>
+            `);
+        markers.push(hotelMarker);
+    } else {
+        waypoints.push(dLatLng);
+        // Destination marker fallback
+        const destEmoji = { coast: '🏖️', mountains: '⛰️', desert: '🏜️', city: '🏙️' };
+        const emoji = destEmoji[state.destination] || '📌';
+        const destMarker = L.marker(dLatLng, { icon: createIcon(emoji) })
+            .addTo(map)
+            .bindPopup(`
+                <div class="popup-title">${destName}</div>
+                <div class="popup-detail">${data.activities.vibe}</div>
+                <div class="popup-detail">${fmt(data.transport.distance_km)} km from ${originName}</div>
+            `);
+        markers.push(destMarker);
+    }
+
+    // Activity markers
+    const daily = data.activities.daily_plan;
+    Object.keys(daily).forEach(day => {
+        daily[day].forEach(act => {
+            if (act && act.lat && act.lng) {
+                const aLatLng = [act.lat, act.lng];
+                waypoints.push(aLatLng);
+                const actMarker = L.marker(aLatLng, { icon: createIcon('🎯') })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div class="popup-title">${act.name}</div>
+                        <div class="popup-detail">Activity (Day ${day})</div>
+                    `);
+                markers.push(actMarker);
+            }
+        });
+    });
+
+    // Route line connecting everything
+    routeLine = L.polyline(waypoints, {
+        color: '#eab308',
+        weight: 3,
+        opacity: 0.7,
+        dashArray: '10, 8',
+    }).addTo(map);
+
+    // Fit bounds to all waypoints
+    const bounds = L.latLngBounds(waypoints);
+    map.fitBounds(bounds, { padding: [80, 80] });
+}
+
+// ─── Generate Activity Times ────────────────────────────────────────────────
+function getActivitySchedule(dayNum, activities, isFirstDay, isLastDay) {
+    const schedule = [];
+    let hour = 8;
+
+    if (isFirstDay) {
+        schedule.push({ time: '06:00', icon: '🚗', text: `Depart from ${state.origin.charAt(0).toUpperCase() + state.origin.slice(1)}` });
+        hour = 14;
+    }
+
+    if (isLastDay) {
+        activities.forEach(act => {
+            const name = typeof act === 'string' ? act : act.name;
+            schedule.push({ time: `${String(hour).padStart(2, '0')}:00`, icon: '🎯', text: name });
+            hour += 2;
+        });
+        schedule.push({ time: `${String(Math.min(hour, 16)).padStart(2, '0')}:00`, icon: '🚗', text: `Return trip home` });
+    } else {
+        activities.forEach(act => {
+            const name = typeof act === 'string' ? act : act.name;
+            schedule.push({ time: `${String(hour).padStart(2, '0')}:00`, icon: '🎯', text: name });
+            hour += 3;
+        });
+    }
+
+    return schedule;
+}
+
+// ─── Render Itinerary ────────────────────────────────────────────────────────
+function renderItinerary(data) {
+    itineraryList.innerHTML = '';
+
+    const days = data.budget.days;
+    const daily = data.activities.daily_plan;
+    const currency = data.budget.currency;
+    const perDay = data.budget.lodging.per_day + data.budget.food.per_day + data.budget.activities.per_day;
+
+    for (let d = 1; d <= days; d++) {
+        const acts = daily[String(d)] || [];
+        const isFirst = d === 1;
+        const isLast = d === days;
+        const schedule = getActivitySchedule(d, acts, isFirst, isLast);
+
+        const card = document.createElement('div');
+        card.className = 'day-card';
+        card.style.animationDelay = `${d * 0.08}s`;
+
+        let activitiesHtml = schedule.map(s => `
+            <div class="activity-item">
+                <span class="activity-time">${s.time}</span>
+                <span class="activity-icon">${s.icon}</span>
+                <span>${s.text}</span>
+            </div>
+        `).join('');
+
+        // Add lodging and food info
+        activitiesHtml += `
+            <div class="activity-item" style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05)">
+                <span class="activity-time"></span>
+                <span class="activity-icon">🏨</span>
+                <span>Lodging: ~${fmt(data.budget.lodging.per_day)} ${currency}</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-time"></span>
+                <span class="activity-icon">🍽️</span>
+                <span>Meals: ~${fmt(data.budget.food.per_day)} ${currency}</span>
+            </div>
+        `;
+
+        card.innerHTML = `
+            <div class="day-header">
+                <span class="day-number">Day ${d}${isFirst ? ' — Departure' : isLast ? ' — Return' : ''}</span>
+                <span class="day-budget">~${fmt(perDay)} ${currency}</span>
+            </div>
+            <div class="day-activities">${activitiesHtml}</div>
+        `;
+
+        itineraryList.appendChild(card);
+    }
+}
+
+// ─── Render Budget Details ───────────────────────────────────────────────────
+function renderBudgetDetails(data) {
+    const b = data.budget;
+    const c = b.currency;
+
+    budgetTable.innerHTML = `
+        <div class="budget-row">
+            <span class="budget-row-label">🚗 Transport (round-trip)</span>
+            <span class="budget-row-value">${fmt(b.transport)} ${c}</span>
+        </div>
+        <div class="budget-row">
+            <span class="budget-row-label">🏨 Lodging (${b.days} nights)</span>
+            <span class="budget-row-value">${fmt(b.lodging.total)} ${c}</span>
+        </div>
+        <div class="budget-row">
+            <span class="budget-row-label">🍽️ Food (${b.days} days)</span>
+            <span class="budget-row-value">${fmt(b.food.total)} ${c}</span>
+        </div>
+        <div class="budget-row">
+            <span class="budget-row-label">🎯 Activities (${b.days} days)</span>
+            <span class="budget-row-value">${fmt(b.activities.total)} ${c}</span>
+        </div>
+        <div class="budget-row">
+            <span class="budget-row-label">🛡️ Emergency Buffer</span>
+            <span class="budget-row-value">${fmt(b.buffer.total)} ${c}</span>
+        </div>
+        <div class="budget-row total">
+            <span class="budget-row-label">Total Budget</span>
+            <span class="budget-row-value">${fmt(b.total)} ${c}</span>
+        </div>
+        <div class="budget-vis-bar">
+            <div class="vis-segment" style="width:${(b.transport/b.total*100).toFixed(1)}%;background:var(--color-transport)"></div>
+            <div class="vis-segment" style="width:${(b.lodging.total/b.total*100).toFixed(1)}%;background:var(--color-lodging)"></div>
+            <div class="vis-segment" style="width:${(b.food.total/b.total*100).toFixed(1)}%;background:var(--color-food)"></div>
+            <div class="vis-segment" style="width:${(b.activities.total/b.total*100).toFixed(1)}%;background:var(--color-activities)"></div>
+            <div class="vis-segment" style="width:${(b.buffer.total/b.total*100).toFixed(1)}%;background:var(--color-buffer)"></div>
+        </div>
+    `;
+
+    budgetDetails.classList.remove('hidden');
+}
+
+// ─── Update Map Overlays ────────────────────────────────────────────────────
+function updateOverlays(data) {
+    // Trip info card
+    $('info-origin').textContent = data.map.origin_name;
+    $('info-dest').textContent = data.map.dest_name;
+    $('info-distance').textContent = fmt(data.transport.distance_km);
+    $('info-days').textContent = data.budget.days;
+    $('info-cost').textContent = fmt(data.budget.total);
+    $('info-currency').textContent = data.budget.currency;
+    tripInfo.classList.remove('hidden');
+
+    // Budget bar segments
+    const c = data.budget.currency;
+    $('val-transport').textContent = `${fmt(data.budget.transport)} ${c}`;
+    $('val-lodging').textContent = `${fmt(data.budget.lodging.total)} ${c}`;
+    $('val-food').textContent = `${fmt(data.budget.food.total)} ${c}`;
+    $('val-activities').textContent = `${fmt(data.budget.activities.total)} ${c}`;
+    $('val-buffer').textContent = `${fmt(data.budget.buffer.total)} ${c}`;
+    budgetBar.classList.remove('hidden');
+}
+
+// ─── Warnings ────────────────────────────────────────────────────────────────
+function renderWarnings(data) {
+    const warnings = data.budget.warnings || [];
+    if (warnings.length === 0) {
+        warningsBox.classList.add('hidden');
+        return;
+    }
+    warningsBox.classList.remove('hidden');
+    warningsBox.innerHTML = warnings.map(w => `
+        <div class="warning-item">⚠️ ${w}</div>
+    `).join('');
+}
+
+// ─── Plan Trip ───────────────────────────────────────────────────────────────
+async function planTrip() {
+    loadingOverlay.classList.remove('hidden');
+
+    const payload = {
+        budget: state.budget,
+        currency: state.currency,
+        origin: state.origin,
+        destination: state.destination,
+        travel_mode: state.travelMode,
+        vehicle_type: state.vehicleType,
+        days: state.days,
+    };
+
+    try {
+        const response = await fetch('/api/plan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || 'Planning failed');
+        }
+
+        const data = await response.json();
+        state.tripData = data;
+
+        // Draw map route
+        drawRoute(data.map.origin, data.map.destination, data.map.origin_name, data.map.dest_name, data);
+
+        // Update overlays
+        updateOverlays(data);
+
+        // Render itinerary
+        renderItinerary(data);
+
+        // Render budget details
+        renderBudgetDetails(data);
+
+        // Render warnings
+        renderWarnings(data);
+
+        // Update calendar
+        const today = new Date().getDate();
+        renderCalendar(today + 1, state.days);
+
+    } catch (err) {
+        alert('Safari encountered an error: ' + err.message);
+    } finally {
+        loadingOverlay.classList.add('hidden');
+    }
+}
+
+// ─── Form Submit ─────────────────────────────────────────────────────────────
+tripForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    planTrip();
+});

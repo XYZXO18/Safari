@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safari — Budget-First AI Travel Planner</title>
+    <meta name="description" content="Safari reverse-engineers your trip from your budget. Enter your constraints, get a realistic itinerary.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <div class="loader-content">
+            <div class="compass-loader">
+                <div class="compass-needle"></div>
+            </div>
+            <p class="loader-text">Planning your adventure...</p>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="app-layout">
+        
+        <!-- Left Panel: Trip Configuration -->
+        <aside class="panel panel-left" id="config-panel">
+            <div class="panel-header">
+                <div class="logo">
+                    <span class="logo-icon">🧭</span>
+                    <h1>Safari</h1>
+                </div>
+                <p class="tagline">Budget-first travel planner</p>
+            </div>
+
+            <form id="trip-form" class="trip-form">
+                <!-- Budget -->
+                <div class="form-group">
+                    <label for="budget-input">
+                        <span class="label-icon">💰</span> Total Budget
+                    </label>
+                    <div class="budget-input-row">
+                        <input type="number" id="budget-input" min="500" max="50000" value="3000" step="100">
+                        <select id="currency-select">
+                            <option value="SAR" selected>SAR</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="AED">AED</option>
+                        </select>
+                    </div>
+                    <input type="range" id="budget-slider" min="500" max="15000" value="3000" step="100" class="budget-slider">
+                    <div class="slider-labels">
+                        <span>500</span>
+                        <span id="budget-display" class="budget-display">3,000</span>
+                        <span>15,000</span>
+                    </div>
+                </div>
+
+                <!-- Origin -->
+                <div class="form-group">
+                    <label for="origin-select">
+                        <span class="label-icon">📍</span> Starting From
+                    </label>
+                    <select id="origin-select">
+                        <option value="riyadh" selected>Riyadh</option>
+                        <option value="jeddah">Jeddah</option>
+                        <option value="dammam">Dammam</option>
+                        <option value="medina">Medina</option>
+                        <option value="abha">Abha</option>
+                        <option value="taif">Taif</option>
+                    </select>
+                </div>
+
+                <!-- Destination -->
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">🗺️</span> Destination Vibe
+                    </label>
+                    <div class="vibe-grid">
+                        <button type="button" class="vibe-card active" data-vibe="coast">
+                            <span class="vibe-emoji">🏖️</span>
+                            <span class="vibe-name">Coast</span>
+                            <span class="vibe-desc">Beach & sea</span>
+                        </button>
+                        <button type="button" class="vibe-card" data-vibe="mountains">
+                            <span class="vibe-emoji">⛰️</span>
+                            <span class="vibe-name">Mountains</span>
+                            <span class="vibe-desc">Cool & green</span>
+                        </button>
+                        <button type="button" class="vibe-card" data-vibe="desert">
+                            <span class="vibe-emoji">🏜️</span>
+                            <span class="vibe-name">Desert</span>
+                            <span class="vibe-desc">Stars & ruins</span>
+                        </button>
+                        <button type="button" class="vibe-card" data-vibe="city">
+                            <span class="vibe-emoji">🏙️</span>
+                            <span class="vibe-name">City</span>
+                            <span class="vibe-desc">Urban & nightlife</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Travel Mode -->
+                <div class="form-group">
+                    <label>
+                        <span class="label-icon">🚗</span> Travel Mode
+                    </label>
+                    <div class="mode-grid">
+                        <button type="button" class="mode-btn active" data-mode="car">
+                            <span>🚗</span> Drive
+                        </button>
+                        <button type="button" class="mode-btn" data-mode="flight">
+                            <span>✈️</span> Fly
+                        </button>
+                        <button type="button" class="mode-btn" data-mode="train">
+                            <span>🚂</span> Train
+                        </button>
+                        <button type="button" class="mode-btn" data-mode="bus">
+                            <span>🚌</span> Bus
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vehicle Type (shown only for car) -->
+                <div class="form-group" id="vehicle-group">
+                    <label for="vehicle-select">
+                        <span class="label-icon">🔧</span> Vehicle Type
+                    </label>
+                    <select id="vehicle-select">
+                        <option value="default">Standard Car</option>
+                        <option value="sedan">Sedan (Fuel-efficient)</option>
+                        <option value="suv">SUV</option>
+                        <option value="truck">Truck / 4x4</option>
+                    </select>
+                </div>
+
+                <!-- Duration -->
+                <div class="form-group">
+                    <label for="days-input">
+                        <span class="label-icon">📅</span> Duration
+                    </label>
+                    <div class="days-selector">
+                        <button type="button" class="days-btn" id="days-minus">−</button>
+                        <div class="days-display">
+                            <span id="days-value">4</span>
+                            <span class="days-label">days</span>
+                        </div>
+                        <button type="button" class="days-btn" id="days-plus">+</button>
+                    </div>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="submit-btn" id="plan-btn">
+                    <span class="btn-icon">🧭</span>
+                    <span>Plan My Trip</span>
+                </button>
+            </form>
+        </aside>
+
+        <!-- Center: Map -->
+        <main class="map-area">
+            <div id="map" class="map-container"></div>
+            
+            <!-- Budget Overview Bar (overlays bottom of map) -->
+            <div id="budget-bar" class="budget-bar hidden">
+                <div class="budget-bar-inner">
+                    <div class="budget-segment" id="seg-transport" data-category="Transport">
+                        <span class="seg-label">🚗 Transport</span>
+                        <span class="seg-value" id="val-transport">0</span>
+                    </div>
+                    <div class="budget-segment" id="seg-lodging" data-category="Lodging">
+                        <span class="seg-label">🏨 Lodging</span>
+                        <span class="seg-value" id="val-lodging">0</span>
+                    </div>
+                    <div class="budget-segment" id="seg-food" data-category="Food">
+                        <span class="seg-label">🍽️ Food</span>
+                        <span class="seg-value" id="val-food">0</span>
+                    </div>
+                    <div class="budget-segment" id="seg-activities" data-category="Activities">
+                        <span class="seg-label">🎯 Activities</span>
+                        <span class="seg-value" id="val-activities">0</span>
+                    </div>
+                    <div class="budget-segment" id="seg-buffer" data-category="Buffer">
+                        <span class="seg-label">🛡️ Buffer</span>
+                        <span class="seg-value" id="val-buffer">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trip Info Card (overlays top of map) -->
+            <div id="trip-info" class="trip-info hidden">
+                <div class="trip-route">
+                    <span id="info-origin" class="trip-city">Riyadh</span>
+                    <span class="trip-arrow">→</span>
+                    <span id="info-dest" class="trip-city">Jeddah</span>
+                </div>
+                <div class="trip-stats">
+                    <span><strong id="info-distance">0</strong> km</span>
+                    <span><strong id="info-days">0</strong> days</span>
+                    <span><strong id="info-cost">0</strong> <span id="info-currency">SAR</span></span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Panel: Calendar + Itinerary -->
+        <aside class="panel panel-right" id="itinerary-panel">
+            <div class="panel-header">
+                <h2>📅 Trip Schedule</h2>
+            </div>
+
+            <!-- Calendar -->
+            <div class="mini-calendar" id="mini-calendar">
+                <div class="cal-header">
+                    <span class="cal-month" id="cal-month">April 2026</span>
+                </div>
+                <div class="cal-grid" id="cal-grid">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <!-- Day-by-Day Itinerary -->
+            <div class="itinerary-list" id="itinerary-list">
+                <div class="empty-state">
+                    <span class="empty-icon">🧭</span>
+                    <p>Configure your trip on the left and hit <strong>Plan My Trip</strong> to see your itinerary here.</p>
+                </div>
+            </div>
+
+            <!-- Budget Details -->
+            <div class="budget-details hidden" id="budget-details">
+                <h3>💰 Budget Breakdown</h3>
+                <div class="budget-table" id="budget-table">
+                    <!-- Generated by JS -->
+                </div>
+            </div>
+
+            <!-- Warnings -->
+            <div class="warnings hidden" id="warnings-box">
+                <!-- Generated by JS -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
