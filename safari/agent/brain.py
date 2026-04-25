@@ -8,9 +8,10 @@ Workflow:
 1. Parse user input → TripRequest
 2. calculate_transport_costs() → TransportEstimate
 3. budget_allocator() → BudgetBreakdown
-4. suggest_activities() → ActivityPlan
-5. LLM generates itinerary from verified data
-6. Format and return structured output
+4. find_live_events() → EventScanResult
+5. suggest_activities() → ActivityPlan (with events injected)
+6. LLM generates itinerary from verified data
+7. Format and return structured output
 """
 
 from __future__ import annotations
@@ -26,6 +27,7 @@ from safari.input_parser import TripRequest, parse_user_input
 from safari.tools.transport import calculate_transport_costs, TransportEstimate
 from safari.tools.budget import budget_allocator, BudgetBreakdown
 from safari.tools.activities import suggest_activities, ActivityPlan
+from safari.tools.event_scanner import find_live_events, EventScanResult
 from safari.agent.prompts import SAFARI_SYSTEM_PROMPT, ITINERARY_USER_PROMPT
 from safari.output.formatter import print_itinerary, format_itinerary
 
@@ -71,14 +73,14 @@ class SafariAgent:
         """Print a styled step indicator."""
         console.print(f"  {emoji} [dim]{message}[/dim]")
 
-    def run_calculations(self, request: TripRequest) -> tuple[TransportEstimate, BudgetBreakdown, ActivityPlan]:
+    def run_calculations(self, request: TripRequest) -> tuple[TransportEstimate, BudgetBreakdown, ActivityPlan, EventScanResult]:
         """
         Run all deterministic calculations for a trip request.
-        No LLM calls — pure math.
+        No LLM calls — pure math + event scanning.
 
         Returns
         -------
-        tuple of (TransportEstimate, BudgetBreakdown, ActivityPlan)
+        tuple of (TransportEstimate, BudgetBreakdown, ActivityPlan, EventScanResult)
         """
         # Step 1: Transport
         self._step_log("🚗", "Calculating transport costs...")
@@ -98,16 +100,72 @@ class SafariAgent:
             currency=request.currency,
         )
 
-        # Step 3: Activity suggestions
+        # Step 3: Scan for live events
+        self._step_log("🎭", "Scanning for live events & festivals...")
+        from config import DESTINATIONS
+        dest_info = DESTINATIONS.get(request.destination.lower(), DESTINATIONS.get("coast", {}))
+        cities = dest_info.get("cities", [])
+        scan_city = cities[0] if cities else request.destination.title()
+
+        event_scan = find_live_events(
+            location=scan_city,
+            start_date=request.start_date,
+            end_date=request.end_date,
+            interests=request.interests,
+            max_events=10,
+        )
+
+        if event_scan.has_events:
+            self._step_log("🎪", f"Found {len(event_scan.events)} live events! "
+                                  f"(Total cost: {event_scan.total_event_cost:.0f} {request.currency})")
+        else:
+            self._step_log("📭", "No live events found for these dates.")
+
+        # Step 4: Calculate adjusted activities budget (deduct event costs)
+        event_cost_per_day = event_scan.total_event_cost / request.days if request.days > 0 else 0
+        adjusted_activities_budget = max(breakdown.activities_per_day - event_cost_per_day, 0)
+
+        # Step 5: Activity suggestions (with reduced budget if events consume some)
         self._step_log("🎯", "Selecting activities within budget...")
         activities = suggest_activities(
             destination=request.destination,
             days=request.days,
-            daily_activities_budget=breakdown.activities_per_day,
+            daily_activities_budget=adjusted_activities_budget,
             currency=request.currency,
         )
 
-        return transport, breakdown, activities
+        # Step 6: Inject live events into the activity plan
+        if event_scan.has_events:
+            self._inject_events(activities, event_scan, request.days)
+
+        return transport, breakdown, activities, event_scan
+
+    def _inject_events(self, activities: ActivityPlan, event_scan: EventScanResult, days: int) -> None:
+        """
+        Inject discovered live events into the activity plan's daily schedule.
+        Spreads events across days, prioritizing earlier days for time-sensitive events.
+        """
+        for i, event in enumerate(event_scan.events):
+            # Assign each event to a different day if possible
+            target_day = (i % days) + 1
+
+            event_activity = {
+                "id": f"evt_{i}_{event.name.replace(' ', '_').lower()[:10]}",
+                "name": f"🎪 LIVE: {event.name}",
+                "lat": event.lat,
+                "lng": event.lng,
+                "is_live_event": True,
+                "cost": event.estimated_cost_sar,
+                "venue": event.venue,
+                "time": event.time,
+                "description": event.description,
+            }
+
+            if target_day in activities.daily_activities:
+                # Insert at the beginning — live events get priority
+                activities.daily_activities[target_day].insert(0, event_activity)
+            else:
+                activities.daily_activities[target_day] = [event_activity]
 
     def _generate_itinerary_text(
         self,
@@ -115,10 +173,21 @@ class SafariAgent:
         transport: TransportEstimate,
         breakdown: BudgetBreakdown,
         activities: ActivityPlan,
+        event_scan: EventScanResult = None,
     ) -> str:
         """Call the LLM to generate a natural-language itinerary."""
         if not self.client:
-            return self._fallback_itinerary(request, transport, breakdown, activities)
+            return self._fallback_itinerary(request, transport, breakdown, activities, event_scan)
+
+        events_section = ""
+        if event_scan and event_scan.has_events:
+            events_section = (
+                f"\n## 🎭 Live Events Discovered\n"
+                f"{event_scan.summary}\n\n"
+                f"**IMPORTANT:** These live events have been injected into the daily plan. "
+                f"Highlight them as exciting, unique experiences. Their costs ({event_scan.total_event_cost:.0f} SAR total) "
+                f"come from the Activities budget.\n"
+            )
 
         user_prompt = ITINERARY_USER_PROMPT.format(
             origin=request.origin.title(),
@@ -130,10 +199,13 @@ class SafariAgent:
             transport_summary=transport.summary,
             budget_summary=breakdown.summary,
             activities_summary=activities.summary,
+            events_section=events_section,
             lodging_per_day=breakdown.lodging_per_day,
             food_per_day=breakdown.food_per_day,
             buffer_total=breakdown.buffer_total,
             currency=breakdown.currency,
+            start_date=request.start_date,
+            end_date=request.end_date,
         )
 
         self._step_log("🧠", "Generating itinerary with Gemini...")
@@ -160,6 +232,7 @@ class SafariAgent:
         transport: TransportEstimate,
         breakdown: BudgetBreakdown,
         activities: ActivityPlan,
+        event_scan: EventScanResult = None,
     ) -> str:
         """Generate a template-based itinerary when LLM is unavailable."""
         sym = breakdown.currency
@@ -167,6 +240,7 @@ class SafariAgent:
             f"### 🧭 Safari Trip Plan: {activities.recommended_city}",
             f"**{request.days} days | {request.travel_mode.title()} | "
             f"Budget: {request.budget:.0f} {sym}**",
+            f"**📅 {request.start_date} → {request.end_date}**",
             "",
             "---",
             "",
@@ -179,11 +253,33 @@ class SafariAgent:
             f"  - 🎯 Activities: {breakdown.activities_per_day:.0f} {sym}/day ({breakdown.activities_total:.0f} total)",
             f"  - 🛡️ Buffer: {breakdown.buffer_per_day:.0f} {sym}/day ({breakdown.buffer_total:.0f} total)",
             "",
+        ]
+
+        # Show live events section if events were found
+        if event_scan and event_scan.has_events:
+            lines.extend([
+                "---",
+                "",
+                "#### 🎭 Live Events Happening During Your Trip!",
+                "",
+            ])
+            for ev in event_scan.events:
+                lines.append(f"- 🎪 **{ev.name}** — {ev.date}")
+                if ev.venue:
+                    lines.append(f"  📍 {ev.venue}")
+                if ev.description:
+                    lines.append(f"  _{ev.description}_")
+                lines.append(f"  💰 ~{ev.estimated_cost_sar:.0f} {sym}")
+                lines.append("")
+            lines.append(f"Total event costs: **{event_scan.total_event_cost:.0f} {sym}** (from Activities budget)")
+            lines.append("")
+
+        lines.extend([
             "---",
             "",
             "#### 📅 Day-by-Day Itinerary",
             "",
-        ]
+        ])
 
         for day in range(1, request.days + 1):
             day_acts = activities.daily_activities.get(day, [])
@@ -193,7 +289,10 @@ class SafariAgent:
             lines.append(f"- 🏨 Accommodation: ~{breakdown.lodging_per_day:.0f} {sym}")
             lines.append(f"- 🍽️ Meals: ~{breakdown.food_per_day:.0f} {sym}")
             for act in day_acts:
-                lines.append(f"- 🎯 {act}")
+                act_name = act.get("name", act) if isinstance(act, dict) else act
+                is_event = act.get("is_live_event", False) if isinstance(act, dict) else False
+                prefix = "🎪" if is_event else "🎯"
+                lines.append(f"- {prefix} {act_name}")
             if day == request.days:
                 lines.append(f"- 🚗 Return to {request.origin.title()}")
             lines.append("")
@@ -243,17 +342,20 @@ class SafariAgent:
                              f"Days: {request.days}")
         console.print()
 
-        # Step 2: Run calculations
+        # Step 2: Run calculations (including event scanning)
         console.print("  [bold]⚙️  Running calculations...[/bold]")
-        transport, breakdown, activities = self.run_calculations(request)
+        transport, breakdown, activities, event_scan = self.run_calculations(request)
         console.print("  [green]✅ All calculations complete![/green]")
         console.print()
 
         # Step 3: Generate LLM itinerary
-        llm_text = self._generate_itinerary_text(request, transport, breakdown, activities)
+        llm_text = self._generate_itinerary_text(request, transport, breakdown, activities, event_scan)
 
         # Step 4: Display
-        print_itinerary(transport, breakdown, activities, llm_text)
+        print_itinerary(transport, breakdown, activities, llm_text, event_scan)
 
         # Step 5: Return structured data
-        return format_itinerary(transport, breakdown, activities, llm_text)
+        result = format_itinerary(transport, breakdown, activities, llm_text)
+        if event_scan and event_scan.has_events:
+            result["events"] = event_scan.to_dict()
+        return result

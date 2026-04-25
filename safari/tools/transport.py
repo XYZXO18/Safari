@@ -4,7 +4,8 @@ Transport Cost Calculator
 Deterministic estimation of transportation costs.
 
 Supports:
-- **Car/Driving**: Fuel cost = distance × (consumption / 100) × fuel_price
+- **Car/Driving**: Uses the local fuel_prices.json database via calculate_driving_cost()
+  for accurate RON 91/95 pricing and km/L consumption model.
 - **Flight / Train / Bus**: distance × rate_per_km
 
 All monetary values default to SAR unless otherwise specified.
@@ -16,11 +17,10 @@ from dataclasses import dataclass
 from typing import Optional
 
 from config import (
-    FUEL_CONSUMPTION,
-    FUEL_PRICES_SAR,
     ROUTES,
     TRANSPORT_RATES_PER_KM,
 )
+from safari.tools.fuel import calculate_driving_cost
 
 
 @dataclass
@@ -77,7 +77,7 @@ def calculate_transport_costs(
     destination: str = "coast",
     distance_km: Optional[float] = None,
     vehicle_type: str = "default",
-    region: str = "saudi_arabia",
+    fuel_type: str = "91",
     round_trip: bool = True,
 ) -> TransportEstimate:
     """
@@ -86,7 +86,7 @@ def calculate_transport_costs(
     Parameters
     ----------
     mode : str
-        Travel mode: 'car', 'flight', 'train', or 'bus'.
+        Travel mode: 'car', 'driving', 'flight', 'train', or 'bus'.
     origin : str
         Starting city/location.
     destination : str
@@ -95,8 +95,9 @@ def calculate_transport_costs(
         Override the distance instead of looking it up.
     vehicle_type : str
         For car mode: 'sedan', 'suv', 'truck', or 'default'.
-    region : str
-        Region for fuel price lookup.
+        (Currently used as label only; consumption comes from fuel_prices.json.)
+    fuel_type : str
+        Fuel grade: '91' (RON 91) or '95' (RON 95). Default '91'.
     round_trip : bool
         If True, calculate round-trip cost. Default True.
 
@@ -109,7 +110,7 @@ def calculate_transport_costs(
     --------
     >>> result = calculate_transport_costs("car", "riyadh", "jeddah")
     >>> result.cost_round_trip
-    395.24  # approximate
+    344.97  # 950km ÷ 12km/L = 79.17L × 2.18 SAR/L × 2
     """
 
     # Resolve distance
@@ -117,29 +118,33 @@ def calculate_transport_costs(
 
     mode_lower = mode.lower().strip()
 
-    if mode_lower == "car":
-        # Fuel calculation
-        consumption = FUEL_CONSUMPTION.get(vehicle_type, FUEL_CONSUMPTION["default"])
-        fuel_price = FUEL_PRICES_SAR.get(region, FUEL_PRICES_SAR["default"])
+    if mode_lower in ("car", "driving"):
+        # ─── Use the local fuel_prices.json database ─────────────────
+        fuel_result = calculate_driving_cost(
+            distance_km=dist,
+            fuel_type=fuel_type,
+            round_trip=round_trip,
+        )
 
-        liters_needed = (dist / 100) * consumption
-        cost_one_way = liters_needed * fuel_price
+        cost_one_way = fuel_result["cost_one_way"]
+        cost_rt = fuel_result["cost_round_trip"]
 
         breakdown = (
-            f"📊 Fuel: {consumption} L/100km × {dist:.0f} km = {liters_needed:.1f} L "
-            f"@ {fuel_price:.2f} SAR/L"
+            f"📊 Fuel ({fuel_result['fuel_name']}): "
+            f"{dist:.0f} km ÷ {fuel_result['km_per_liter']} km/L = "
+            f"{fuel_result['liters_one_way']:.1f} L "
+            f"@ {fuel_result['price_per_liter']:.2f} SAR/L"
         )
 
     elif mode_lower in ("flight", "train", "bus"):
         rate = TRANSPORT_RATES_PER_KM.get(mode_lower, 0.30)
         cost_one_way = dist * rate
+        cost_rt = cost_one_way * 2 if round_trip else cost_one_way
 
         breakdown = f"📊 Rate: {rate:.2f} SAR/km × {dist:.0f} km"
 
     else:
         raise ValueError(f"Unknown transport mode: {mode}")
-
-    cost_rt = cost_one_way * 2 if round_trip else cost_one_way
 
     return TransportEstimate(
         mode=mode_lower,

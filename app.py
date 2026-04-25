@@ -22,6 +22,7 @@ from safari.input_parser import TripRequest
 from safari.tools.transport import calculate_transport_costs
 from safari.tools.budget import budget_allocator
 from safari.tools.activities import suggest_activities
+from safari.tools.event_scanner import find_live_events
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -67,10 +68,22 @@ def plan_trip():
         origin = data.get("origin", "riyadh")
         vehicle_type = data.get("vehicle_type", "default")
         currency = data.get("currency", "SAR")
+        start_date = data.get("start_date", "")
+        end_date = data.get("end_date", "")
+        interests = data.get("interests", "")
     except (ValueError, TypeError) as e:
         return jsonify({"error": f"Invalid input: {e}"}), 400
 
-    # Run calculations
+    # If dates not provided, compute from today
+    if not start_date or not end_date:
+        from datetime import date, timedelta
+        today = date.today()
+        start = today + timedelta(days=1)
+        end = start + timedelta(days=max(days - 1, 0))
+        start_date = start.isoformat()
+        end_date = end.isoformat()
+
+    # Step 1: Transport calculation
     transport = calculate_transport_costs(
         mode=travel_mode,
         origin=origin,
@@ -78,6 +91,7 @@ def plan_trip():
         vehicle_type=vehicle_type,
     )
 
+    # Step 2: Budget allocation
     breakdown = budget_allocator(
         total_budget=budget,
         transport_cost=transport.cost_round_trip,
@@ -85,12 +99,51 @@ def plan_trip():
         currency=currency,
     )
 
+    # Step 3: Scan for live events
+    dest_info = DESTINATIONS.get(destination.lower(), DESTINATIONS.get("coast", {}))
+    cities = dest_info.get("cities", [])
+    scan_city = cities[0] if cities else destination.title()
+
+    event_scan = find_live_events(
+        location=scan_city,
+        start_date=start_date,
+        end_date=end_date,
+        interests=interests,
+        max_events=10,
+    )
+
+    # Step 4: Adjust activities budget for event costs
+    event_cost_per_day = event_scan.total_event_cost / days if days > 0 else 0
+    adjusted_activities_budget = max(breakdown.activities_per_day - event_cost_per_day, 0)
+
+    # Step 5: Activity suggestions (with adjusted budget)
     activities = suggest_activities(
         destination=destination,
         days=days,
-        daily_activities_budget=breakdown.activities_per_day,
+        daily_activities_budget=adjusted_activities_budget,
         currency=currency,
     )
+
+    # Step 6: Inject live events into the daily plan
+    if event_scan.has_events:
+        for i, event in enumerate(event_scan.events):
+            target_day = (i % days) + 1
+            event_activity = {
+                "id": f"evt_{i}_{event.name.replace(' ', '_').lower()[:10]}",
+                "name": f"\ud83c\udfaa LIVE: {event.name}",
+                "lat": event.lat,
+                "lng": event.lng,
+                "is_live_event": True,
+                "cost": event.estimated_cost_sar,
+                "venue": event.venue,
+                "time": event.time,
+                "description": event.description,
+            }
+            day_key = target_day
+            if day_key in activities.daily_activities:
+                activities.daily_activities[day_key].insert(0, event_activity)
+            else:
+                activities.daily_activities[day_key] = [event_activity]
 
     # Get coordinates for map
     origin_coords = CITY_COORDS.get(origin.lower(), CITY_COORDS.get("riyadh"))
@@ -129,6 +182,11 @@ def plan_trip():
             "recommended_city": activities.recommended_city,
             "daily_plan": {str(k): v for k, v in activities.daily_activities.items()},
             "hotel": activities.hotel,
+        },
+        "events": event_scan.to_dict(),
+        "dates": {
+            "start_date": start_date,
+            "end_date": end_date,
         },
         "map": {
             "origin": origin_coords,

@@ -17,6 +17,7 @@ from rich.text import Text
 from safari.tools.transport import TransportEstimate
 from safari.tools.budget import BudgetBreakdown
 from safari.tools.activities import ActivityPlan
+from safari.tools.event_scanner import EventScanResult
 
 
 console = Console(force_terminal=True)
@@ -74,6 +75,7 @@ def print_itinerary(
     breakdown: BudgetBreakdown,
     activities: ActivityPlan,
     llm_response: Optional[str] = None,
+    event_scan: Optional[EventScanResult] = None,
 ) -> None:
     """Print the complete Safari itinerary to the terminal."""
 
@@ -108,6 +110,17 @@ def print_itinerary(
     if breakdown.warnings:
         for w in breakdown.warnings:
             console.print(f"  ⚠️  [yellow]{w}[/yellow]")
+        console.print()
+
+    # Live Events
+    if event_scan and event_scan.has_events:
+        console.print(
+            Panel(
+                event_scan.summary,
+                title="🎭 Live Events Discovered",
+                border_style="red",
+            )
+        )
         console.print()
 
     # Activities

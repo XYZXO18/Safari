@@ -260,11 +260,18 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
             if (act && act.lat && act.lng) {
                 const aLatLng = [act.lat, act.lng];
                 waypoints.push(aLatLng);
-                const actMarker = L.marker(aLatLng, { icon: createIcon('🎯') })
+                const isEvent = act.is_live_event;
+                const emoji = isEvent ? '🎪' : '🎯';
+                const typeStr = isEvent ? 'Live Event' : 'Activity';
+                const timeStr = (isEvent && act.time && act.time !== "TBD") 
+                    ? `<div class="popup-detail" style="color:var(--accent); font-weight:bold; margin-top:4px;">🕒 Starts at: ${act.time}</div>` 
+                    : '';
+                const actMarker = L.marker(aLatLng, { icon: createIcon(emoji) })
                     .addTo(map)
                     .bindPopup(`
                         <div class="popup-title">${act.name}</div>
-                        <div class="popup-detail">Activity (Day ${day})</div>
+                        <div class="popup-detail">${typeStr} (Day ${day})</div>
+                        ${timeStr}
                     `);
                 markers.push(actMarker);
             }
@@ -294,19 +301,21 @@ function getActivitySchedule(dayNum, activities, isFirstDay, isLastDay) {
         hour = 14;
     }
 
+    activities.forEach(act => {
+        const isObj = typeof act === 'object';
+        const name = isObj ? act.name : act;
+        const isEvent = isObj && act.is_live_event;
+        const icon = isEvent ? '🎪' : '🎯';
+        const time = (isEvent && act.time && act.time !== "TBD") ? act.time : `${String(hour).padStart(2, '0')}:00`;
+        const id = isObj ? act.id : null;
+        const cost = isObj ? act.cost : 0;
+        
+        schedule.push({ time, icon, text: name, id, isEvent, cost, dayNum });
+        hour += isLastDay ? 2 : 3;
+    });
+
     if (isLastDay) {
-        activities.forEach(act => {
-            const name = typeof act === 'string' ? act : act.name;
-            schedule.push({ time: `${String(hour).padStart(2, '0')}:00`, icon: '🎯', text: name });
-            hour += 2;
-        });
         schedule.push({ time: `${String(Math.min(hour, 16)).padStart(2, '0')}:00`, icon: '🚗', text: `Return trip home` });
-    } else {
-        activities.forEach(act => {
-            const name = typeof act === 'string' ? act : act.name;
-            schedule.push({ time: `${String(hour).padStart(2, '0')}:00`, icon: '🎯', text: name });
-            hour += 3;
-        });
     }
 
     return schedule;
@@ -332,10 +341,11 @@ function renderItinerary(data) {
         card.style.animationDelay = `${d * 0.08}s`;
 
         let activitiesHtml = schedule.map(s => `
-            <div class="activity-item">
+            <div class="activity-item" style="align-items:center;">
                 <span class="activity-time">${s.time}</span>
                 <span class="activity-icon">${s.icon}</span>
-                <span>${s.text}</span>
+                <span style="flex:1">${s.text}</span>
+                ${s.isEvent ? `<button type="button" class="delete-btn" onclick="deleteEvent('${s.dayNum}', '${s.id}', ${s.cost})" title="Remove event">🗑️</button>` : ''}
             </div>
         `).join('');
 
@@ -453,6 +463,7 @@ async function planTrip() {
         travel_mode: state.travelMode,
         vehicle_type: state.vehicleType,
         days: state.days,
+        interests: $('interests-input').value,
     };
 
     try {
@@ -501,3 +512,25 @@ tripForm.addEventListener('submit', (e) => {
     e.preventDefault();
     planTrip();
 });
+
+// ─── Delete Event ────────────────────────────────────────────────────────────
+window.deleteEvent = function(day, actId, cost) {
+    if (!state.tripData) return;
+    const daily = state.tripData.activities.daily_plan;
+    if (daily[day]) {
+        const idx = daily[day].findIndex(a => a.id === actId);
+        if (idx !== -1) {
+            daily[day].splice(idx, 1);
+            
+            // Restore budget
+            state.tripData.budget.activities.total += cost;
+            state.tripData.budget.activities.per_day = state.tripData.budget.activities.total / state.tripData.budget.days;
+            
+            // Re-render
+            renderItinerary(state.tripData);
+            renderBudgetDetails(state.tripData);
+            updateOverlays(state.tripData);
+            drawRoute(state.tripData.map.origin, state.tripData.map.destination, state.tripData.map.origin_name, state.tripData.map.dest_name, state.tripData);
+        }
+    }
+};

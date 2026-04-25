@@ -12,12 +12,15 @@ Outputs a TripRequest dataclass containing:
 - days (int)
 - origin (str, optional)
 - vehicle_type (str, optional)
+- start_date (str, ISO format YYYY-MM-DD)
+- end_date (str, ISO format YYYY-MM-DD)
 """
 
 from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from datetime import date, timedelta
 from typing import Optional
 
 
@@ -32,6 +35,9 @@ class TripRequest:
     days: int = 3
     origin: str = "riyadh"
     vehicle_type: str = "default"     # sedan | suv | truck | default
+    start_date: str = ""             # ISO format: YYYY-MM-DD
+    end_date: str = ""               # ISO format: YYYY-MM-DD
+    interests: str = ""              # User specified event interests
     raw_input: str = ""
 
     def __post_init__(self):
@@ -101,6 +107,105 @@ _VEHICLE_PATTERN = re.compile(
     r"(?:my\s+)?(?P<vehicle>sedan|suv|truck|pickup|4x4)",
     re.IGNORECASE,
 )
+
+# Date patterns: "next weekend", "this friday", "may 15", "2026-05-01", etc.
+_DATE_RELATIVE_PATTERN = re.compile(
+    r"(?P<rel>next\s+weekend|this\s+weekend|tomorrow|next\s+week|this\s+(?:friday|saturday|thursday))",
+    re.IGNORECASE,
+)
+
+_DATE_EXPLICIT_PATTERN = re.compile(
+    r"(?P<date>\d{4}-\d{2}-\d{2})",
+    re.IGNORECASE,
+)
+
+_DATE_MONTH_DAY_PATTERN = re.compile(
+    r"(?:on\s+)?(?P<month>jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|"
+    r"jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+"
+    r"(?P<day>\d{1,2})",
+    re.IGNORECASE,
+)
+
+_MONTH_MAP = {
+    "jan": 1, "january": 1, "feb": 2, "february": 2,
+    "mar": 3, "march": 3, "apr": 4, "april": 4,
+    "may": 5, "jun": 6, "june": 6, "jul": 7, "july": 7,
+    "aug": 8, "august": 8, "sep": 9, "september": 9,
+    "oct": 10, "october": 10, "nov": 11, "november": 11,
+    "dec": 12, "december": 12,
+}
+
+
+def _parse_travel_dates(text: str, days: int) -> tuple[str, str]:
+    """
+    Extract start_date and end_date from the user's text.
+
+    Supports:
+    - Relative: "next weekend", "this weekend", "tomorrow", "next week"
+    - Explicit ISO: "2026-05-01"
+    - Month+Day: "May 15", "on June 3"
+    - Fallback: today + days
+
+    Returns (start_date, end_date) as ISO strings.
+    """
+    today = date.today()
+    start = None
+
+    # Try relative dates first
+    rel_match = _DATE_RELATIVE_PATTERN.search(text)
+    if rel_match:
+        rel = rel_match.group("rel").lower().strip()
+        if "next weekend" in rel:
+            # Next Saturday
+            days_until_sat = (5 - today.weekday()) % 7
+            if days_until_sat == 0:
+                days_until_sat = 7  # truly next, not this
+            start = today + timedelta(days=days_until_sat)
+        elif "this weekend" in rel:
+            days_until_sat = (5 - today.weekday()) % 7
+            start = today + timedelta(days=days_until_sat)
+        elif "tomorrow" in rel:
+            start = today + timedelta(days=1)
+        elif "next week" in rel:
+            start = today + timedelta(days=(7 - today.weekday()))  # next Monday
+        elif "friday" in rel:
+            days_until_fri = (4 - today.weekday()) % 7
+            start = today + timedelta(days=days_until_fri or 7)
+        elif "saturday" in rel:
+            days_until_sat = (5 - today.weekday()) % 7
+            start = today + timedelta(days=days_until_sat or 7)
+        elif "thursday" in rel:
+            days_until_thu = (3 - today.weekday()) % 7
+            start = today + timedelta(days=days_until_thu or 7)
+
+    # Try explicit ISO date
+    if not start:
+        explicit_match = _DATE_EXPLICIT_PATTERN.search(text)
+        if explicit_match:
+            try:
+                start = date.fromisoformat(explicit_match.group("date"))
+            except ValueError:
+                pass
+
+    # Try month + day
+    if not start:
+        md_match = _DATE_MONTH_DAY_PATTERN.search(text)
+        if md_match:
+            month_str = md_match.group("month").lower()
+            day_num = int(md_match.group("day"))
+            month_num = _MONTH_MAP.get(month_str, today.month)
+            year = today.year
+            candidate = date(year, month_num, min(day_num, 28))
+            if candidate < today:
+                candidate = date(year + 1, month_num, min(day_num, 28))
+            start = candidate
+
+    # Fallback: start from tomorrow
+    if not start:
+        start = today + timedelta(days=1)
+
+    end = start + timedelta(days=max(days - 1, 0))
+    return start.isoformat(), end.isoformat()
 
 # ─── Currency Normalization ──────────────────────────────────────────────────
 
@@ -209,6 +314,9 @@ def parse_user_input(text: str) -> TripRequest:
         else:
             vehicle_type = v
 
+    # ── Extract travel dates ──
+    start_date, end_date = _parse_travel_dates(text, days)
+
     return TripRequest(
         budget=budget,
         currency=currency,
@@ -217,5 +325,7 @@ def parse_user_input(text: str) -> TripRequest:
         days=days,
         origin=origin,
         vehicle_type=vehicle_type,
+        start_date=start_date,
+        end_date=end_date,
         raw_input=text,
     )

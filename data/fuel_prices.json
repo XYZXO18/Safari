@@ -1,0 +1,19 @@
+{
+    "last_updated": "2026-04-24",
+    "currency": "SAR",
+    "unit": "per_liter",
+    "fuel_grades": {
+        "91": {
+            "name": "RON 91",
+            "price_sar_per_liter": 2.18,
+            "description": "Regular unleaded gasoline"
+        },
+        "95": {
+            "name": "RON 95",
+            "price_sar_per_liter": 2.33,
+            "description": "Premium unleaded gasoline"
+        }
+    },
+    "average_car_km_per_liter": 12,
+    "notes": "Prices based on Saudi Aramco domestic retail rates. Update this file periodically to reflect current pump prices."
+}
