@@ -16,6 +16,11 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 # ─── Model Configuration ─────────────────────────────────────────────────────
 GEMINI_MODEL = "gemini-2.0-flash"
 
+# Local AI Configuration (Ollama)
+USE_LOCAL_AI = os.getenv("USE_LOCAL_AI", "True").lower() in ("true", "1", "yes")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2")
+
 # ─── Currency & Locale ───────────────────────────────────────────────────────
 DEFAULT_CURRENCY = "SAR"
 CURRENCY_SYMBOLS = {

@@ -21,8 +21,9 @@ from typing import Optional
 
 from google import genai
 from google.genai import types
+import requests
 
-from config import GEMINI_API_KEY, GEMINI_MODEL
+from config import GEMINI_API_KEY, GEMINI_MODEL, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
 from safari.input_parser import TripRequest, parse_user_input
 from safari.tools.transport import calculate_transport_costs, TransportEstimate
 from safari.tools.budget import budget_allocator, BudgetBreakdown
@@ -57,18 +58,26 @@ class SafariAgent:
         api_key : str, optional
             Google Gemini API key. Falls back to GEMINI_API_KEY from config.
         """
-        key = api_key or GEMINI_API_KEY
-        if not key:
-            console.print(
-                "[bold red]❌ No GEMINI_API_KEY found![/bold red]\n"
-                "Set it in a .env file or pass it directly.\n"
-                "Safari will run calculations but skip LLM generation."
-            )
-            self.client = None
-        else:
-            self.client = genai.Client(api_key=key)
+        self.use_local = USE_LOCAL_AI
+        self.ollama_url = OLLAMA_URL
+        self.ollama_model = OLLAMA_MODEL
 
-        self.model = GEMINI_MODEL
+        if not self.use_local:
+            key = api_key or GEMINI_API_KEY
+            if not key:
+                console.print(
+                    "[bold red]❌ No GEMINI_API_KEY found![/bold red]\n"
+                    "Set it in a .env file or pass it directly.\n"
+                    "Safari will run calculations but skip LLM generation."
+                )
+                self.client = None
+            else:
+                self.client = genai.Client(api_key=key)
+            self.model = GEMINI_MODEL
+        else:
+            self.client = None
+            self.model = self.ollama_model
+            console.print(f"  [cyan]🧠 Using local AI agent ({self.ollama_model})[/cyan]")
 
     def _step_log(self, emoji: str, message: str) -> None:
         """Print a styled step indicator."""
@@ -240,7 +249,7 @@ class SafariAgent:
         web_research: WebResearchResult = None,
     ) -> str:
         """Call the LLM to generate a natural-language itinerary."""
-        if not self.client:
+        if not self.use_local and not self.client:
             return self._fallback_itinerary(request, transport, breakdown, activities, event_scan, web_research)
 
         events_section = ""
@@ -285,23 +294,41 @@ class SafariAgent:
             end_date=request.end_date,
         )
 
-        self._step_log("🧠", "Generating itinerary with Gemini...")
+        if self.use_local:
+            self._step_log("🧠", f"Generating itinerary with local AI ({self.ollama_model})...")
+            try:
+                payload = {
+                    "model": self.ollama_model,
+                    "prompt": user_prompt,
+                    "system": SAFARI_SYSTEM_PROMPT,
+                    "stream": False,
+                    "options": {"temperature": 0.7, "num_ctx": 4096}
+                }
+                response = requests.post(f"{self.ollama_url}/api/generate", json=payload, timeout=120)
+                response.raise_for_status()
+                return response.json()["response"]
+            except Exception as e:
+                console.print(f"  [yellow]⚠️  Local LLM call failed: {e}[/yellow]")
+                console.print("  [dim]Falling back to template-based output...[/dim]")
+                return self._fallback_itinerary(request, transport, breakdown, activities, event_scan, web_research)
+        else:
+            self._step_log("🧠", "Generating itinerary with Gemini...")
 
-        try:
-            response = self.client.models.generate_content(
-                model=self.model,
-                contents=user_prompt,
-                config=types.GenerateContentConfig(
-                    system_instruction=SAFARI_SYSTEM_PROMPT,
-                    temperature=0.7,
-                    max_output_tokens=4096,
-                ),
-            )
-            return response.text
-        except Exception as e:
-            console.print(f"  [yellow]⚠️  LLM call failed: {e}[/yellow]")
-            console.print("  [dim]Falling back to template-based output...[/dim]")
-            return self._fallback_itinerary(request, transport, breakdown, activities, web_research=web_research)
+            try:
+                response = self.client.models.generate_content(
+                    model=self.model,
+                    contents=user_prompt,
+                    config=types.GenerateContentConfig(
+                        system_instruction=SAFARI_SYSTEM_PROMPT,
+                        temperature=0.7,
+                        max_output_tokens=4096,
+                    ),
+                )
+                return response.text
+            except Exception as e:
+                console.print(f"  [yellow]⚠️  LLM call failed: {e}[/yellow]")
+                console.print("  [dim]Falling back to template-based output...[/dim]")
+                return self._fallback_itinerary(request, transport, breakdown, activities, event_scan, web_research)
 
     def _fallback_itinerary(
         self,

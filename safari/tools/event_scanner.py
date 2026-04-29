@@ -115,9 +115,9 @@ def _search_events_web(city: str, start_date: str, end_date: str, interests: str
     pop-up events, and social-media-trending gatherings in the given
     city during the specified date range.
     """
-    from config import GEMINI_API_KEY
+    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
 
-    if not GEMINI_API_KEY:
+    if not USE_LOCAL_AI and not GEMINI_API_KEY:
         return []
 
     try:
@@ -140,17 +140,29 @@ def _search_events_web(city: str, start_date: str, end_date: str, interests: str
             f"\nIf no events are found, return an empty array: []"
         )
 
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                tools=[{"google_search": {}}],
-                temperature=0.3,
-                response_mime_type="application/json",
-            ),
-        )
-
-        text = response.text.strip()
+        if USE_LOCAL_AI:
+            import requests
+            payload = {
+                "model": OLLAMA_MODEL,
+                "prompt": prompt,
+                "stream": False,
+                "format": "json",
+                "options": {"temperature": 0.3}
+            }
+            res = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=60)
+            res.raise_for_status()
+            text = res.json()["response"].strip()
+        else:
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    tools=[{"google_search": {}}],
+                    temperature=0.3,
+                    response_mime_type="application/json",
+                ),
+            )
+            text = response.text.strip()
         text = text.replace("```json", "").replace("```", "").strip()
         data = json.loads(text)
 

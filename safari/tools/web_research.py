@@ -180,13 +180,16 @@ def _search_social_media(city: str, interests: str = "") -> List[SocialMediaPost
     Use Gemini's Google Search grounding to discover social media posts
     about a destination — trending food spots, hidden gems, local recommendations.
     """
-    from config import GEMINI_API_KEY
+    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
 
-    if not GEMINI_API_KEY:
+    if not USE_LOCAL_AI and not GEMINI_API_KEY:
         return []
 
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        if USE_LOCAL_AI:
+            pass
+        else:
+            client = genai.Client(api_key=GEMINI_API_KEY)
 
         interests_str = f" Focus especially on posts about: {interests}." if interests else ""
 
@@ -208,17 +211,29 @@ def _search_social_media(city: str, interests: str = "") -> List[SocialMediaPost
             f"\nIf no relevant posts are found, return an empty array: []"
         )
 
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                tools=[{"google_search": {}}],
-                temperature=0.3,
-                response_mime_type="application/json",
-            ),
-        )
-
-        text = response.text.strip()
+        if USE_LOCAL_AI:
+            import requests
+            payload = {
+                "model": OLLAMA_MODEL,
+                "prompt": prompt,
+                "stream": False,
+                "format": "json",
+                "options": {"temperature": 0.3}
+            }
+            res = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=60)
+            res.raise_for_status()
+            text = res.json()["response"].strip()
+        else:
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    tools=[{"google_search": {}}],
+                    temperature=0.3,
+                    response_mime_type="application/json",
+                ),
+            )
+            text = response.text.strip()
         text = text.replace("```json", "").replace("```", "").strip()
         data = json.loads(text)
 
@@ -252,13 +267,16 @@ def _search_trending_spots(city: str, interests: str = "") -> List[TrendingSpot]
     Use Gemini's Google Search grounding to discover currently trending
     restaurants, cafés, attractions, and experiences in a city.
     """
-    from config import GEMINI_API_KEY
+    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
 
-    if not GEMINI_API_KEY:
+    if not USE_LOCAL_AI and not GEMINI_API_KEY:
         return []
 
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        if USE_LOCAL_AI:
+            pass
+        else:
+            client = genai.Client(api_key=GEMINI_API_KEY)
 
         interests_str = f" The traveler is especially interested in: {interests}." if interests else ""
 
@@ -280,17 +298,29 @@ def _search_trending_spots(city: str, interests: str = "") -> List[TrendingSpot]
             f"\nIf no spots are found, return an empty array: []"
         )
 
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                tools=[{"google_search": {}}],
-                temperature=0.3,
-                response_mime_type="application/json",
-            ),
-        )
-
-        text = response.text.strip()
+        if USE_LOCAL_AI:
+            import requests
+            payload = {
+                "model": OLLAMA_MODEL,
+                "prompt": prompt,
+                "stream": False,
+                "format": "json",
+                "options": {"temperature": 0.3}
+            }
+            res = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=60)
+            res.raise_for_status()
+            text = res.json()["response"].strip()
+        else:
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    tools=[{"google_search": {}}],
+                    temperature=0.3,
+                    response_mime_type="application/json",
+                ),
+            )
+            text = response.text.strip()
         text = text.replace("```json", "").replace("```", "").strip()
         data = json.loads(text)
 
@@ -327,13 +357,16 @@ def _search_local_insights(city: str) -> tuple[List[LocalInsight], str]:
     Use Gemini's Google Search grounding to discover practical travel tips,
     weather info, and local insights from the web.
     """
-    from config import GEMINI_API_KEY
+    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
 
-    if not GEMINI_API_KEY:
+    if not USE_LOCAL_AI and not GEMINI_API_KEY:
         return [], ""
 
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        if USE_LOCAL_AI:
+            pass
+        else:
+            client = genai.Client(api_key=GEMINI_API_KEY)
 
         prompt = (
             f"Search the web for current practical travel tips and information about "
@@ -351,17 +384,29 @@ def _search_local_insights(city: str) -> tuple[List[LocalInsight], str]:
             f'"source": "where found", "confidence": "high|medium|low"}}]}}'
         )
 
-        response = client.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                tools=[{"google_search": {}}],
-                temperature=0.3,
-                response_mime_type="application/json",
-            ),
-        )
-
-        text = response.text.strip()
+        if USE_LOCAL_AI:
+            import requests
+            payload = {
+                "model": OLLAMA_MODEL,
+                "prompt": prompt,
+                "stream": False,
+                "format": "json",
+                "options": {"temperature": 0.3}
+            }
+            res = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=60)
+            res.raise_for_status()
+            text = res.json()["response"].strip()
+        else:
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    tools=[{"google_search": {}}],
+                    temperature=0.3,
+                    response_mime_type="application/json",
+                ),
+            )
+            text = response.text.strip()
         text = text.replace("```json", "").replace("```", "").strip()
         data = json.loads(text)
 

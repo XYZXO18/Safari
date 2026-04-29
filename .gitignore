@@ -6,3 +6,9 @@ venv/
 env/
 .idea/
 .vscode/
+
+# Ignore large installers and test scripts
+OllamaSetup.exe
+mock_app.py
+pull_model.py
+refactor*.py
