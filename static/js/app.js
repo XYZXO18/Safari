@@ -261,17 +261,35 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
                 const aLatLng = [act.lat, act.lng];
                 waypoints.push(aLatLng);
                 const isEvent = act.is_live_event;
-                const emoji = isEvent ? '🎪' : '🎯';
-                const typeStr = isEvent ? 'Live Event' : 'Activity';
-                const timeStr = (isEvent && act.time && act.time !== "TBD") 
+                const isTrending = act.is_trending_spot;
+                let icon, typeStr;
+                if (isEvent) {
+                    icon = '🎪';
+                    typeStr = 'Live Event';
+                } else if (isTrending) {
+                    icon = '🔥';
+                    typeStr = 'Trending Spot';
+                } else {
+                    icon = '🎯';
+                    typeStr = 'Activity';
+                }
+                const timeStr = ((isEvent || isTrending) && act.time && act.time !== "TBD") 
                     ? `<div class="popup-detail" style="color:var(--accent); font-weight:bold; margin-top:4px;">🕒 Starts at: ${act.time}</div>` 
                     : '';
-                const actMarker = L.marker(aLatLng, { icon: createIcon(emoji) })
+                const buzzStr = (isTrending && act.social_buzz)
+                    ? `<div class="popup-detail" style="color:#f59e0b; margin-top:4px;">📱 ${act.social_buzz}</div>`
+                    : '';
+                const ratingStr = (isTrending && act.rating)
+                    ? `<div class="popup-detail" style="margin-top:2px;">${'⭐'.repeat(Math.round(act.rating))} (${act.rating})</div>`
+                    : '';
+                const actMarker = L.marker(aLatLng, { icon: createIcon(icon) })
                     .addTo(map)
                     .bindPopup(`
                         <div class="popup-title">${act.name}</div>
                         <div class="popup-detail">${typeStr} (Day ${day})</div>
                         ${timeStr}
+                        ${buzzStr}
+                        ${ratingStr}
                     `);
                 markers.push(actMarker);
             }
@@ -305,12 +323,16 @@ function getActivitySchedule(dayNum, activities, isFirstDay, isLastDay) {
         const isObj = typeof act === 'object';
         const name = isObj ? act.name : act;
         const isEvent = isObj && act.is_live_event;
-        const icon = isEvent ? '🎪' : '🎯';
-        const time = (isEvent && act.time && act.time !== "TBD") ? act.time : `${String(hour).padStart(2, '0')}:00`;
+        const isTrending = isObj && act.is_trending_spot;
+        let icon;
+        if (isEvent) icon = '🎪';
+        else if (isTrending) icon = '🔥';
+        else icon = '🎯';
+        const time = ((isEvent || isTrending) && act.time && act.time !== "TBD") ? act.time : `${String(hour).padStart(2, '0')}:00`;
         const id = isObj ? act.id : null;
         const cost = isObj ? act.cost : 0;
         
-        schedule.push({ time, icon, text: name, id, isEvent, cost, dayNum });
+        schedule.push({ time, icon, text: name, id, isEvent, isTrending, cost, dayNum, socialBuzz: isObj ? act.social_buzz : '', rating: isObj ? act.rating : 0 });
         hour += isLastDay ? 2 : 3;
     });
 
@@ -340,14 +362,21 @@ function renderItinerary(data) {
         card.className = 'day-card';
         card.style.animationDelay = `${d * 0.08}s`;
 
-        let activitiesHtml = schedule.map(s => `
-            <div class="activity-item" style="align-items:center;">
+        let activitiesHtml = schedule.map(s => {
+            const buzzTag = (s.isTrending && s.socialBuzz) ? `<div class="social-buzz-tag">📱 ${s.socialBuzz}</div>` : '';
+            const deleteBtn = (s.isEvent || s.isTrending) ? `<button type="button" class="delete-btn" onclick="deleteEvent('${s.dayNum}', '${s.id}', ${s.cost})" title="Remove">🗑️</button>` : '';
+            return `
+            <div class="activity-item ${s.isTrending ? 'trending-item' : ''} ${s.isEvent ? 'event-item' : ''}" style="align-items:flex-start;">
                 <span class="activity-time">${s.time}</span>
                 <span class="activity-icon">${s.icon}</span>
-                <span style="flex:1">${s.text}</span>
-                ${s.isEvent ? `<button type="button" class="delete-btn" onclick="deleteEvent('${s.dayNum}', '${s.id}', ${s.cost})" title="Remove event">🗑️</button>` : ''}
+                <div style="flex:1">
+                    <span>${s.text}</span>
+                    ${buzzTag}
+                </div>
+                ${deleteBtn}
             </div>
-        `).join('');
+            `;
+        }).join('');
 
         // Add lodging and food info
         activitiesHtml += `
@@ -496,6 +525,9 @@ async function planTrip() {
         // Render warnings
         renderWarnings(data);
 
+        // Render web research
+        renderWebResearch(data);
+
         // Update calendar
         const today = new Date().getDate();
         renderCalendar(today + 1, state.days);
@@ -505,6 +537,114 @@ async function planTrip() {
     } finally {
         loadingOverlay.classList.add('hidden');
     }
+}
+
+// ─── Render Web Research Panel ──────────────────────────────────────────────
+function renderWebResearch(data) {
+    const research = data.web_research;
+    const container = $('web-research-panel');
+    if (!container) return;
+
+    if (!research) {
+        container.classList.add('hidden');
+        return;
+    }
+
+    container.classList.remove('hidden');
+    let html = '';
+
+    // Weather
+    if (research.weather_summary) {
+        html += `
+            <div class="research-section weather-section">
+                <div class="research-header">🌤️ Current Weather</div>
+                <p class="research-text">${research.weather_summary}</p>
+            </div>
+        `;
+    }
+
+    // Social Media Posts
+    if (research.social_posts && research.social_posts.length > 0) {
+        const platformIcons = {
+            'x/twitter': '🐦', 'instagram': '📸',
+            'tiktok': '🎵', 'reddit': '🔴', 'blog': '📝'
+        };
+        const platformColors = {
+            'x/twitter': '#1DA1F2', 'instagram': '#E1306C',
+            'tiktok': '#00f2ea', 'reddit': '#FF4500', 'blog': '#10B981'
+        };
+        html += `<div class="research-section">`;
+        html += `<div class="research-header">📱 Social Media Buzz</div>`;
+        research.social_posts.forEach(post => {
+            const icon = platformIcons[post.platform] || '🌐';
+            const color = platformColors[post.platform] || '#888';
+            html += `
+                <div class="social-post">
+                    <div class="social-post-header">
+                        <span class="platform-badge" style="background:${color}20;color:${color};border:1px solid ${color}40">
+                            ${icon} ${post.platform}
+                        </span>
+                        <span class="social-author">@${post.author}</span>
+                    </div>
+                    <p class="social-content">${post.content}</p>
+                    <div class="social-meta">
+                        <span class="social-category">${post.category}</span>
+                        ${post.likes ? `<span class="social-likes">❤️ ${post.likes.toLocaleString()}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+
+    // Trending Spots
+    if (research.trending_spots && research.trending_spots.length > 0) {
+        html += `<div class="research-section">`;
+        html += `<div class="research-header">🔥 Trending Spots</div>`;
+        research.trending_spots.forEach(spot => {
+            const stars = spot.rating ? '⭐'.repeat(Math.round(spot.rating)) + ` (${spot.rating})` : '';
+            const tagsHtml = (spot.tags || []).map(t => `<span class="spot-tag">${t}</span>`).join('');
+            html += `
+                <div class="trending-spot-card">
+                    <div class="spot-header">
+                        <span class="spot-name">${spot.name}</span>
+                        <span class="spot-price">${spot.price_range}</span>
+                    </div>
+                    <p class="spot-description">${spot.description}</p>
+                    ${stars ? `<div class="spot-rating">${stars}</div>` : ''}
+                    ${spot.social_buzz ? `<div class="spot-buzz">📱 ${spot.social_buzz}</div>` : ''}
+                    <div class="spot-tags">${tagsHtml}</div>
+                    <div class="spot-cost">~${fmt(spot.estimated_cost_sar)} ${data.budget.currency}</div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+
+    // Local Tips
+    if (research.local_insights && research.local_insights.length > 0) {
+        html += `<div class="research-section">`;
+        html += `<div class="research-header">💡 Local Tips from the Web</div>`;
+        research.local_insights.forEach(tip => {
+            const categoryIcons = {
+                'money_saving': '💰', 'safety': '🛡️',
+                'culture': '🕌', 'weather': '🌤️', 'transport': '🚗'
+            };
+            const icon = categoryIcons[tip.category] || '💡';
+            html += `
+                <div class="local-tip">
+                    <span class="tip-icon">${icon}</span>
+                    <div class="tip-content">
+                        <p>${tip.tip}</p>
+                        <span class="tip-source">${tip.source}</span>
+                    </div>
+                </div>
+            `;
+        });
+        html += `</div>`;
+    }
+
+    container.innerHTML = `<h3>🌐 Online Discoveries</h3>` + html;
 }
 
 // ─── Form Submit ─────────────────────────────────────────────────────────────

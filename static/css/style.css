@@ -1017,3 +1017,271 @@ select {
         min-height: 400px;
     }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Web Research Panel
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.web-research-panel {
+    padding: var(--panel-padding);
+    border-top: 1px solid var(--border);
+    animation: fadeIn 0.4s ease;
+}
+
+.web-research-panel h3 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    background: linear-gradient(135deg, #f59e0b, #ec4899, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.research-section {
+    margin-bottom: 16px;
+}
+
+.research-header {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+}
+
+.research-text {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* Weather Section */
+.weather-section {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(34, 197, 94, 0.08));
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+}
+
+.weather-section .research-header {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 6px;
+}
+
+/* Social Media Posts */
+.social-post {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    margin-bottom: 8px;
+    transition: all var(--transition);
+    animation: fadeIn 0.3s ease;
+}
+
+.social-post:hover {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: var(--bg-card-hover);
+    transform: translateX(2px);
+}
+
+.social-post-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.platform-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.social-author {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.social-content {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+
+.social-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.social-category {
+    font-size: 10px;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: capitalize;
+}
+
+.social-likes {
+    font-size: 10px;
+    color: #ec4899;
+}
+
+/* Trending Spots Cards */
+.trending-spot-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 3px solid #f59e0b;
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    transition: all var(--transition);
+    animation: fadeIn 0.3s ease;
+}
+
+.trending-spot-card:hover {
+    border-color: rgba(245, 158, 11, 0.3);
+    background: var(--bg-card-hover);
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.08);
+    transform: translateX(2px);
+}
+
+.spot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.spot-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.spot-price {
+    font-size: 11px;
+    font-weight: 600;
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.spot-description {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.spot-rating {
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+.spot-buzz {
+    font-size: 10px;
+    color: #f59e0b;
+    font-style: italic;
+    margin-bottom: 4px;
+}
+
+.spot-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.spot-tag {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: rgba(139, 92, 246, 0.12);
+    color: #a78bfa;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.spot-cost {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    text-align: right;
+}
+
+/* Local Tips */
+.local-tip {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.local-tip:last-child {
+    border-bottom: none;
+}
+
+.tip-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.tip-content {
+    flex: 1;
+}
+
+.tip-content p {
+    font-size: 12px;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 2px;
+}
+
+.tip-source {
+    font-size: 10px;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Activity Item Variants (Trending & Event)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.activity-item.trending-item {
+    background: rgba(245, 158, 11, 0.06);
+    border-left: 2px solid #f59e0b;
+    padding: 4px 8px;
+    border-radius: var(--radius-xs);
+    margin: 2px 0;
+}
+
+.activity-item.event-item {
+    background: rgba(239, 68, 68, 0.06);
+    border-left: 2px solid #ef4444;
+    padding: 4px 8px;
+    border-radius: var(--radius-xs);
+    margin: 2px 0;
+}
+
+.social-buzz-tag {
+    font-size: 9px;
+    color: #f59e0b;
+    font-style: italic;
+    margin-top: 2px;
+    opacity: 0.85;
+}

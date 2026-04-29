@@ -28,6 +28,7 @@ from safari.tools.transport import calculate_transport_costs, TransportEstimate
 from safari.tools.budget import budget_allocator, BudgetBreakdown
 from safari.tools.activities import suggest_activities, ActivityPlan
 from safari.tools.event_scanner import find_live_events, EventScanResult
+from safari.tools.web_research import research_destination, WebResearchResult
 from safari.agent.prompts import SAFARI_SYSTEM_PROMPT, ITINERARY_USER_PROMPT
 from safari.output.formatter import print_itinerary, format_itinerary
 
@@ -73,14 +74,14 @@ class SafariAgent:
         """Print a styled step indicator."""
         console.print(f"  {emoji} [dim]{message}[/dim]")
 
-    def run_calculations(self, request: TripRequest) -> tuple[TransportEstimate, BudgetBreakdown, ActivityPlan, EventScanResult]:
+    def run_calculations(self, request: TripRequest) -> tuple[TransportEstimate, BudgetBreakdown, ActivityPlan, EventScanResult, WebResearchResult]:
         """
         Run all deterministic calculations for a trip request.
-        No LLM calls — pure math + event scanning.
+        No LLM calls — pure math + event scanning + web research.
 
         Returns
         -------
-        tuple of (TransportEstimate, BudgetBreakdown, ActivityPlan, EventScanResult)
+        tuple of (TransportEstimate, BudgetBreakdown, ActivityPlan, EventScanResult, WebResearchResult)
         """
         # Step 1: Transport
         self._step_log("🚗", "Calculating transport costs...")
@@ -100,13 +101,30 @@ class SafariAgent:
             currency=request.currency,
         )
 
-        # Step 3: Scan for live events
-        self._step_log("🎭", "Scanning for live events & festivals...")
+        # Step 3: Web + Social Media Research
+        self._step_log("🌐", "Researching online data & social media...")
         from config import DESTINATIONS
         dest_info = DESTINATIONS.get(request.destination.lower(), DESTINATIONS.get("coast", {}))
         cities = dest_info.get("cities", [])
         scan_city = cities[0] if cities else request.destination.title()
 
+        web_research = research_destination(
+            city=scan_city,
+            interests=request.interests,
+        )
+
+        if web_research.has_data:
+            social_count = len(web_research.social_posts)
+            spots_count = len(web_research.trending_spots)
+            tips_count = len(web_research.local_insights)
+            self._step_log("📱", f"Found {social_count} social posts, "
+                                  f"{spots_count} trending spots, "
+                                  f"{tips_count} local tips")
+        else:
+            self._step_log("📭", "No additional online data found.")
+
+        # Step 4: Scan for live events
+        self._step_log("🎭", "Scanning for live events & festivals...")
         event_scan = find_live_events(
             location=scan_city,
             start_date=request.start_date,
@@ -121,11 +139,11 @@ class SafariAgent:
         else:
             self._step_log("📭", "No live events found for these dates.")
 
-        # Step 4: Calculate adjusted activities budget (deduct event costs)
+        # Step 5: Calculate adjusted activities budget (deduct event costs)
         event_cost_per_day = event_scan.total_event_cost / request.days if request.days > 0 else 0
         adjusted_activities_budget = max(breakdown.activities_per_day - event_cost_per_day, 0)
 
-        # Step 5: Activity suggestions (with reduced budget if events consume some)
+        # Step 6: Activity suggestions (with reduced budget if events consume some)
         self._step_log("🎯", "Selecting activities within budget...")
         activities = suggest_activities(
             destination=request.destination,
@@ -134,11 +152,15 @@ class SafariAgent:
             currency=request.currency,
         )
 
-        # Step 6: Inject live events into the activity plan
+        # Step 7: Inject live events into the activity plan
         if event_scan.has_events:
             self._inject_events(activities, event_scan, request.days)
 
-        return transport, breakdown, activities, event_scan
+        # Step 8: Inject trending spots from web research into activities
+        if web_research.trending_spots:
+            self._inject_trending_spots(activities, web_research, request.days)
+
+        return transport, breakdown, activities, event_scan, web_research
 
     def _inject_events(self, activities: ActivityPlan, event_scan: EventScanResult, days: int) -> None:
         """
@@ -167,6 +189,47 @@ class SafariAgent:
             else:
                 activities.daily_activities[target_day] = [event_activity]
 
+    def _inject_trending_spots(self, activities: ActivityPlan, research: WebResearchResult, days: int) -> None:
+        """
+        Inject top trending spots from web/social media research into the activity plan.
+        Adds them as special 'social_pick' items so the UI can highlight them.
+        """
+        import random
+        from config import CITY_COORDS
+
+        city_coords = CITY_COORDS.get(activities.recommended_city.lower(), {"lat": 24.7, "lng": 46.7})
+
+        for i, spot in enumerate(research.trending_spots[:days * 2]):
+            target_day = (i % days) + 1
+
+            spot_activity = {
+                "id": f"trend_{i}_{spot.name.replace(' ', '_').lower()[:10]}",
+                "name": f"🔥 TRENDING: {spot.name}",
+                "lat": spot.lat or (city_coords["lat"] + random.uniform(-0.05, 0.05)),
+                "lng": spot.lng or (city_coords["lng"] + random.uniform(-0.05, 0.05)),
+                "is_trending_spot": True,
+                "cost": spot.estimated_cost_sar,
+                "category": spot.category,
+                "description": spot.description,
+                "social_buzz": spot.social_buzz,
+                "rating": spot.rating,
+                "price_range": spot.price_range,
+                "tags": spot.tags,
+                "source": spot.source,
+            }
+
+            if target_day in activities.daily_activities:
+                # Add trending spots after live events but before regular activities
+                insert_pos = 0
+                for idx, act in enumerate(activities.daily_activities[target_day]):
+                    if isinstance(act, dict) and act.get("is_live_event"):
+                        insert_pos = idx + 1
+                    else:
+                        break
+                activities.daily_activities[target_day].insert(insert_pos, spot_activity)
+            else:
+                activities.daily_activities[target_day] = [spot_activity]
+
     def _generate_itinerary_text(
         self,
         request: TripRequest,
@@ -174,10 +237,11 @@ class SafariAgent:
         breakdown: BudgetBreakdown,
         activities: ActivityPlan,
         event_scan: EventScanResult = None,
+        web_research: WebResearchResult = None,
     ) -> str:
         """Call the LLM to generate a natural-language itinerary."""
         if not self.client:
-            return self._fallback_itinerary(request, transport, breakdown, activities, event_scan)
+            return self._fallback_itinerary(request, transport, breakdown, activities, event_scan, web_research)
 
         events_section = ""
         if event_scan and event_scan.has_events:
@@ -187,6 +251,18 @@ class SafariAgent:
                 f"**IMPORTANT:** These live events have been injected into the daily plan. "
                 f"Highlight them as exciting, unique experiences. Their costs ({event_scan.total_event_cost:.0f} SAR total) "
                 f"come from the Activities budget.\n"
+            )
+
+        research_section = ""
+        if web_research and web_research.has_data:
+            research_section = (
+                f"\n## 🌐 Online & Social Media Research\n"
+                f"{web_research.summary}\n\n"
+                f"**IMPORTANT:** Use these social media discoveries and trending spots to make "
+                f"personalized, hyper-local recommendations. Mention specific restaurants, "
+                f"hidden gems, and tips discovered from real social media posts. "
+                f"Reference the social media sources when recommending a spot (e.g., "
+                f"'trending on Instagram' or 'recommended by local food bloggers').\n"
             )
 
         user_prompt = ITINERARY_USER_PROMPT.format(
@@ -200,6 +276,7 @@ class SafariAgent:
             budget_summary=breakdown.summary,
             activities_summary=activities.summary,
             events_section=events_section,
+            research_section=research_section,
             lodging_per_day=breakdown.lodging_per_day,
             food_per_day=breakdown.food_per_day,
             buffer_total=breakdown.buffer_total,
@@ -224,7 +301,7 @@ class SafariAgent:
         except Exception as e:
             console.print(f"  [yellow]⚠️  LLM call failed: {e}[/yellow]")
             console.print("  [dim]Falling back to template-based output...[/dim]")
-            return self._fallback_itinerary(request, transport, breakdown, activities)
+            return self._fallback_itinerary(request, transport, breakdown, activities, web_research=web_research)
 
     def _fallback_itinerary(
         self,
@@ -233,6 +310,7 @@ class SafariAgent:
         breakdown: BudgetBreakdown,
         activities: ActivityPlan,
         event_scan: EventScanResult = None,
+        web_research: WebResearchResult = None,
     ) -> str:
         """Generate a template-based itinerary when LLM is unavailable."""
         sym = breakdown.currency
@@ -272,6 +350,48 @@ class SafariAgent:
                 lines.append(f"  💰 ~{ev.estimated_cost_sar:.0f} {sym}")
                 lines.append("")
             lines.append(f"Total event costs: **{event_scan.total_event_cost:.0f} {sym}** (from Activities budget)")
+
+        # Show social media & web research section
+        if web_research and web_research.has_data:
+            lines.extend([
+                "",
+                "---",
+                "",
+                "#### 🌐 Online & Social Media Discoveries",
+                "",
+            ])
+
+            if web_research.weather_summary:
+                lines.append(f"🌤️ **Weather:** {web_research.weather_summary}")
+                lines.append("")
+
+            if web_research.social_posts:
+                lines.append("**📱 Social Media Buzz:**")
+                platform_icons = {
+                    "x/twitter": "🐦", "instagram": "📸",
+                    "tiktok": "🎵", "reddit": "🔴", "blog": "📝"
+                }
+                for post in web_research.social_posts[:5]:
+                    icon = platform_icons.get(post.platform, "🌐")
+                    lines.append(f"- {icon} **@{post.author}**: {post.content}")
+                lines.append("")
+
+            if web_research.trending_spots:
+                lines.append("**🔥 Trending Spots:**")
+                for spot in web_research.trending_spots[:5]:
+                    stars = "⭐" * int(spot.rating) if spot.rating else ""
+                    lines.append(f"- **{spot.name}** ({spot.category}) {stars}")
+                    lines.append(f"  _{spot.description}_")
+                    if spot.social_buzz:
+                        lines.append(f"  📱 {spot.social_buzz}")
+                    lines.append(f"  💰 ~{spot.estimated_cost_sar:.0f} {sym}")
+                lines.append("")
+
+            if web_research.local_insights:
+                lines.append("**💡 Local Tips from the Web:**")
+                for tip in web_research.local_insights[:5]:
+                    lines.append(f"- {tip.tip} _(source: {tip.source})_")
+                lines.append("")
             lines.append("")
 
         lines.extend([
@@ -291,7 +411,13 @@ class SafariAgent:
             for act in day_acts:
                 act_name = act.get("name", act) if isinstance(act, dict) else act
                 is_event = act.get("is_live_event", False) if isinstance(act, dict) else False
-                prefix = "🎪" if is_event else "🎯"
+                is_trending = act.get("is_trending_spot", False) if isinstance(act, dict) else False
+                if is_event:
+                    prefix = "🎪"
+                elif is_trending:
+                    prefix = "🔥"
+                else:
+                    prefix = "🎯"
                 lines.append(f"- {prefix} {act_name}")
             if day == request.days:
                 lines.append(f"- 🚗 Return to {request.origin.title()}")
@@ -342,14 +468,14 @@ class SafariAgent:
                              f"Days: {request.days}")
         console.print()
 
-        # Step 2: Run calculations (including event scanning)
-        console.print("  [bold]⚙️  Running calculations...[/bold]")
-        transport, breakdown, activities, event_scan = self.run_calculations(request)
-        console.print("  [green]✅ All calculations complete![/green]")
+        # Step 2: Run calculations (including event scanning + web research)
+        console.print("  [bold]⚙️  Running calculations & online research...[/bold]")
+        transport, breakdown, activities, event_scan, web_research = self.run_calculations(request)
+        console.print("  [green]✅ All calculations & research complete![/green]")
         console.print()
 
         # Step 3: Generate LLM itinerary
-        llm_text = self._generate_itinerary_text(request, transport, breakdown, activities, event_scan)
+        llm_text = self._generate_itinerary_text(request, transport, breakdown, activities, event_scan, web_research)
 
         # Step 4: Display
         print_itinerary(transport, breakdown, activities, llm_text, event_scan)
@@ -358,4 +484,6 @@ class SafariAgent:
         result = format_itinerary(transport, breakdown, activities, llm_text)
         if event_scan and event_scan.has_events:
             result["events"] = event_scan.to_dict()
+        if web_research and web_research.has_data:
+            result["web_research"] = web_research.to_dict()
         return result

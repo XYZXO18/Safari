@@ -23,6 +23,7 @@ from safari.tools.transport import calculate_transport_costs
 from safari.tools.budget import budget_allocator
 from safari.tools.activities import suggest_activities
 from safari.tools.event_scanner import find_live_events
+from safari.tools.web_research import research_destination
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -84,119 +85,166 @@ def plan_trip():
         end_date = end.isoformat()
 
     # Step 1: Transport calculation
-    transport = calculate_transport_costs(
-        mode=travel_mode,
-        origin=origin,
-        destination=destination,
-        vehicle_type=vehicle_type,
-    )
+    try:
+        transport = calculate_transport_costs(
+            mode=travel_mode,
+            origin=origin,
+            destination=destination,
+            vehicle_type=vehicle_type,
+        )
 
-    # Step 2: Budget allocation
-    breakdown = budget_allocator(
-        total_budget=budget,
-        transport_cost=transport.cost_round_trip,
-        days=days,
-        currency=currency,
-    )
+        # Step 2: Budget allocation
+        breakdown = budget_allocator(
+            total_budget=budget,
+            transport_cost=transport.cost_round_trip,
+            days=days,
+            currency=currency,
+        )
 
-    # Step 3: Scan for live events
-    dest_info = DESTINATIONS.get(destination.lower(), DESTINATIONS.get("coast", {}))
-    cities = dest_info.get("cities", [])
-    scan_city = cities[0] if cities else destination.title()
+        # Step 3: Scan for live events
+        dest_info = DESTINATIONS.get(destination.lower(), DESTINATIONS.get("coast", {}))
+        cities = dest_info.get("cities", [])
+        scan_city = cities[0] if cities else destination.title()
 
-    event_scan = find_live_events(
-        location=scan_city,
-        start_date=start_date,
-        end_date=end_date,
-        interests=interests,
-        max_events=10,
-    )
+        event_scan = find_live_events(
+            location=scan_city,
+            start_date=start_date,
+            end_date=end_date,
+            interests=interests,
+            max_events=10,
+        )
 
-    # Step 4: Adjust activities budget for event costs
-    event_cost_per_day = event_scan.total_event_cost / days if days > 0 else 0
-    adjusted_activities_budget = max(breakdown.activities_per_day - event_cost_per_day, 0)
+        # Step 4: Adjust activities budget for event costs
+        event_cost_per_day = event_scan.total_event_cost / days if days > 0 else 0
+        adjusted_activities_budget = max(breakdown.activities_per_day - event_cost_per_day, 0)
 
-    # Step 5: Activity suggestions (with adjusted budget)
-    activities = suggest_activities(
-        destination=destination,
-        days=days,
-        daily_activities_budget=adjusted_activities_budget,
-        currency=currency,
-    )
+        # Step 5: Activity suggestions (with adjusted budget)
+        activities = suggest_activities(
+            destination=destination,
+            days=days,
+            daily_activities_budget=adjusted_activities_budget,
+            currency=currency,
+        )
 
-    # Step 6: Inject live events into the daily plan
-    if event_scan.has_events:
-        for i, event in enumerate(event_scan.events):
-            target_day = (i % days) + 1
-            event_activity = {
-                "id": f"evt_{i}_{event.name.replace(' ', '_').lower()[:10]}",
-                "name": f"\ud83c\udfaa LIVE: {event.name}",
-                "lat": event.lat,
-                "lng": event.lng,
-                "is_live_event": True,
-                "cost": event.estimated_cost_sar,
-                "venue": event.venue,
-                "time": event.time,
-                "description": event.description,
-            }
-            day_key = target_day
-            if day_key in activities.daily_activities:
-                activities.daily_activities[day_key].insert(0, event_activity)
-            else:
-                activities.daily_activities[day_key] = [event_activity]
+        # Step 6: Inject live events into the daily plan
+        if event_scan.has_events:
+            for i, event in enumerate(event_scan.events):
+                target_day = (i % days) + 1
+                event_activity = {
+                    "id": f"evt_{i}_{event.name.replace(' ', '_').lower()[:10]}",
+                    "name": f"\ud83c\udfaa LIVE: {event.name}",
+                    "lat": event.lat,
+                    "lng": event.lng,
+                    "is_live_event": True,
+                    "cost": event.estimated_cost_sar,
+                    "venue": event.venue,
+                    "time": event.time,
+                    "description": event.description,
+                }
+                day_key = target_day
+                if day_key in activities.daily_activities:
+                    activities.daily_activities[day_key].insert(0, event_activity)
+                else:
+                    activities.daily_activities[day_key] = [event_activity]
 
-    # Get coordinates for map
-    origin_coords = CITY_COORDS.get(origin.lower(), CITY_COORDS.get("riyadh"))
-    dest_coords = CITY_COORDS.get(destination.lower(), CITY_COORDS.get("coast"))
+        # Step 6b: Web + Social Media Research
+        web_research = research_destination(
+            city=scan_city,
+            interests=interests,
+        )
 
-    # Find the recommended city's coords if different from vibe
-    rec_city = activities.recommended_city.lower()
-    rec_coords = CITY_COORDS.get(rec_city, dest_coords)
+        # Step 6c: Inject trending spots from research into activities
+        if web_research.trending_spots:
+            import random
+            city_coords = CITY_COORDS.get(activities.recommended_city.lower(), {"lat": 24.7, "lng": 46.7})
 
-    # Build response
-    result = {
-        "transport": {
-            "mode": transport.mode,
-            "origin": origin.title(),
-            "destination": activities.recommended_city,
-            "distance_km": transport.distance_km,
-            "cost_one_way": transport.cost_one_way,
-            "cost_round_trip": transport.cost_round_trip,
-        },
-        "budget": {
-            "total": budget,
-            "currency": currency,
-            "transport": transport.cost_round_trip,
-            "remaining": breakdown.remaining_budget,
-            "days": days,
-            "lodging": {"total": breakdown.lodging_total, "per_day": breakdown.lodging_per_day},
-            "food": {"total": breakdown.food_total, "per_day": breakdown.food_per_day},
-            "activities": {"total": breakdown.activities_total, "per_day": breakdown.activities_per_day},
-            "buffer": {"total": breakdown.buffer_total, "per_day": breakdown.buffer_per_day},
-            "is_feasible": breakdown.is_feasible,
-            "warnings": breakdown.warnings,
-        },
-        "activities": {
-            "destination": activities.destination,
-            "vibe": activities.vibe,
-            "recommended_city": activities.recommended_city,
-            "daily_plan": {str(k): v for k, v in activities.daily_activities.items()},
-            "hotel": activities.hotel,
-        },
-        "events": event_scan.to_dict(),
-        "dates": {
-            "start_date": start_date,
-            "end_date": end_date,
-        },
-        "map": {
-            "origin": origin_coords,
-            "destination": rec_coords,
-            "origin_name": origin.title(),
-            "dest_name": activities.recommended_city,
-        },
-    }
+            for i, spot in enumerate(web_research.trending_spots[:days * 2]):
+                target_day = (i % days) + 1
+                spot_activity = {
+                    "id": f"trend_{i}_{spot.name.replace(' ', '_').lower()[:10]}",
+                    "name": f"\U0001f525 TRENDING: {spot.name}",
+                    "lat": spot.lat or (city_coords["lat"] + random.uniform(-0.05, 0.05)),
+                    "lng": spot.lng or (city_coords["lng"] + random.uniform(-0.05, 0.05)),
+                    "is_trending_spot": True,
+                    "cost": spot.estimated_cost_sar,
+                    "category": spot.category,
+                    "description": spot.description,
+                    "social_buzz": spot.social_buzz,
+                    "rating": spot.rating,
+                    "price_range": spot.price_range,
+                    "tags": spot.tags,
+                    "source": spot.source,
+                }
+                day_key = target_day
+                if day_key in activities.daily_activities:
+                    insert_pos = 0
+                    for idx, act in enumerate(activities.daily_activities[day_key]):
+                        if isinstance(act, dict) and act.get("is_live_event"):
+                            insert_pos = idx + 1
+                        else:
+                            break
+                    activities.daily_activities[day_key].insert(insert_pos, spot_activity)
+                else:
+                    activities.daily_activities[day_key] = [spot_activity]
 
-    return jsonify(result)
+        # Get coordinates for map
+        origin_coords = CITY_COORDS.get(origin.lower(), CITY_COORDS.get("riyadh"))
+        dest_coords = CITY_COORDS.get(destination.lower(), CITY_COORDS.get("coast"))
+
+        # Find the recommended city's coords if different from vibe
+        rec_city = activities.recommended_city.lower()
+        rec_coords = CITY_COORDS.get(rec_city, dest_coords)
+
+        # Build response
+        result = {
+            "transport": {
+                "mode": transport.mode,
+                "origin": origin.title(),
+                "destination": activities.recommended_city,
+                "distance_km": transport.distance_km,
+                "cost_one_way": transport.cost_one_way,
+                "cost_round_trip": transport.cost_round_trip,
+            },
+            "budget": {
+                "total": budget,
+                "currency": currency,
+                "transport": transport.cost_round_trip,
+                "remaining": breakdown.remaining_budget,
+                "days": days,
+                "lodging": {"total": breakdown.lodging_total, "per_day": breakdown.lodging_per_day},
+                "food": {"total": breakdown.food_total, "per_day": breakdown.food_per_day},
+                "activities": {"total": breakdown.activities_total, "per_day": breakdown.activities_per_day},
+                "buffer": {"total": breakdown.buffer_total, "per_day": breakdown.buffer_per_day},
+                "is_feasible": breakdown.is_feasible,
+                "warnings": breakdown.warnings,
+            },
+            "activities": {
+                "destination": activities.destination,
+                "vibe": activities.vibe,
+                "recommended_city": activities.recommended_city,
+                "daily_plan": {str(k): v for k, v in activities.daily_activities.items()},
+                "hotel": activities.hotel,
+            },
+            "events": event_scan.to_dict(),
+            "web_research": web_research.to_dict() if web_research.has_data else None,
+            "dates": {
+                "start_date": start_date,
+                "end_date": end_date,
+            },
+            "map": {
+                "origin": origin_coords,
+                "destination": rec_coords,
+                "origin_name": origin.title(),
+                "dest_name": activities.recommended_city,
+            },
+        }
+
+        return jsonify(result)
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": f"Planning failed: {str(e)}"}), 500
 
 
 if __name__ == "__main__":
