@@ -28,6 +28,8 @@ class ActivityPlan:
     daily_activities: Dict[int, List[dict]] = field(default_factory=dict)
     recommended_city: str = ""
     hotel: dict = field(default_factory=dict)
+    timeline: dict = field(default_factory=dict)
+    total_transit_cost: float = 0.0
 
     @property
     def summary(self) -> str:
@@ -59,37 +61,79 @@ _ACTIVITY_COSTS: Dict[str, float] = {
     "Boulevard Riyadh City": 100, "Historical Diriyah tour": 60,
     "Fine dining experience": 250, "Mall exploration": 50,
     "Art gallery visit": 40, "Rooftop café": 80, "Local souq haggling": 30,
+    "Historical downtown walking tour": 0, "Marina promenade stroll": 0, "Visit coastal landmarks": 20,
+    "Nature reserve walking trail": 15, "Historic fort exploration": 25, "Valley viewpoint hike": 0,
+    "Oasis heritage walking tour": 30, "Ancient tombs sightseeing": 50, "Desert canyon hike": 0,
+    "City center landmark walk": 0, "National museum visit": 30, "Historical palaces walking tour": 40,
+    "Modern architecture sightseeing": 0,
 }
 
 
-def get_web_places(city: str, vibe: str) -> dict:
-    """Search the web dynamically using Gemini's Google Search grounding to find places with coords."""
-    from config import GEMINI_API_KEY
-    if not GEMINI_API_KEY:
+def get_ddg_results(query: str, max_results: int = 5) -> str:
+    """Fetch search results from DuckDuckGo."""
+    try:
+        from duckduckgo_search import DDGS
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=max_results))
+            return "\n".join([f"Source: {r.get('title', '')} - {r.get('body', '')}" for r in results])
+    except Exception as e:
+        print(f"DDG Search failed: {e}")
+        return ""
+
+def get_web_places(city: str, vibe: str, city_coords: dict = None) -> dict:
+    """Search the web dynamically using Gemini or Ollama to find places with coords."""
+    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
+    
+    if not USE_LOCAL_AI and not GEMINI_API_KEY:
         return {"hotel": {}, "activities": []}
         
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        lat_ex = city_coords["lat"] if city_coords else 24.7
+        lng_ex = city_coords["lng"] if city_coords else 46.7
+        
         prompt = (
             f"Search the web for the top 8 specific, real sightseeing places and activities "
             f"in {city} ({vibe} vibe), and 1 specific real hotel in {city}. "
             f"Return ONLY a raw JSON object with this exact structure: "
-            f"{{\"hotel\": {{\"name\": \"...\", \"lat\": 24.7, \"lng\": 46.7}}, "
-            f"\"activities\": [{{\"name\": \"...\", \"lat\": 24.7, \"lng\": 46.7}}]}}"
+            f"{{\"hotel\": {{\"name\": \"...\", \"lat\": {lat_ex}, \"lng\": {lng_ex}}}, "
+            f"\"activities\": [{{\"name\": \"...\", \"lat\": {lat_ex}, \"lng\": {lng_ex}}}]}}"
+            f" IMPORTANT: Provide accurate lat/lng coordinates for {city}. Do not just copy the example coordinates."
         )
         
-        response = client.models.generate_content(
-            model='gemini-2.0-flash',
-            contents=prompt,
-            config=types.GenerateContentConfig(
-                tools=[{"google_search": {}}],
-                temperature=0.2,
-                response_mime_type="application/json",
+        if USE_LOCAL_AI:
+            import requests
+            search_query = f"top landmarks sightseeing activities tourist places {city} Saudi Arabia coordinates"
+            search_context = get_ddg_results(search_query, max_results=8)
+            prompt_with_context = f"Based on these live web search results:\n{search_context}\n\n{prompt}"
+            
+            payload = {
+                "model": OLLAMA_MODEL,
+                "prompt": prompt_with_context,
+                "stream": False,
+                "format": "json",
+                "options": {"temperature": 0.2}
+            }
+            res = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=60)
+            res.raise_for_status()
+            text = res.json()["response"].strip()
+        else:
+            client = genai.Client(api_key=GEMINI_API_KEY)
+            response = client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    tools=[{"google_search": {}}],
+                    temperature=0.2,
+                    response_mime_type="application/json",
+                )
             )
-        )
-        
-        text = response.text.strip()
-        text = text.replace("```json", "").replace("```", "").strip()
+            text = response.text.strip()
+            
+        text = text.strip()
+        start_idx = text.find('{')
+        end_idx = text.rfind('}')
+        if start_idx != -1 and end_idx != -1:
+            text = text[start_idx:end_idx+1]
         data = json.loads(text)
         return data
     except Exception as e:
@@ -117,7 +161,7 @@ def suggest_activities(
     hotel = {}
 
     # ─── Dynamic Web Search ───
-    web_data = get_web_places(recommended_city, dest_info["vibe"])
+    web_data = get_web_places(recommended_city, dest_info["vibe"], city_coords)
     hotel = web_data.get("hotel", {})
     web_activities = web_data.get("activities", [])
     

@@ -1,0 +1,1424 @@
+{
+  "restaurants": [
+    {
+      "id": "rst_jeddah_reef",
+      "name": "The Reef Kitchen",
+      "city": "Jeddah",
+      "vibe": "coast",
+      "cuisine": "Seafood",
+      "rating": 4.6,
+      "operating_hours": {
+        "open": "12:00",
+        "close": "23:30"
+      },
+      "tables": {
+        "total": 20,
+        "reserved": 8
+      },
+      "menu": [
+        {
+          "name": "Grilled Hammour",
+          "price_sar": 95,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "fish"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Shrimp Pasta",
+          "price_sar": 75,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [
+            "shellfish",
+            "gluten",
+            "dairy"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Lobster Thermidor",
+          "price_sar": 180,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "shellfish",
+            "dairy"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Fattoush Salad",
+          "price_sar": 30,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": [
+            "vegan"
+          ]
+        },
+        {
+          "name": "Seafood Soup",
+          "price_sar": 45,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "shellfish",
+            "fish"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Kunafa",
+          "price_sar": 35,
+          "category": "dessert",
+          "is_signature": false,
+          "allergens": [
+            "dairy",
+            "gluten",
+            "nuts"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Fresh Juice",
+          "price_sar": 20,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 21.509732720611247,
+      "lng": 39.19634791893356
+    },
+    {
+      "id": "rst_jeddah_balad",
+      "name": "Al-Balad Heritage Kitchen",
+      "city": "Jeddah",
+      "vibe": "coast",
+      "cuisine": "Traditional Saudi",
+      "rating": 4.8,
+      "operating_hours": {
+        "open": "11:00",
+        "close": "00:00"
+      },
+      "tables": {
+        "total": 25,
+        "reserved": 22
+      },
+      "menu": [
+        {
+          "name": "Kabsa (Lamb)",
+          "price_sar": 65,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Mutabbaq",
+          "price_sar": 25,
+          "category": "starter",
+          "is_signature": true,
+          "allergens": [
+            "gluten",
+            "eggs"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Saleeg",
+          "price_sar": 55,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Jareesh",
+          "price_sar": 40,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Dates with Coffee",
+          "price_sar": 15,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Basbousa",
+          "price_sar": 25,
+          "category": "dessert",
+          "is_signature": false,
+          "allergens": [
+            "dairy",
+            "gluten",
+            "eggs"
+          ],
+          "dietary": []
+        }
+      ],
+      "lat": 21.52517723277413,
+      "lng": 39.16195416591063
+    },
+    {
+      "id": "rst_jeddah_sushi",
+      "name": "Sakura Sushi Bar",
+      "city": "Jeddah",
+      "vibe": "coast",
+      "cuisine": "Japanese",
+      "rating": 4.4,
+      "operating_hours": {
+        "open": "17:00",
+        "close": "01:00"
+      },
+      "tables": {
+        "total": 18,
+        "reserved": 5
+      },
+      "menu": [
+        {
+          "name": "Salmon Nigiri Set",
+          "price_sar": 85,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "fish",
+            "soy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Dragon Roll",
+          "price_sar": 65,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "shellfish",
+            "soy",
+            "gluten"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Edamame",
+          "price_sar": 20,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "soy"
+          ],
+          "dietary": [
+            "vegan"
+          ]
+        },
+        {
+          "name": "Miso Soup",
+          "price_sar": 18,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "soy",
+            "fish"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Matcha Ice Cream",
+          "price_sar": 28,
+          "category": "dessert",
+          "is_signature": false,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Green Tea",
+          "price_sar": 12,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 21.480021774530748,
+      "lng": 39.20050465708241
+    },
+    {
+      "id": "rst_yanbu_catch",
+      "name": "The Daily Catch",
+      "city": "Yanbu",
+      "vibe": "coast",
+      "cuisine": "Seafood",
+      "rating": 4.3,
+      "operating_hours": {
+        "open": "11:00",
+        "close": "22:00"
+      },
+      "tables": {
+        "total": 15,
+        "reserved": 3
+      },
+      "menu": [
+        {
+          "name": "Grilled Red Snapper",
+          "price_sar": 80,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "fish"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Fish Biryani",
+          "price_sar": 55,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [
+            "fish"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Fried Calamari",
+          "price_sar": 40,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "shellfish",
+            "gluten"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Tabbouleh",
+          "price_sar": 22,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": [
+            "vegan"
+          ]
+        },
+        {
+          "name": "Um Ali",
+          "price_sar": 30,
+          "category": "dessert",
+          "is_signature": false,
+          "allergens": [
+            "dairy",
+            "gluten",
+            "nuts"
+          ],
+          "dietary": []
+        }
+      ],
+      "lat": 24.116534236151782,
+      "lng": 38.083788965981036
+    },
+    {
+      "id": "rst_yanbu_grill",
+      "name": "Harbour Grill House",
+      "city": "Yanbu",
+      "vibe": "coast",
+      "cuisine": "Grills & BBQ",
+      "rating": 4.1,
+      "operating_hours": {
+        "open": "16:00",
+        "close": "23:00"
+      },
+      "tables": {
+        "total": 12,
+        "reserved": 10
+      },
+      "menu": [
+        {
+          "name": "Mixed Grill Platter",
+          "price_sar": 110,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Lamb Chops",
+          "price_sar": 90,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Hummus",
+          "price_sar": 18,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "sesame"
+          ],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Grilled Vegetables",
+          "price_sar": 30,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Arabic Coffee",
+          "price_sar": 10,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 24.04945449511544,
+      "lng": 38.025996984750655
+    },
+    {
+      "id": "rst_abha_terrace",
+      "name": "Mountain Terrace Caf\u00e9",
+      "city": "Abha",
+      "vibe": "mountains",
+      "cuisine": "Caf\u00e9 & Light Bites",
+      "rating": 4.5,
+      "operating_hours": {
+        "open": "07:00",
+        "close": "22:00"
+      },
+      "tables": {
+        "total": 16,
+        "reserved": 4
+      },
+      "menu": [
+        {
+          "name": "Asiri Breakfast Platter",
+          "price_sar": 45,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "gluten",
+            "dairy",
+            "eggs"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Mountain Honey Pancakes",
+          "price_sar": 35,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "gluten",
+            "dairy",
+            "eggs"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Fresh Herb Salad",
+          "price_sar": 25,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Local Honey Yogurt",
+          "price_sar": 20,
+          "category": "dessert",
+          "is_signature": false,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Mountain Herb Tea",
+          "price_sar": 12,
+          "category": "beverage",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Cappuccino",
+          "price_sar": 18,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 18.179787055704317,
+      "lng": 42.539989474771176
+    },
+    {
+      "id": "rst_abha_heritage",
+      "name": "Rijal Almaa House",
+      "city": "Abha",
+      "vibe": "mountains",
+      "cuisine": "Traditional Highland",
+      "rating": 4.7,
+      "operating_hours": {
+        "open": "12:00",
+        "close": "22:30"
+      },
+      "tables": {
+        "total": 14,
+        "reserved": 12
+      },
+      "menu": [
+        {
+          "name": "Haneeth (Slow-Roasted Lamb)",
+          "price_sar": 85,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Aseedah",
+          "price_sar": 40,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Masoob",
+          "price_sar": 30,
+          "category": "dessert",
+          "is_signature": false,
+          "allergens": [
+            "gluten",
+            "dairy"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Mountain Honey Drizzle",
+          "price_sar": 25,
+          "category": "dessert",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Ginger Coffee",
+          "price_sar": 10,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 18.20053074399603,
+      "lng": 42.49536923851008
+    },
+    {
+      "id": "rst_abha_cloud",
+      "name": "Above The Clouds Restaurant",
+      "city": "Abha",
+      "vibe": "mountains",
+      "cuisine": "International Fusion",
+      "rating": 4.3,
+      "operating_hours": {
+        "open": "18:00",
+        "close": "00:00"
+      },
+      "tables": {
+        "total": 22,
+        "reserved": 6
+      },
+      "menu": [
+        {
+          "name": "Truffle Risotto",
+          "price_sar": 95,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Wagyu Burger",
+          "price_sar": 80,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [
+            "gluten",
+            "dairy"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Caesar Salad",
+          "price_sar": 35,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "dairy",
+            "fish",
+            "eggs",
+            "gluten"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Chocolate Lava Cake",
+          "price_sar": 40,
+          "category": "dessert",
+          "is_signature": true,
+          "allergens": [
+            "dairy",
+            "gluten",
+            "eggs"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Mojito Mocktail",
+          "price_sar": 22,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 18.21684057998681,
+      "lng": 42.47804587716568
+    },
+    {
+      "id": "rst_taif_rose",
+      "name": "Rose Petal Kitchen",
+      "city": "Taif",
+      "vibe": "mountains",
+      "cuisine": "Taifi Traditional",
+      "rating": 4.4,
+      "operating_hours": {
+        "open": "10:00",
+        "close": "23:00"
+      },
+      "tables": {
+        "total": 18,
+        "reserved": 7
+      },
+      "menu": [
+        {
+          "name": "Rose-Infused Lamb",
+          "price_sar": 90,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Taif Grape Leaves",
+          "price_sar": 30,
+          "category": "starter",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Pomegranate Chicken",
+          "price_sar": 70,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Rose Water Pudding",
+          "price_sar": 25,
+          "category": "dessert",
+          "is_signature": true,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Taif Rose Lemonade",
+          "price_sar": 15,
+          "category": "beverage",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 21.263719422890063,
+      "lng": 40.39582775031045
+    },
+    {
+      "id": "rst_alula_ancient",
+      "name": "Hegra Table",
+      "city": "Al-Ula",
+      "vibe": "desert",
+      "cuisine": "Desert Fine Dining",
+      "rating": 4.9,
+      "operating_hours": {
+        "open": "18:00",
+        "close": "23:00"
+      },
+      "tables": {
+        "total": 12,
+        "reserved": 11
+      },
+      "menu": [
+        {
+          "name": "Desert Truffle Stew",
+          "price_sar": 140,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Lamb Ouzi",
+          "price_sar": 120,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "nuts"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Smoked Eggplant Dip",
+          "price_sar": 35,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "sesame"
+          ],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Dates Tasting Platter",
+          "price_sar": 45,
+          "category": "starter",
+          "is_signature": true,
+          "allergens": [
+            "nuts"
+          ],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Saffron Panna Cotta",
+          "price_sar": 50,
+          "category": "dessert",
+          "is_signature": true,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Cardamom Latte",
+          "price_sar": 22,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 26.604159159469358,
+      "lng": 37.88504178813176
+    },
+    {
+      "id": "rst_alula_bonfire",
+      "name": "Starlight Bonfire Grill",
+      "city": "Al-Ula",
+      "vibe": "desert",
+      "cuisine": "BBQ & Grills",
+      "rating": 4.5,
+      "operating_hours": {
+        "open": "17:00",
+        "close": "01:00"
+      },
+      "tables": {
+        "total": 15,
+        "reserved": 4
+      },
+      "menu": [
+        {
+          "name": "Whole Roasted Lamb",
+          "price_sar": 200,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Bedouin BBQ Platter",
+          "price_sar": 130,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Campfire Flatbread",
+          "price_sar": 20,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": [
+            "vegan"
+          ]
+        },
+        {
+          "name": "Camel Milk Ice Cream",
+          "price_sar": 35,
+          "category": "dessert",
+          "is_signature": true,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Sage Desert Tea",
+          "price_sar": 10,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 26.643637167288297,
+      "lng": 37.92071914578362
+    },
+    {
+      "id": "rst_alula_oasis",
+      "name": "Palm Oasis Caf\u00e9",
+      "city": "Al-Ula",
+      "vibe": "desert",
+      "cuisine": "Caf\u00e9 & Brunch",
+      "rating": 4.2,
+      "operating_hours": {
+        "open": "06:30",
+        "close": "18:00"
+      },
+      "tables": {
+        "total": 10,
+        "reserved": 2
+      },
+      "menu": [
+        {
+          "name": "Date Smoothie Bowl",
+          "price_sar": 35,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "nuts"
+          ],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Avocado Toast",
+          "price_sar": 30,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": [
+            "vegan"
+          ]
+        },
+        {
+          "name": "Foul Medames",
+          "price_sar": 20,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Fresh Orange Juice",
+          "price_sar": 15,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Turkish Coffee",
+          "price_sar": 12,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 26.624034871177944,
+      "lng": 37.93680346879862
+    },
+    {
+      "id": "rst_riyadh_najd",
+      "name": "Najd Palace Restaurant",
+      "city": "Riyadh",
+      "vibe": "city",
+      "cuisine": "Traditional Najdi",
+      "rating": 4.7,
+      "operating_hours": {
+        "open": "12:00",
+        "close": "00:00"
+      },
+      "tables": {
+        "total": 30,
+        "reserved": 25
+      },
+      "menu": [
+        {
+          "name": "Kabsa (Chicken)",
+          "price_sar": 55,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Kabsa (Lamb)",
+          "price_sar": 75,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Samboosa Platter",
+          "price_sar": 25,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Harees",
+          "price_sar": 45,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Luqaimat",
+          "price_sar": 20,
+          "category": "dessert",
+          "is_signature": true,
+          "allergens": [
+            "gluten",
+            "dairy"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Saudi Champagne",
+          "price_sar": 15,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 24.70637622427695,
+      "lng": 46.6667201426278
+    },
+    {
+      "id": "rst_riyadh_steakhouse",
+      "name": "The Butcher's Table",
+      "city": "Riyadh",
+      "vibe": "city",
+      "cuisine": "Steakhouse",
+      "rating": 4.6,
+      "operating_hours": {
+        "open": "17:00",
+        "close": "01:00"
+      },
+      "tables": {
+        "total": 20,
+        "reserved": 14
+      },
+      "menu": [
+        {
+          "name": "Wagyu Ribeye 300g",
+          "price_sar": 280,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Angus Tenderloin",
+          "price_sar": 180,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Truffle Fries",
+          "price_sar": 45,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": [
+            "vegan"
+          ]
+        },
+        {
+          "name": "Lobster Bisque",
+          "price_sar": 55,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "shellfish",
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "NY Cheesecake",
+          "price_sar": 40,
+          "category": "dessert",
+          "is_signature": false,
+          "allergens": [
+            "dairy",
+            "gluten",
+            "eggs"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Fresh Lemon Mint",
+          "price_sar": 18,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 24.688423451038926,
+      "lng": 46.720925113190404
+    },
+    {
+      "id": "rst_riyadh_italian",
+      "name": "Via Roma",
+      "city": "Riyadh",
+      "vibe": "city",
+      "cuisine": "Italian",
+      "rating": 4.3,
+      "operating_hours": {
+        "open": "12:00",
+        "close": "23:30"
+      },
+      "tables": {
+        "total": 24,
+        "reserved": 8
+      },
+      "menu": [
+        {
+          "name": "Margherita Pizza",
+          "price_sar": 50,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [
+            "gluten",
+            "dairy"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Truffle Mushroom Pasta",
+          "price_sar": 75,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "gluten",
+            "dairy"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Bruschetta",
+          "price_sar": 30,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": [
+            "vegan"
+          ]
+        },
+        {
+          "name": "Caprese Salad",
+          "price_sar": 35,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Tiramisu",
+          "price_sar": 38,
+          "category": "dessert",
+          "is_signature": true,
+          "allergens": [
+            "dairy",
+            "gluten",
+            "eggs"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Espresso",
+          "price_sar": 15,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [],
+          "dietary": [
+            "vegan",
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 24.736932938449716,
+      "lng": 46.695742410777875
+    },
+    {
+      "id": "rst_riyadh_indian",
+      "name": "Spice Route",
+      "city": "Riyadh",
+      "vibe": "city",
+      "cuisine": "Indian",
+      "rating": 4.4,
+      "operating_hours": {
+        "open": "11:30",
+        "close": "23:00"
+      },
+      "tables": {
+        "total": 22,
+        "reserved": 9
+      },
+      "menu": [
+        {
+          "name": "Butter Chicken",
+          "price_sar": 55,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Lamb Biryani",
+          "price_sar": 65,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Garlic Naan",
+          "price_sar": 10,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "gluten",
+            "dairy"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Paneer Tikka",
+          "price_sar": 40,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Gulab Jamun",
+          "price_sar": 25,
+          "category": "dessert",
+          "is_signature": false,
+          "allergens": [
+            "dairy",
+            "gluten"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Mango Lassi",
+          "price_sar": 18,
+          "category": "beverage",
+          "is_signature": false,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 24.739730066524718,
+      "lng": 46.695954075366835
+    },
+    {
+      "id": "rst_dammam_gulf",
+      "name": "Gulf Pearl Restaurant",
+      "city": "Dammam",
+      "vibe": "city",
+      "cuisine": "Gulf Cuisine",
+      "rating": 4.5,
+      "operating_hours": {
+        "open": "11:00",
+        "close": "23:00"
+      },
+      "tables": {
+        "total": 18,
+        "reserved": 6
+      },
+      "menu": [
+        {
+          "name": "Machboos (Shrimp)",
+          "price_sar": 70,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "shellfish"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        },
+        {
+          "name": "Margoog",
+          "price_sar": 50,
+          "category": "main",
+          "is_signature": true,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Balaleet",
+          "price_sar": 30,
+          "category": "main",
+          "is_signature": false,
+          "allergens": [
+            "gluten",
+            "dairy",
+            "eggs"
+          ],
+          "dietary": []
+        },
+        {
+          "name": "Regag Bread",
+          "price_sar": 15,
+          "category": "starter",
+          "is_signature": false,
+          "allergens": [
+            "gluten"
+          ],
+          "dietary": [
+            "vegan"
+          ]
+        },
+        {
+          "name": "Karak Tea",
+          "price_sar": 8,
+          "category": "beverage",
+          "is_signature": true,
+          "allergens": [
+            "dairy"
+          ],
+          "dietary": [
+            "gluten_free"
+          ]
+        }
+      ],
+      "lat": 26.410285676889487,
+      "lng": 50.05189610166576
+    }
+  ]
+}

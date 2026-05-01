@@ -177,7 +177,19 @@ function renderCalendar(tripStartDay, tripDays) {
         if (tripDays > 0) {
             const tripEnd = startDay + tripDays - 1;
             if (d >= startDay && d <= tripEnd) {
+                const relativeDay = d - startDay + 1;
                 cell.classList.add('trip-day');
+                cell.style.cursor = 'pointer';
+                cell.title = `Scroll to Day ${relativeDay}`;
+                cell.onclick = () => {
+                    const targetCard = document.getElementById(`day-card-${relativeDay}`);
+                    if (targetCard) {
+                        targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Add temporary highlight effect
+                        targetCard.style.boxShadow = '0 0 20px var(--accent)';
+                        setTimeout(() => targetCard.style.boxShadow = '', 1000);
+                    }
+                };
                 if (d === startDay) cell.classList.add('trip-start');
                 if (d === tripEnd) cell.classList.add('trip-end');
             }
@@ -226,31 +238,69 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
         `);
     markers.push(originMarker);
 
-    // Hotel marker
-    const hotel = data.activities.hotel;
-    if (hotel && hotel.lat && hotel.lng) {
-        const hLatLng = [hotel.lat, hotel.lng];
-        waypoints.push(hLatLng);
-        const hotelMarker = L.marker(hLatLng, { icon: createIcon('🏨') })
-            .addTo(map)
-            .bindPopup(`
-                <div class="popup-title">${hotel.name}</div>
-                <div class="popup-detail">Recommended Hotel</div>
-            `);
-        markers.push(hotelMarker);
-    } else {
-        waypoints.push(dLatLng);
-        // Destination marker fallback
-        const destEmoji = { coast: '🏖️', mountains: '⛰️', desert: '🏜️', city: '🏙️' };
-        const emoji = destEmoji[state.destination] || '📌';
-        const destMarker = L.marker(dLatLng, { icon: createIcon(emoji) })
-            .addTo(map)
-            .bindPopup(`
-                <div class="popup-title">${destName}</div>
-                <div class="popup-detail">${data.activities.vibe}</div>
-                <div class="popup-detail">${fmt(data.transport.distance_km)} km from ${originName}</div>
-            `);
-        markers.push(destMarker);
+    // Hospitality markers (Hotels & Restaurants from Agent 2)
+    let addedHospitality = false;
+    if (data.hospitality) {
+        if (data.hospitality.hotels && data.hospitality.hotels.length > 0) {
+            data.hospitality.hotels.forEach(h => {
+                if (h.lat && h.lng) {
+                    const hLatLng = [h.lat, h.lng];
+                    waypoints.push(hLatLng);
+                    const hotelMarker = L.marker(hLatLng, { icon: createIcon('🏨') })
+                        .addTo(map)
+                        .bindPopup(`
+                            <div class="popup-title">${h.name}</div>
+                            <div class="popup-detail">${h.stars}★ Hotel</div>
+                            <div class="popup-detail" style="color:var(--accent);">~${h.best_deal ? h.best_deal.final_price_sar : 0} SAR/night</div>
+                        `);
+                    markers.push(hotelMarker);
+                    addedHospitality = true;
+                }
+            });
+        }
+        if (data.hospitality.restaurants && data.hospitality.restaurants.length > 0) {
+            data.hospitality.restaurants.forEach(r => {
+                if (r.lat && r.lng) {
+                    const rLatLng = [r.lat, r.lng];
+                    const rMarker = L.marker(rLatLng, { icon: createIcon('🍽️') })
+                        .addTo(map)
+                        .bindPopup(`
+                            <div class="popup-title">${r.name}</div>
+                            <div class="popup-detail">${r.cuisine} | ★${r.rating}</div>
+                        `);
+                    markers.push(rMarker);
+                }
+            });
+        }
+    }
+
+    // Fallbacks if no hospitality data
+    if (!addedHospitality) {
+        const hotel = data.activities.hotel;
+        if (hotel && hotel.lat && hotel.lng) {
+            const hLatLng = [hotel.lat, hotel.lng];
+            waypoints.push(hLatLng);
+            const hotelMarker = L.marker(hLatLng, { icon: createIcon('🏨') })
+                .addTo(map)
+                .bindPopup(`
+                    <div class="popup-title">${hotel.name}</div>
+                    <div class="popup-detail">Recommended Hotel</div>
+                `);
+            markers.push(hotelMarker);
+        } else {
+            waypoints.push(dLatLng);
+            // Destination marker fallback
+            const destEmoji = { coast: '🏖️', mountains: '⛰️', desert: '🏜️', city: '🏙️' };
+            const emoji = destEmoji[state.destination] || '📌';
+            const destMarker = L.marker(dLatLng, { icon: createIcon(emoji) })
+                .addTo(map)
+                .bindPopup(`
+                    <div class="popup-title">${destName}</div>
+                    <div class="popup-detail">${data.activities.vibe}</div>
+                    <div class="popup-detail">${fmt(data.transport.distance_km)} km from ${originName}</div>
+                `);
+            markers.push(destMarker);
+        }
     }
 
     // Activity markers
@@ -298,10 +348,10 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
 
     // Route line connecting everything
     routeLine = L.polyline(waypoints, {
-        color: '#eab308',
-        weight: 3,
-        opacity: 0.7,
-        dashArray: '10, 8',
+        color: '#8b5cf6',
+        weight: 4,
+        opacity: 0.8,
+        dashArray: '10, 10',
     }).addTo(map);
 
     // Fit bounds to all waypoints
@@ -360,12 +410,27 @@ function renderItinerary(data) {
 
         const card = document.createElement('div');
         card.className = 'day-card';
+        card.id = `day-card-${d}`;
         card.style.animationDelay = `${d * 0.08}s`;
 
-        let activitiesHtml = schedule.map(s => {
+        let activitiesHtml = schedule.map((s, index) => {
             const buzzTag = (s.isTrending && s.socialBuzz) ? `<div class="social-buzz-tag">📱 ${s.socialBuzz}</div>` : '';
             const deleteBtn = (s.isEvent || s.isTrending) ? `<button type="button" class="delete-btn" onclick="deleteEvent('${s.dayNum}', '${s.id}', ${s.cost})" title="Remove">🗑️</button>` : '';
+            
+            let legHtml = '';
+            if (data.timeline && data.timeline[String(d)] && data.timeline[String(d)].legs) {
+                const legs = data.timeline[String(d)].legs;
+                if (index < legs.length) {
+                    const leg = legs[index];
+                    legHtml = `
+                    <div class="transit-leg" style="margin-left: 20px; padding: 5px 10px; border-left: 2px dashed rgba(255,255,255,0.2); font-size: 1.1em; color: #a1a1aa;">
+                        <span>${leg.mode}</span> | <span>${leg.dist.toFixed(1)} km</span> | <span>Cost: ${leg.cost.toFixed(0)} ${currency}</span>
+                    </div>`;
+                }
+            }
+
             return `
+            ${legHtml}
             <div class="activity-item ${s.isTrending ? 'trending-item' : ''} ${s.isEvent ? 'event-item' : ''}" style="align-items:flex-start;">
                 <span class="activity-time">${s.time}</span>
                 <span class="activity-icon">${s.icon}</span>
@@ -377,9 +442,31 @@ function renderItinerary(data) {
             </div>
             `;
         }).join('');
+        
+        // Add return to hotel leg if it exists
+        if (data.timeline && data.timeline[String(d)] && data.timeline[String(d)].legs) {
+            const legs = data.timeline[String(d)].legs;
+            if (schedule.length < legs.length) {
+                const leg = legs[legs.length - 1];
+                activitiesHtml += `
+                <div class="transit-leg" style="margin-left: 20px; padding: 5px 10px; border-left: 2px dashed rgba(255,255,255,0.2); font-size: 1.1em; color: #a1a1aa;">
+                    <span>${leg.mode}</span> | <span>${leg.dist.toFixed(1)} km</span> | <span>Cost: ${leg.cost.toFixed(0)} ${currency}</span>
+                </div>`;
+            }
+        }
+        
+        let recommendationHtml = '';
+        if (data.timeline && data.timeline[String(d)] && data.timeline[String(d)].recommendation) {
+            recommendationHtml = `
+                <div style="margin-top: 10px; padding: 12px; background: rgba(59, 130, 246, 0.1); border-left: 3px solid #3b82f6; font-size: 1.1em; border-radius: 4px; line-height: 1.5;">
+                    ${data.timeline[String(d)].recommendation}
+                </div>
+            `;
+        }
 
         // Add lodging and food info
         activitiesHtml += `
+            ${recommendationHtml}
             <div class="activity-item" style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05)">
                 <span class="activity-time"></span>
                 <span class="activity-icon">🏨</span>
@@ -525,6 +612,9 @@ async function planTrip() {
         // Render warnings
         renderWarnings(data);
 
+        // Render hospitality deals
+        renderHospitalityDeals(data);
+
         // Render web research
         renderWebResearch(data);
 
@@ -537,6 +627,55 @@ async function planTrip() {
     } finally {
         loadingOverlay.classList.add('hidden');
     }
+}
+
+// ─── Render Hospitality Deals ────────────────────────────────────────────────
+function renderHospitalityDeals(data) {
+    const container = $('hospitality-deals-panel');
+    const content = $('hospitality-deals-content');
+    if (!container || !content) return;
+
+    if (!data.hospitality || (!data.hospitality.hotels.length && !data.hospitality.restaurants.length)) {
+        container.classList.add('hidden');
+        return;
+    }
+
+    container.classList.remove('hidden');
+    let html = '';
+
+    if (data.hospitality.hotels && data.hospitality.hotels.length > 0) {
+        html += `<div style="margin-bottom: 10px;"><strong>🏨 Hotels</strong></div>`;
+        data.hospitality.hotels.slice(0, 3).forEach(h => {
+            const bd = h.best_deal;
+            html += `
+                <div style="margin-bottom: 8px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px;">
+                    <div><strong>${h.name}</strong> (${h.stars}★)</div>
+                    <div style="display:flex; justify-content:space-between; margin-top:4px;">
+                        <span style="text-decoration: line-through; opacity: 0.6;">${bd.base_price_sar} SAR</span>
+                        <span style="color: #4ade80; font-weight:bold;">${bd.final_price_sar} SAR</span>
+                        <span style="color: var(--accent);">-${bd.discount_percent}% OFF</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    if (data.hospitality.restaurants && data.hospitality.restaurants.length > 0) {
+        html += `<div style="margin-top: 15px; margin-bottom: 10px;"><strong>🍽️ Restaurants</strong></div>`;
+        data.hospitality.restaurants.slice(0, 3).forEach(r => {
+            html += `
+                <div style="margin-bottom: 8px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 4px;">
+                    <div><strong>${r.name}</strong></div>
+                    <div style="display:flex; justify-content:space-between; margin-top:4px; opacity:0.8;">
+                        <span>★ ${r.rating}</span>
+                        <span>Tables: ${r.available_tables}/${r.total_tables}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    content.innerHTML = html;
 }
 
 // ─── Render Web Research Panel ──────────────────────────────────────────────

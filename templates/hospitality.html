@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safari — Hotels &amp; Restaurants</title>
+    <meta name="description" content="Browse hotels and restaurants across Saudi Arabia with dynamic pricing and availability.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-card: #111827;
+            --bg-card-hover: #1a2332;
+            --bg-glass: rgba(17, 24, 39, 0.85);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-gold: #f59e0b;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --border: rgba(148, 163, 184, 0.1);
+            --gradient-coast: linear-gradient(135deg, #0ea5e9, #06b6d4);
+            --gradient-mountain: linear-gradient(135deg, #10b981, #059669);
+            --gradient-desert: linear-gradient(135deg, #f59e0b, #d97706);
+            --gradient-city: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.4);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        /* ─── Top Nav ─── */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 32px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .logo span { background: linear-gradient(135deg, var(--accent-gold), var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-links { display: flex; gap: 8px; }
+        .nav-links a {
+            padding: 8px 18px; border-radius: 8px; text-decoration: none;
+            color: var(--text-secondary); font-weight: 500; font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active { background: rgba(245,158,11,0.15); color: var(--accent-gold); }
+
+        /* ─── Filter Bar ─── */
+        .filter-bar {
+            display: flex; gap: 12px; padding: 20px 32px; flex-wrap: wrap; align-items: center;
+            background: rgba(17,24,39,0.6); border-bottom: 1px solid var(--border);
+        }
+        .filter-bar select, .filter-bar input {
+            padding: 10px 16px; border-radius: var(--radius-sm);
+            border: 1px solid var(--border); background: var(--bg-card);
+            color: var(--text-primary); font-family: inherit; font-size: 0.9rem;
+            outline: none; transition: border 0.2s;
+        }
+        .filter-bar select:focus, .filter-bar input:focus { border-color: var(--accent-gold); }
+        .filter-bar label { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .filter-group { display: flex; flex-direction: column; gap: 4px; }
+
+        /* ─── Tab Switcher ─── */
+        .tabs {
+            display: flex; gap: 4px; padding: 0 32px; padding-top: 20px;
+        }
+        .tab-btn {
+            padding: 12px 28px; border: none; border-radius: 12px 12px 0 0;
+            font-family: inherit; font-weight: 600; font-size: 1rem; cursor: pointer;
+            background: var(--bg-card); color: var(--text-muted); transition: all 0.3s;
+        }
+        .tab-btn.active { background: var(--bg-card-hover); color: var(--accent-gold); box-shadow: inset 0 2px 0 var(--accent-gold); }
+        .tab-btn:hover:not(.active) { color: var(--text-secondary); }
+
+        /* ─── Content Area ─── */
+        .content { padding: 24px 32px; }
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        /* ─── Hotel Card ─── */
+        .card {
+            background: var(--bg-card); border-radius: var(--radius);
+            border: 1px solid var(--border); overflow: hidden;
+            transition: all 0.3s; position: relative;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: rgba(245,158,11,0.3); }
+        .card-header {
+            padding: 20px 20px 12px; display: flex; justify-content: space-between; align-items: flex-start;
+        }
+        .card-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+        .card-city { color: var(--text-muted); font-size: 0.85rem; display: flex; align-items: center; gap: 4px; }
+        .stars { color: var(--accent-gold); font-size: 0.85rem; letter-spacing: 1px; }
+        .vibe-badge {
+            padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px; color: #fff;
+        }
+        .vibe-coast { background: var(--gradient-coast); }
+        .vibe-mountains { background: var(--gradient-mountain); }
+        .vibe-desert { background: var(--gradient-desert); }
+        .vibe-city { background: var(--gradient-city); }
+        .card-body { padding: 0 20px 16px; }
+        .card-desc { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; margin-bottom: 14px; }
+
+        /* Room rows */
+        .room-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px; border-radius: 8px; margin-bottom: 6px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+        }
+        .room-type { font-weight: 600; font-size: 0.9rem; }
+        .room-avail { font-size: 0.8rem; }
+        .room-avail.available { color: var(--accent-green); }
+        .room-avail.full { color: var(--accent-red); }
+        .room-price { text-align: right; }
+        .price-original { text-decoration: line-through; color: var(--text-muted); font-size: 0.75rem; }
+        .price-final { font-weight: 700; color: var(--accent-green); font-size: 1rem; }
+        .discount-tag {
+            display: inline-block; padding: 2px 8px; border-radius: 6px;
+            background: rgba(16,185,129,0.15); color: var(--accent-green);
+            font-size: 0.7rem; font-weight: 700; margin-left: 6px;
+        }
+
+        /* Status badge */
+        .status-badge {
+            position: absolute; top: 12px; right: 12px;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+        }
+        .status-available { background: rgba(16,185,129,0.15); color: var(--accent-green); }
+        .status-full { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+
+        /* ─── Restaurant Card extras ─── */
+        .cuisine-tag { color: var(--accent-cyan); font-size: 0.8rem; font-weight: 600; }
+        .rating { color: var(--accent-gold); font-weight: 700; }
+        .hours { color: var(--text-muted); font-size: 0.8rem; }
+        .tables-info { display: flex; gap: 12px; margin: 10px 0; font-size: 0.85rem; }
+        .tables-info span { display: flex; align-items: center; gap: 4px; }
+
+        .menu-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px; border-radius: 8px; margin-bottom: 4px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        .menu-item.unsafe { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
+        .menu-name { font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .signature-star { color: var(--accent-gold); }
+        .allergen-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+        .allergen-tag {
+            padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 600;
+            background: rgba(239,68,68,0.1); color: var(--accent-red);
+        }
+        .allergen-tag.safe { background: rgba(16,185,129,0.1); color: var(--accent-green); }
+        .dietary-tag {
+            padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; font-weight: 600;
+            background: rgba(59,130,246,0.1); color: var(--accent-blue);
+        }
+
+        /* ─── Stats Bar ─── */
+        .stats-bar {
+            display: flex; gap: 20px; padding: 16px 32px; flex-wrap: wrap;
+        }
+        .stat-card {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm);
+            padding: 14px 20px; min-width: 160px; flex: 1;
+        }
+        .stat-value { font-size: 1.8rem; font-weight: 800; }
+        .stat-label { color: var(--text-muted); font-size: 0.8rem; margin-top: 2px; }
+
+        /* ─── Loading ─── */
+        .loading { text-align: center; padding: 60px; color: var(--text-muted); }
+        .spinner {
+            width: 36px; height: 36px; border: 3px solid var(--border);
+            border-top-color: var(--accent-gold); border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-state { text-align: center; padding: 60px; color: var(--text-muted); font-size: 1.1rem; }
+
+        /* ─── Amenity pills ─── */
+        .amenities { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+        .amenity-pill {
+            padding: 3px 10px; border-radius: 20px; font-size: 0.7rem;
+            background: rgba(59,130,246,0.1); color: var(--accent-blue);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <div class="top-bar">
+        <div class="logo">🧭 <span>Safari</span></div>
+        <div class="nav-links">
+            <a href="/">Trip Planner</a>
+            <a href="/hospitality" class="active">Hotels & Restaurants</a>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div class="filter-group">
+            <label>Destination Vibe</label>
+            <select id="filterVibe">
+                <option value="">All Vibes</option>
+                <option value="coast">🏖️ Coast</option>
+                <option value="mountains">⛰️ Mountains</option>
+                <option value="desert">🏜️ Desert</option>
+                <option value="city">🏙️ City</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>City</label>
+            <select id="filterCity">
+                <option value="">All Cities</option>
+            </select>
+        </div>
+        <div class="filter-group" id="allergenGroup" style="display:none;">
+            <label>Avoid Allergens</label>
+            <input type="text" id="filterAllergens" placeholder="e.g. gluten, dairy, nuts" style="width: 220px;">
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-bar" id="statsBar"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" id="tabHotels" onclick="switchTab('hotels')">🏨 Hotels</button>
+        <button class="tab-btn" id="tabRestaurants" onclick="switchTab('restaurants')">🍽️ Restaurants</button>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+        <div id="hotelGrid" class="grid"></div>
+        <div id="restaurantGrid" class="grid" style="display:none;"></div>
+    </div>
+
+    <script>
+        let currentTab = 'hotels';
+        let allHotels = [];
+        let allRestaurants = [];
+
+        const CITIES = {
+            coast: ['Jeddah', 'Yanbu', 'Umluj'],
+            mountains: ['Abha', 'Taif', 'Al Baha'],
+            desert: ['Al-Ula'],
+            city: ['Riyadh', 'Dammam'],
+        };
+
+        // ─── Tab Switching ───
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabHotels').classList.toggle('active', tab === 'hotels');
+            document.getElementById('tabRestaurants').classList.toggle('active', tab === 'restaurants');
+            document.getElementById('hotelGrid').style.display = tab === 'hotels' ? 'grid' : 'none';
+            document.getElementById('restaurantGrid').style.display = tab === 'restaurants' ? 'grid' : 'none';
+            document.getElementById('allergenGroup').style.display = tab === 'restaurants' ? 'flex' : 'none';
+            updateStats();
+        }
+
+        // ─── City dropdown ───
+        function updateCityDropdown() {
+            const vibe = document.getElementById('filterVibe').value;
+            const citySelect = document.getElementById('filterCity');
+            citySelect.innerHTML = '<option value="">All Cities</option>';
+            const cities = vibe ? (CITIES[vibe] || []) : Object.values(CITIES).flat();
+            cities.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c; opt.textContent = c;
+                citySelect.appendChild(opt);
+            });
+        }
+
+        // ─── Fetch Data ───
+        async function fetchHotels() {
+            const vibe = document.getElementById('filterVibe').value;
+            const city = document.getElementById('filterCity').value;
+            let url = '/api/hotels?';
+            if (vibe) url += `vibe=${vibe}&`;
+            if (city) url += `city=${city}&`;
+            const res = await fetch(url);
+            const data = await res.json();
+            allHotels = data.hotels || [];
+            renderHotels();
+            updateStats();
+        }
+
+        async function fetchRestaurants() {
+            const vibe = document.getElementById('filterVibe').value;
+            const city = document.getElementById('filterCity').value;
+            const allergens = document.getElementById('filterAllergens').value;
+            let url = '/api/restaurants?';
+            if (vibe) url += `vibe=${vibe}&`;
+            if (city) url += `city=${city}&`;
+            if (allergens) url += `allergens=${allergens}&`;
+            const res = await fetch(url);
+            const data = await res.json();
+            allRestaurants = data.restaurants || [];
+            renderRestaurants();
+            updateStats();
+        }
+
+        // ─── Render Hotels ───
+        function renderHotels() {
+            const grid = document.getElementById('hotelGrid');
+            if (!allHotels.length) {
+                grid.innerHTML = '<div class="empty-state">No hotels found for this filter.</div>';
+                return;
+            }
+            grid.innerHTML = allHotels.map(h => {
+                const statusClass = h.has_availability ? 'status-available' : 'status-full';
+                const statusText = h.has_availability ? 'Available' : 'Fully Booked';
+                const stars = '★'.repeat(h.stars) + '☆'.repeat(5 - h.stars);
+                const roomsHtml = h.rooms.map(r => {
+                    const availClass = r.available > 0 ? 'available' : 'full';
+                    const availText = r.available > 0 ? `${r.available} left` : 'FULL';
+                    const priceHtml = r.discount_percent > 0
+                        ? `<span class="price-original">${r.base_price_sar} SAR</span>
+                           <span class="price-final">${Math.round(r.final_price_sar)} SAR</span>
+                           <span class="discount-tag">-${r.discount_percent}%</span>`
+                        : `<span class="price-final" style="color:var(--text-primary)">${r.base_price_sar} SAR</span>`;
+                    return `<div class="room-row">
+                        <div>
+                            <div class="room-type">${r.room_type}</div>
+                            <div class="room-avail ${availClass}">${availText} of ${r.total_rooms}</div>
+                        </div>
+                        <div class="room-price">${priceHtml}</div>
+                    </div>`;
+                }).join('');
+                const amenitiesHtml = h.amenities.slice(0, 6).map(a =>
+                    `<span class="amenity-pill">${a.replace(/_/g, ' ')}</span>`
+                ).join('');
+                return `<div class="card">
+                    <div class="status-badge ${statusClass}">${statusText}</div>
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">${h.name}</div>
+                            <div class="card-city">📍 ${h.city}</div>
+                            <div class="stars">${stars}</div>
+                        </div>
+                        <span class="vibe-badge vibe-${h.vibe}">${h.vibe}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-desc">${h.description}</div>
+                        ${roomsHtml}
+                        <div class="amenities">${amenitiesHtml}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ─── Render Restaurants ───
+        function renderRestaurants() {
+            const grid = document.getElementById('restaurantGrid');
+            if (!allRestaurants.length) {
+                grid.innerHTML = '<div class="empty-state">No restaurants found for this filter.</div>';
+                return;
+            }
+            grid.innerHTML = allRestaurants.map(r => {
+                const discountHtml = r.discount_percent > 0
+                    ? `<span class="discount-tag" style="font-size:0.8rem">🔥 ${r.discount_percent}% OFF</span>` : '';
+                const menuHtml = r.menu.map(m => {
+                    const unsafeClass = !m.is_safe ? 'unsafe' : '';
+                    const sigStar = m.is_signature ? '<span class="signature-star">⭐</span>' : '';
+                    const allergenHtml = m.allergens.length
+                        ? m.allergens.map(a => {
+                            const cls = m.flagged_allergens.includes(a) ? '' : 'safe';
+                            return `<span class="allergen-tag ${cls}">${a}</span>`;
+                        }).join('') : '';
+                    const dietaryHtml = m.dietary.map(d =>
+                        `<span class="dietary-tag">${d.replace(/_/g,' ')}</span>`
+                    ).join('');
+                    const warnIcon = !m.is_safe ? '⚠️ ' : '';
+                    return `<div class="menu-item ${unsafeClass}">
+                        <div>
+                            <div class="menu-name">${warnIcon}${sigStar} ${m.name}</div>
+                            <div class="allergen-tags">${allergenHtml}${dietaryHtml}</div>
+                        </div>
+                        <div class="price-final" style="color:var(--text-primary);font-size:0.9rem">${m.price_sar} SAR</div>
+                    </div>`;
+                }).join('');
+                return `<div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">${r.name} ${discountHtml}</div>
+                            <div class="card-city">📍 ${r.city}</div>
+                            <div style="display:flex;gap:12px;margin-top:4px;">
+                                <span class="cuisine-tag">${r.cuisine}</span>
+                                <span class="rating">★ ${r.rating}</span>
+                                <span class="hours">${r.operating_hours.open} – ${r.operating_hours.close}</span>
+                            </div>
+                        </div>
+                        <span class="vibe-badge vibe-${r.vibe}">${r.vibe}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="tables-info">
+                            <span style="color:var(--accent-green)">🪑 ${r.available_tables} tables free</span>
+                            <span style="color:var(--text-muted)">${r.reserved_tables}/${r.total_tables} reserved</span>
+                        </div>
+                        <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:8px;font-weight:600;">
+                            ⭐ Signature: ${r.top_dishes.join(', ') || 'None'}
+                        </div>
+                        ${menuHtml}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ─── Stats ───
+        function updateStats() {
+            const bar = document.getElementById('statsBar');
+            if (currentTab === 'hotels') {
+                const total = allHotels.length;
+                const avail = allHotels.filter(h => h.has_availability).length;
+                const full = total - avail;
+                const totalRooms = allHotels.reduce((s, h) => s + h.rooms.reduce((rs, r) => rs + r.available, 0), 0);
+                bar.innerHTML = `
+                    <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">Hotels Found</div></div>
+                    <div class="stat-card"><div class="stat-value" style="color:var(--accent-green)">${avail}</div><div class="stat-label">With Availability</div></div>
+                    <div class="stat-card"><div class="stat-value" style="color:var(--accent-red)">${full}</div><div class="stat-label">Fully Booked</div></div>
+                    <div class="stat-card"><div class="stat-value" style="color:var(--accent-cyan)">${totalRooms}</div><div class="stat-label">Total Rooms Available</div></div>
+                `;
+            } else {
+                const total = allRestaurants.length;
+                const totalTables = allRestaurants.reduce((s, r) => s + r.available_tables, 0);
+                const withDiscount = allRestaurants.filter(r => r.discount_percent > 0).length;
+                bar.innerHTML = `
+                    <div class="stat-card"><div class="stat-value">${total}</div><div class="stat-label">Restaurants Found</div></div>
+                    <div class="stat-card"><div class="stat-value" style="color:var(--accent-cyan)">${totalTables}</div><div class="stat-label">Tables Available</div></div>
+                    <div class="stat-card"><div class="stat-value" style="color:var(--accent-green)">${withDiscount}</div><div class="stat-label">Offering Discounts</div></div>
+                `;
+            }
+        }
+
+        // ─── Event Listeners ───
+        document.getElementById('filterVibe').addEventListener('change', () => {
+            updateCityDropdown();
+            fetchHotels();
+            fetchRestaurants();
+        });
+        document.getElementById('filterCity').addEventListener('change', () => {
+            fetchHotels();
+            fetchRestaurants();
+        });
+        document.getElementById('filterAllergens').addEventListener('input', debounce(() => {
+            fetchRestaurants();
+        }, 500));
+
+        function debounce(fn, ms) {
+            let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+        }
+
+        // ─── Init ───
+        updateCityDropdown();
+        fetchHotels();
+        fetchRestaurants();
+    </script>
+</body>
+</html>

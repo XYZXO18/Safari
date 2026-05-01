@@ -23,6 +23,17 @@ from typing import List, Optional
 from google import genai
 from google.genai import types
 
+def get_ddg_results(query: str, max_results: int = 5) -> str:
+    """Fetch search results from DuckDuckGo."""
+    try:
+        from duckduckgo_search import DDGS
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=max_results))
+            return "\n".join([f"Source: {r.get('title', '')} - {r.get('body', '')}" for r in results])
+    except Exception as e:
+        print(f"DDG Search failed: {e}")
+        return ""
+
 
 # ─── Data Structures ─────────────────────────────────────────────────────────
 
@@ -210,12 +221,15 @@ def _search_social_media(city: str, interests: str = "") -> List[SocialMediaPost
             f'"likes": 0, "posted_date": "approximate date"}}'
             f"\nIf no relevant posts are found, return an empty array: []"
         )
-
         if USE_LOCAL_AI:
             import requests
+            search_query = f"recent social media posts travel tips hidden gems {city} Saudi Arabia"
+            search_context = get_ddg_results(search_query, max_results=8)
+            prompt_with_context = f"Based on these live web search results:\n{search_context}\n\n{prompt}"
+            
             payload = {
                 "model": OLLAMA_MODEL,
-                "prompt": prompt,
+                "prompt": prompt_with_context,
                 "stream": False,
                 "format": "json",
                 "options": {"temperature": 0.3}
@@ -234,7 +248,11 @@ def _search_social_media(city: str, interests: str = "") -> List[SocialMediaPost
                 ),
             )
             text = response.text.strip()
-        text = text.replace("```json", "").replace("```", "").strip()
+        text = text.strip()
+        start_idx = text.find('[')
+        end_idx = text.rfind(']')
+        if start_idx != -1 and end_idx != -1:
+            text = text[start_idx:end_idx+1]
         data = json.loads(text)
 
         if isinstance(data, dict):
@@ -280,6 +298,11 @@ def _search_trending_spots(city: str, interests: str = "") -> List[TrendingSpot]
 
         interests_str = f" The traveler is especially interested in: {interests}." if interests else ""
 
+        from config import CITY_COORDS
+        city_coords = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+        lat_ex = city_coords["lat"]
+        lng_ex = city_coords["lng"]
+
         prompt = (
             f"Search the web for the most trending and highly-rated restaurants, cafés, "
             f"attractions, nightlife spots, and unique experiences in {city}, Saudi Arabia "
@@ -292,17 +315,21 @@ def _search_trending_spots(city: str, interests: str = "") -> List[TrendingSpot]
             f'"description": "what makes it special (1-2 sentences)", '
             f'"price_range": "$|$$|$$$|$$$$", "estimated_cost_sar": 80, '
             f'"rating": 4.5, "source": "where found", '
-            f'"lat": 24.7, "lng": 46.7, '
+            f'"lat": {lat_ex}, "lng": {lng_ex}, '
             f'"social_buzz": "why it is trending right now", '
             f'"tags": ["tag1", "tag2"]}}'
+            f"\nIMPORTANT: Provide accurate lat/lng coordinates for {city}. Do not just copy the example coordinates."
             f"\nIf no spots are found, return an empty array: []"
         )
-
         if USE_LOCAL_AI:
             import requests
+            search_query = f"trending restaurants attractions nightlife {city} Saudi Arabia {interests}"
+            search_context = get_ddg_results(search_query, max_results=8)
+            prompt_with_context = f"Based on these live web search results:\n{search_context}\n\n{prompt}"
+            
             payload = {
                 "model": OLLAMA_MODEL,
-                "prompt": prompt,
+                "prompt": prompt_with_context,
                 "stream": False,
                 "format": "json",
                 "options": {"temperature": 0.3}
@@ -321,7 +348,11 @@ def _search_trending_spots(city: str, interests: str = "") -> List[TrendingSpot]
                 ),
             )
             text = response.text.strip()
-        text = text.replace("```json", "").replace("```", "").strip()
+        text = text.strip()
+        start_idx = text.find('[')
+        end_idx = text.rfind(']')
+        if start_idx != -1 and end_idx != -1:
+            text = text[start_idx:end_idx+1]
         data = json.loads(text)
 
         if isinstance(data, dict):
@@ -383,12 +414,15 @@ def _search_local_insights(city: str) -> tuple[List[LocalInsight], str]:
             f'"category": "money_saving|safety|culture|weather|transport", '
             f'"source": "where found", "confidence": "high|medium|low"}}]}}'
         )
-
         if USE_LOCAL_AI:
             import requests
+            search_query = f"current weather safety money saving travel tips transport {city} Saudi Arabia"
+            search_context = get_ddg_results(search_query, max_results=8)
+            prompt_with_context = f"Based on these live web search results:\n{search_context}\n\n{prompt}"
+            
             payload = {
                 "model": OLLAMA_MODEL,
-                "prompt": prompt,
+                "prompt": prompt_with_context,
                 "stream": False,
                 "format": "json",
                 "options": {"temperature": 0.3}
@@ -407,7 +441,11 @@ def _search_local_insights(city: str) -> tuple[List[LocalInsight], str]:
                 ),
             )
             text = response.text.strip()
-        text = text.replace("```json", "").replace("```", "").strip()
+        text = text.strip()
+        start_idx = text.find('{')
+        end_idx = text.rfind('}')
+        if start_idx != -1 and end_idx != -1:
+            text = text[start_idx:end_idx+1]
         data = json.loads(text)
 
         weather = data.get("weather_summary", "")

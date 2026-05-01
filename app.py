@@ -24,8 +24,11 @@ from safari.tools.budget import budget_allocator
 from safari.tools.activities import suggest_activities
 from safari.tools.event_scanner import find_live_events
 from safari.tools.web_research import research_destination
+from safari.agent.hospitality_agent import HospitalityAgent
+from safari.agent.orchestrator import AgentOrchestrator
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
+hospitality_agent = HospitalityAgent()
 
 
 @app.route("/")
@@ -195,6 +198,46 @@ def plan_trip():
         rec_city = activities.recommended_city.lower()
         rec_coords = CITY_COORDS.get(rec_city, dest_coords)
 
+        # Step 6d: Get Agent 2 (Hospitality) Data
+        orchestrator = AgentOrchestrator()
+        try:
+            hosp_res = orchestrator.send_to_agent("Agent 2 (Hospitality)", {
+                "action": "search_hotels",
+                "city": activities.recommended_city,
+                "budget_per_night": breakdown.lodging_per_day,
+                "guests": 2
+            })
+            hotels = hosp_res.get("hotels", [])
+            
+            rest_res = orchestrator.send_to_agent("Agent 2 (Hospitality)", {
+                "action": "search_restaurants",
+                "city": activities.recommended_city
+            })
+            restaurants = rest_res.get("restaurants", [])
+            hospitality_data = {"hotels": hotels, "restaurants": restaurants}
+            
+            # Use the best hotel from Agent 2 for Agent 3 routing
+            hotel_data = activities.hotel
+            if hotels:
+                best_hotel = hotels[0]
+                hotel_data = {"name": best_hotel.get("name"), "lat": best_hotel.get("lat"), "lng": best_hotel.get("lng")}
+
+            # Step 6e: Get Agent 3 (Transport) Timeline Data
+            timeline_req = {
+                "action": "plan_timeline",
+                "daily_activities": activities.daily_activities,
+                "hotel": hotel_data,
+                "travel_mode": travel_mode
+            }
+            timeline_res = orchestrator.send_to_agent("Agent 3 (Transport)", timeline_req)
+            timeline = timeline_res.get("timeline", {})
+            total_transit_cost = timeline_res.get("total_transit_cost", 0)
+        except Exception as e:
+            print(f"Agent Orchestrator failed: {e}")
+            hospitality_data = {"hotels": [], "restaurants": []}
+            timeline = {}
+            total_transit_cost = 0
+
         # Build response
         result = {
             "transport": {
@@ -237,6 +280,9 @@ def plan_trip():
                 "origin_name": origin.title(),
                 "dest_name": activities.recommended_city,
             },
+            "hospitality": hospitality_data,
+            "timeline": timeline,
+            "total_transit_cost": total_transit_cost,
         }
 
         return jsonify(result)
@@ -247,7 +293,78 @@ def plan_trip():
         return jsonify({"error": f"Planning failed: {str(e)}"}), 500
 
 
+@app.route("/hospitality")
+def hospitality_page():
+    """Serve the hospitality browser UI."""
+    return render_template("hospitality.html")
+
+
+@app.route("/api/hotels")
+def api_hotels():
+    """Search hotels. Query params: city, vibe, room_type."""
+    result = hospitality_agent.process_request({
+        "action": "search_hotels",
+        "city": request.args.get("city"),
+        "vibe": request.args.get("vibe"),
+        "room_type": request.args.get("room_type"),
+    })
+    return jsonify(result)
+
+
+@app.route("/api/hotels/<hotel_id>")
+def api_hotel_details(hotel_id):
+    """Get hotel details by ID."""
+    result = hospitality_agent.process_request({
+        "action": "hotel_details",
+        "hotel_id": hotel_id,
+    })
+    return jsonify(result)
+
+
+@app.route("/api/restaurants")
+def api_restaurants():
+    """Search restaurants. Query params: city, vibe, cuisine, allergens (comma-sep)."""
+    allergens_str = request.args.get("allergens", "")
+    allergens = [a.strip() for a in allergens_str.split(",") if a.strip()] if allergens_str else []
+    result = hospitality_agent.process_request({
+        "action": "search_restaurants",
+        "city": request.args.get("city"),
+        "vibe": request.args.get("vibe"),
+        "cuisine": request.args.get("cuisine"),
+        "allergens": allergens,
+    })
+    return jsonify(result)
+
+
+@app.route("/api/restaurants/<restaurant_id>/menu")
+def api_restaurant_menu(restaurant_id):
+    """Get restaurant menu with allergen checking."""
+    allergens_str = request.args.get("allergens", "")
+    allergens = [a.strip() for a in allergens_str.split(",") if a.strip()] if allergens_str else []
+    result = hospitality_agent.process_request({
+        "action": "restaurant_menu",
+        "restaurant_id": restaurant_id,
+        "allergens": allergens,
+    })
+    return jsonify(result)
+
+
+@app.route("/api/hospitality/summary")
+def api_hospitality_summary():
+    """Get combined hotels + restaurants summary for a destination."""
+    allergens_str = request.args.get("allergens", "")
+    allergens = [a.strip() for a in allergens_str.split(",") if a.strip()] if allergens_str else []
+    result = hospitality_agent.process_request({
+        "action": "hospitality_summary",
+        "city": request.args.get("city"),
+        "vibe": request.args.get("vibe"),
+        "allergens": allergens,
+    })
+    return jsonify(result)
+
+
 if __name__ == "__main__":
     print("\n🧭 Safari Web UI starting...")
-    print("   Open http://localhost:5000 in your browser\n")
+    print("   Open http://localhost:5000 in your browser")
+    print("   🏨 Hospitality: http://localhost:5000/hospitality\n")
     app.run(debug=True, port=5000)

@@ -1,17 +1,19 @@
 """
-Safari Agent Brain
-==================
+Safari Agent Brain (Agent 1 — Research & Planning)
+===================================================
 The main orchestration engine. Runs deterministic calculations first,
 then feeds verified numbers to the LLM for natural language generation.
 
-Workflow:
+Multi-Agent Workflow:
 1. Parse user input → TripRequest
 2. calculate_transport_costs() → TransportEstimate
-3. budget_allocator() → BudgetBreakdown
-4. find_live_events() → EventScanResult
-5. suggest_activities() → ActivityPlan (with events injected)
-6. LLM generates itinerary from verified data
-7. Format and return structured output
+3. Agent 1 → Agent 3 (Transport): Compare transport modes
+4. budget_allocator() → BudgetBreakdown
+5. Agent 1 → Agent 2 (Hospitality): Get hotels & restaurants
+6. find_live_events() → EventScanResult
+7. suggest_activities() → ActivityPlan (with events injected)
+8. LLM generates itinerary from ALL agents' verified data
+9. Format and return structured output
 """
 
 from __future__ import annotations
@@ -62,6 +64,10 @@ class SafariAgent:
         self.ollama_url = OLLAMA_URL
         self.ollama_model = OLLAMA_MODEL
 
+        # Initialize the multi-agent orchestrator
+        from safari.agent.orchestrator import AgentOrchestrator
+        self.orchestrator = AgentOrchestrator()
+
         if not self.use_local:
             key = api_key or GEMINI_API_KEY
             if not key:
@@ -83,16 +89,17 @@ class SafariAgent:
         """Print a styled step indicator."""
         console.print(f"  {emoji} [dim]{message}[/dim]")
 
-    def run_calculations(self, request: TripRequest) -> tuple[TransportEstimate, BudgetBreakdown, ActivityPlan, EventScanResult, WebResearchResult]:
+    def run_calculations(self, request: TripRequest) -> tuple:
         """
         Run all deterministic calculations for a trip request.
-        No LLM calls — pure math + event scanning + web research.
+        Now includes multi-agent communication with Agent 2 & Agent 3.
 
         Returns
         -------
-        tuple of (TransportEstimate, BudgetBreakdown, ActivityPlan, EventScanResult, WebResearchResult)
+        tuple of (TransportEstimate, BudgetBreakdown, ActivityPlan, EventScanResult, WebResearchResult, dict)
+            The last element is hospitality_data from Agent 2.
         """
-        # Step 1: Transport
+        # Step 1: Transport (Agent 1 internal)
         self._step_log("🚗", "Calculating transport costs...")
         transport = calculate_transport_costs(
             mode=request.travel_mode,
@@ -101,7 +108,14 @@ class SafariAgent:
             vehicle_type=request.vehicle_type,
         )
 
-        # Step 2: Budget allocation
+        # Step 2: Agent 1 → Agent 3 (Transport comparison)
+        self._step_log("🔄", "Agent 1 → Agent 3: Comparing transport options...")
+        transport_comparison = self.orchestrator.get_transport_comparison(
+            origin=request.origin,
+            destination=request.destination,
+        )
+
+        # Step 3: Budget allocation
         self._step_log("💰", "Allocating budget across categories...")
         breakdown = budget_allocator(
             total_budget=request.budget,
@@ -110,10 +124,37 @@ class SafariAgent:
             currency=request.currency,
         )
 
-        # Step 3: Web + Social Media Research
-        self._step_log("🌐", "Researching online data & social media...")
+        # Step 4: Agent 1 → Agent 2 (Hospitality) — hotels & restaurants
+        self._step_log("🔄", "Agent 1 → Agent 2: Requesting hotel & restaurant data...")
         from config import DESTINATIONS
-        dest_info = DESTINATIONS.get(request.destination.lower(), DESTINATIONS.get("coast", {}))
+        
+        # Determine the correct vibe key ("coast", "mountains", "desert", "city")
+        vibe = None
+        dest_key = request.destination.lower()
+        if dest_key in DESTINATIONS:
+            vibe = dest_key
+            dest_info = DESTINATIONS[dest_key]
+        else:
+            for k, info in DESTINATIONS.items():
+                if any(request.destination.lower() == c.lower() for c in info.get("cities", [])):
+                    vibe = k
+                    dest_info = info
+                    break
+            if not vibe:
+                vibe = "coast"
+                dest_info = DESTINATIONS["coast"]
+
+        hospitality_data = self.orchestrator.get_hospitality_for_trip(
+            destination=request.destination,
+            vibe=vibe,
+            budget_lodging_per_day=breakdown.lodging_per_day,
+            budget_food_per_day=breakdown.food_per_day,
+            days=request.days,
+            allergens=getattr(request, 'allergens', None),
+        )
+
+        # Step 5: Web + Social Media Research
+        self._step_log("🌐", "Researching online data & social media...")
         cities = dest_info.get("cities", [])
         scan_city = cities[0] if cities else request.destination.title()
 
@@ -132,7 +173,7 @@ class SafariAgent:
         else:
             self._step_log("📭", "No additional online data found.")
 
-        # Step 4: Scan for live events
+        # Step 6: Scan for live events
         self._step_log("🎭", "Scanning for live events & festivals...")
         event_scan = find_live_events(
             location=scan_city,
@@ -148,11 +189,11 @@ class SafariAgent:
         else:
             self._step_log("📭", "No live events found for these dates.")
 
-        # Step 5: Calculate adjusted activities budget (deduct event costs)
+        # Step 7: Calculate adjusted activities budget (deduct event costs)
         event_cost_per_day = event_scan.total_event_cost / request.days if request.days > 0 else 0
         adjusted_activities_budget = max(breakdown.activities_per_day - event_cost_per_day, 0)
 
-        # Step 6: Activity suggestions (with reduced budget if events consume some)
+        # Step 8: Activity suggestions (with reduced budget if events consume some)
         self._step_log("🎯", "Selecting activities within budget...")
         activities = suggest_activities(
             destination=request.destination,
@@ -161,15 +202,37 @@ class SafariAgent:
             currency=request.currency,
         )
 
-        # Step 7: Inject live events into the activity plan
+        # Step 9: Inject live events into the activity plan
         if event_scan.has_events:
             self._inject_events(activities, event_scan, request.days)
 
-        # Step 8: Inject trending spots from web research into activities
+        # Step 10: Inject trending spots from web research into activities
         if web_research.trending_spots:
             self._inject_trending_spots(activities, web_research, request.days)
 
-        return transport, breakdown, activities, event_scan, web_research
+        # Step 11: Route the daily activities using Agent 3 (Transport)
+        self._step_log("🗺️", "Agent 1 → Agent 3: Calculating daily transit routes and costs...")
+        from safari.agent.orchestrator import AgentOrchestrator
+        orchestrator = AgentOrchestrator()
+        
+        hotel_data = activities.hotel
+        if hospitality_data and hospitality_data.get("hotels"):
+            # Use the best hospitality agent hotel for routing if available
+            best_hotel = hospitality_data["hotels"][0]
+            hotel_data = {"name": best_hotel.get("name"), "lat": best_hotel.get("lat"), "lng": best_hotel.get("lng")}
+
+        timeline_req = {
+            "action": "plan_timeline",
+            "daily_activities": activities.daily_activities,
+            "hotel": hotel_data,
+            "travel_mode": request.travel_mode
+        }
+        
+        timeline_res = orchestrator.send_to_agent("Agent 3 (Transport)", timeline_req)
+        activities.timeline = timeline_res.get("timeline", {})
+        activities.total_transit_cost = timeline_res.get("total_transit_cost", 0)
+
+        return transport, breakdown, activities, event_scan, web_research, hospitality_data
 
     def _inject_events(self, activities: ActivityPlan, event_scan: EventScanResult, days: int) -> None:
         """
@@ -247,6 +310,7 @@ class SafariAgent:
         activities: ActivityPlan,
         event_scan: EventScanResult = None,
         web_research: WebResearchResult = None,
+        hospitality_data: dict = None,
     ) -> str:
         """Call the LLM to generate a natural-language itinerary."""
         if not self.use_local and not self.client:
@@ -274,6 +338,18 @@ class SafariAgent:
                 f"'trending on Instagram' or 'recommended by local food bloggers').\n"
             )
 
+        # Hospitality section from Agent 2
+        hospitality_section = ""
+        if hospitality_data and hospitality_data.get("hospitality_summary_text"):
+            hospitality_section = (
+                f"\n{hospitality_data['hospitality_summary_text']}\n\n"
+                f"**IMPORTANT:** Agent 2 (Hospitality) has provided these hotel and restaurant "
+                f"recommendations from our database. Use the EXACT hotel names, prices, and "
+                f"discount percentages above when suggesting accommodation. Recommend the "
+                f"restaurants with their signature dishes for meal planning. "
+                f"Mention the dynamic discounts as a money-saving tip.\n"
+            )
+
         user_prompt = ITINERARY_USER_PROMPT.format(
             origin=request.origin.title(),
             destination=request.destination.title(),
@@ -286,6 +362,7 @@ class SafariAgent:
             activities_summary=activities.summary,
             events_section=events_section,
             research_section=research_section,
+            hospitality_section=hospitality_section,
             lodging_per_day=breakdown.lodging_per_day,
             food_per_day=breakdown.food_per_day,
             buffer_total=breakdown.buffer_total,
@@ -495,14 +572,17 @@ class SafariAgent:
                              f"Days: {request.days}")
         console.print()
 
-        # Step 2: Run calculations (including event scanning + web research)
-        console.print("  [bold]⚙️  Running calculations & online research...[/bold]")
-        transport, breakdown, activities, event_scan, web_research = self.run_calculations(request)
-        console.print("  [green]✅ All calculations & research complete![/green]")
+        # Step 2: Run calculations (including multi-agent coordination)
+        console.print("  [bold]⚙️  Running calculations & multi-agent coordination...[/bold]")
+        transport, breakdown, activities, event_scan, web_research, hospitality_data = self.run_calculations(request)
+        console.print("  [green]✅ All agents responded — calculations complete![/green]")
         console.print()
 
-        # Step 3: Generate LLM itinerary
-        llm_text = self._generate_itinerary_text(request, transport, breakdown, activities, event_scan, web_research)
+        # Step 3: Generate LLM itinerary (with ALL agents' data)
+        llm_text = self._generate_itinerary_text(
+            request, transport, breakdown, activities,
+            event_scan, web_research, hospitality_data,
+        )
 
         # Step 4: Display
         print_itinerary(transport, breakdown, activities, llm_text, event_scan)
@@ -513,4 +593,11 @@ class SafariAgent:
             result["events"] = event_scan.to_dict()
         if web_research and web_research.has_data:
             result["web_research"] = web_research.to_dict()
+        # Include Agent 2 hospitality data & inter-agent communication log
+        if hospitality_data:
+            result["hospitality"] = {
+                "hotels": hospitality_data.get("hotels", []),
+                "restaurants": hospitality_data.get("restaurants", []),
+                "agent_comms": self.orchestrator.get_communication_log(),
+            }
         return result

@@ -99,10 +99,12 @@ ITINERARY_USER_PROMPT = """Generate a complete travel itinerary based on the fol
 {activities_summary}
 {events_section}
 {research_section}
+{hospitality_section}
 ---
 
 Now generate the full itinerary following your output format. Remember:
 - Use the EXACT numbers from the budget breakdown above
+- If hotel/restaurant recommendations were provided by Agent 2, use those EXACT names and prices
 - Suggest specific accommodation in {recommended_city} within the lodging budget of {lodging_per_day:.0f} {currency}/night
 - Suggest specific meals within the food budget of {food_per_day:.0f} {currency}/day
 - Only include activities from the list above
@@ -111,6 +113,7 @@ Now generate the full itinerary following your output format. Remember:
 - If trending restaurants/spots were found, recommend them for meals or activities
 - If weather data was found, mention it and adjust advice accordingly
 - Include any relevant local tips discovered from the web
+- Mention dynamic hotel/restaurant discounts as money-saving opportunities
 - Mention the buffer of {buffer_total:.0f} {currency} as emergency reserve
 """
 

@@ -25,6 +25,17 @@ from typing import List, Optional
 from google import genai
 from google.genai import types
 
+def get_ddg_results(query: str, max_results: int = 5) -> str:
+    """Fetch search results from DuckDuckGo."""
+    try:
+        from duckduckgo_search import DDGS
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=max_results))
+            return "\n".join([f"Source: {r.get('title', '')} - {r.get('body', '')}" for r in results])
+    except Exception as e:
+        print(f"DDG Search failed: {e}")
+        return ""
+
 
 # ─── Data Structures ─────────────────────────────────────────────────────────
 
@@ -125,6 +136,11 @@ def _search_events_web(city: str, start_date: str, end_date: str, interests: str
 
         interests_str = f" The user is specifically interested in: {interests}." if interests else ""
 
+        from config import CITY_COORDS
+        city_coords = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+        lat_ex = city_coords["lat"]
+        lng_ex = city_coords["lng"]
+
         prompt = (
             f"Search the web for live events, concerts, festivals, exhibitions, "
             f"pop-up experiences, and social media trending gatherings happening in "
@@ -136,15 +152,20 @@ def _search_events_web(city: str, start_date: str, end_date: str, interests: str
             f'{{"name": "...", "date": "...", "time": "18:00 or TBD", "estimated_cost_sar": 0, '
             f'"category": "concert|festival|popup|exhibition|sport", '
             f'"description": "one sentence", "venue": "venue name", '
-            f'"lat": 24.7, "lng": 46.7}}'
+            f'"lat": {lat_ex}, "lng": {lng_ex}}}'
+            f"\nIMPORTANT: Provide accurate lat/lng coordinates for {city}. Do not just copy the example coordinates."
             f"\nIf no events are found, return an empty array: []"
         )
 
         if USE_LOCAL_AI:
             import requests
+            search_query = f"live events festivals concerts popup {city} Saudi Arabia {start_date} {end_date} {interests}"
+            search_context = get_ddg_results(search_query, max_results=8)
+            prompt_with_context = f"Based on these live web search results:\n{search_context}\n\n{prompt}"
+            
             payload = {
                 "model": OLLAMA_MODEL,
-                "prompt": prompt,
+                "prompt": prompt_with_context,
                 "stream": False,
                 "format": "json",
                 "options": {"temperature": 0.3}
@@ -163,7 +184,11 @@ def _search_events_web(city: str, start_date: str, end_date: str, interests: str
                 ),
             )
             text = response.text.strip()
-        text = text.replace("```json", "").replace("```", "").strip()
+        text = text.strip()
+        start_idx = text.find('[')
+        end_idx = text.rfind(']')
+        if start_idx != -1 and end_idx != -1:
+            text = text[start_idx:end_idx+1]
         data = json.loads(text)
 
         # Handle both array and object responses
