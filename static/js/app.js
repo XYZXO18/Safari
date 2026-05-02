@@ -381,8 +381,11 @@ function getActivitySchedule(dayNum, activities, isFirstDay, isLastDay) {
         const time = ((isEvent || isTrending) && act.time && act.time !== "TBD") ? act.time : `${String(hour).padStart(2, '0')}:00`;
         const id = isObj ? act.id : null;
         const cost = isObj ? act.cost : 0;
+        const whyGo = isObj ? act.why_go : '';
+        const reviews = isObj ? act.reviews : [];
+        const reviewCount = isObj ? act.review_count : 0;
         
-        schedule.push({ time, icon, text: name, id, isEvent, isTrending, cost, dayNum, socialBuzz: isObj ? act.social_buzz : '', rating: isObj ? act.rating : 0 });
+        schedule.push({ time, icon, text: name, id, isEvent, isTrending, cost, dayNum, socialBuzz: isObj ? act.social_buzz : '', rating: isObj ? act.rating : 0, whyGo, reviews, reviewCount });
         hour += isLastDay ? 2 : 3;
     });
 
@@ -429,16 +432,37 @@ function renderItinerary(data) {
                 }
             }
 
+            let reviewsHtml = '';
+            if (s.whyGo || (s.reviews && s.reviews.length > 0)) {
+                reviewsHtml = `<div class="activity-reviews-panel" style="margin-top: 10px; padding: 12px; background: rgba(0,0,0,0.15); border-radius: 8px;">`;
+                if (s.rating) {
+                    reviewsHtml += `<div style="color:#fbbf24; font-weight:bold; margin-bottom:6px;">⭐ ${s.rating} (${s.reviewCount} reviews)</div>`;
+                }
+                if (s.whyGo) {
+                    reviewsHtml += `<div style="font-size:0.95em; color:var(--text-secondary); margin-bottom:8px;"><em>Why go:</em> ${s.whyGo}</div>`;
+                }
+                if (s.reviews && s.reviews.length > 0) {
+                    const rev = s.reviews[0]; // Show top review
+                    reviewsHtml += `<div style="font-size:0.9em; border-left:2px solid var(--accent); padding-left:8px; color:#cbd5e1;">
+                        " ${rev.text} " <br><span style="opacity:0.6;font-size:0.85em;">— ${rev.user} (⭐ ${rev.rating})</span>
+                    </div>`;
+                }
+                reviewsHtml += `</div>`;
+            }
+
             return `
             ${legHtml}
-            <div class="activity-item ${s.isTrending ? 'trending-item' : ''} ${s.isEvent ? 'event-item' : ''}" style="align-items:flex-start;">
-                <span class="activity-time">${s.time}</span>
-                <span class="activity-icon">${s.icon}</span>
-                <div style="flex:1">
-                    <span>${s.text}</span>
-                    ${buzzTag}
+            <div class="activity-item ${s.isTrending ? 'trending-item' : ''} ${s.isEvent ? 'event-item' : ''}" style="align-items:flex-start; flex-direction:column;">
+                <div style="display:flex; width:100%;">
+                    <span class="activity-time">${s.time}</span>
+                    <span class="activity-icon">${s.icon}</span>
+                    <div style="flex:1">
+                        <span>${s.text}</span>
+                        ${buzzTag}
+                    </div>
+                    ${deleteBtn}
                 </div>
-                ${deleteBtn}
+                ${reviewsHtml}
             </div>
             `;
         }).join('');
@@ -595,32 +619,11 @@ async function planTrip() {
         }
 
         const data = await response.json();
-        state.tripData = data;
-
-        // Draw map route
-        drawRoute(data.map.origin, data.map.destination, data.map.origin_name, data.map.dest_name, data);
-
-        // Update overlays
-        updateOverlays(data);
-
-        // Render itinerary
-        renderItinerary(data);
-
-        // Render budget details
-        renderBudgetDetails(data);
-
-        // Render warnings
-        renderWarnings(data);
-
-        // Render hospitality deals
-        renderHospitalityDeals(data);
-
-        // Render web research
-        renderWebResearch(data);
-
-        // Update calendar
-        const today = new Date().getDate();
-        renderCalendar(today + 1, state.days);
+        state.paths = data.paths;
+        state.recommendation = data.recommendation;
+        
+        // Show path selection
+        renderPathSelection(data.paths, data.recommendation);
 
     } catch (err) {
         alert('Safari encountered an error: ' + err.message);
@@ -629,19 +632,111 @@ async function planTrip() {
     }
 }
 
+// ─── Path Selection ──────────────────────────────────────────────────────────
+function renderPathSelection(paths, recommendationIdx) {
+    const grid = $('paths-grid');
+    grid.innerHTML = '';
+    
+    paths.forEach((path, idx) => {
+        const isRec = idx === recommendationIdx;
+        const b = path.budget;
+        const c = b.currency;
+        
+        let features = '';
+        if (path.path_type === 'budget') {
+            features = `<li>💰 Focused on free activities</li><li>🚌 Prioritizes public transit</li><li>🏨 Budget accommodations</li>`;
+        } else if (path.path_type === 'balanced') {
+            features = `<li>⚖️ Mix of free & paid activities</li><li>🚗 Comfortable transport</li><li>🏨 Mid-range hotels</li>`;
+        } else {
+            features = `<li>✨ Premium activities</li><li>🚕 Max convenience transport</li><li>🏨 Luxury accommodations</li>`;
+        }
+
+        const card = document.createElement('div');
+        card.className = `path-card ${isRec ? 'recommended' : ''}`;
+        card.innerHTML = `
+            <h3>${path.path_type} Path</h3>
+            <div class="path-budget">~${fmt(b.total)} ${c}</div>
+            <ul class="path-features">${features}</ul>
+        `;
+        card.addEventListener('click', () => selectPath(idx));
+        grid.appendChild(card);
+    });
+
+    $('path-selection-overlay').classList.remove('hidden');
+}
+
+$('cancel-path-selection').addEventListener('click', () => {
+    $('path-selection-overlay').classList.add('hidden');
+});
+
+function selectPath(idx) {
+    $('path-selection-overlay').classList.add('hidden');
+    
+    // Switch panels
+    $('trip-form').classList.add('hidden');
+    $('results-panel').classList.remove('hidden');
+
+    const data = state.paths[idx];
+    state.tripData = data;
+
+    // Draw map route
+    drawRoute(data.map.origin, data.map.destination, data.map.origin_name, data.map.dest_name, data);
+
+    // Update overlays
+    updateOverlays(data);
+
+    // Render itinerary (Right Panel)
+    renderItinerary(data);
+
+    // Render left panel results
+    renderHospitalityDeals(data);
+    renderWebResearch(data);
+    renderBudgetDetailsLeft(data); // Render budget in left panel too
+
+    // Render warnings
+    renderWarnings(data);
+
+    // Update calendar
+    const today = new Date().getDate();
+    renderCalendar(today + 1, state.days);
+}
+
+$('edit-trip-btn').addEventListener('click', () => {
+    $('results-panel').classList.add('hidden');
+    $('trip-form').classList.remove('hidden');
+});
+
+function renderBudgetDetailsLeft(data) {
+    const b = data.budget;
+    const c = b.currency;
+    const container = $('left-budget');
+    if(!container) return;
+    
+    container.innerHTML = `
+        <h3 style="margin-top:20px;margin-bottom:15px;color:var(--text-primary);font-size:22px;">💰 Budget Breakdown</h3>
+        <div class="budget-row"><span class="budget-row-label">🚗 Transport</span><span class="budget-row-value">${fmt(b.transport)} ${c}</span></div>
+        <div class="budget-row"><span class="budget-row-label">🏨 Lodging</span><span class="budget-row-value">${fmt(b.lodging.total)} ${c}</span></div>
+        <div class="budget-row"><span class="budget-row-label">🍽️ Food</span><span class="budget-row-value">${fmt(b.food.total)} ${c}</span></div>
+        <div class="budget-row"><span class="budget-row-label">🎯 Activities</span><span class="budget-row-value">${fmt(b.activities.total)} ${c}</span></div>
+        <div class="budget-row"><span class="budget-row-label">🛡️ Buffer</span><span class="budget-row-value">${fmt(b.buffer.total)} ${c}</span></div>
+        <div class="budget-row total" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);font-weight:bold;font-size:18px;">
+            <span class="budget-row-label">Total</span>
+            <span class="budget-row-value">${fmt(b.total)} ${c}</span>
+        </div>
+    `;
+}
+
 // ─── Render Hospitality Deals ────────────────────────────────────────────────
 function renderHospitalityDeals(data) {
-    const container = $('hospitality-deals-panel');
-    const content = $('hospitality-deals-content');
-    if (!container || !content) return;
+    const container = $('left-hospitality');
+    if (!container) return;
 
     if (!data.hospitality || (!data.hospitality.hotels.length && !data.hospitality.restaurants.length)) {
-        container.classList.add('hidden');
+        container.innerHTML = '';
         return;
     }
 
-    container.classList.remove('hidden');
-    let html = '';
+    let html = '<h3 style="margin-bottom:15px;color:var(--text-primary);font-size:22px;">🏨 Recommended Places</h3>';
 
     if (data.hospitality.hotels && data.hospitality.hotels.length > 0) {
         html += `<div style="margin-bottom: 10px;"><strong>🏨 Hotels</strong></div>`;
@@ -675,21 +770,20 @@ function renderHospitalityDeals(data) {
         });
     }
 
-    content.innerHTML = html;
+    container.innerHTML = html;
 }
 
 // ─── Render Web Research Panel ──────────────────────────────────────────────
 function renderWebResearch(data) {
     const research = data.web_research;
-    const container = $('web-research-panel');
+    const container = $('left-research');
     if (!container) return;
 
     if (!research) {
-        container.classList.add('hidden');
+        container.innerHTML = '';
         return;
     }
 
-    container.classList.remove('hidden');
     let html = '';
 
     // Weather
@@ -783,7 +877,7 @@ function renderWebResearch(data) {
         html += `</div>`;
     }
 
-    container.innerHTML = `<h3>🌐 Online Discoveries</h3>` + html;
+    container.innerHTML = `<h3 style="margin-top:20px;margin-bottom:15px;color:var(--text-primary);font-size:22px;">🌐 Online Discoveries</h3>` + html;
 }
 
 // ─── Form Submit ─────────────────────────────────────────────────────────────

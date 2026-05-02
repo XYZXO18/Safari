@@ -16,6 +16,16 @@ from config import DESTINATIONS
 from google import genai
 from google.genai import types
 import json
+import os
+
+def load_reviews():
+    try:
+        with open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "data", "reviews.json"), "r") as f:
+            return json.load(f)
+    except:
+        return {"activities": {}, "destinations": {}}
+
+_REVIEWS_DB = load_reviews()
 
 @dataclass
 class ActivityPlan:
@@ -191,6 +201,16 @@ def suggest_activities(
         affordable = [a for a in all_activities if _ACTIVITY_COSTS.get(a.get("name", ""), 50) <= 30]
     if not affordable:
         affordable = all_activities
+
+    # Attach reviews data
+    for act in affordable:
+        act_name = act.get("name", "")
+        if act_name in _REVIEWS_DB["activities"]:
+            rev_data = _REVIEWS_DB["activities"][act_name]
+            act["rating"] = rev_data.get("rating", 0)
+            act["review_count"] = rev_data.get("review_count", 0)
+            act["why_go"] = rev_data.get("why_go", "")
+            act["reviews"] = rev_data.get("reviews", [])
 
     daily_activities: Dict[int, List[dict]] = {}
     pool = list(affordable)

@@ -1,0 +1,172 @@
+{
+  "activities": {
+    "Al-Balad Beach": {
+      "rating": 4.5,
+      "review_count": 1243,
+      "why_go": "A stunning stretch of Red Sea coastline with crystal-clear water, vibrant coral reefs just offshore, and breathtaking sunset views. Perfect for both relaxation and water sports.",
+      "reviews": [
+        {"user": "Ahmed K.", "rating": 5, "text": "One of the best beaches in Jeddah! Clean water and amazing views. Go early morning to beat the crowds."},
+        {"user": "Sarah M.", "rating": 4, "text": "Beautiful spot for families. The water is warm and shallow near the shore. Bring your own shade though."},
+        {"user": "David L.", "rating": 5, "text": "Perfect for snorkeling! Saw tropical fish right off the shore. The sunset here is absolutely magical."}
+      ]
+    },
+    "Corniche walk": {
+      "rating": 4.3,
+      "review_count": 2891,
+      "why_go": "Jeddah's iconic waterfront promenade stretches for 30km along the Red Sea. Features stunning public art, fountains, and the famous King Fahd Fountain — the tallest in the world.",
+      "reviews": [
+        {"user": "Fatima A.", "rating": 5, "text": "Best walk in the city! The sculptures along the corniche are fascinating. Go at sunset for the best experience."},
+        {"user": "Mohammed R.", "rating": 4, "text": "Great place for evening walks. Lots of food stalls and cafés nearby. Gets busy on weekends."},
+        {"user": "Lisa T.", "rating": 4, "text": "The fountain show at night is spectacular! Bring a light jacket as it gets breezy after dark."}
+      ]
+    },
+    "Snorkeling & diving": {
+      "rating": 4.8,
+      "review_count": 876,
+      "why_go": "The Red Sea is one of the world's top diving destinations. Pristine coral reefs, exotic marine life, and visibility up to 30 meters make this an unforgettable underwater experience.",
+      "reviews": [
+        {"user": "James W.", "rating": 5, "text": "Absolutely world-class diving! Saw manta rays, turtles, and thousands of colorful fish. The coral is pristine."},
+        {"user": "Nora H.", "rating": 5, "text": "Even as a beginner snorkeler, I had an amazing time. The instructors were patient and professional."},
+        {"user": "Carlos P.", "rating": 4, "text": "One of the best reef systems I've ever seen. Water temperature is perfect year-round."}
+      ]
+    },
+    "Cable car ride": {
+      "rating": 4.6,
+      "review_count": 1567,
+      "why_go": "Soar above the misty green mountains of Abha for panoramic views of terraced farms, ancient villages, and lush forests. At 2,270m elevation, the cool mountain air is a welcome escape.",
+      "reviews": [
+        {"user": "Khalid S.", "rating": 5, "text": "Breathtaking views! You can see for miles on a clear day. The cable car ride itself is smooth and comfortable."},
+        {"user": "Reem B.", "rating": 4, "text": "Beautiful experience but gets cold at the top. Bring a jacket! The mountain village at the top is charming."},
+        {"user": "Tom K.", "rating": 5, "text": "This blew my mind. Coming from the desert heat to cool misty mountains — felt like another country entirely."}
+      ]
+    },
+    "Mountain hiking": {
+      "rating": 4.4,
+      "review_count": 934,
+      "why_go": "Explore trails through the Asir Mountains with lush greenery, wildflowers, and dramatic cliff edges. The moderate climate and stunning biodiversity make it Saudi Arabia's best hiking region.",
+      "reviews": [
+        {"user": "Ali G.", "rating": 5, "text": "The trails are well-marked and the scenery is incredible. Saw baboons and colorful birds along the way!"},
+        {"user": "Jessica M.", "rating": 4, "text": "Moderate difficulty trails perfect for families. The views from the top are absolutely worth the climb."},
+        {"user": "Faisal Q.", "rating": 4, "text": "Best hiking in Saudi Arabia, hands down. The terraced farmlands you pass through are beautiful."}
+      ]
+    },
+    "Hegra ancient ruins tour": {
+      "rating": 4.9,
+      "review_count": 2103,
+      "why_go": "Saudi Arabia's first UNESCO World Heritage Site. These 2,000-year-old Nabataean tombs rival Petra in Jordan — but without the crowds. A once-in-a-lifetime archaeological experience.",
+      "reviews": [
+        {"user": "Layla N.", "rating": 5, "text": "Absolutely magical! The carved tombs are incredibly well-preserved. Our guide's knowledge made it even better."},
+        {"user": "Mark D.", "rating": 5, "text": "Better than Petra in my opinion — fewer tourists and equally impressive carvings. A must-visit in Saudi Arabia."},
+        {"user": "Noura K.", "rating": 5, "text": "The night tour with the light show is unforgettable. You feel transported back 2,000 years."}
+      ]
+    },
+    "Stargazing camp": {
+      "rating": 4.7,
+      "review_count": 654,
+      "why_go": "AlUla's desert sky is one of the darkest in the world — perfect for stargazing. Guided camps include telescopes, traditional coffee, and stories of Bedouin star navigation.",
+      "reviews": [
+        {"user": "Hana W.", "rating": 5, "text": "Saw the Milky Way with my naked eye for the first time! The Bedouin camp setup was authentic and cozy."},
+        {"user": "Ryan S.", "rating": 5, "text": "Lying in the desert watching shooting stars while sipping Arabic coffee — peak travel experience."},
+        {"user": "Samira L.", "rating": 4, "text": "Amazing stargazing but bring warm clothes! The desert gets surprisingly cold at night."}
+      ]
+    },
+    "Off-road dune bashing": {
+      "rating": 4.6,
+      "review_count": 1876,
+      "why_go": "An adrenaline-pumping ride over towering sand dunes in a 4x4. Professional drivers navigate impossible angles while you grip your seat. The ultimate desert adventure.",
+      "reviews": [
+        {"user": "Turki A.", "rating": 5, "text": "Best thrill ride of my life! The driver was incredibly skilled — felt safe despite the crazy angles."},
+        {"user": "Emma C.", "rating": 4, "text": "Not for the faint-hearted! Absolutely exhilarating. The sunset dune drive was the highlight of our trip."},
+        {"user": "Abdullah M.", "rating": 5, "text": "Go with a reputable company. The experience includes sandboarding and a BBQ dinner under the stars."}
+      ]
+    },
+    "Boulevard Riyadh City": {
+      "rating": 4.3,
+      "review_count": 5432,
+      "why_go": "Riyadh's premier entertainment district — a massive complex with world-class dining, live events, concerts, gaming zones, and themed areas. Think of it as Saudi Arabia's Times Square.",
+      "reviews": [
+        {"user": "Maha R.", "rating": 4, "text": "So much to do! We spent 6 hours and still didn't see everything. The Japanese zone is incredible."},
+        {"user": "Omar F.", "rating": 5, "text": "The atmosphere at night is electric. Great food, great shows, great people. A must-visit in Riyadh."},
+        {"user": "Jenny L.", "rating": 4, "text": "Impressive entertainment complex but can get very crowded on weekends. Go on weekdays if you can."}
+      ]
+    },
+    "Historical Diriyah tour": {
+      "rating": 4.5,
+      "review_count": 1654,
+      "why_go": "The birthplace of Saudi Arabia and a UNESCO World Heritage Site. The restored mud-brick At-Turaif district showcases 300 years of Saudi history and Najdi architecture at its finest.",
+      "reviews": [
+        {"user": "Fahd K.", "rating": 5, "text": "Beautifully restored! The architecture is stunning and the museum tells the story of how Saudi Arabia was founded."},
+        {"user": "Patricia M.", "rating": 4, "text": "A peaceful escape from Riyadh's bustle. The restaurants inside the complex are excellent."},
+        {"user": "Saad J.", "rating": 5, "text": "Walking through the old streets at sunset is magical. The new Bujairi Terrace restaurants have amazing views."}
+      ]
+    },
+    "Sunset cruise": {
+      "rating": 4.4,
+      "review_count": 987,
+      "why_go": "Glide along the Red Sea coast as the sun paints the sky in shades of gold and crimson. Many cruises include dinner, live music, and dolphin spotting opportunities.",
+      "reviews": [
+        {"user": "Lina H.", "rating": 5, "text": "The most romantic evening of our trip! Saw dolphins playing alongside the boat. The dinner was excellent."},
+        {"user": "Mike J.", "rating": 4, "text": "Beautiful sunset views and great food on board. Book in advance — popular cruises sell out quickly."},
+        {"user": "Rana T.", "rating": 4, "text": "Worth every riyal! The crew was friendly and the views of Jeddah's skyline from the water are gorgeous."}
+      ]
+    },
+    "Desert bonfire dinner": {
+      "rating": 4.5,
+      "review_count": 743,
+      "why_go": "Experience authentic Bedouin hospitality under a canopy of stars. Traditional grilled meats, fresh bread baked in sand, Arabic coffee ceremony, and oud music around a roaring fire.",
+      "reviews": [
+        {"user": "Yusuf D.", "rating": 5, "text": "The most authentic Saudi experience! The food was incredible — lamb cooked underground for hours."},
+        {"user": "Anna S.", "rating": 5, "text": "Felt like stepping back in time. The oud music and the silence of the desert created a magical atmosphere."},
+        {"user": "Mansour H.", "rating": 4, "text": "Highly recommend for groups. The traditional Saudi coffee ceremony was educational and delicious."}
+      ]
+    },
+    "Fish market visit": {
+      "rating": 4.2,
+      "review_count": 1321,
+      "why_go": "Jeddah's bustling fish market is a sensory overload — mountains of fresh catch, animated haggling, and the option to pick your fish and have it cooked at adjacent restaurants.",
+      "reviews": [
+        {"user": "Hassan B.", "rating": 4, "text": "Go early morning for the freshest catch. Pick your fish and the restaurant next door grills it perfectly!"},
+        {"user": "Sophie W.", "rating": 4, "text": "Fascinating cultural experience. The variety of Red Sea fish is amazing. Bargaining is half the fun."},
+        {"user": "Rashid M.", "rating": 5, "text": "Best seafood I've ever had! The whole experience from selection to plate is unique. A hidden gem."}
+      ]
+    },
+    "Camel ride": {
+      "rating": 4.3,
+      "review_count": 2234,
+      "why_go": "Traverse golden dunes aboard a ship of the desert — the authentic Arabian experience. Most tours include traditional tea, photo opportunities, and stories of caravan trade routes.",
+      "reviews": [
+        {"user": "Diana K.", "rating": 4, "text": "Fun and surprisingly comfortable once you get the hang of the swaying! Great photo opportunities."},
+        {"user": "Badr N.", "rating": 5, "text": "Our guide knew everything about camels and desert life. The sunset ride was unforgettable."},
+        {"user": "Chris P.", "rating": 4, "text": "A must-do in Saudi Arabia! The camels are well-cared-for and gentle. Perfect for all ages."}
+      ]
+    },
+    "Fine dining experience": {
+      "rating": 4.6,
+      "review_count": 876,
+      "why_go": "Saudi Arabia's dining scene has exploded with world-class restaurants. From Michelin-starred chefs to innovative Saudi-fusion cuisine, the culinary scene rivals Dubai and London.",
+      "reviews": [
+        {"user": "Nadia Q.", "rating": 5, "text": "The tasting menu was incredible — each course told a story of Saudi ingredients. Service was impeccable."},
+        {"user": "Robert H.", "rating": 4, "text": "Didn't expect this level of dining in Saudi Arabia. The rooftop setting overlooking the city was stunning."},
+        {"user": "Lamis A.", "rating": 5, "text": "The Saudi-Japanese fusion was creative and delicious. The staff made us feel like royalty."}
+      ]
+    }
+  },
+  "destinations": {
+    "coast": {
+      "rating": 4.5,
+      "why_go": "Saudi Arabia's Red Sea coast offers world-class coral reefs, pristine beaches, and a rapidly developing tourism scene. The warm waters, historic port cities, and seafood culture create an unforgettable coastal getaway."
+    },
+    "mountains": {
+      "rating": 4.6,
+      "why_go": "The Asir Mountains offer cool temperatures, lush greenery, and dramatic landscapes that defy expectations of Saudi Arabia. Ancient villages, terraced farms, and misty peaks make this the kingdom's most surprising destination."
+    },
+    "desert": {
+      "rating": 4.8,
+      "why_go": "From the ancient Nabataean tombs of AlUla to the endless Empty Quarter dunes, Saudi Arabia's desert landscapes are awe-inspiring. Stargazing, adventure sports, and Bedouin hospitality create extraordinary experiences."
+    },
+    "city": {
+      "rating": 4.3,
+      "why_go": "Saudi cities are transforming at breathtaking speed. From Riyadh's mega-entertainment zones to historic districts, expect cutting-edge architecture alongside centuries-old heritage — a dynamic contrast unique to the Kingdom."
+    }
+  }
+}
