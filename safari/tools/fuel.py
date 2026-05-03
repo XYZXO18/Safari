@@ -2,7 +2,8 @@
 Fuel Cost Calculator
 ====================
 Reads the local offline fuel_prices.json database and calculates
-driving costs based on distance, fuel grade, and average consumption.
+driving costs based on distance, fuel grade, vehicle type, and
+average consumption.
 
 This module eliminates the need for external fuel-price APIs — all
 data lives in `data/fuel_prices.json` at the project root.
@@ -14,6 +15,8 @@ import json
 import os
 from pathlib import Path
 from typing import Optional
+
+from config import VEHICLE_KM_PER_LITER
 
 # ─── Locate the fuel_prices.json relative to the project root ────────────────
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]  # safari/tools/fuel.py → project root
@@ -49,6 +52,7 @@ def calculate_driving_cost(
     fuel_type: str = "91",
     round_trip: bool = True,
     custom_km_per_liter: Optional[float] = None,
+    vehicle_type: str = "default",
 ) -> dict:
     """
     Calculate the fuel cost for a driving trip using the local fuel database.
@@ -63,6 +67,9 @@ def calculate_driving_cost(
         If True (default), the result accounts for a round-trip (cost × 2).
     custom_km_per_liter : float, optional
         Override the default average consumption from the database.
+    vehicle_type : str
+        Vehicle category: 'sedan', 'suv', 'truck', '4x4', or 'default'.
+        Controls fuel efficiency. Truck/4x4 uses ~8 km/L; sedan ~13 km/L.
 
     Returns
     -------
@@ -73,6 +80,7 @@ def calculate_driving_cost(
             "fuel_name": str,             # e.g. 'RON 91'
             "price_per_liter": float,     # SAR per liter
             "km_per_liter": float,        # fuel efficiency used
+            "vehicle_type": str,          # vehicle category used
             "liters_one_way": float,      # liters needed one way
             "cost_one_way": float,        # SAR cost one way
             "cost_round_trip": float,     # SAR cost round trip
@@ -82,9 +90,9 @@ def calculate_driving_cost(
 
     Examples
     --------
-    >>> result = calculate_driving_cost(500)
+    >>> result = calculate_driving_cost(1100, vehicle_type="truck")
     >>> result["cost_round_trip"]
-    181.67  # 500km ÷ 12km/L = 41.67L × 2.18 SAR/L = 90.83 SAR × 2 = 181.67
+    # 1100 km ÷ 8 km/L = 137.5 L × 2.18 SAR/L × 2 = ~599.5 SAR
     """
     db = _load_fuel_db()
 
@@ -103,7 +111,12 @@ def calculate_driving_cost(
     fuel_name = grade_info["name"]
 
     # ─── Resolve consumption ─────────────────────────────────────────────
-    km_per_liter = custom_km_per_liter or db.get("average_car_km_per_liter", 12)
+    # Priority: explicit override > vehicle-type lookup > JSON default
+    vtype = vehicle_type.lower().strip() if vehicle_type else "default"
+    if custom_km_per_liter:
+        km_per_liter = custom_km_per_liter
+    else:
+        km_per_liter = VEHICLE_KM_PER_LITER.get(vtype, db.get("average_car_km_per_liter", 12))
 
     # ─── Calculate ───────────────────────────────────────────────────────
     liters_one_way = distance_km / km_per_liter
@@ -116,6 +129,7 @@ def calculate_driving_cost(
         "fuel_name": fuel_name,
         "price_per_liter": price_per_liter,
         "km_per_liter": km_per_liter,
+        "vehicle_type": vtype,
         "liters_one_way": round(liters_one_way, 2),
         "cost_one_way": round(cost_one_way, 2),
         "cost_round_trip": round(cost_round_trip, 2),

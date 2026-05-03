@@ -1529,3 +1529,200 @@ select {
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-primary);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Day-Numbered Map Markers
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.day-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-weight: 800;
+    font-size: 13px;
+    font-family: var(--font-main);
+    border: 2.5px solid rgba(255,255,255,0.8);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+.day-marker:hover { transform: scale(1.25); }
+
+/* per-day colors */
+.day-marker-1  { background: #8b5cf6; }
+.day-marker-2  { background: #06b6d4; }
+.day-marker-3  { background: #f59e0b; }
+.day-marker-4  { background: #10b981; }
+.day-marker-5  { background: #ec4899; }
+.day-marker-6  { background: #f97316; }
+.day-marker-7  { background: #6366f1; }
+
+.hotel-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    border: 2.5px solid rgba(255,255,255,0.85);
+    box-shadow: 0 3px 14px rgba(139,92,246,0.5);
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+.hotel-marker:hover { transform: scale(1.25); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Transit Leg — minutes pill
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.leg-time-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(139,92,246,0.12);
+    border: 1px solid rgba(139,92,246,0.25);
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #a78bfa;
+    white-space: nowrap;
+}
+
+.transit-leg {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-left: 20px;
+    padding: 6px 10px;
+    border-left: 2px dashed rgba(255,255,255,0.15);
+    font-size: 11px;
+    color: #a1a1aa;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Route Simulation Controls
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.sim-controls {
+    position: absolute;
+    bottom: 80px;
+    right: 16px;
+    z-index: 1000;
+    background: rgba(13, 17, 28, 0.82);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(139,92,246,0.35);
+    border-radius: 20px;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
+    min-width: 200px;
+    animation: slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+
+.sim-top-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.sim-play-btn {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    font-family: var(--font-main);
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 3px 12px rgba(139,92,246,0.4);
+}
+
+.sim-play-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(139,92,246,0.5);
+}
+
+.sim-play-btn.playing {
+    background: linear-gradient(135deg, #ef4444, #f97316);
+}
+
+.sim-day-pills {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.sim-day-pill {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--font-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.sim-day-pill:hover,
+.sim-day-pill.active {
+    transform: scale(1.15);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.sim-status {
+    font-size: 11px;
+    color: #a78bfa;
+    min-height: 16px;
+    font-style: italic;
+    letter-spacing: 0.3px;
+    animation: pulse-text 2s ease infinite;
+}
+
+@keyframes pulse-text {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+}
+
+/* Animated sim vehicle marker */
+.sim-vehicle-marker {
+    width: 36px;
+    height: 36px;
+    background: radial-gradient(circle, #fbbf24, #f97316);
+    border-radius: 50%;
+    border: 3px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 0 0 4px rgba(251,191,36,0.3), 0 4px 16px rgba(0,0,0,0.5);
+    animation: sim-pulse 1s ease infinite;
+    cursor: default;
+}
+
+@keyframes sim-pulse {
+    0%,100% { box-shadow: 0 0 0 4px rgba(251,191,36,0.3), 0 4px 16px rgba(0,0,0,0.5); }
+    50%     { box-shadow: 0 0 0 8px rgba(251,191,36,0.15), 0 4px 16px rgba(0,0,0,0.5); }
+}

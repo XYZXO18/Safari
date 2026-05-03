@@ -26,7 +26,7 @@ from safari.tools.event_scanner import find_live_events
 from safari.tools.web_research import research_destination
 from safari.agent.hospitality_agent import HospitalityAgent
 from safari.agent.orchestrator import AgentOrchestrator
-
+import google.generativeai as genai
 app = Flask(__name__, static_folder="static", template_folder="templates")
 hospitality_agent = HospitalityAgent()
 
@@ -202,16 +202,14 @@ def plan_trip():
             # Hospitality Data
             orchestrator = AgentOrchestrator()
             try:
-                hosp_res = orchestrator.send_to_agent("Agent 2 (Hospitality)", {
-                    "action": "search_hotels",
+                hosp_res = orchestrator._send_to_hospitality("search_hotels", {
                     "city": activities.recommended_city,
                     "budget_per_night": breakdown.lodging_per_day,
                     "guests": 2
                 })
                 hotels = hosp_res.get("hotels", [])
                 
-                rest_res = orchestrator.send_to_agent("Agent 2 (Hospitality)", {
-                    "action": "search_restaurants",
+                rest_res = orchestrator._send_to_hospitality("search_restaurants", {
                     "city": activities.recommended_city
                 })
                 restaurants = rest_res.get("restaurants", [])
@@ -224,19 +222,23 @@ def plan_trip():
 
                 # Timeline Data
                 timeline_req = {
-                    "action": "plan_timeline",
                     "daily_activities": activities.daily_activities,
                     "hotel": hotel_data,
-                    "travel_mode": travel_mode
+                    "travel_mode": travel_mode,
+                    "vehicle_type": vehicle_type,
                 }
-                timeline_res = orchestrator.send_to_agent("Agent 3 (Transport)", timeline_req)
+                timeline_res = orchestrator._send_to_transport("plan_timeline", timeline_req)
                 timeline = timeline_res.get("timeline", {})
                 total_transit_cost = timeline_res.get("total_transit_cost", 0)
+                simulation_routes = timeline_res.get("simulation_routes", {})
             except Exception as e:
+                import traceback
+                traceback.print_exc()
                 print(f"Agent Orchestrator failed: {e}")
                 hospitality_data = {"hotels": [], "restaurants": []}
                 timeline = {}
                 total_transit_cost = 0
+                simulation_routes = {}
 
             return {
                 "path_type": path_type,
@@ -247,6 +249,8 @@ def plan_trip():
                     "distance_km": transport.distance_km,
                     "cost_one_way": transport.cost_one_way,
                     "cost_round_trip": transport.cost_round_trip,
+                    "breakdown": transport.breakdown,
+                    "vehicle_type": vehicle_type,
                 },
                 "budget": {
                     "total": target_budget,
@@ -283,6 +287,7 @@ def plan_trip():
                 "hospitality": hospitality_data,
                 "timeline": timeline,
                 "total_transit_cost": total_transit_cost,
+                "simulation_routes": simulation_routes,
             }
 
         paths = []

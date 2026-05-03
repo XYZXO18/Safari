@@ -12,8 +12,7 @@ from typing import List, Dict
 
 from config import DESTINATIONS
 
-
-from google import genai
+import google.generativeai as genai
 from google.genai import types
 import json
 import os

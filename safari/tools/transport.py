@@ -119,18 +119,20 @@ def calculate_transport_costs(
     mode_lower = mode.lower().strip()
 
     if mode_lower in ("car", "driving"):
-        # ─── Use the local fuel_prices.json database ─────────────────
+        # ─── Use the local fuel_prices.json database ───────────────────────
         fuel_result = calculate_driving_cost(
             distance_km=dist,
             fuel_type=fuel_type,
             round_trip=round_trip,
+            vehicle_type=vehicle_type,
         )
 
         cost_one_way = fuel_result["cost_one_way"]
         cost_rt = fuel_result["cost_round_trip"]
 
+        vehicle_label = vehicle_type.title() if vehicle_type not in ("default", "") else "Car"
         breakdown = (
-            f"📊 Fuel ({fuel_result['fuel_name']}): "
+            f"📊 {vehicle_label} | Fuel ({fuel_result['fuel_name']}): "
             f"{dist:.0f} km ÷ {fuel_result['km_per_liter']} km/L = "
             f"{fuel_result['liters_one_way']:.1f} L "
             f"@ {fuel_result['price_per_liter']:.2f} SAR/L"

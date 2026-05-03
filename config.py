@@ -42,12 +42,22 @@ BUDGET_RATIOS = {
 }
 
 # ─── Transport Defaults ─────────────────────────────────────────────────────
-# Average fuel consumption (liters per 100 km) by vehicle type
+# Fuel efficiency by vehicle type (km per liter — used in cost calculations)
+# Based on real-world Saudi highway driving figures
+VEHICLE_KM_PER_LITER = {
+    "sedan":   13.0,   # e.g. Toyota Camry, Hyundai Sonata
+    "suv":     10.0,   # e.g. Toyota Prado, Hyundai Tucson
+    "truck":    8.0,   # e.g. Toyota Hilux, Ford F-150 4x4 (desert-spec)
+    "4x4":      8.0,   # alias for truck
+    "default": 12.0,   # generic passenger car
+}
+
+# Legacy alias kept for backward-compat (liters per 100 km — NOT used in fuel.py)
 FUEL_CONSUMPTION = {
-    "sedan": 8.0,
-    "suv": 12.0,
-    "truck": 15.0,
-    "default": 10.0,
+    "sedan": 7.7,   # ≈ 13 km/L
+    "suv":  10.0,   # ≈ 10 km/L
+    "truck": 12.5,  # ≈ 8  km/L
+    "default": 8.3, # ≈ 12 km/L
 }
 
 # Average fuel price per liter (SAR) by region
@@ -67,24 +77,39 @@ TRANSPORT_RATES_PER_KM = {
 }
 
 # ─── Common Routes (one-way distances in km) ────────────────────────────────
+# All distances verified against Google Maps Saudi Arabia road routes
 ROUTES = {
-    ("riyadh", "jeddah"): 950,
-    ("riyadh", "dammam"): 400,
-    ("riyadh", "abha"): 950,
-    ("riyadh", "al-ula"): 1000,
-    ("riyadh", "yanbu"): 1050,
-    ("riyadh", "taif"): 800,
-    ("jeddah", "taif"): 170,
-    ("jeddah", "yanbu"): 325,
-    ("jeddah", "medina"): 420,
-    ("jeddah", "abha"): 600,
-    ("dammam", "al-ahsa"): 150,
-    ("dammam", "jubail"): 90,
-    ("riyadh", "the coast"): 500,
-    ("riyadh", "coast"): 500,
-    ("default", "coast"): 500,
-    ("default", "mountains"): 700,
-    ("default", "desert"): 300,
+    # ── Riyadh departures ────────────────────────────────────────────────────
+    ("riyadh", "jeddah"):        950,
+    ("riyadh", "dammam"):        400,
+    ("riyadh", "abha"):          950,
+    ("riyadh", "al-ula"):       1100,   # ✅ ~1,100 km via Hail highway
+    ("riyadh", "yanbu"):        1050,
+    ("riyadh", "taif"):          800,
+    ("riyadh", "medina"):        850,
+    ("riyadh", "tabuk"):        1300,
+    ("riyadh", "hail"):          670,
+    ("riyadh", "edge of the world"): 100,  # Day-trip distance west of Riyadh
+    ("riyadh", "empty quarter fringe"): 650,
+
+    # ── Jeddah departures ───────────────────────────────────────────────────
+    ("jeddah", "taif"):          170,
+    ("jeddah", "yanbu"):         325,
+    ("jeddah", "medina"):        420,
+    ("jeddah", "abha"):          600,
+    ("jeddah", "al-ula"):        600,   # via Medina
+
+    # ── Eastern Region ──────────────────────────────────────────────────────
+    ("dammam", "al-ahsa"):       150,
+    ("dammam", "jubail"):         90,
+
+    # ── Vibe-based defaults (used when only a vibe name is given) ───────────
+    ("riyadh", "the coast"):     500,
+    ("riyadh", "coast"):         500,
+    ("default", "coast"):        500,
+    ("default", "mountains"):    700,
+    ("default", "desert"):      1100,   # ✅ Fixed: Al-Ula is the flagship desert dest
+    ("default", "city"):           0,
 }
 
 # ─── Destination Metadata ───────────────────────────────────────────────────

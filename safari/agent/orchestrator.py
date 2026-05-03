@@ -23,7 +23,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from safari.agent.hospitality_agent import HospitalityAgent
-from safari.agent.transport_agent import TransportAgent
+from safari.agent.transport_agent import TravelIntelligenceAgent
 
 console = Console()
 
@@ -57,7 +57,7 @@ class AgentOrchestrator:
 
     def __init__(self):
         self.hospitality_agent = HospitalityAgent()
-        self.transport_agent = TransportAgent()
+        self.transport_agent = TravelIntelligenceAgent()
         self.message_log: List[AgentMessage] = []
 
     def _log_message(self, msg: AgentMessage):

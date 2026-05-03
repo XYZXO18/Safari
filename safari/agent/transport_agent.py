@@ -1,51 +1,88 @@
 """
-Transport Agent (Agent 3)
-==========================
-Handles all transportation planning: route calculation, cost estimation,
-and travel mode recommendations based on budget and schedule.
+Travel Intelligence Agent (Agent 3)
+=====================================
+Full ownership of ALL travel-related decisions and data:
 
-Wraps the existing transport & fuel tools into an agent interface
-that communicates with the Orchestrator.
+  • Inter-city routing (long-haul: car/flight/train/bus) with fuel breakdown
+  • Intra-city daily scheduling: ordered stops, driving/walking/taxi legs
+  • Travel-time estimation (minutes) for every leg
+  • Ordered route-point list for map simulation
+  • Car-rental vs taxi cost comparison per day
+
+Every leg emitted by this agent contains:
+  - from_name, to_name
+  - from_lat, from_lng, to_lat, to_lng
+  - mode  (emoji label)
+  - dist  (km)
+  - time_minutes
+  - cost  (SAR)
 """
 
 from __future__ import annotations
 
-import json
 import math
 from typing import Optional
-
-import requests
 
 from config import OLLAMA_URL, OLLAMA_MODEL, ROUTES
 from safari.tools.transport import calculate_transport_costs, TransportEstimate
 from safari.tools.fuel import calculate_driving_cost
 
 
-TRANSPORT_SYSTEM_PROMPT = """You are the **Transport & Logistics Agent** for the Safari travel system.
+# ─── Speed Table (km/h) ──────────────────────────────────────────────────────
+# Context-aware: city trips are slower than highway legs
+_SPEED = {
+    "walk":    5,
+    "drive_city":    50,   # < 20 km
+    "drive_highway": 110,  # >= 20 km (Saudi highway speed)
+    "taxi":    55,
+    "public":  35,
+}
+
+
+def _travel_time_minutes(dist_km: float, mode: str) -> int:
+    """Return estimated travel time in minutes for a given distance and mode."""
+    if mode == "walk":
+        speed = _SPEED["walk"]
+    elif mode in ("drive", "car"):
+        speed = _SPEED["drive_city"] if dist_km < 20 else _SPEED["drive_highway"]
+    elif mode == "taxi":
+        speed = _SPEED["taxi"]
+    elif mode == "public":
+        speed = _SPEED["public"]
+    else:
+        speed = _SPEED["drive_city"]
+
+    if speed <= 0:
+        return 0
+    return max(1, round((dist_km / speed) * 60))
+
+
+TRANSPORT_SYSTEM_PROMPT = """You are the **Travel Intelligence Agent** for the Safari travel system.
 
 ## Your Role
-You handle all transportation planning: calculating routes, costs, and recommending
-the best travel mode based on the user's budget and schedule.
+You own ALL travel-related decisions and data — both inter-city logistics and
+daily intra-city routing. Your outputs drive the map, the itinerary timeline,
+and the route simulation.
 
 ## Capabilities
-- Calculate driving costs (fuel prices from local database)
-- Estimate flight, train, and bus costs
-- Compare transport modes for the same route
-- Recommend the cheapest or fastest option
-- Provide route breakdowns with per-km costs
+- Calculate inter-city driving costs (fuel, vehicle type, distance)
+- Estimate flight, train, bus costs for long-haul routes
+- Build ordered daily routes: hotel → stops → hotel
+- Calculate travel time (minutes) for every leg based on mode and distance
+- Recommend cheapest daily transport (own-car vs taxi vs public vs car-rental)
+- Return simulation route-points for animated map playback
 
 ## Rules
-1. Use ONLY the data from your transport database
-2. Always show: distance, cost_one_way, cost_round_trip
-3. Include fuel breakdown for driving (fuel type, L consumed, price/L)
-4. Output structured data for the Orchestrator
+1. Always include time_minutes on every leg
+2. Always include from/to lat/lng so the map can draw the animation
+3. Output structured JSON for the Orchestrator — no prose
 """
 
 
-class TransportAgent:
+class TravelIntelligenceAgent:
     """
-    Agent 3: Transport & Logistics Agent.
-    Processes transport-related requests.
+    Agent 3 — Travel Intelligence Agent.
+    Owns all transportation planning end-to-end.
     """
 
     def __init__(self):
@@ -54,26 +91,26 @@ class TransportAgent:
 
     def process_request(self, request: dict) -> dict:
         """
-        Process a transport request.
-
         Supported actions:
-          - calculate_route: Get cost for a specific mode + route
-          - compare_modes: Compare all modes for the same route
-          - get_routes: List available routes
+          - plan_timeline   : Build daily route with time + cost per leg
+          - calculate_route : Inter-city cost for a single mode + route
+          - compare_modes   : Compare all modes for a route
+          - get_routes      : List known routes
         """
         action = request.get("action", "").lower()
 
         if action == "plan_timeline":
             return self._handle_timeline(request)
-
-        if action == "calculate_route":
+        elif action == "calculate_route":
             return self._handle_calculate(request)
         elif action == "compare_modes":
             return self._handle_compare(request)
         elif action == "get_routes":
             return self._handle_routes(request)
         else:
-            return {"error": f"Unknown transport action: {action}"}
+            return {"error": f"Unknown travel action: {action}"}
+
+    # ─── Inter-city ──────────────────────────────────────────────────────────
 
     def _handle_calculate(self, req: dict) -> dict:
         mode = req.get("mode", "car")
@@ -86,6 +123,10 @@ class TransportAgent:
                 mode=mode, origin=origin,
                 destination=destination, vehicle_type=vehicle_type,
             )
+            # Travel time for the long-haul (highway)
+            time_hrs = estimate.distance_km / _SPEED["drive_highway"] if mode in ("car", "driving") else estimate.distance_km / 800
+            time_mins = round(time_hrs * 60)
+
             return {
                 "action": "calculate_route",
                 "status": "success",
@@ -96,6 +137,7 @@ class TransportAgent:
                     "distance_km": estimate.distance_km,
                     "cost_one_way": estimate.cost_one_way,
                     "cost_round_trip": estimate.cost_round_trip,
+                    "time_minutes_one_way": time_mins,
                     "currency": estimate.currency,
                     "breakdown": estimate.breakdown,
                     "summary": estimate.summary,
@@ -115,17 +157,19 @@ class TransportAgent:
                 est = calculate_transport_costs(
                     mode=mode, origin=origin, destination=destination,
                 )
+                speed = _SPEED["drive_highway"] if mode == "car" else 800
+                time_mins = round((est.distance_km / speed) * 60)
                 comparisons.append({
                     "mode": est.mode,
                     "distance_km": est.distance_km,
                     "cost_one_way": est.cost_one_way,
                     "cost_round_trip": est.cost_round_trip,
+                    "time_minutes_one_way": time_mins,
                     "breakdown": est.breakdown,
                 })
             except Exception:
                 continue
 
-        # Sort by cost
         comparisons.sort(key=lambda x: x["cost_round_trip"])
         cheapest = comparisons[0]["mode"] if comparisons else "unknown"
 
@@ -135,8 +179,10 @@ class TransportAgent:
             "destination": destination,
             "modes": comparisons,
             "cheapest": cheapest,
-            "recommendation": f"The cheapest option is {cheapest} "
-                            f"at {comparisons[0]['cost_round_trip']:.0f} SAR round-trip" if comparisons else "No routes available",
+            "recommendation": (
+                f"Cheapest: {cheapest} at {comparisons[0]['cost_round_trip']:.0f} SAR round-trip"
+                if comparisons else "No routes available"
+            ),
         }
 
     def _handle_routes(self, req: dict) -> dict:
@@ -154,8 +200,10 @@ class TransportAgent:
         routes.sort(key=lambda x: x["distance_km"])
         return {"action": "get_routes", "routes": routes, "count": len(routes)}
 
+    # ─── Haversine ───────────────────────────────────────────────────────────
+
     def _haversine(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-        R = 6371  # Earth radius in km
+        R = 6371
         dlat = math.radians(lat2 - lat1)
         dlon = math.radians(lon2 - lon1)
         a = (math.sin(dlat / 2) ** 2 +
@@ -163,117 +211,210 @@ class TransportAgent:
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         return R * c
 
+    # ─── Daily Timeline ──────────────────────────────────────────────────────
+
+    def _make_leg(
+        self,
+        from_name: str, from_lat: float, from_lng: float,
+        to_name: str, to_lat: float, to_lng: float,
+        mode_key: str, mode_label: str, cost: float,
+    ) -> dict:
+        dist = self._haversine(from_lat, from_lng, to_lat, to_lng)
+        return {
+            "from_name": from_name,
+            "from_lat": from_lat,
+            "from_lng": from_lng,
+            "to_name": to_name,
+            "to_lat": to_lat,
+            "to_lng": to_lng,
+            "mode": mode_label,
+            "dist": round(dist, 2),
+            "time_minutes": _travel_time_minutes(dist, mode_key),
+            "cost": round(cost, 2),
+        }
+
     def _handle_timeline(self, req: dict) -> dict:
         daily_activities = req.get("daily_activities", {})
         hotel = req.get("hotel", {})
         travel_mode = req.get("travel_mode", "flight")
+        vehicle_type = req.get("vehicle_type", "default")
 
         hotel_lat = hotel.get("lat", 0)
         hotel_lng = hotel.get("lng", 0)
+        hotel_name = hotel.get("name", "Hotel")
+
+        has_own_car = travel_mode == "car"
 
         timeline = {}
         total_transit_cost = 0
+        # Ordered simulation points per day
+        simulation_routes = {}
 
         for day_str, acts in daily_activities.items():
             day = int(day_str)
-            day_timeline = []
-            
-            # Start at hotel
-            current_lat, current_lng = hotel_lat, hotel_lng
-            
-            # Car tracking
-            has_own_car = (travel_mode == "car")
-            car_parked_at = (hotel_lat, hotel_lng) if has_own_car else None
-            
-            day_taxi_cost = 0
-            day_driving_cost = 0
+            day_legs: list[dict] = []
 
-            for i, act in enumerate(acts):
+            # Simulation route for this day: hotel + all stops + hotel
+            sim_points = [{
+                "name": hotel_name,
+                "lat": hotel_lat,
+                "lng": hotel_lng,
+                "type": "hotel",
+                "day": day,
+            }]
+
+            current_lat, current_lng = hotel_lat, hotel_lng
+            current_name = hotel_name
+
+            car_parked_lat, car_parked_lng = hotel_lat, hotel_lng
+            car_parked_name = hotel_name
+
+            day_taxi_cost = 0.0
+            day_driving_cost = 0.0
+
+            for act in acts:
                 dest_lat = act.get("lat", current_lat)
                 dest_lng = act.get("lng", current_lng)
-                
+                act_name = act.get("name", "Stop")
+
                 dist = self._haversine(current_lat, current_lng, dest_lat, dest_lng)
-                
-                if dist < 0.1:
-                    continue  # Already there
-                    
-                mode_used = ""
-                cost = 0
+                if dist < 0.05:
+                    # Already at this location — add to sim but no leg
+                    sim_points.append({
+                        "name": act_name, "lat": dest_lat, "lng": dest_lng,
+                        "type": "activity", "day": day,
+                    })
+                    continue
 
                 if dist < 1.0:
-                    mode_used = "walk"
-                    cost = 0
-                    day_timeline.append({"from": "Current", "to": act["name"], "mode": "🚶 Walk", "dist": dist, "cost": 0})
-                    current_lat, current_lng = dest_lat, dest_lng
-                else:
-                    if has_own_car:
-                        # Need to get to car if we walked away from it
-                        dist_to_car = self._haversine(current_lat, current_lng, car_parked_at[0], car_parked_at[1])
-                        if dist_to_car > 0.1:
-                            day_timeline.append({"from": "Current", "to": "Parked Car", "mode": "🚶 Walk back to car", "dist": dist_to_car, "cost": 0})
-                            current_lat, current_lng = car_parked_at[0], car_parked_at[1]
-                            dist = self._haversine(current_lat, current_lng, dest_lat, dest_lng) # Recalculate dist from car
-                        
-                        # Drive
-                        fuel_est = calculate_driving_cost(dist, round_trip=False)
-                        cost = fuel_est["cost_one_way"]
-                        day_driving_cost += cost
-                        mode_used = "drive"
-                        day_timeline.append({"from": "Current", "to": act["name"], "mode": "🚗 Drive (Banzin Cost)", "dist": dist, "cost": cost})
-                        car_parked_at = (dest_lat, dest_lng)
-                        current_lat, current_lng = dest_lat, dest_lng
-                    else:
-                        # Taxi vs Public Transport
-                        public_dist = dist * 1.5 # Public transport is usually less direct
-                        public_cost = 5 + (public_dist * 0.5) # Base fare + 0.5 SAR/km
-                        taxi_cost = 10 + (dist * 2.5) # Base fare + 2.5 SAR/km
-                        
-                        if public_cost < taxi_cost and dist > 3.0:
-                            mode_used = "public"
-                            cost = public_cost
-                            day_timeline.append({"from": "Current", "to": act["name"], "mode": "🚌 Public Transport", "dist": dist, "cost": cost})
-                        else:
-                            mode_used = "taxi"
-                            cost = taxi_cost
-                            day_timeline.append({"from": "Current", "to": act["name"], "mode": "🚕 Taxi", "dist": dist, "cost": cost})
-                        
-                        day_taxi_cost += cost
-                        current_lat, current_lng = dest_lat, dest_lng
+                    # ── Walk ────────────────────────────────────────────────
+                    leg = self._make_leg(
+                        current_name, current_lat, current_lng,
+                        act_name, dest_lat, dest_lng,
+                        "walk", "🚶 Walk", 0,
+                    )
+                    day_legs.append(leg)
 
-            # Return to hotel
+                elif has_own_car:
+                    # ── Drive (own car) ─────────────────────────────────────
+                    # Walk back to car if needed
+                    dist_to_car = self._haversine(current_lat, current_lng, car_parked_lat, car_parked_lng)
+                    if dist_to_car > 0.1:
+                        walk_leg = self._make_leg(
+                            current_name, current_lat, current_lng,
+                            "Parked Car", car_parked_lat, car_parked_lng,
+                            "walk", "🚶 Walk to car", 0,
+                        )
+                        day_legs.append(walk_leg)
+                        current_lat, current_lng = car_parked_lat, car_parked_lng
+                        current_name = "Parked Car"
+
+                    drive_dist = self._haversine(current_lat, current_lng, dest_lat, dest_lng)
+                    fuel_est = calculate_driving_cost(drive_dist, round_trip=False, vehicle_type=vehicle_type)
+                    cost = fuel_est["cost_one_way"]
+                    day_driving_cost += cost
+
+                    leg = self._make_leg(
+                        current_name, current_lat, current_lng,
+                        act_name, dest_lat, dest_lng,
+                        "drive", "🚗 Drive", cost,
+                    )
+                    day_legs.append(leg)
+                    car_parked_lat, car_parked_lng = dest_lat, dest_lng
+                    car_parked_name = act_name
+
+                else:
+                    # ── Taxi / Public ────────────────────────────────────────
+                    public_cost = 5 + (dist * 1.5 * 0.5)
+                    taxi_cost = 10 + (dist * 2.5)
+
+                    if public_cost < taxi_cost and dist > 3.0:
+                        leg = self._make_leg(
+                            current_name, current_lat, current_lng,
+                            act_name, dest_lat, dest_lng,
+                            "public", "🚌 Public Transport", public_cost,
+                        )
+                        day_taxi_cost += public_cost
+                    else:
+                        leg = self._make_leg(
+                            current_name, current_lat, current_lng,
+                            act_name, dest_lat, dest_lng,
+                            "taxi", "🚕 Taxi", taxi_cost,
+                        )
+                        day_taxi_cost += taxi_cost
+                    day_legs.append(leg)
+
+                current_lat, current_lng = dest_lat, dest_lng
+                current_name = act_name
+
+                sim_points.append({
+                    "name": act_name, "lat": dest_lat, "lng": dest_lng,
+                    "type": "activity", "day": day,
+                })
+
+            # ── Return to hotel ──────────────────────────────────────────────
             dist_to_hotel = self._haversine(current_lat, current_lng, hotel_lat, hotel_lng)
             if dist_to_hotel > 0.1:
                 if has_own_car:
-                    dist_to_car = self._haversine(current_lat, current_lng, car_parked_at[0], car_parked_at[1])
+                    dist_to_car = self._haversine(current_lat, current_lng, car_parked_lat, car_parked_lng)
                     if dist_to_car > 0.1:
-                        day_timeline.append({"from": "Current", "to": "Parked Car", "mode": "🚶 Walk back to car", "dist": dist_to_car, "cost": 0})
-                        dist_to_hotel = self._haversine(car_parked_at[0], car_parked_at[1], hotel_lat, hotel_lng)
-                    
-                    fuel_est = calculate_driving_cost(dist_to_hotel, round_trip=False)
+                        walk_leg = self._make_leg(
+                            current_name, current_lat, current_lng,
+                            "Parked Car", car_parked_lat, car_parked_lng,
+                            "walk", "🚶 Walk to car", 0,
+                        )
+                        day_legs.append(walk_leg)
+                        dist_to_hotel = self._haversine(car_parked_lat, car_parked_lng, hotel_lat, hotel_lng)
+                        current_lat, current_lng = car_parked_lat, car_parked_lng
+                        current_name = "Parked Car"
+
+                    fuel_est = calculate_driving_cost(dist_to_hotel, round_trip=False, vehicle_type=vehicle_type)
                     cost = fuel_est["cost_one_way"]
                     day_driving_cost += cost
-                    day_timeline.append({"from": "Current", "to": "Hotel", "mode": "🚗 Drive back to Hotel", "dist": dist_to_hotel, "cost": cost})
+                    leg = self._make_leg(
+                        current_name, current_lat, current_lng,
+                        hotel_name, hotel_lat, hotel_lng,
+                        "drive", "🚗 Drive back to Hotel", cost,
+                    )
+                    day_legs.append(leg)
                 else:
                     taxi_cost = 10 + (dist_to_hotel * 2.5)
                     day_taxi_cost += taxi_cost
-                    day_timeline.append({"from": "Current", "to": "Hotel", "mode": "🚕 Taxi back to Hotel", "dist": dist_to_hotel, "cost": taxi_cost})
+                    leg = self._make_leg(
+                        current_name, current_lat, current_lng,
+                        hotel_name, hotel_lat, hotel_lng,
+                        "taxi", "🚕 Taxi back to Hotel", taxi_cost,
+                    )
+                    day_legs.append(leg)
 
-            # Check if renting a car is cheaper
-            rent_car_cost_per_day = 120 # SAR
+            sim_points.append({
+                "name": hotel_name, "lat": hotel_lat, "lng": hotel_lng,
+                "type": "hotel_return", "day": day,
+            })
+
+            # Car rental recommendation
+            rent_car_cost_per_day = 120
             recommendation = ""
             if not has_own_car and day_taxi_cost > rent_car_cost_per_day:
-                recommendation = f"💡 Tip: You spent {day_taxi_cost:.0f} SAR on transport today. Renting a car (~{rent_car_cost_per_day} SAR/day) would be cheaper!"
-            
+                recommendation = (
+                    f"💡 Tip: You spent {day_taxi_cost:.0f} SAR on transport today. "
+                    f"Renting a car (~{rent_car_cost_per_day} SAR/day) would be cheaper!"
+                )
+
+            day_cost = day_driving_cost if has_own_car else day_taxi_cost
+            total_transit_cost += day_cost
+
             timeline[day_str] = {
-                "legs": day_timeline,
-                "day_cost": day_taxi_cost if not has_own_car else day_driving_cost,
-                "recommendation": recommendation
+                "legs": day_legs,
+                "day_cost": round(day_cost, 2),
+                "recommendation": recommendation,
             }
-            total_transit_cost += timeline[day_str]["day_cost"]
+            simulation_routes[day_str] = sim_points
 
         return {
             "action": "plan_timeline",
             "status": "success",
             "timeline": timeline,
-            "total_transit_cost": total_transit_cost
+            "total_transit_cost": round(total_transit_cost, 2),
+            "simulation_routes": simulation_routes,
         }

@@ -212,12 +212,39 @@ function clearMap() {
     }
 }
 
-function createIcon(emoji) {
+// ─── Icon Factories ─────────────────────────────────────────────────────────
+const DAY_COLORS = [
+    '#8b5cf6','#06b6d4','#f59e0b','#10b981','#ec4899','#f97316','#6366f1'
+];
+
+function createDayMarker(day) {
+    const color = DAY_COLORS[(day - 1) % DAY_COLORS.length];
     return L.divIcon({
-        className: 'custom-marker',
-        html: `<span style="font-size:28px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.6))">${emoji}</span>`,
-        iconSize: [36, 36],
-        iconAnchor: [18, 18],
+        className: '',
+        html: `<div class="day-marker day-marker-${day}" style="background:${color}">${day}</div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -18],
+    });
+}
+
+function createHotelMarker() {
+    return L.divIcon({
+        className: '',
+        html: `<div class="hotel-marker">🏨</div>`,
+        iconSize: [34, 34],
+        iconAnchor: [17, 17],
+        popupAnchor: [0, -20],
+    });
+}
+
+function createOriginMarker() {
+    return L.divIcon({
+        className: '',
+        html: `<div class="hotel-marker" style="background:linear-gradient(135deg,#f97316,#fbbf24)">📍</div>`,
+        iconSize: [34, 34],
+        iconAnchor: [17, 17],
+        popupAnchor: [0, -20],
     });
 }
 
@@ -230,7 +257,7 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
     const waypoints = [oLatLng];
 
     // Origin marker
-    const originMarker = L.marker(oLatLng, { icon: createIcon('📍') })
+    const originMarker = L.marker(oLatLng, { icon: createOriginMarker() })
         .addTo(map)
         .bindPopup(`
             <div class="popup-title">${originName}</div>
@@ -238,7 +265,7 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
         `);
     markers.push(originMarker);
 
-    // Hospitality markers (Hotels & Restaurants from Agent 2)
+    // Hotel markers (from hospitality or fallback)
     let addedHospitality = false;
     if (data.hospitality) {
         if (data.hospitality.hotels && data.hospitality.hotels.length > 0) {
@@ -246,12 +273,14 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
                 if (h.lat && h.lng) {
                     const hLatLng = [h.lat, h.lng];
                     waypoints.push(hLatLng);
-                    const hotelMarker = L.marker(hLatLng, { icon: createIcon('🏨') })
+                    const hotelMarker = L.marker(hLatLng, { icon: createHotelMarker() })
                         .addTo(map)
                         .bindPopup(`
                             <div class="popup-title">${h.name}</div>
                             <div class="popup-detail">${h.stars}★ Hotel</div>
-                            <div class="popup-detail" style="color:var(--accent);">~${h.best_deal ? h.best_deal.final_price_sar : 0} SAR/night</div>
+                            <div class="popup-detail" style="color:var(--accent);">
+                                ~${h.best_deal ? h.best_deal.final_price_sar : 0} SAR/night
+                            </div>
                         `);
                     markers.push(hotelMarker);
                     addedHospitality = true;
@@ -262,7 +291,11 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
             data.hospitality.restaurants.forEach(r => {
                 if (r.lat && r.lng) {
                     const rLatLng = [r.lat, r.lng];
-                    const rMarker = L.marker(rLatLng, { icon: createIcon('🍽️') })
+                    const rMarker = L.marker(rLatLng, { icon: L.divIcon({
+                        className: '',
+                        html: `<div class="hotel-marker" style="background:linear-gradient(135deg,#10b981,#06b6d4);font-size:15px;">🍽️</div>`,
+                        iconSize: [32,32], iconAnchor: [16,16]
+                    }) })
                         .addTo(map)
                         .bindPopup(`
                             <div class="popup-title">${r.name}</div>
@@ -274,13 +307,13 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
         }
     }
 
-    // Fallbacks if no hospitality data
+    // Fallback hotel/dest
     if (!addedHospitality) {
         const hotel = data.activities.hotel;
         if (hotel && hotel.lat && hotel.lng) {
             const hLatLng = [hotel.lat, hotel.lng];
             waypoints.push(hLatLng);
-            const hotelMarker = L.marker(hLatLng, { icon: createIcon('🏨') })
+            const hotelMarker = L.marker(hLatLng, { icon: createHotelMarker() })
                 .addTo(map)
                 .bindPopup(`
                     <div class="popup-title">${hotel.name}</div>
@@ -289,10 +322,12 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
             markers.push(hotelMarker);
         } else {
             waypoints.push(dLatLng);
-            // Destination marker fallback
             const destEmoji = { coast: '🏖️', mountains: '⛰️', desert: '🏜️', city: '🏙️' };
-            const emoji = destEmoji[state.destination] || '📌';
-            const destMarker = L.marker(dLatLng, { icon: createIcon(emoji) })
+            const destMarker = L.marker(dLatLng, { icon: L.divIcon({
+                className: '',
+                html: `<div class="hotel-marker" style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);font-size:16px;">${destEmoji[state.destination]||'📌'}</div>`,
+                iconSize: [34,34], iconAnchor: [17,17]
+            }) })
                 .addTo(map)
                 .bindPopup(`
                     <div class="popup-title">${destName}</div>
@@ -303,43 +338,39 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
         }
     }
 
-    // Activity markers
+    // Activity markers — day-numbered
     const daily = data.activities.daily_plan;
-    Object.keys(daily).forEach(day => {
-        daily[day].forEach(act => {
+    Object.keys(daily).forEach(dayStr => {
+        const day = parseInt(dayStr);
+        daily[dayStr].forEach(act => {
             if (act && act.lat && act.lng) {
                 const aLatLng = [act.lat, act.lng];
                 waypoints.push(aLatLng);
                 const isEvent = act.is_live_event;
                 const isTrending = act.is_trending_spot;
-                let icon, typeStr;
-                if (isEvent) {
-                    icon = '🎪';
-                    typeStr = 'Live Event';
-                } else if (isTrending) {
-                    icon = '🔥';
-                    typeStr = 'Trending Spot';
+
+                let markerIcon;
+                if (isEvent || isTrending) {
+                    const emoji = isEvent ? '🎪' : '🔥';
+                    markerIcon = L.divIcon({
+                        className: '',
+                        html: `<div class="hotel-marker" style="background:linear-gradient(135deg,#f59e0b,#ec4899);font-size:15px;">${emoji}</div>`,
+                        iconSize: [34,34], iconAnchor: [17,17]
+                    });
                 } else {
-                    icon = '🎯';
-                    typeStr = 'Activity';
+                    markerIcon = createDayMarker(day);
                 }
-                const timeStr = ((isEvent || isTrending) && act.time && act.time !== "TBD") 
-                    ? `<div class="popup-detail" style="color:var(--accent); font-weight:bold; margin-top:4px;">🕒 Starts at: ${act.time}</div>` 
-                    : '';
-                const buzzStr = (isTrending && act.social_buzz)
-                    ? `<div class="popup-detail" style="color:#f59e0b; margin-top:4px;">📱 ${act.social_buzz}</div>`
-                    : '';
-                const ratingStr = (isTrending && act.rating)
-                    ? `<div class="popup-detail" style="margin-top:2px;">${'⭐'.repeat(Math.round(act.rating))} (${act.rating})</div>`
-                    : '';
-                const actMarker = L.marker(aLatLng, { icon: createIcon(icon) })
+
+                const timeStr = ((isEvent || isTrending) && act.time && act.time !== 'TBD')
+                    ? `<div class="popup-detail" style="color:var(--accent);font-weight:bold;margin-top:4px;">🕒 ${act.time}</div>` : '';
+                const typeLabel = isEvent ? 'Live Event' : isTrending ? 'Trending Spot' : `Day ${day}`;
+
+                const actMarker = L.marker(aLatLng, { icon: markerIcon })
                     .addTo(map)
                     .bindPopup(`
                         <div class="popup-title">${act.name}</div>
-                        <div class="popup-detail">${typeStr} (Day ${day})</div>
+                        <div class="popup-detail">${typeLabel}</div>
                         ${timeStr}
-                        ${buzzStr}
-                        ${ratingStr}
                     `);
                 markers.push(actMarker);
             }
@@ -425,9 +456,16 @@ function renderItinerary(data) {
                 const legs = data.timeline[String(d)].legs;
                 if (index < legs.length) {
                     const leg = legs[index];
+                    const mins = leg.time_minutes ? leg.time_minutes : null;
+                    const timeTag = mins
+                        ? `<span class="leg-time-pill">🕐 ~${mins} min</span>`
+                        : '';
                     legHtml = `
-                    <div class="transit-leg" style="margin-left: 20px; padding: 5px 10px; border-left: 2px dashed rgba(255,255,255,0.2); font-size: 1.1em; color: #a1a1aa;">
-                        <span>${leg.mode}</span> | <span>${leg.dist.toFixed(1)} km</span> | <span>Cost: ${leg.cost.toFixed(0)} ${currency}</span>
+                    <div class="transit-leg">
+                        <span>${leg.mode}</span>
+                        <span>${leg.dist.toFixed(1)} km</span>
+                        ${timeTag}
+                        ${leg.cost > 0 ? `<span>${leg.cost.toFixed(0)} ${currency}</span>` : ''}
                     </div>`;
                 }
             }
@@ -467,14 +505,19 @@ function renderItinerary(data) {
             `;
         }).join('');
         
-        // Add return to hotel leg if it exists
+        // Return-to-hotel transit leg
         if (data.timeline && data.timeline[String(d)] && data.timeline[String(d)].legs) {
             const legs = data.timeline[String(d)].legs;
             if (schedule.length < legs.length) {
                 const leg = legs[legs.length - 1];
+                const mins = leg.time_minutes || null;
+                const timeTag = mins ? `<span class="leg-time-pill">🕐 ~${mins} min</span>` : '';
                 activitiesHtml += `
-                <div class="transit-leg" style="margin-left: 20px; padding: 5px 10px; border-left: 2px dashed rgba(255,255,255,0.2); font-size: 1.1em; color: #a1a1aa;">
-                    <span>${leg.mode}</span> | <span>${leg.dist.toFixed(1)} km</span> | <span>Cost: ${leg.cost.toFixed(0)} ${currency}</span>
+                <div class="transit-leg">
+                    <span>${leg.mode}</span>
+                    <span>${leg.dist.toFixed(1)} km</span>
+                    ${timeTag}
+                    ${leg.cost > 0 ? `<span>${leg.cost.toFixed(0)} ${currency}</span>` : ''}
                 </div>`;
             }
         }
@@ -559,7 +602,6 @@ function renderBudgetDetails(data) {
 
 // ─── Update Map Overlays ────────────────────────────────────────────────────
 function updateOverlays(data) {
-    // Trip info card
     $('info-origin').textContent = data.map.origin_name;
     $('info-dest').textContent = data.map.dest_name;
     $('info-distance').textContent = fmt(data.transport.distance_km);
@@ -568,7 +610,6 @@ function updateOverlays(data) {
     $('info-currency').textContent = data.budget.currency;
     tripInfo.classList.remove('hidden');
 
-    // Budget bar segments
     const c = data.budget.currency;
     $('val-transport').textContent = `${fmt(data.budget.transport)} ${c}`;
     $('val-lodging').textContent = `${fmt(data.budget.lodging.total)} ${c}`;
@@ -576,6 +617,9 @@ function updateOverlays(data) {
     $('val-activities').textContent = `${fmt(data.budget.activities.total)} ${c}`;
     $('val-buffer').textContent = `${fmt(data.budget.buffer.total)} ${c}`;
     budgetBar.classList.remove('hidden');
+
+    // Show simulation controls
+    $('sim-controls').classList.remove('hidden');
 }
 
 // ─── Warnings ────────────────────────────────────────────────────────────────
@@ -691,7 +735,7 @@ function selectPath(idx) {
     // Render left panel results
     renderHospitalityDeals(data);
     renderWebResearch(data);
-    renderBudgetDetailsLeft(data); // Render budget in left panel too
+    renderBudgetDetailsLeft(data);
 
     // Render warnings
     renderWarnings(data);
@@ -699,6 +743,9 @@ function selectPath(idx) {
     // Update calendar
     const today = new Date().getDate();
     renderCalendar(today + 1, state.days);
+
+    // Setup simulation
+    setupSimulation(data);
 }
 
 $('edit-trip-btn').addEventListener('click', () => {
@@ -708,13 +755,78 @@ $('edit-trip-btn').addEventListener('click', () => {
 
 function renderBudgetDetailsLeft(data) {
     const b = data.budget;
+    const t = data.transport;
     const c = b.currency;
     const container = $('left-budget');
-    if(!container) return;
-    
+    if (!container) return;
+
+    const isCar = t && (t.mode === 'car' || t.mode === 'driving');
+
+    // Build fuel breakdown HTML (only for car mode)
+    let fuelBreakdownHtml = '';
+    if (isCar && t.breakdown) {
+        // Parse breakdown string: "📊 Truck | Fuel (RON 91): 1100 km ÷ 8 km/L = 137.5 L @ 2.18 SAR/L"
+        // We show a styled expandable card
+        const vehicleLabel = (t.vehicle_type && t.vehicle_type !== 'default')
+            ? t.vehicle_type.charAt(0).toUpperCase() + t.vehicle_type.slice(1)
+            : 'Car';
+        const litersOW = t.distance_km / (t.breakdown.match(/÷\s*([\d.]+)\s*km\/L/) ? parseFloat(t.breakdown.match(/÷\s*([\d.]+)\s*km\/L/)[1]) : 12);
+        const kmPerLMatch = t.breakdown.match(/÷\s*([\d.]+)\s*km\/L/);
+        const priceMatch  = t.breakdown.match(/@\s*([\d.]+)\s*SAR\/L/);
+        const kmPerL  = kmPerLMatch  ? parseFloat(kmPerLMatch[1])  : '—';
+        const pricePL = priceMatch   ? parseFloat(priceMatch[1])   : 2.18;
+        const liters  = t.distance_km / (kmPerL || 12);
+
+        fuelBreakdownHtml = `
+        <div style="margin-top:4px;">
+            <button id="fuel-toggle-btn" onclick="document.getElementById('fuel-breakdown-card').classList.toggle('hidden')" 
+                style="background:none;border:none;color:var(--accent);font-size:12px;cursor:pointer;padding:2px 0;">
+                ⛽ Show fuel details ▾
+            </button>
+            <div id="fuel-breakdown-card" class="hidden" style="
+                margin-top:8px;
+                padding:12px 14px;
+                background: rgba(139,92,246,0.08);
+                border: 1px solid rgba(139,92,246,0.25);
+                border-radius:10px;
+                font-size:12px;
+                line-height:1.8;
+                color:var(--text-secondary);
+            ">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 16px;">
+                    <span style="opacity:0.65;">Vehicle</span>
+                    <span style="color:var(--text-primary);font-weight:600;">${vehicleLabel}</span>
+
+                    <span style="opacity:0.65;">One-way distance</span>
+                    <span style="color:var(--text-primary);">${fmt(t.distance_km)} km</span>
+
+                    <span style="opacity:0.65;">Fuel efficiency</span>
+                    <span style="color:var(--text-primary);">${kmPerL} km/L</span>
+
+                    <span style="opacity:0.65;">Liters (one way)</span>
+                    <span style="color:var(--text-primary);">${liters.toFixed(1)} L</span>
+
+                    <span style="opacity:0.65;">Fuel price</span>
+                    <span style="color:var(--text-primary);">2.18 SAR/L (RON 91)</span>
+
+                    <span style="opacity:0.65;">One-way cost</span>
+                    <span style="color:#fbbf24;">${fmt(t.cost_one_way)} ${c}</span>
+
+                    <span style="opacity:0.65;">Round-trip cost</span>
+                    <span style="color:#4ade80;font-weight:700;">${fmt(t.cost_round_trip)} ${c}</span>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
     container.innerHTML = `
         <h3 style="margin-top:20px;margin-bottom:15px;color:var(--text-primary);font-size:22px;">💰 Budget Breakdown</h3>
-        <div class="budget-row"><span class="budget-row-label">🚗 Transport</span><span class="budget-row-value">${fmt(b.transport)} ${c}</span></div>
+        <div class="budget-row">
+            <span class="budget-row-label">🚗 Transport</span>
+            <span class="budget-row-value">${fmt(b.transport)} ${c}</span>
+        </div>
+        ${fuelBreakdownHtml}
         <div class="budget-row"><span class="budget-row-label">🏨 Lodging</span><span class="budget-row-value">${fmt(b.lodging.total)} ${c}</span></div>
         <div class="budget-row"><span class="budget-row-label">🍽️ Food</span><span class="budget-row-value">${fmt(b.food.total)} ${c}</span></div>
         <div class="budget-row"><span class="budget-row-label">🎯 Activities</span><span class="budget-row-value">${fmt(b.activities.total)} ${c}</span></div>
@@ -894,12 +1006,8 @@ window.deleteEvent = function(day, actId, cost) {
         const idx = daily[day].findIndex(a => a.id === actId);
         if (idx !== -1) {
             daily[day].splice(idx, 1);
-            
-            // Restore budget
             state.tripData.budget.activities.total += cost;
             state.tripData.budget.activities.per_day = state.tripData.budget.activities.total / state.tripData.budget.days;
-            
-            // Re-render
             renderItinerary(state.tripData);
             renderBudgetDetails(state.tripData);
             updateOverlays(state.tripData);
@@ -907,3 +1015,141 @@ window.deleteEvent = function(day, actId, cost) {
         }
     }
 };
+
+// ─── Route Simulation Engine ─────────────────────────────────────────────────
+const sim = {
+    playing: false,
+    currentDay: '1',
+    stepIdx: 0,
+    timer: null,
+    vehicleMarker: null,
+    simLine: null,
+    routes: {},   // simulation_routes from API
+};
+
+function setupSimulation(data) {
+    sim.routes = data.simulation_routes || {};
+    sim.playing = false;
+    sim.stepIdx = 0;
+
+    // Build day pills
+    const pillContainer = $('sim-day-pills');
+    pillContainer.innerHTML = '';
+    Object.keys(sim.routes).forEach(dayStr => {
+        const pill = document.createElement('button');
+        pill.className = 'sim-day-pill' + (dayStr === '1' ? ' active' : '');
+        pill.textContent = dayStr;
+        pill.title = `Simulate Day ${dayStr}`;
+        pill.addEventListener('click', () => {
+            if (sim.playing) stopSimulation();
+            document.querySelectorAll('.sim-day-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            sim.currentDay = dayStr;
+            sim.stepIdx = 0;
+            $('sim-status').textContent = `Day ${dayStr} ready — press ▶`;
+            clearSimLine();
+        });
+        pillContainer.appendChild(pill);
+    });
+
+    if (Object.keys(sim.routes).length > 0) {
+        sim.currentDay = Object.keys(sim.routes)[0];
+        $('sim-status').textContent = `Press ▶ to simulate Day ${sim.currentDay}`;
+    }
+
+    $('sim-btn').onclick = () => {
+        if (sim.playing) {
+            stopSimulation();
+        } else {
+            startSimulation();
+        }
+    };
+}
+
+function clearSimLine() {
+    if (sim.simLine) { map.removeLayer(sim.simLine); sim.simLine = null; }
+}
+
+function clearVehicle() {
+    if (sim.vehicleMarker) { map.removeLayer(sim.vehicleMarker); sim.vehicleMarker = null; }
+}
+
+function startSimulation() {
+    const points = sim.routes[sim.currentDay];
+    if (!points || points.length < 2) {
+        $('sim-status').textContent = 'No route data for this day.';
+        return;
+    }
+
+    sim.playing = true;
+    sim.stepIdx = 0;
+    $('sim-btn').textContent = '⏹ Stop';
+    $('sim-btn').classList.add('playing');
+    clearSimLine();
+    clearVehicle();
+
+    // Create vehicle marker
+    const vehicleIcon = L.divIcon({
+        className: '',
+        html: `<div class="sim-vehicle-marker">🚗</div>`,
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+    });
+
+    const start = points[0];
+    sim.vehicleMarker = L.marker([start.lat, start.lng], { icon: vehicleIcon, zIndexOffset: 1000 }).addTo(map);
+
+    // Draw dim path for the day
+    const latlngs = points.map(p => [p.lat, p.lng]);
+    sim.simLine = L.polyline(latlngs, {
+        color: '#fbbf24',
+        weight: 3,
+        opacity: 0.4,
+        dashArray: '6,6',
+    }).addTo(map);
+
+    stepSimulation(points);
+}
+
+function stepSimulation(points) {
+    if (!sim.playing) return;
+    if (sim.stepIdx >= points.length) {
+        stopSimulation();
+        $('sim-status').textContent = `Day ${sim.currentDay} complete! 🏁`;
+        return;
+    }
+
+    const pt = points[sim.stepIdx];
+    const prevPt = sim.stepIdx > 0 ? points[sim.stepIdx - 1] : pt;
+
+    // Move vehicle to this point
+    if (sim.vehicleMarker) {
+        sim.vehicleMarker.setLatLng([pt.lat, pt.lng]);
+        map.panTo([pt.lat, pt.lng], { animate: true, duration: 0.6 });
+    }
+
+    // Update status label
+    const typeEmoji = { hotel: '🏨', hotel_return: '🏨', activity: '' }[pt.type] || '';
+    $('sim-status').textContent = `${typeEmoji} → ${pt.name}`;
+
+    // Draw visited path segment (bright)
+    const visitedPts = points.slice(0, sim.stepIdx + 1).map(p => [p.lat, p.lng]);
+    if (sim.simLine) {
+        sim.simLine.setStyle({ opacity: 0.35 });
+    }
+
+    sim.stepIdx++;
+
+    // Delay based on travel time: use leg time if available, else ~1200ms
+    const delay = 1200;
+    sim.timer = setTimeout(() => stepSimulation(points), delay);
+}
+
+function stopSimulation() {
+    sim.playing = false;
+    if (sim.timer) clearTimeout(sim.timer);
+    clearVehicle();
+    $('sim-btn').textContent = '▶ Simulate';
+    $('sim-btn').classList.remove('playing');
+}
+
