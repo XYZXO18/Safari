@@ -23,9 +23,10 @@ body.mobile-body {
 .app-view {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     width: 100%;
-    height: 100vh;
-    padding-bottom: 90px; /* Space for bottom nav */
+    padding-bottom: 100px; /* Space for bottom nav */
+    -webkit-overflow-scrolling: touch;
 }
 
 .app-view.hidden-view {
@@ -42,7 +43,7 @@ body.mobile-body {
 }
 
 #home-view {
-    padding: 24px 20px;
+    padding: 24px 20px 120px 20px;
     background-color: #323337;
 }
 
@@ -74,11 +75,53 @@ body.mobile-body {
 .card-content h3 { font-size: 16px; font-weight: 600; }
 .card-content .location { font-size: 11px; color: #e4e4e7; margin-bottom: 8px;}
 .price-row { font-size: 12px; font-weight: 500; }
-.regions-scroll { gap: 12px; padding-bottom: 32px;}
-.region-card { min-width: 80px; height: 110px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 12px 6px; text-align: center; position: relative; cursor:pointer;}
-.region-bg { position: absolute; bottom: 0; left: 0; width: 100%; height: 80%; background: #424347; border-radius: 16px; z-index: 1;}
-.region-icon { position: absolute; top: -5px; width: 60px; height: 60px; object-fit: contain; z-index: 2;}
-.region-name { color: #fff; font-size: 11px; font-weight: 500; z-index: 2;}
+.regions-scroll {
+    display: flex;
+    gap: 14px;
+    padding: 4px 20px 32px 20px;
+    margin: 0 -20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    align-items: flex-start;
+}
+.regions-scroll::-webkit-scrollbar { display: none; }
+.region-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 64px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+.region-card:hover { transform: translateY(-3px); }
+.region-icon-box {
+    width: 64px;
+    height: 64px;
+    background: #323337;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+    overflow: hidden;
+}
+.region-icon {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+}
+.region-name {
+    color: #ccc;
+    font-size: 10px;
+    font-weight: 500;
+    text-align: center;
+    width: 68px;
+    line-height: 1.25;
+}
 
 /* Bottom Nav */
 .bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background-color: #424347; border-top-left-radius: 24px; border-top-right-radius: 24px; display: flex; justify-content: space-between; padding: 16px 24px 28px 24px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); }
@@ -93,7 +136,7 @@ body.mobile-body {
 .mode-btn { flex: 1; padding: 10px 4px; font-size: 11px;}
 input[type="number"], input[type="text"], select { background: #424347 !important; border-color: rgba(255,255,255,0.1) !important;}
 .budget-slider::-webkit-slider-thumb { background: #60a5fa !important; box-shadow: 0 0 8px rgba(96,165,250,0.5) !important;}
-.submit-btn { background: linear-gradient(135deg, #60a5fa, #8b5cf6) !important; border-radius: 16px !important; }
+.submit-btn { background: linear-gradient(135deg, #60a5fa, #3b82f6) !important; border-radius: 16px !important; }
 
 /* Map View Overrides */
 #map-view { position: relative; padding-bottom: 0; height: 100vh;}
@@ -113,10 +156,10 @@ input[type="number"], input[type="text"], select { background: #424347 !importan
     width: 50px;
     height: 50px;
     border-radius: 25px;
-    background: linear-gradient(135deg, #60a5fa, #8b5cf6);
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
     color: white;
     border: none;
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 15px rgba(96, 165, 250, 0.4);
     cursor: pointer;
     z-index: 900;
     display: flex;
@@ -225,7 +268,7 @@ input[type="number"], input[type="text"], select { background: #424347 !importan
 }
 
 .chat-send {
-    background: linear-gradient(135deg, #60a5fa, #8b5cf6);
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
     color: white;
     border: none;
     width: 36px;

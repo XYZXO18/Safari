@@ -1,0 +1,51 @@
+# Project Information: Safari AI Travel Planner
+
+Safari is a premium, budget-first AI travel planner designed for the Saudi Arabian market. It combines deterministic math-based planning with LLM-powered intelligence to create feasible, data-rich itineraries.
+
+## 🎯 Core Concept
+- **Budget-First**: Calculations start with the user's total budget and deduct transport costs before allocating the remainder to lodging, food, and activities.
+- **Hybrid AI**: Uses deterministic Python tools for math and real-time data retrieval (Gemini Search), and LLMs (Gemini/Ollama) for reasoning and text generation.
+- **Multi-Agent Architecture**: A central Orchestrator delegates tasks to specialized Worker agents.
+
+## 🏗️ Technical Architecture
+
+### Backend (Python / Flask)
+- **app.py**: The main web server. Handles routing, API endpoints (/api/plan, /api/chat, etc.), and serves the interactive UI.
+- **config.py**: Central source of truth for distances, fuel prices, destination vibes, and coordinate data.
+- **safari/tools/**: A library of specialized modules:
+    - transport.py: Calculates costs for driving (fuel), flights, trains, and buses.
+    - budget.py: Allocates the remaining budget using pre-defined ratios.
+    - activities.py: Suggests budget-appropriate things to do, supplemented by web search.
+    - event_scanner.py: Finds live, time-sensitive events (concerts, festivals).
+    - web_research.py: Scrapes social media and the web for trending spots using Gemini Search.
+    - hospitality.py: Interfaces with the hotel and restaurant database.
+- **safari/agent/**: The "brain" of the app:
+    - orchestrator_agent.py: Coordinates the workflow and generates the final itinerary text.
+    - worker_research.py: Gathers activities and live event data.
+    - worker_hospitality.py: Searches for hotels and restaurants matching the budget.
+    - worker_transport.py: Handles routing, timelines, and transit simulations.
+
+### Frontend (HTML5 / Vanilla CSS / JS)
+- **templates/index.html**: A premium, mobile-first dashboard with search, category browsing, and trending cards.
+- **static/css/**:
+    - style.css: The core design system (Glassmorphism, dark mode, rich gradients).
+    - mobile.css: Mobile-specific optimizations and premium UI overrides.
+- **static/js/app.js**: Manages application state, Leaflet map integration, API calls, and the interactive chat UI.
+
+### Data & Configuration
+- **data/**: Stores static assets and local JSON databases like reviews.json.
+- **.env**: Holds sensitive API keys (GEMINI_API_KEY).
+
+## 🛠️ Key Technologies
+- **SDK**: google-genai (Gemini 2.0 Flash) for web grounding and reasoning.
+- **Local AI**: Ollama support for offline or local-first agent processing.
+- **Web Framework**: Flask (Python).
+- **Mapping**: Leaflet.js with OpenStreetMap.
+- **Styling**: Vanilla CSS with modern features (Gradients, Backdrop Filters).
+
+## 🚀 Key Features
+1. **Interactive Timeline**: Visual schedule with day-by-day activity breakdown.
+2. **Live Event Scanning**: Real-time discovery of concerts and festivals during travel dates.
+3. **Web Research**: Integration of social media "buzz" and trending locations.
+4. **Budget Simulation**: Animated transit simulations on a map with real-time budget tracking.
+5. **AI Chat Assistant**: A persistent chat agent that can update trip settings in real-time.

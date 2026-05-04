@@ -12,17 +12,17 @@
     
     --border: rgba(255, 255, 255, 0.08);
     --border-light: rgba(255, 255, 255, 0.15);
-    --border-focus: rgba(99, 102, 241, 0.5);
+    --border-focus: rgba(96, 165, 250, 0.5);
 
     --text-primary: #ffffff;
     --text-secondary: #cbd5e1;
     --text-muted: #8492a6;
 
-    --accent: #8b5cf6;
-    --accent-secondary: #ec4899;
-    --accent-hover: #a78bfa;
-    --accent-glow: rgba(139, 92, 246, 0.3);
-    --accent-dim: rgba(139, 92, 246, 0.15);
+    --accent: #60a5fa;
+    --accent-secondary: #3b82f6;
+    --accent-hover: #93c5fd;
+    --accent-glow: rgba(96, 165, 250, 0.3);
+    --accent-dim: rgba(96, 165, 250, 0.15);
 
     --success: #10b981;
     --warning: #f59e0b;

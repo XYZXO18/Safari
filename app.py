@@ -29,7 +29,7 @@ from safari.agent.orchestrator_agent import OrchestratorAgent
 from safari.agent.worker_research import ResearchWorker
 from safari.agent.worker_hospitality import HospitalityWorker
 from safari.agent.worker_transport import TransportWorker
-import google.generativeai as genai
+from google import genai
 app = Flask(__name__, static_folder="static", template_folder="templates")
 worker_hospitality = HospitalityWorker()
 
