@@ -79,7 +79,7 @@ and the route simulation.
 """
 
 
-class TravelIntelligenceAgent:
+class TransportWorker:
     """
     Agent 3 — Travel Intelligence Agent.
     Owns all transportation planning end-to-end.

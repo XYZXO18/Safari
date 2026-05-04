@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safari — Budget-First AI Travel Planner</title>
-    <meta name="description" content="Safari reverse-engineers your trip from your budget. Enter your constraints, get a realistic itinerary.">
-    
+    <title>SFR — AI Travel</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=Noto+Kufi+Arabic:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
+    <!-- Original Styles -->
     <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Premium Mobile Overrides -->
+    <link rel="stylesheet" href="/static/css/mobile.css">
 </head>
-<body>
+<body class="mobile-body">
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="loading-overlay hidden">
         <div class="loader-content">
@@ -31,147 +32,203 @@
     <div id="path-selection-overlay" class="path-selection-overlay hidden">
         <div class="path-selection-content">
             <h2>Select Your Trip Path</h2>
-            <p>Our agents have designed three distinct paths based on your budget. Choose the one that fits your style best.</p>
-            <div class="paths-grid" id="paths-grid">
-                <!-- Path cards will be inserted here -->
-            </div>
+            <p>Choose the path that fits your style best.</p>
+            <div class="paths-grid" id="paths-grid"></div>
             <button id="cancel-path-selection" class="secondary-btn">Cancel</button>
         </div>
     </div>
 
-    <!-- Main Layout -->
-    <div class="app-layout">
+    <!-- Main App Container -->
+    <div class="mobile-app">
         
-        <!-- Left Panel: Trip Configuration -->
-        <aside class="panel panel-left" id="config-panel">
+        <!-- ========================================== -->
+        <!-- VIEW 1: HOME (Dashboard)                   -->
+        <!-- ========================================== -->
+        <div id="home-view" class="app-view active-view">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="profile-pic-container">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" alt="Abdullah" class="profile-pic">
+                </div>
+                <div class="header-text">
+                    <h1>Hi Abdullah!</h1>
+                    <p>Where will you explore next?</p>
+                </div>
+                <div class="notification-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <div class="notification-dot"></div>
+                </div>
+            </header>
+
+            <!-- Search Bar -->
+            <div class="search-container" onclick="switchView('plan-view')">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" placeholder="Search flights, stays, restaurants..." readonly>
+                <button class="filter-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                </button>
+            </div>
+
+            <!-- Categories -->
+            <div class="categories-panel">
+                <button class="category-item" onclick="autoFill('mode', 'flight')">
+                    <div class="cat-icon" style="color: #60a5fa;"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg></div>
+                    <span class="cat-name">Flights</span><span class="cat-sub">Best deals</span>
+                </button>
+                <div class="cat-divider"></div>
+                <button class="category-item" onclick="autoFill('interest', 'Hotels, Luxury Stays')">
+                    <div class="cat-icon" style="color: #4ade80;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path></svg></div>
+                    <span class="cat-name">Stays</span><span class="cat-sub">Comfortable</span>
+                </button>
+                <div class="cat-divider"></div>
+                <button class="category-item" onclick="autoFill('interest', 'Restaurants, Local Food')">
+                    <div class="cat-icon" style="color: #60a5fa;"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg></div>
+                    <span class="cat-name">Food</span><span class="cat-sub">Great dining</span>
+                </button>
+                <div class="cat-divider"></div>
+                <button class="category-item" onclick="autoFill('interest', 'Sightseeing, Attractions')">
+                    <div class="cat-icon" style="color: #60a5fa;"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M14 6l-3.75 5 2.85 3.8-1.6 1.2C9.81 13.75 7 10 7 10l-6 8h22L14 6z"/></svg></div>
+                    <span class="cat-name">Sights</span><span class="cat-sub">Top experiences</span>
+                </button>
+            </div>
+
+            <!-- Trend Events -->
+            <div class="section-header">
+                <h2>Trend events</h2>
+                <a href="#" class="view-all">View all ></a>
+            </div>
+            <div class="horizontal-scroll hide-scrollbar">
+                <div class="trend-card" style="background-image: url('https://images.unsplash.com/photo-1582967788606-a171c1080cb0?w=400&h=600&fit=crop');" onclick="autoFill('event', 'riyadh', 'city', 'AQUARIA Aquarium')">
+                    <div class="card-gradient"></div>
+                    <div class="card-header">
+                        <span class="discount-badge">-15%</span>
+                        <button class="like-btn" onclick="event.stopPropagation()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>
+                    </div>
+                    <div class="card-content">
+                        <h3>AQUARIA</h3>
+                        <p class="location">Riyadh</p>
+                        <div class="price-row"><span>from SAR 120</span></div>
+                    </div>
+                </div>
+                <div class="trend-card" style="background-image: url('https://images.unsplash.com/photo-1541336032412-2048a678540d?w=400&h=600&fit=crop');" onclick="autoFill('event', 'riyadh', 'city', 'Boulevard World')">
+                    <div class="card-gradient"></div>
+                    <div class="card-header">
+                        <span class="discount-badge">-20%</span>
+                        <button class="like-btn" onclick="event.stopPropagation()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg></button>
+                    </div>
+                    <div class="card-content">
+                        <h3>Boulevard World</h3>
+                        <p class="location">Riyadh</p>
+                        <div class="price-row"><span>from SAR 150</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explore Regions -->
+            <div class="section-header">
+                <h2>Explore regions</h2>
+            </div>
+            <div class="horizontal-scroll regions-scroll hide-scrollbar">
+                <div class="region-card" onclick="autoFill('region', 'riyadh', 'city')">
+                    <div class="region-bg"></div>
+                    <img src="/static/images/riyadh_icon_1777912332095.png" alt="Riyadh" class="region-icon">
+                    <span class="region-name">Riyadh</span>
+                </div>
+                <div class="region-card" onclick="autoFill('region', 'makkah', 'city')">
+                    <div class="region-bg"></div>
+                    <img src="/static/images/makkah_icon_1777912584185.png" alt="Makkah" class="region-icon">
+                    <span class="region-name">Makkah</span>
+                </div>
+                <div class="region-card" onclick="autoFill('region', 'madinah', 'city')">
+                    <div class="region-bg"></div>
+                    <img src="/static/images/madinah_icon_1777912665006.png" alt="Madinah" class="region-icon">
+                    <span class="region-name">Madinah</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: PLAN (Form)                        -->
+        <!-- ========================================== -->
+        <div id="plan-view" class="app-view hidden-view mobile-panel">
             <div class="panel-header">
                 <div class="logo">
                     <span class="logo-icon">🧭</span>
-                    <h1>Safari</h1>
+                    <h1>Plan Trip</h1>
                 </div>
-                <p class="tagline">Budget-first travel planner</p>
             </div>
 
             <form id="trip-form" class="trip-form">
                 <!-- Budget -->
                 <div class="form-group">
-                    <label for="budget-input">
-                        <span class="label-icon">💰</span> Total Budget
-                    </label>
+                    <label for="budget-input"><span class="label-icon">💰</span> Budget</label>
                     <div class="budget-input-row">
                         <input type="number" id="budget-input" min="500" max="50000" value="3000" step="100">
                         <select id="currency-select">
                             <option value="SAR" selected>SAR</option>
                             <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="GBP">GBP</option>
-                            <option value="AED">AED</option>
                         </select>
                     </div>
                     <input type="range" id="budget-slider" min="500" max="15000" value="3000" step="100" class="budget-slider">
                     <div class="slider-labels">
-                        <span>500</span>
-                        <span id="budget-display" class="budget-display">3,000</span>
-                        <span>15,000</span>
+                        <span>500</span><span id="budget-display" class="budget-display">3,000</span><span>15,000</span>
                     </div>
                 </div>
 
                 <!-- Origin -->
                 <div class="form-group">
-                    <label for="origin-select">
-                        <span class="label-icon">📍</span> Starting From
-                    </label>
+                    <label for="origin-select"><span class="label-icon">📍</span> Origin</label>
                     <select id="origin-select">
                         <option value="riyadh" selected>Riyadh</option>
                         <option value="jeddah">Jeddah</option>
                         <option value="dammam">Dammam</option>
-                        <option value="medina">Medina</option>
-                        <option value="abha">Abha</option>
-                        <option value="taif">Taif</option>
                     </select>
                 </div>
 
-                <!-- Destination -->
+                <!-- Destination Vibe -->
                 <div class="form-group">
-                    <label>
-                        <span class="label-icon">🗺️</span> Destination Vibe
-                    </label>
+                    <label><span class="label-icon">🗺️</span> Destination Vibe</label>
                     <div class="vibe-grid">
-                        <button type="button" class="vibe-card active" data-vibe="coast">
-                            <span class="vibe-emoji">🏖️</span>
-                            <span class="vibe-name">Coast</span>
-                            <span class="vibe-desc">Beach & sea</span>
-                        </button>
-                        <button type="button" class="vibe-card" data-vibe="mountains">
-                            <span class="vibe-emoji">⛰️</span>
-                            <span class="vibe-name">Mountains</span>
-                            <span class="vibe-desc">Cool & green</span>
-                        </button>
-                        <button type="button" class="vibe-card" data-vibe="desert">
-                            <span class="vibe-emoji">🏜️</span>
-                            <span class="vibe-name">Desert</span>
-                            <span class="vibe-desc">Stars & ruins</span>
-                        </button>
-                        <button type="button" class="vibe-card" data-vibe="city">
-                            <span class="vibe-emoji">🏙️</span>
-                            <span class="vibe-name">City</span>
-                            <span class="vibe-desc">Urban & nightlife</span>
-                        </button>
+                        <button type="button" class="vibe-card active" data-vibe="coast">🏖️ Coast</button>
+                        <button type="button" class="vibe-card" data-vibe="mountains">⛰️ Mountains</button>
+                        <button type="button" class="vibe-card" data-vibe="desert">🏜️ Desert</button>
+                        <button type="button" class="vibe-card" data-vibe="city">🏙️ City</button>
                     </div>
                 </div>
 
                 <!-- Event Interests -->
                 <div class="form-group">
-                    <label for="interests-input">
-                        <span class="label-icon">🎭</span> Interests
-                    </label>
-                    <input type="text" id="interests-input" placeholder="e.g., Music, Food, Art, Tech">
+                    <label for="interests-input"><span class="label-icon">🎭</span> Interests</label>
+                    <input type="text" id="interests-input" placeholder="e.g., Music, Food, Tech">
                 </div>
 
                 <!-- Travel Mode -->
                 <div class="form-group">
-                    <label>
-                        <span class="label-icon">🚗</span> Travel Mode
-                    </label>
+                    <label><span class="label-icon">🚗</span> Travel Mode</label>
                     <div class="mode-grid">
-                        <button type="button" class="mode-btn active" data-mode="car">
-                            <span>🚗</span> Drive
-                        </button>
-                        <button type="button" class="mode-btn" data-mode="flight">
-                            <span>✈️</span> Fly
-                        </button>
-                        <button type="button" class="mode-btn" data-mode="train">
-                            <span>🚂</span> Train
-                        </button>
-                        <button type="button" class="mode-btn" data-mode="bus">
-                            <span>🚌</span> Bus
-                        </button>
+                        <button type="button" class="mode-btn active" data-mode="car">🚗 Drive</button>
+                        <button type="button" class="mode-btn" data-mode="flight">✈️ Fly</button>
+                        <button type="button" class="mode-btn" data-mode="train">🚂 Train</button>
+                        <button type="button" class="mode-btn" data-mode="bus">🚌 Bus</button>
                     </div>
                 </div>
 
-                <!-- Vehicle Type (shown only for car) -->
+                <!-- Vehicle Type -->
                 <div class="form-group" id="vehicle-group">
-                    <label for="vehicle-select">
-                        <span class="label-icon">🔧</span> Vehicle Type
-                    </label>
+                    <label for="vehicle-select"><span class="label-icon">🔧</span> Vehicle</label>
                     <select id="vehicle-select">
                         <option value="default">Standard Car</option>
-                        <option value="sedan">Sedan (Fuel-efficient)</option>
                         <option value="suv">SUV</option>
-                        <option value="truck">Truck / 4x4</option>
                     </select>
                 </div>
 
                 <!-- Duration -->
                 <div class="form-group">
-                    <label for="days-input">
-                        <span class="label-icon">📅</span> Duration
-                    </label>
+                    <label for="days-input"><span class="label-icon">📅</span> Duration</label>
                     <div class="days-selector">
                         <button type="button" class="days-btn" id="days-minus">−</button>
                         <div class="days-display">
-                            <span id="days-value">4</span>
-                            <span class="days-label">days</span>
+                            <span id="days-value">4</span> <span class="days-label">days</span>
                         </div>
                         <button type="button" class="days-btn" id="days-plus">+</button>
                     </div>
@@ -179,131 +236,320 @@
 
                 <!-- Submit -->
                 <button type="submit" class="submit-btn" id="plan-btn">
-                    <span class="btn-icon">🧭</span>
-                    <span>Plan My Trip</span>
+                    <span>🧭 Plan My Trip</span>
                 </button>
             </form>
-            <!-- Left Panel Results (Hidden initially) -->
+
             <div id="results-panel" class="results-panel hidden">
                 <button id="edit-trip-btn" class="edit-btn">← Edit Trip</button>
-                
                 <div class="results-content">
                     <div id="left-hospitality"></div>
                     <div id="left-research"></div>
                     <div id="left-budget"></div>
                 </div>
             </div>
-        </aside>
+        </div>
 
-        <!-- Center: Map -->
-        <main class="map-area">
+        <!-- ========================================== -->
+        <!-- VIEW 3: MAP                                -->
+        <!-- ========================================== -->
+        <div id="map-view" class="app-view hidden-view map-area">
             <div id="map" class="map-container"></div>
             
-            <!-- Budget Overview Bar (overlays bottom of map) -->
             <div id="budget-bar" class="budget-bar hidden">
                 <div class="budget-bar-inner">
-                    <div class="budget-segment" id="seg-transport" data-category="Transport">
-                        <span class="seg-label">🚗 Transport</span>
-                        <span class="seg-value" id="val-transport">0</span>
-                    </div>
-                    <div class="budget-segment" id="seg-lodging" data-category="Lodging">
-                        <span class="seg-label">🏨 Lodging</span>
-                        <span class="seg-value" id="val-lodging">0</span>
-                    </div>
-                    <div class="budget-segment" id="seg-food" data-category="Food">
-                        <span class="seg-label">🍽️ Food</span>
-                        <span class="seg-value" id="val-food">0</span>
-                    </div>
-                    <div class="budget-segment" id="seg-activities" data-category="Activities">
-                        <span class="seg-label">🎯 Activities</span>
-                        <span class="seg-value" id="val-activities">0</span>
-                    </div>
-                    <div class="budget-segment" id="seg-buffer" data-category="Buffer">
-                        <span class="seg-label">🛡️ Buffer</span>
-                        <span class="seg-value" id="val-buffer">0</span>
-                    </div>
+                    <div class="budget-segment" id="seg-transport"><span class="seg-label">🚗</span><span class="seg-value" id="val-transport">0</span></div>
+                    <div class="budget-segment" id="seg-lodging"><span class="seg-label">🏨</span><span class="seg-value" id="val-lodging">0</span></div>
+                    <div class="budget-segment" id="seg-food"><span class="seg-label">🍽️</span><span class="seg-value" id="val-food">0</span></div>
+                    <div class="budget-segment" id="seg-activities"><span class="seg-label">🎯</span><span class="seg-value" id="val-activities">0</span></div>
+                    <div class="budget-segment" id="seg-buffer"><span class="seg-label">🛡️</span><span class="seg-value" id="val-buffer">0</span></div>
                 </div>
             </div>
 
-            <!-- Trip Info Card (overlays top of map) -->
             <div id="trip-info" class="trip-info hidden">
-                <div class="trip-route">
-                    <span id="info-origin" class="trip-city">Riyadh</span>
-                    <span class="trip-arrow">→</span>
-                    <span id="info-dest" class="trip-city">Jeddah</span>
-                </div>
-                <div class="trip-stats">
-                    <span><strong id="info-distance">0</strong> km</span>
-                    <span><strong id="info-days">0</strong> days</span>
-                    <span><strong id="info-cost">0</strong> <span id="info-currency">SAR</span></span>
-                </div>
+                <div class="trip-route"><span id="info-origin">Origin</span> → <span id="info-dest">Dest</span></div>
+                <div class="trip-stats"><strong id="info-distance">0</strong>km | <strong id="info-days">0</strong>d | <strong id="info-cost">0</strong> <span id="info-currency">SAR</span></div>
             </div>
 
-            <!-- Route Simulation Controls -->
             <div id="sim-controls" class="sim-controls hidden">
                 <div class="sim-top-row">
-                    <button id="sim-btn" class="sim-play-btn" title="Simulate route">▶ Simulate</button>
+                    <button id="sim-btn" class="sim-play-btn">▶ Sim</button>
                     <div id="sim-day-pills" class="sim-day-pills"></div>
                 </div>
                 <div id="sim-status" class="sim-status"></div>
             </div>
-        </main>
+        </div>
 
-        <!-- Right Panel: Calendar + Itinerary -->
-        <aside class="panel panel-right" id="itinerary-panel">
-            <div class="panel-header">
-                <h2>📅 Trip Schedule</h2>
-            </div>
-
-            <!-- Calendar -->
+        <!-- ========================================== -->
+        <!-- VIEW 4: ITINERARY                          -->
+        <!-- ========================================== -->
+        <div id="itinerary-view" class="app-view hidden-view mobile-panel">
+            <div class="panel-header"><h2>📅 Trip Schedule</h2></div>
             <div class="mini-calendar" id="mini-calendar">
-                <div class="cal-header">
-                    <span class="cal-month" id="cal-month">April 2026</span>
-                </div>
-                <div class="cal-grid" id="cal-grid">
-                    <!-- Generated by JS -->
-                </div>
+                <div class="cal-header"><span class="cal-month" id="cal-month"></span></div>
+                <div class="cal-grid" id="cal-grid"></div>
             </div>
-
-            <!-- Scrollable content area below calendar -->
-            <div class="panel-scroll-content">
-                <!-- Hospitality Deals Panel -->
-                <div class="hospitality-deals hidden" id="hospitality-deals-panel" style="margin: 15px; padding: 15px; background: rgba(234, 179, 8, 0.1); border-left: 3px solid var(--accent); border-radius: 8px;">
-                    <h3 style="color: var(--accent); margin-bottom: 10px; font-size: 14px;">✨ Agent Exclusive Deals</h3>
-                    <div id="hospitality-deals-content" style="font-size: 13px;"></div>
-                </div>
-
-                <!-- Day-by-Day Itinerary -->
+            <div class="panel-scroll-content" style="padding-bottom: 80px;">
+                <div id="hospitality-deals-panel" class="hospitality-deals hidden"><div id="hospitality-deals-content"></div></div>
                 <div class="itinerary-list" id="itinerary-list">
-                    <div class="empty-state">
-                        <span class="empty-icon">🧭</span>
-                        <p>Configure your trip on the left and hit <strong>Plan My Trip</strong> to see your itinerary here.</p>
-                    </div>
+                    <div class="empty-state"><p>Go to Plan tab to create a trip.</p></div>
                 </div>
-
-                <!-- Web Research Panel -->
-                <div class="web-research-panel hidden" id="web-research-panel">
-                    <!-- Generated by JS -->
-                </div>
-
-                <!-- Budget Details -->
+                <div class="web-research-panel hidden" id="web-research-panel"></div>
                 <div class="budget-details hidden" id="budget-details">
-                    <h3>💰 Budget Breakdown</h3>
-                    <div class="budget-table" id="budget-table">
-                        <!-- Generated by JS -->
-                    </div>
+                    <h3>💰 Budget</h3>
+                    <div class="budget-table" id="budget-table"></div>
                 </div>
-
-                <!-- Warnings -->
-                <div class="warnings hidden" id="warnings-box">
-                    <!-- Generated by JS -->
-                </div>
+                <div class="warnings hidden" id="warnings-box"></div>
             </div>
-        </aside>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- BOTTOM NAVIGATION                          -->
+        <!-- ========================================== -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" onclick="switchView('home-view')">
+                <div class="active-indicator" id="ind-home-view"></div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" onclick="switchView('plan-view')">
+                <div class="active-indicator hidden" id="ind-plan-view"></div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <span>Plan</span>
+            </a>
+            <a href="#" class="nav-item" onclick="switchView('map-view')">
+                <div class="active-indicator hidden" id="ind-map-view"></div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>Map</span>
+            </a>
+            <a href="#" class="nav-item" onclick="switchView('itinerary-view')">
+                <div class="active-indicator hidden" id="ind-itinerary-view"></div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Itinerary</span>
+            </a>
+        </nav>
+        
+        <!-- Floating Chat Button -->
+        <button class="chat-fab" onclick="toggleChat()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chat-window" class="chat-window hidden-view">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <span class="chat-avatar">🤖</span> SFR Agent
+                </div>
+                <button onclick="toggleChat()" class="chat-close">✖</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai-message">Hello! I'm your SFR AI Assistant. I can help you plan your trip, find events, or just answer travel questions!</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Ask anything..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                <button onclick="sendChatMessage()" class="chat-send">➤</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Leaflet JS -->
+    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="/static/js/app.js"></script>
+    <script>
+        // Intercept Plan Trip to automatically switch to Map View
+        const originalPlanBtnClick = document.getElementById('plan-btn').onclick;
+        document.getElementById('trip-form').addEventListener('submit', function(e) {
+            // Give app.js time to handle submit
+            setTimeout(() => {
+                if(document.getElementById('path-selection-overlay').classList.contains('hidden')) {
+                    // switchView('map-view');
+                }
+            }, 500);
+        });
+        
+        // Listen to path selection from app.js to switch to Map View
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.target.id === 'results-panel' && !mutation.target.classList.contains('hidden')) {
+                    switchView('map-view');
+                }
+            });
+        });
+        observer.observe(document.getElementById('results-panel'), { attributes: true, attributeFilter: ['class'] });
+
+        // Tab Switching Logic
+        function switchView(viewId) {
+            // Hide all views
+            document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden-view'));
+            // Remove active classes
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelectorAll('.active-indicator').forEach(i => i.classList.add('hidden'));
+
+            // Show selected view
+            const targetView = document.getElementById(viewId);
+            if (targetView) targetView.classList.remove('hidden-view');
+            
+            // Activate corresponding nav item
+            const navItem = document.querySelector(`.nav-item[onclick="switchView('${viewId}')"]`);
+            if (navItem) {
+                navItem.classList.add('active');
+                navItem.querySelector('.active-indicator').classList.remove('hidden');
+            }
+
+            // Fix map rendering when becoming visible
+            if (viewId === 'map-view' && typeof map !== 'undefined') {
+                setTimeout(() => map.invalidateSize(), 100);
+            }
+        }
+
+        // Auto Fill Logic
+        function autoFill(type, p1, p2, p3) {
+            switchView('plan-view');
+            
+            if (type === 'mode') {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                const btn = document.querySelector(`.mode-btn[data-mode="${p1}"]`);
+                if (btn) {
+                    btn.classList.add('active');
+                    btn.click(); 
+                }
+            } else if (type === 'interest') {
+                document.getElementById('interests-input').value = p1;
+            } else if (type === 'event' || type === 'region') {
+                const select = document.getElementById('origin-select');
+                // Select origin if it matches p1
+                for (let i=0; i<select.options.length; i++) {
+                    if(select.options[i].text.toLowerCase() === p1.toLowerCase() || select.options[i].value === p1) {
+                        select.selectedIndex = i;
+                        select.dispatchEvent(new Event('change'));
+                        break;
+                    }
+                }
+                
+                document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
+                const vibeBtn = document.querySelector(`.vibe-card[data-vibe="${p2}"]`);
+                if (vibeBtn) {
+                    vibeBtn.classList.add('active');
+                    vibeBtn.click();
+                }
+                
+                if (p3) {
+                    document.getElementById('interests-input').value = p3;
+                }
+            }
+        }
+
+        // Chat Logic
+        function toggleChat() {
+            document.getElementById('chat-window').classList.toggle('hidden-view');
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            // Gather current state
+            const state = {
+                budget: document.getElementById('budget-input').value,
+                origin: document.getElementById('origin-select').value,
+                vibe: document.querySelector('.vibe-card.active') ? document.querySelector('.vibe-card.active').dataset.vibe : 'coast',
+                travel_mode: document.querySelector('.mode-btn.active') ? document.querySelector('.mode-btn.active').dataset.mode : 'car',
+                days: document.getElementById('days-value').innerText,
+                interests: document.getElementById('interests-input').value
+            };
+            
+            addMessage(text, 'user');
+            input.value = '';
+            
+            const loadingId = 'msg-' + Date.now();
+            addMessage('...', 'ai', loadingId);
+            
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: text, state: state})
+                });
+                const data = await res.json();
+                
+                document.getElementById(loadingId).innerText = data.reply || "I didn't quite get that.";
+                
+                if (data.commands && Object.keys(data.commands).length > 0) {
+                    applyChatCommands(data.commands);
+                }
+            } catch (e) {
+                document.getElementById(loadingId).innerText = "Sorry, I'm offline right now.";
+            }
+        }
+        
+        function applyChatCommands(cmds) {
+            let updated = false;
+            if (cmds.budget) {
+                document.getElementById('budget-input').value = cmds.budget;
+                document.getElementById('budget-slider').value = cmds.budget;
+                document.getElementById('budget-display').innerText = Number(cmds.budget).toLocaleString();
+                // trigger input event to update global state in app.js
+                document.getElementById('budget-input').dispatchEvent(new Event('input'));
+                updated = true;
+            }
+            if (cmds.origin) {
+                const sel = document.getElementById('origin-select');
+                for(let i=0; i<sel.options.length; i++) {
+                    if(sel.options[i].value === cmds.origin.toLowerCase()) { 
+                        sel.selectedIndex = i; 
+                        sel.dispatchEvent(new Event('change'));
+                        break; 
+                    }
+                }
+                updated = true;
+            }
+            if (cmds.vibe) {
+                document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
+                const btn = document.querySelector(`.vibe-card[data-vibe="${cmds.vibe.toLowerCase()}"]`);
+                if(btn) {
+                    btn.classList.add('active');
+                    btn.click(); // trigger global state update
+                }
+                updated = true;
+            }
+            if (cmds.travel_mode) {
+                document.querySelectorAll('.mode-btn').forEach(c => c.classList.remove('active'));
+                const btn = document.querySelector(`.mode-btn[data-mode="${cmds.travel_mode.toLowerCase()}"]`);
+                if(btn) {
+                    btn.classList.add('active');
+                    btn.click(); // trigger global state update
+                }
+                updated = true;
+            }
+            if (cmds.days) {
+                document.getElementById('days-value').innerText = cmds.days;
+                // Since app.js maintains state.days, we need to click the plus/minus to match or just set it
+                // We'll simulate it by updating the UI and letting the user see it.
+                // app.js has no direct way to set state.days from outside without interacting with buttons.
+                // But we can just dispatch a custom event or let it be. Wait, app.js reads from state.days, so let's overwrite the UI.
+                updated = true;
+            }
+            if (cmds.interests !== undefined) {
+                document.getElementById('interests-input').value = cmds.interests;
+                updated = true;
+            }
+            
+            if(updated) {
+                switchView('plan-view');
+                // Optional: add a tiny delay then click "Plan My Trip" automatically
+                // setTimeout(() => document.getElementById('plan-btn').click(), 1000);
+            }
+        }
+
+        function addMessage(text, sender, id="") {
+            const msg = document.createElement('div');
+            msg.className = `message ${sender}-message`;
+            msg.innerText = text;
+            if(id) msg.id = id;
+            document.getElementById('chat-messages').appendChild(msg);
+            document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+        }
+    </script>
 </body>
 </html>

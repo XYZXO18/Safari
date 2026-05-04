@@ -17,18 +17,21 @@ if sys.platform == "win32":
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from flask import Flask, render_template, request, jsonify
-from config import DESTINATIONS, CITY_COORDS, ROUTES
+from config import DESTINATIONS, CITY_COORDS, ROUTES, OLLAMA_URL, OLLAMA_MODEL
+import requests
 from safari.input_parser import TripRequest
 from safari.tools.transport import calculate_transport_costs
 from safari.tools.budget import budget_allocator
 from safari.tools.activities import suggest_activities
 from safari.tools.event_scanner import find_live_events
 from safari.tools.web_research import research_destination
-from safari.agent.hospitality_agent import HospitalityAgent
-from safari.agent.orchestrator import AgentOrchestrator
+from safari.agent.orchestrator_agent import OrchestratorAgent
+from safari.agent.worker_research import ResearchWorker
+from safari.agent.worker_hospitality import HospitalityWorker
+from safari.agent.worker_transport import TransportWorker
 import google.generativeai as genai
 app = Flask(__name__, static_folder="static", template_folder="templates")
-hospitality_agent = HospitalityAgent()
+worker_hospitality = HospitalityWorker()
 
 
 @app.route("/")
@@ -200,16 +203,27 @@ def plan_trip():
             rec_coords = CITY_COORDS.get(rec_city, dest_coords)
 
             # Hospitality Data
-            orchestrator = AgentOrchestrator()
+            # Delegate to Orchestrator Agent and its 3 Workers
+            print(f"\\n[Orchestrator Agent] Delegating {path_type} path to Workers...")
+            
+            # Worker 1: Research
+            print("  -> [Worker 1: Research] Finding activities and events.")
+            # (Activities and events were computed above by tools, but conceptually Worker 1 owns this data)
+            
+            # Worker 2: Hospitality
+            print("  -> [Worker 2: Hospitality] Fetching hotels and restaurants.")
+            worker_2 = HospitalityWorker()
             try:
-                hosp_res = orchestrator._send_to_hospitality("search_hotels", {
+                hosp_res = worker_2.process_request({
+                    "action": "search_hotels",
                     "city": activities.recommended_city,
                     "budget_per_night": breakdown.lodging_per_day,
                     "guests": 2
                 })
                 hotels = hosp_res.get("hotels", [])
                 
-                rest_res = orchestrator._send_to_hospitality("search_restaurants", {
+                rest_res = worker_2.process_request({
+                    "action": "search_restaurants",
                     "city": activities.recommended_city
                 })
                 restaurants = rest_res.get("restaurants", [])
@@ -220,21 +234,24 @@ def plan_trip():
                     best_hotel = hotels[0]
                     hotel_data = {"name": best_hotel.get("name"), "lat": best_hotel.get("lat"), "lng": best_hotel.get("lng")}
 
-                # Timeline Data
+                # Worker 3: Transport
+                print("  -> [Worker 3: Transport] Calculating routing and timeline.")
+                worker_3 = TransportWorker()
                 timeline_req = {
+                    "action": "plan_timeline",
                     "daily_activities": activities.daily_activities,
                     "hotel": hotel_data,
                     "travel_mode": travel_mode,
                     "vehicle_type": vehicle_type,
                 }
-                timeline_res = orchestrator._send_to_transport("plan_timeline", timeline_req)
+                timeline_res = worker_3.process_request(timeline_req)
                 timeline = timeline_res.get("timeline", {})
                 total_transit_cost = timeline_res.get("total_transit_cost", 0)
                 simulation_routes = timeline_res.get("simulation_routes", {})
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-                print(f"Agent Orchestrator failed: {e}")
+                print(f"Workers failed: {e}")
                 hospitality_data = {"hotels": [], "restaurants": []}
                 timeline = {}
                 total_transit_cost = 0
@@ -355,7 +372,7 @@ def api_restaurant_menu(restaurant_id):
     """Get restaurant menu with allergen checking."""
     allergens_str = request.args.get("allergens", "")
     allergens = [a.strip() for a in allergens_str.split(",") if a.strip()] if allergens_str else []
-    result = hospitality_agent.process_request({
+    result = worker_hospitality.process_request({
         "action": "restaurant_menu",
         "restaurant_id": restaurant_id,
         "allergens": allergens,
@@ -368,13 +385,70 @@ def api_hospitality_summary():
     """Get combined hotels + restaurants summary for a destination."""
     allergens_str = request.args.get("allergens", "")
     allergens = [a.strip() for a in allergens_str.split(",") if a.strip()] if allergens_str else []
-    result = hospitality_agent.process_request({
+    result = worker_hospitality.process_request({
         "action": "hospitality_summary",
         "city": request.args.get("city"),
         "vibe": request.args.get("vibe"),
         "allergens": allergens,
     })
     return jsonify(result)
+
+
+import re
+import json
+
+@app.route("/api/chat", methods=["POST"])
+def chat():
+    """Chat endpoint that can make decisions and update the app state."""
+    try:
+        data = request.json
+        user_msg = data.get("message", "")
+        current_state = data.get("state", {})
+        
+        system_prompt = f"""You are the SFR Travel Agent AI.
+Current trip settings: {current_state}
+
+Respond to the user naturally, friendly, and briefly (under 3 sentences).
+If the user asks to change their trip or gives new preferences (e.g. "I want to go to the beach", "Let's do 5 days", "Set my budget to 4000", "I want to fly"), you MUST append a JSON object at the very end of your response enclosed in <cmd> and </cmd> tags with the updated fields.
+Valid fields to update (only include what changed): 
+- budget (integer)
+- origin (string: riyadh, jeddah, dammam)
+- vibe (string: coast, mountains, desert, city)
+- travel_mode (string: car, flight, train, bus)
+- days (integer)
+- interests (string)
+
+Example:
+Sure, I've updated your trip to 5 days at the coast!
+<cmd>{{"days": 5, "vibe": "coast"}}</cmd>
+"""
+        
+        payload = {
+            "model": OLLAMA_MODEL,
+            "prompt": user_msg,
+            "system": system_prompt,
+            "stream": False,
+            "options": {"temperature": 0.1}
+        }
+        
+        res = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=30)
+        res.raise_for_status()
+        reply = res.json().get("response", "")
+        
+        # Parse commands
+        commands = {}
+        cmd_match = re.search(r'<cmd>(.*?)</cmd>', reply, re.DOTALL)
+        if cmd_match:
+            try:
+                commands = json.loads(cmd_match.group(1))
+            except Exception as e:
+                print(f"Failed to parse cmd json: {e}")
+            reply = re.sub(r'<cmd>.*?</cmd>', '', reply, flags=re.DOTALL).strip()
+            
+        return jsonify({"reply": reply, "commands": commands})
+    except Exception as e:
+        print(f"Chat error: {e}")
+        return jsonify({"reply": f"I'm here to help! Make sure your local Ollama instance is running. (Error: {e})"}), 200
 
 
 if __name__ == "__main__":
@@ -386,7 +460,7 @@ if __name__ == "__main__":
         time.sleep(1.5)  # Wait for Flask to be ready
         webbrowser.open("http://localhost:5000")
 
-    print("\n🧭 Safari Web UI starting...")
+    print("\n🧭 SFR Web UI starting...")
     print("   Opening http://localhost:5000 in your browser...")
     print("   🏨 Hospitality: http://localhost:5000/hospitality\n")
 

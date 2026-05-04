@@ -1,0 +1,335 @@
+/* Mobile Premium Integration Styles */
+
+body.mobile-body {
+    background-color: #111;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    min-height: 100vh;
+}
+
+.mobile-app {
+    width: 100%;
+    max-width: 480px;
+    background-color: var(--bg-dark);
+    min-height: 100vh;
+    position: relative;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    overflow: hidden; /* Prevent scrolling the shell, scroll views instead */
+    display: flex;
+    flex-direction: column;
+}
+
+.app-view {
+    flex: 1;
+    overflow-y: auto;
+    width: 100%;
+    height: 100vh;
+    padding-bottom: 90px; /* Space for bottom nav */
+}
+
+.app-view.hidden-view {
+    display: none !important;
+}
+
+/* Fix panels to look native in the mobile app */
+.mobile-panel {
+    background: transparent !important;
+    border: none !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    box-shadow: none !important;
+}
+
+#home-view {
+    padding: 24px 20px;
+    background-color: #323337;
+}
+
+/* Home View Elements (from previous step) */
+.app-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; animation: fadeInDown 0.6s ease-out; }
+.profile-pic-container { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; }
+.profile-pic { width: 100%; height: 100%; object-fit: cover; }
+.header-text h1 { color: #fff; font-size: 20px; margin-bottom: 4px; }
+.header-text p { color: #a1a1aa; font-size: 13px; }
+.search-container { background-color: #424347; border-radius: 20px; display: flex; align-items: center; padding: 14px 18px; margin-bottom: 24px; cursor:pointer;}
+.search-container input { flex: 1; background: transparent; border: none; color: #fff; font-size: 15px; outline: none; width:100%; pointer-events: none;}
+.categories-panel { background-color: #424347; border-radius: 20px; display: flex; padding: 16px 8px; margin-bottom: 32px; justify-content: space-between; }
+.category-item { background:transparent; border:none; display: flex; flex-direction: column; align-items: center; flex: 1; cursor:pointer;}
+.cat-icon { margin-bottom: 8px; }
+.cat-name { color: #fff; font-size: 11px; font-weight: 600; margin-bottom: 2px;}
+.cat-sub { color: #a1a1aa; font-size: 9px; }
+.cat-divider { width: 1px; background-color: rgba(255,255,255,0.05); margin: 0 2px; }
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.section-header h2 { color: #fff; font-size: 18px; font-weight: 600; }
+.view-all { color: #60a5fa; font-size: 13px; text-decoration: none; }
+.horizontal-scroll { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 24px; margin: 0 -20px; padding: 0 20px; scrollbar-width: none;}
+.horizontal-scroll::-webkit-scrollbar { display: none; }
+.trend-card { min-width: 160px; height: 240px; border-radius: 18px; background-size: cover; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; padding: 14px; cursor:pointer; }
+.card-gradient { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.85)); z-index:1;}
+.card-header, .card-content { position: relative; z-index: 2; color: #fff;}
+.card-header { display: flex; justify-content: space-between;}
+.discount-badge { background-color: #4ade80; color: #000; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 12px; }
+.like-btn { background: transparent; border: none; color: #fff; }
+.card-content h3 { font-size: 16px; font-weight: 600; }
+.card-content .location { font-size: 11px; color: #e4e4e7; margin-bottom: 8px;}
+.price-row { font-size: 12px; font-weight: 500; }
+.regions-scroll { gap: 12px; padding-bottom: 32px;}
+.region-card { min-width: 80px; height: 110px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 12px 6px; text-align: center; position: relative; cursor:pointer;}
+.region-bg { position: absolute; bottom: 0; left: 0; width: 100%; height: 80%; background: #424347; border-radius: 16px; z-index: 1;}
+.region-icon { position: absolute; top: -5px; width: 60px; height: 60px; object-fit: contain; z-index: 2;}
+.region-name { color: #fff; font-size: 11px; font-weight: 500; z-index: 2;}
+
+/* Bottom Nav */
+.bottom-nav { position: absolute; bottom: 0; left: 0; width: 100%; background-color: #424347; border-top-left-radius: 24px; border-top-right-radius: 24px; display: flex; justify-content: space-between; padding: 16px 24px 28px 24px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.3); }
+.nav-item { display: flex; flex-direction: column; align-items: center; color: #a1a1aa; text-decoration: none; font-size: 10px; font-weight: 500; gap: 6px; position: relative; }
+.nav-item.active { color: #60a5fa; }
+.active-indicator { position: absolute; top: -16px; width: 24px; height: 3px; background-color: #60a5fa; border-radius: 0 0 4px 4px; }
+.active-indicator.hidden { display: none; }
+
+/* Override legacy form elements to look premium */
+.trip-form { padding: 20px; }
+.vibe-card { flex: 1; padding: 10px 4px; font-size: 11px;}
+.mode-btn { flex: 1; padding: 10px 4px; font-size: 11px;}
+input[type="number"], input[type="text"], select { background: #424347 !important; border-color: rgba(255,255,255,0.1) !important;}
+.budget-slider::-webkit-slider-thumb { background: #60a5fa !important; box-shadow: 0 0 8px rgba(96,165,250,0.5) !important;}
+.submit-btn { background: linear-gradient(135deg, #60a5fa, #8b5cf6) !important; border-radius: 16px !important; }
+
+/* Map View Overrides */
+#map-view { position: relative; padding-bottom: 0; height: 100vh;}
+.map-container { height: calc(100vh - 80px) !important; width: 100% !important; }
+.trip-info { top: 16px !important; width: 90% !important; border-radius: 20px !important; padding: 12px 20px !important;}
+.budget-bar { bottom: 96px !important; }
+
+/* Itinerary Overrides */
+#itinerary-view { background: #323337; }
+.day-card { background: #424347 !important; border-radius: 16px !important; padding: 16px !important; margin-bottom: 12px;}
+.mini-calendar { padding: 16px !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important;}
+/* Chat Box UI */
+.chat-fab {
+    position: absolute;
+    bottom: 90px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #60a5fa, #8b5cf6);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+    cursor: pointer;
+    z-index: 900;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s;
+}
+
+.chat-fab:hover {
+    transform: scale(1.1);
+}
+
+.chat-window {
+    position: absolute;
+    bottom: 90px;
+    right: 20px;
+    width: 320px;
+    height: 400px;
+    background: var(--bg-panel);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    z-index: 950;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.chat-window.hidden-view {
+    display: none;
+}
+
+.chat-header {
+    background: #323337;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.chat-title {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chat-close {
+    background: transparent;
+    border: none;
+    color: #a1a1aa;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    max-width: 85%;
+}
+
+.ai-message {
+    background: #323337;
+    color: #e4e4e7;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+.user-message {
+    background: #60a5fa;
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-input-area {
+    padding: 12px;
+    background: #323337;
+    display: flex;
+    gap: 8px;
+}
+
+#chat-input {
+    flex: 1;
+    background: #18181b;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 14px;
+    color: white;
+    font-size: 13px;
+    outline: none;
+}
+
+.chat-send {
+    background: linear-gradient(135deg, #60a5fa, #8b5cf6);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* =========================================
+   Universal Color Matching to Home View
+   ========================================= */
+
+/* Make all views match the Home background */
+#plan-view, #map-view, #itinerary-view {
+    background-color: #323337 !important;
+}
+
+/* Plan View specific elements */
+#plan-view .panel-header {
+    background-color: #323337 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+#plan-view .trip-form {
+    background-color: #323337 !important;
+}
+
+#plan-view .vibe-card, 
+#plan-view .mode-btn {
+    background-color: #424347 !important;
+    border-color: rgba(255,255,255,0.05) !important;
+    color: #a1a1aa !important;
+}
+
+#plan-view .vibe-card.active, 
+#plan-view .mode-btn.active {
+    background-color: #60a5fa !important;
+    color: #fff !important;
+    border-color: #60a5fa !important;
+}
+
+#plan-view label {
+    color: #fff !important;
+}
+
+/* Map UI Panels */
+#map-view .trip-info, 
+#map-view .budget-bar {
+    background-color: #424347 !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+    color: #fff !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+}
+
+#map-view .budget-item .label {
+    color: #a1a1aa !important;
+}
+
+#map-view .budget-item .value {
+    color: #fff !important;
+}
+
+/* Itinerary specific elements */
+#itinerary-view .panel-header {
+    background-color: #323337 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+#itinerary-view .day-card {
+    background-color: #424347 !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+#itinerary-view .day-header h3 {
+    color: #fff !important;
+}
+
+#itinerary-view .timeline-item {
+    background-color: #323337 !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+#itinerary-view .mini-calendar {
+    background-color: #323337 !important;
+}
+
+#itinerary-view .cal-day {
+    background-color: #424347 !important;
+    color: #a1a1aa !important;
+}
+
+#itinerary-view .cal-day.active {
+    background-color: #60a5fa !important;
+    color: #fff !important;
+}
+
+/* Fix generic texts and typography */
+* {
+    font-family: 'Outfit', 'Inter', sans-serif;
+}
+p, span, h1, h2, h3, h4, h5, h6, input, select, button, label, div, a {
+    color: inherit;
+    font-family: 'Outfit', 'Inter', sans-serif !important;
+}

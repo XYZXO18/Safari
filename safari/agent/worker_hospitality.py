@@ -82,7 +82,7 @@ def _call_ollama(prompt: str, system: str = HOSPITALITY_SYSTEM_PROMPT) -> str:
         return f"[LLM unavailable: {e}]"
 
 
-class HospitalityAgent:
+class HospitalityWorker:
     """
     Agent 2: Hospitality and Venue Data Agent.
     Processes structured requests about hotels and restaurants.

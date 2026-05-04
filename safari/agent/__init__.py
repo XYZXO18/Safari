@@ -4,6 +4,6 @@ Safari Agent
 The LLM-powered brain that orchestrates tools and generates itineraries.
 """
 
-from safari.agent.brain import SafariAgent
+from safari.agent.orchestrator_agent import OrchestratorAgent
 
-__all__ = ["SafariAgent"]
+__all__ = ["OrchestratorAgent"]

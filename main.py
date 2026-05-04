@@ -28,7 +28,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
-from safari.agent.brain import SafariAgent
+from safari.agent.orchestrator_agent import OrchestratorAgent
 
 console = Console(force_terminal=True)
 
@@ -77,7 +77,7 @@ def main():
         query = DEMO_QUERIES[0]
 
     # Initialize the agent
-    agent = SafariAgent()
+    agent = OrchestratorAgent()
 
     # Plan the trip
     result = agent.plan_trip(query)
