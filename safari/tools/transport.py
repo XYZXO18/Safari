@@ -33,14 +33,25 @@ class TransportEstimate:
     distance_km: float
     cost_one_way: float
     cost_round_trip: float
+    travel_time_minutes: int = 0
     currency: str = "SAR"
     breakdown: str = ""
 
     @property
+    def travel_time_str(self) -> str:
+        hours = self.travel_time_minutes // 60
+        mins = self.travel_time_minutes % 60
+        if hours > 0:
+            return f"{hours}h {mins}m"
+        return f"{mins}m"
+
+    @property
     def summary(self) -> str:
+        time_str = self.travel_time_str
+        
         return (
             f"🚗 {self.mode.capitalize()} | {self.origin.title()} → {self.destination.title()}\n"
-            f"   Distance: {self.distance_km:.0f} km (one way)\n"
+            f"   Distance: {self.distance_km:.0f} km | Est. Time: {time_str}\n"
             f"   Cost: {self.cost_one_way:.0f} {self.currency} one-way "
             f"/ {self.cost_round_trip:.0f} {self.currency} round-trip\n"
             f"   {self.breakdown}"
@@ -138,15 +149,25 @@ def calculate_transport_costs(
             f"@ {fuel_result['price_per_liter']:.2f} SAR/L"
         )
 
-    elif mode_lower in ("flight", "train", "bus"):
-        rate = TRANSPORT_RATES_PER_KM.get(mode_lower, 0.30)
-        cost_one_way = dist * rate
-        cost_rt = cost_one_way * 2 if round_trip else cost_one_way
-
-        breakdown = f"📊 Rate: {rate:.2f} SAR/km × {dist:.0f} km"
-
     else:
         raise ValueError(f"Unknown transport mode: {mode}")
+
+    # Estimate travel time
+    if mode_lower in ("car", "driving"):
+        # Saudi highway speed approx 110-120 km/h avg including stops
+        avg_speed = 110 
+        time_mins = round((dist / avg_speed) * 60)
+    elif mode_lower == "flight":
+        # Flight time + 2 hours buffer for airport
+        time_mins = round((dist / 800) * 60) + 120
+    elif mode_lower == "train":
+        # Haramain High Speed or SAR: avg 200 km/h
+        time_mins = round((dist / 200) * 60) + 30
+    elif mode_lower == "bus":
+        # Bus speed approx 80 km/h
+        time_mins = round((dist / 80) * 60) + 30
+    else:
+        time_mins = 0
 
     return TransportEstimate(
         mode=mode_lower,
@@ -155,6 +176,7 @@ def calculate_transport_costs(
         distance_km=dist,
         cost_one_way=round(cost_one_way, 2),
         cost_round_trip=round(cost_rt, 2),
+        travel_time_minutes=time_mins,
         currency="SAR",
         breakdown=breakdown,
     )

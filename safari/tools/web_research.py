@@ -22,6 +22,7 @@ from typing import List, Optional
 
 from google import genai
 from google.genai import types
+from safari.database import get_cached_web_research, save_web_research
 
 def get_ddg_results(query: str, max_results: int = 5) -> str:
     """Fetch search results from DuckDuckGo."""
@@ -478,40 +479,36 @@ def research_destination(
 ) -> WebResearchResult:
     """
     Perform comprehensive web + social media research for a travel destination.
-
-    Runs up to 3 parallel-style searches using Gemini Google Search grounding:
-      1. Social media posts (X, Instagram, TikTok, Reddit)
-      2. Trending restaurants, cafés, and attractions
-      3. Local tips, weather, and practical insights
-
-    Parameters
-    ----------
-    city : str
-        The destination city (e.g., 'Jeddah', 'Riyadh').
-    interests : str
-        Comma-separated interests for personalized results.
-    include_social : bool
-        Whether to search social media (default True).
-    include_spots : bool
-        Whether to search for trending spots (default True).
-    include_insights : bool
-        Whether to search for local insights (default True).
-
-    Returns
-    -------
-    WebResearchResult
-        Comprehensive research data with social posts, spots, and tips.
-
-    Examples
-    --------
-    >>> result = research_destination("Jeddah", interests="seafood, diving")
-    >>> result.has_data
-    True
-    >>> len(result.trending_spots)
-    5
+    
+    Caching Logic:
+      - Checks SQLite database for results for this city from TODAY.
+      - If found, returns cached data to save tokens and time.
+      - If not found, performs web research and saves to database.
     """
     from datetime import date
+    
+    # ─── Step 1: Check Cache (Once per day) ──────────────────────────
+    cached_data = get_cached_web_research(city)
+    if cached_data:
+        print(f"   [Buzz Cache Hit] Using today's research for {city}")
+        
+        social_posts = [SocialMediaPost(**p) for p in cached_data.get('social_posts', [])]
+        trending_spots = [TrendingSpot(**s) for s in cached_data.get('trending_spots', [])]
+        local_insights = [LocalInsight(**t) for t in cached_data.get('local_insights', [])]
+        
+        return WebResearchResult(
+            city=city,
+            research_date=cached_data.get('research_date', date.today().isoformat()),
+            social_posts=social_posts,
+            trending_spots=trending_spots,
+            local_insights=local_insights,
+            weather_summary=cached_data.get('weather_summary', ""),
+            scan_successful=cached_data.get('scan_successful', True),
+        )
 
+    # ─── Step 2: Not in cache, perform real research ──────────────────
+    print(f"   [Buzz Cache Miss] Researching {city} on the web...")
+    
     social_posts = []
     trending_spots = []
     local_insights = []
@@ -530,8 +527,8 @@ def research_destination(
         local_insights, weather = _search_local_insights(city)
 
     scan_ok = bool(social_posts or trending_spots or local_insights)
-
-    return WebResearchResult(
+    
+    result = WebResearchResult(
         city=city,
         research_date=date.today().isoformat(),
         social_posts=social_posts,
@@ -540,3 +537,10 @@ def research_destination(
         weather_summary=weather,
         scan_successful=scan_ok,
     )
+    
+    # ─── Step 3: Save to Cache ────────────────────────────────────────
+    if scan_ok:
+        save_web_research(city, result.to_dict())
+        print(f"   [Buzz Cache] Saved research for {city} to database.")
+
+    return result

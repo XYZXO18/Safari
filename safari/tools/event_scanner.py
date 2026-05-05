@@ -24,6 +24,7 @@ from typing import List, Optional
 
 from google import genai
 from google.genai import types
+from safari.database import get_cached_events, save_event
 
 def get_ddg_results(query: str, max_results: int = 5) -> str:
     """Fetch search results from DuckDuckGo."""
@@ -394,46 +395,57 @@ def find_live_events(
     """
     Discover live, time-sensitive events in a destination during travel dates.
 
-    Uses a hybrid approach:
-      1. First attempts real-time web search via Gemini Google Search grounding.
-      2. Falls back to a curated local seasonal event database.
-
-    Parameters
-    ----------
-    location : str
-        The destination city (e.g., 'Riyadh', 'Jeddah', 'Al-Ula').
-    start_date : str
-        Trip start date in ISO format (YYYY-MM-DD).
-    end_date : str
-        Trip end date in ISO format (YYYY-MM-DD).
-    max_events : int
-        Maximum number of events to return (default 3).
-
-    Returns
-    -------
-    EventScanResult
-        Contains a list of LiveEvent objects with names, dates, costs,
-        and metadata. Also includes total_event_cost for budget deduction.
-
-    Examples
-    --------
-    >>> result = find_live_events("Riyadh", "2026-05-01", "2026-05-03")
-    >>> result.has_events
-    True
-    >>> result.events[0].name
-    'Riyadh Season'
+    Hybrid approach:
+      1. First check the local SQLite database for cached events.
+      2. If not enough events, search real-time web via Gemini Google Search grounding.
+      3. Falls back to a curated local seasonal event database if still nothing.
+      4. Saves any new web results back to the local SQLite database.
     """
 
-    # ─── Method A: Try web search first ──────────────────────────────
-    events = _search_events_web(location, start_date, end_date, interests)
-    scan_source = "web_search" if events else "none"
+    # ─── Step 1: Check SQLite Cache first ────────────────────────────
+    cached_data = get_cached_events(location, start_date, end_date)
+    events = []
+    if cached_data:
+        for item in cached_data:
+            events.append(LiveEvent(
+                name=item['name'],
+                date=item['event_date'],
+                time=item['time'],
+                estimated_cost_sar=item['estimated_cost_sar'],
+                category=item['category'],
+                source="local_cache",
+                description=item['description'],
+                venue=item['venue'],
+                lat=item['lat'],
+                lng=item['lng']
+            ))
+        print(f"   [Cache Hit] Found {len(events)} events in database for {location}")
 
-    # ─── Method B: Fall back to local database ───────────────────────
+    # ─── Step 2: Try web search if needed (e.g. if cache has < 3 events) ──
+    if len(events) < 3:
+        web_events = _search_events_web(location, start_date, end_date, interests)
+        if web_events:
+            # Add unique ones to our list and save to DB
+            existing_names = {e.name for e in events}
+            new_added = 0
+            for ev in web_events:
+                if ev.name not in existing_names:
+                    events.append(ev)
+                    existing_names.add(ev.name)
+                    # Save to DB for future use
+                    save_event(location, ev.to_dict())
+                    new_added += 1
+            if new_added > 0:
+                print(f"   [Web Search] Added {new_added} new events to database for {location}")
+
+    scan_source = "hybrid" if events else "none"
+
+    # ─── Step 3: Fall back to local seasonal dictionary if still empty ──
     if not events:
         events = _search_events_local(location, start_date, end_date, interests)
         scan_source = "local_db" if events else "none"
 
-    # ─── Deduplicate by name ─────────────────────────────────────────
+    # ─── Deduplicate and Cap ─────────────────────────────────────────
     seen_names = set()
     unique_events = []
     for ev in events:

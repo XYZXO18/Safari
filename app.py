@@ -30,6 +30,7 @@ from safari.agent.worker_research import ResearchWorker
 from safari.agent.worker_hospitality import HospitalityWorker
 from safari.agent.worker_transport import TransportWorker
 from google import genai
+from safari.database import create_snapshot
 app = Flask(__name__, static_folder="static", template_folder="templates")
 worker_hospitality = HospitalityWorker()
 
@@ -243,11 +244,15 @@ def plan_trip():
                     "hotel": hotel_data,
                     "travel_mode": travel_mode,
                     "vehicle_type": vehicle_type,
+                    "origin": origin,
+                    "destination": destination,
                 }
                 timeline_res = worker_3.process_request(timeline_req)
                 timeline = timeline_res.get("timeline", {})
                 total_transit_cost = timeline_res.get("total_transit_cost", 0)
                 simulation_routes = timeline_res.get("simulation_routes", {})
+                full_trip_dataset = timeline_res.get("full_trip_dataset", [])
+                travel_time_str = timeline_res.get("inter_city_travel_time_str", "")
             except Exception as e:
                 import traceback
                 traceback.print_exc()
@@ -256,6 +261,8 @@ def plan_trip():
                 timeline = {}
                 total_transit_cost = 0
                 simulation_routes = {}
+                full_trip_dataset = []
+                travel_time_str = ""
 
             return {
                 "path_type": path_type,
@@ -264,6 +271,7 @@ def plan_trip():
                     "origin": origin.title(),
                     "destination": activities.recommended_city,
                     "distance_km": transport.distance_km,
+                    "travel_time_str": transport.travel_time_str,
                     "cost_one_way": transport.cost_one_way,
                     "cost_round_trip": transport.cost_round_trip,
                     "breakdown": transport.breakdown,
@@ -305,6 +313,7 @@ def plan_trip():
                 "timeline": timeline,
                 "total_transit_cost": total_transit_cost,
                 "simulation_routes": simulation_routes,
+                "full_trip_dataset": full_trip_dataset,
             }
 
         paths = []
@@ -333,7 +342,7 @@ def hospitality_page():
 @app.route("/api/hotels")
 def api_hotels():
     """Search hotels. Query params: city, vibe, room_type."""
-    result = hospitality_agent.process_request({
+    result = worker_hospitality.process_request({
         "action": "search_hotels",
         "city": request.args.get("city"),
         "vibe": request.args.get("vibe"),
@@ -345,7 +354,7 @@ def api_hotels():
 @app.route("/api/hotels/<hotel_id>")
 def api_hotel_details(hotel_id):
     """Get hotel details by ID."""
-    result = hospitality_agent.process_request({
+    result = worker_hospitality.process_request({
         "action": "hotel_details",
         "hotel_id": hotel_id,
     })
@@ -357,7 +366,7 @@ def api_restaurants():
     """Search restaurants. Query params: city, vibe, cuisine, allergens (comma-sep)."""
     allergens_str = request.args.get("allergens", "")
     allergens = [a.strip() for a in allergens_str.split(",") if a.strip()] if allergens_str else []
-    result = hospitality_agent.process_request({
+    result = worker_hospitality.process_request({
         "action": "search_restaurants",
         "city": request.args.get("city"),
         "vibe": request.args.get("vibe"),
@@ -449,6 +458,38 @@ Sure, I've updated your trip to 5 days at the coast!
     except Exception as e:
         print(f"Chat error: {e}")
         return jsonify({"reply": f"I'm here to help! Make sure your local Ollama instance is running. (Error: {e})"}), 200
+
+
+@app.route("/api/snapshot", methods=["POST"])
+def api_snapshot():
+    """Manually trigger a database snapshot."""
+    path = create_snapshot()
+    if path:
+        return jsonify({"status": "success", "snapshot_path": path})
+    return jsonify({"status": "error", "message": "Failed to create snapshot"}), 500
+
+@app.route('/api/hospitality', methods=['GET'])
+def api_get_hospitality():
+    city = request.args.get('city')
+    item_type = request.args.get('type')
+    if not city:
+        return jsonify({"error": "City is required"}), 400
+    
+    from safari.database import get_hospitality, randomize_hospitality
+    randomize_hospitality(city)
+    data = get_hospitality(city, item_type)
+    return jsonify(data)
+
+@app.route('/api/book', methods=['POST'])
+def api_book_hotel():
+    data = request.json
+    hotel_id = data.get('hotel_id')
+    if not hotel_id:
+        return jsonify({"error": "hotel_id is required"}), 400
+    
+    from safari.database import book_hotel
+    book_hotel(hotel_id)
+    return jsonify({"status": "success", "message": "Hotel booked successfully"})
 
 
 if __name__ == "__main__":

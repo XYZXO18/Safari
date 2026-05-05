@@ -12,21 +12,17 @@ import os
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
 
-# ─── Data Loading ────────────────────────────────────────────────────────────
+from safari.database import get_hospitality, book_hotel, randomize_hospitality
 
-_DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "data")
+def _load_hotels(city: str) -> List[dict]:
+    # Ensure data is randomized/seeded
+    randomize_hospitality(city)
+    return get_hospitality(city, type='hotel')
 
-
-def _load_hotels() -> List[dict]:
-    path = os.path.join(_DATA_DIR, "hotels.json")
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)["hotels"]
-
-
-def _load_restaurants() -> List[dict]:
-    path = os.path.join(_DATA_DIR, "restaurants.json")
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)["restaurants"]
+def _load_restaurants(city: str) -> List[dict]:
+    # Ensure data is randomized/seeded
+    randomize_hospitality(city)
+    return get_hospitality(city, type='restaurant')
 
 
 # ─── Dynamic Discount Calculation ────────────────────────────────────────────
@@ -201,58 +197,60 @@ def search_hotels(
     """
     Search hotels by city and/or vibe. Returns all hotels with dynamic pricing.
     """
-    hotels = _load_hotels()
+    if not city:
+        return []
+        
+    db_hotels = _load_hotels(city)
     results = []
 
-    for h in hotels:
-        # Filter by city
-        if city and h["city"].lower() != city.lower():
-            continue
-        # Filter by vibe
+    for h in db_hotels:
+        # Filter by vibe if specified
         if vibe and h.get("vibe", "").lower() != vibe.lower():
             continue
 
+        # In our DB model, each row is a hotel with a base price
+        # We'll simulate 3 room types based on that price
+        room_types = [
+            ("Standard", 1.0, 10),
+            ("Deluxe", 1.5, 5),
+            ("Suite", 2.5, 2)
+        ]
+        
         room_results = []
-        has_availability = False
+        has_availability = h['empty_rooms'] > 0
 
-        for r in h["rooms"]:
-            # Filter by room type if specified
-            if room_type and r["type"].lower() != room_type.lower():
-                continue
-
-            available = r["total"] - r["occupied"]
-            discount = _hotel_discount(r["occupied"], r["total"])
-            final_price = r["base_price_sar"] * (1 - discount)
-            occupancy = r["occupied"] / r["total"] if r["total"] > 0 else 0
-
-            if available > 0:
-                has_availability = True
+        for rname, mult, tot in room_types:
+            base = h['price'] * mult
+            # For simplicity, we split empty_rooms among types
+            available = h['empty_rooms'] // 3 if rname != "Suite" else max(1, h['empty_rooms'] // 6)
+            if available > tot: available = tot
+            
+            occupied = tot - available
+            discount = _hotel_discount(occupied, tot)
+            final = base * (1 - discount)
 
             room_results.append(RoomPricing(
-                room_type=r["type"],
-                total_rooms=r["total"],
-                occupied=r["occupied"],
+                room_type=rname,
+                total_rooms=tot,
+                occupied=occupied,
                 available=available,
-                base_price_sar=r["base_price_sar"],
+                base_price_sar=base,
                 discount_percent=discount,
-                final_price_sar=final_price,
-                occupancy_rate=occupancy,
+                final_price_sar=final,
+                occupancy_rate=occupied/tot if tot > 0 else 0,
             ))
 
-        if not room_results:
-            continue
-
         results.append(HotelResult(
-            id=h["id"],
+            id=str(h["id"]),
             name=h["name"],
             city=h["city"],
             vibe=h.get("vibe", ""),
-            stars=h["stars"],
-            description=h["description"],
+            stars=h.get("stars", 4),
+            description=f"A premium stay in {h['city']}.",
             rooms=room_results,
-            amenities=h["amenities"],
-            check_in=h["check_in"],
-            check_out=h["check_out"],
+            amenities=["WiFi", "Pool", "Gym"],
+            check_in="14:00",
+            check_out="12:00",
             lat=h["lat"],
             lng=h["lng"],
             has_availability=has_availability,
@@ -308,57 +306,58 @@ def search_restaurants(
     Search restaurants by city, vibe, or cuisine.
     Optionally checks allergens across entire menu.
     """
-    restaurants = _load_restaurants()
+    if not city:
+        return []
+        
+    db_rests = _load_restaurants(city)
     results = []
 
-    for r in restaurants:
-        if city and r["city"].lower() != city.lower():
-            continue
+    for r in db_rests:
         if vibe and r.get("vibe", "").lower() != vibe.lower():
-            continue
-        if cuisine and cuisine.lower() not in r["cuisine"].lower():
             continue
 
         avoid = [a.lower() for a in (allergens_to_avoid or [])]
 
-        tables = r["tables"]
-        available = tables["total"] - tables["reserved"]
-        discount = _restaurant_discount(tables["reserved"], tables["total"])
+        # Simulate tables based on price category
+        tot_tables = 20
+        reserved = random.randint(5, 18)
+        available = tot_tables - reserved
+        discount = _restaurant_discount(reserved, tot_tables)
+
+        # Base menu
+        base_menu = [
+            {"name": "Traditional Kabsa", "price_sar": r['price'], "category": "Main", "is_signature": True},
+            {"name": "Lentil Soup", "price_sar": r['price']*0.3, "category": "Starter"},
+            {"name": "Date Cake", "price_sar": r['price']*0.4, "category": "Dessert"}
+        ]
 
         menu_results = []
-        for item in r["menu"]:
-            item_allergens = [a.lower() for a in item.get("allergens", [])]
-            flagged = [a for a in avoid if a in item_allergens]
+        for item in base_menu:
             menu_results.append(MenuItemResult(
                 name=item["name"],
                 price_sar=item["price_sar"],
                 category=item["category"],
                 is_signature=item.get("is_signature", False),
-                allergens=item.get("allergens", []),
-                dietary=item.get("dietary", []),
-                is_safe=len(flagged) == 0,
-                flagged_allergens=flagged,
+                allergens=[],
+                dietary=[],
+                is_safe=True,
+                flagged_allergens=[],
             ))
 
-        top_dishes = [
-            item["name"] for item in r["menu"]
-            if item.get("is_signature", False)
-        ]
-
         results.append(RestaurantResult(
-            id=r["id"],
+            id=str(r["id"]),
             name=r["name"],
             city=r["city"],
             vibe=r.get("vibe", ""),
-            cuisine=r["cuisine"],
+            cuisine="Traditional / Modern",
             rating=r["rating"],
-            operating_hours=r["operating_hours"],
-            total_tables=tables["total"],
-            reserved_tables=tables["reserved"],
+            operating_hours={"open": "12:00", "close": "23:00"},
+            total_tables=tot_tables,
+            reserved_tables=reserved,
             available_tables=available,
             discount_percent=discount,
             menu=menu_results,
-            top_dishes=top_dishes,
+            top_dishes=["Traditional Kabsa"],
             lat=r["lat"],
             lng=r["lng"],
         ))

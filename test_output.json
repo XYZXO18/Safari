@@ -1,0 +1,965 @@
+{
+  "paths": [
+    {
+      "activities": {
+        "daily_plan": {
+          "1": [
+            {
+              "cost": 0.0,
+              "description": "A celebration of literature and knowledge from around the world.",
+              "id": "evt_0_jeddah_int",
+              "is_live_event": true,
+              "lat": 21.4884,
+              "lng": 39.1951,
+              "name": "\ud83c\udfaa LIVE: Jeddah International Book Fair",
+              "time": "18:00 or TBD",
+              "venue": "King Fahad Library"
+            },
+            {
+              "lat": 21.461648900432884,
+              "lng": 39.25058255749586,
+              "name": "Marina promenade stroll"
+            },
+            {
+              "lat": 21.42123798732437,
+              "lng": 39.24646182202016,
+              "name": "Visit coastal landmarks"
+            },
+            {
+              "lat": 21.490162362487066,
+              "lng": 39.22570423324895,
+              "name": "Historical downtown walking tour"
+            }
+          ],
+          "2": [
+            {
+              "cost": 0.0,
+              "description": "A festival featuring theater, dance, and music performances.",
+              "id": "evt_1_saudi_inte",
+              "is_live_event": true,
+              "lat": 21.4858,
+              "lng": 39.1925,
+              "name": "\ud83c\udfaa LIVE: Saudi International Fringe Festival",
+              "time": "TBD",
+              "venue": "King Abdulaziz Cultural Center"
+            },
+            {
+              "lat": 21.473580228854303,
+              "lng": 39.234922947313635,
+              "name": "Fish market visit",
+              "rating": 4.2,
+              "review_count": 1321,
+              "reviews": [
+                {
+                  "rating": 4,
+                  "text": "Go early morning for the freshest catch. Pick your fish and the restaurant next door grills it perfectly!",
+                  "user": "Hassan B."
+                },
+                {
+                  "rating": 4,
+                  "text": "Fascinating cultural experience. The variety of Red Sea fish is amazing. Bargaining is half the fun.",
+                  "user": "Sophie W."
+                },
+                {
+                  "rating": 5,
+                  "text": "Best seafood I've ever had! The whole experience from selection to plate is unique. A hidden gem.",
+                  "user": "Rashid M."
+                }
+              ],
+              "why_go": "Jeddah's bustling fish market is a sensory overload \u00e2\u20ac\u201d mountains of fresh catch, animated haggling, and the option to pick your fish and have it cooked at adjacent restaurants."
+            },
+            {
+              "lat": 21.474014052784103,
+              "lng": 39.26953534569048,
+              "name": "Corniche walk",
+              "rating": 4.3,
+              "review_count": 2891,
+              "reviews": [
+                {
+                  "rating": 5,
+                  "text": "Best walk in the city! The sculptures along the corniche are fascinating. Go at sunset for the best experience.",
+                  "user": "Fatima A."
+                },
+                {
+                  "rating": 4,
+                  "text": "Great place for evening walks. Lots of food stalls and caf\u00c3\u00a9s nearby. Gets busy on weekends.",
+                  "user": "Mohammed R."
+                },
+                {
+                  "rating": 4,
+                  "text": "The fountain show at night is spectacular! Bring a light jacket as it gets breezy after dark.",
+                  "user": "Lisa T."
+                }
+              ],
+              "why_go": "Jeddah's iconic waterfront promenade stretches for 30km along the Red Sea. Features stunning public art, fountains, and the famous King Fahd Fountain \u00e2\u20ac\u201d the tallest in the world."
+            }
+          ],
+          "3": [
+            {
+              "cost": 0.0,
+              "description": "",
+              "id": "evt_2_unknown_ev",
+              "is_live_event": true,
+              "lat": null,
+              "lng": null,
+              "name": "\ud83c\udfaa LIVE: Unknown Event",
+              "time": "TBD",
+              "venue": ""
+            },
+            {
+              "lat": 21.474014052784103,
+              "lng": 39.26953534569048,
+              "name": "Corniche walk",
+              "rating": 4.3,
+              "review_count": 2891,
+              "reviews": [
+                {
+                  "rating": 5,
+                  "text": "Best walk in the city! The sculptures along the corniche are fascinating. Go at sunset for the best experience.",
+                  "user": "Fatima A."
+                },
+                {
+                  "rating": 4,
+                  "text": "Great place for evening walks. Lots of food stalls and caf\u00c3\u00a9s nearby. Gets busy on weekends.",
+                  "user": "Mohammed R."
+                },
+                {
+                  "rating": 4,
+                  "text": "The fountain show at night is spectacular! Bring a light jacket as it gets breezy after dark.",
+                  "user": "Lisa T."
+                }
+              ],
+              "why_go": "Jeddah's iconic waterfront promenade stretches for 30km along the Red Sea. Features stunning public art, fountains, and the famous King Fahd Fountain \u00e2\u20ac\u201d the tallest in the world."
+            },
+            {
+              "lat": 21.490162362487066,
+              "lng": 39.22570423324895,
+              "name": "Historical downtown walking tour"
+            },
+            {
+              "lat": 21.473580228854303,
+              "lng": 39.234922947313635,
+              "name": "Fish market visit",
+              "rating": 4.2,
+              "review_count": 1321,
+              "reviews": [
+                {
+                  "rating": 4,
+                  "text": "Go early morning for the freshest catch. Pick your fish and the restaurant next door grills it perfectly!",
+                  "user": "Hassan B."
+                },
+                {
+                  "rating": 4,
+                  "text": "Fascinating cultural experience. The variety of Red Sea fish is amazing. Bargaining is half the fun.",
+                  "user": "Sophie W."
+                },
+                {
+                  "rating": 5,
+                  "text": "Best seafood I've ever had! The whole experience from selection to plate is unique. A hidden gem.",
+                  "user": "Rashid M."
+                }
+              ],
+              "why_go": "Jeddah's bustling fish market is a sensory overload \u00e2\u20ac\u201d mountains of fresh catch, animated haggling, and the option to pick your fish and have it cooked at adjacent restaurants."
+            }
+          ]
+        },
+        "destination": "coast",
+        "hotel": {
+          "lat": 21.4858,
+          "lng": 39.1925,
+          "name": "Four Seasons Hotel Jeddah"
+        },
+        "recommended_city": "Jeddah",
+        "vibe": "Beach, diving, seafood, Red Sea sunsets"
+      },
+      "budget": {
+        "activities": {
+          "per_day": 128.82,
+          "total": 386.46
+        },
+        "buffer": {
+          "per_day": 64.41,
+          "total": 193.23
+        },
+        "currency": "SAR",
+        "days": 3,
+        "food": {
+          "per_day": 193.23,
+          "total": 579.69
+        },
+        "is_feasible": true,
+        "lodging": {
+          "per_day": 257.64,
+          "total": 772.92
+        },
+        "remaining": 1932.31,
+        "total": 2100.0,
+        "transport": 167.69,
+        "warnings": []
+      },
+      "dates": {
+        "end_date": "2026-05-08",
+        "start_date": "2026-05-06"
+      },
+      "events": {
+        "city": "Jeddah",
+        "end_date": "2026-05-08",
+        "events": [
+          {
+            "category": "exhibition",
+            "date": "2026-05-06",
+            "description": "A celebration of literature and knowledge from around the world.",
+            "estimated_cost_sar": 0.0,
+            "lat": 21.4884,
+            "lng": 39.1951,
+            "name": "Jeddah International Book Fair",
+            "source": "local_cache",
+            "time": "18:00 or TBD",
+            "venue": "King Fahad Library"
+          },
+          {
+            "category": "festival",
+            "date": "2026-05-06 - 2026-05-09",
+            "description": "A festival featuring theater, dance, and music performances.",
+            "estimated_cost_sar": 0.0,
+            "lat": 21.4858,
+            "lng": 39.1925,
+            "name": "Saudi International Fringe Festival",
+            "source": "local_cache",
+            "time": "TBD",
+            "venue": "King Abdulaziz Cultural Center"
+          },
+          {
+            "category": "event",
+            "date": "2026-05-06",
+            "description": "",
+            "estimated_cost_sar": 0.0,
+            "lat": null,
+            "lng": null,
+            "name": "Unknown Event",
+            "source": "local_cache",
+            "time": "TBD",
+            "venue": ""
+          }
+        ],
+        "scan_source": "hybrid",
+        "start_date": "2026-05-06",
+        "total_event_cost": 0.0
+      },
+      "full_trip_dataset": [],
+      "hospitality": {
+        "hotels": [],
+        "restaurants": []
+      },
+      "map": {
+        "dest_name": "Jeddah",
+        "destination": {
+          "lat": 21.4858,
+          "lng": 39.1925
+        },
+        "origin": {
+          "lat": 24.7136,
+          "lng": 46.6753
+        },
+        "origin_name": "Riyadh"
+      },
+      "path_type": "budget",
+      "simulation_routes": {},
+      "timeline": {},
+      "total_transit_cost": 0,
+      "transport": {
+        "breakdown": "\ud83d\udcca Sedan | Fuel (RON 91): 500 km \u00f7 13.0 km/L = 38.5 L @ 2.18 SAR/L",
+        "cost_one_way": 83.85,
+        "cost_round_trip": 167.69,
+        "destination": "Jeddah",
+        "distance_km": 500,
+        "mode": "car",
+        "origin": "Riyadh",
+        "travel_time_str": "4h 33m",
+        "vehicle_type": "sedan"
+      },
+      "web_research": {
+        "city": "Jeddah",
+        "local_insights": [
+          {
+            "category": "culture",
+            "confidence": "medium",
+            "source": "Reddit",
+            "tip": "Haggle politely when shopping at souks (markets), it's a cultural norm but can be overwhelming for tourists."
+          },
+          {
+            "category": "safety",
+            "confidence": "high",
+            "source": "Lonely Planet",
+            "tip": "Use reputable taxi companies or ride-hailing apps like Careem to avoid scams."
+          },
+          {
+            "category": "weather",
+            "confidence": "medium",
+            "source": "TripAdvisor forums",
+            "tip": "Pack light, breathable clothing and a hat to protect yourself from the sun."
+          },
+          {
+            "category": "culture",
+            "confidence": "high",
+            "source": "Lonely Planet",
+            "tip": "Try to learn some basic Arabic phrases like 'as-salamu alaykum' (hello) and 'shukraan' (thank you), it will go a long way in showing respect for the culture."
+          },
+          {
+            "category": "transport",
+            "confidence": "medium",
+            "source": "Reddit",
+            "tip": "The best way to get around Jeddah is by using the metro or ride-hailing apps, avoid driving yourself unless you have experience with Saudi traffic laws."
+          }
+        ],
+        "research_date": "2026-05-05",
+        "scan_successful": true,
+        "social_posts": [
+          {
+            "author": "Saudi Tourism Board",
+            "category": "tip",
+            "content": "Discover the vibrant city of Jeddah with our top recommendations for restaurants, attractions and experiences. From traditional Saudi cuisine to modern art galleries, there's something for everyone in this exciting city! #JeddahTourism #SaudiArabia",
+            "likes": 23,
+            "platform": "x/twitter",
+            "posted_date": "2023-06-15T14:30:00Z",
+            "relevance_score": 0.92,
+            "url": "https://twitter.com/SaudiTourismBoard/status/1424218764321232"
+          }
+        ],
+        "trending_spots": [],
+        "weather_summary": "Jeddah has a hot desert climate with very little rainfall throughout the year, temperatures can reach up to 40\u00b0C in summer and drop to 10\u00b0C in winter."
+      }
+    },
+    {
+      "activities": {
+        "daily_plan": {
+          "1": [
+            {
+              "cost": 0.0,
+              "description": "A celebration of literature and knowledge from around the world.",
+              "id": "evt_0_jeddah_int",
+              "is_live_event": true,
+              "lat": 21.4884,
+              "lng": 39.1951,
+              "name": "\ud83c\udfaa LIVE: Jeddah International Book Fair",
+              "time": "18:00 or TBD",
+              "venue": "King Fahad Library"
+            },
+            {
+              "lat": 21.4858,
+              "lng": 39.1925,
+              "name": "Jeddah Corniche"
+            },
+            {
+              "lat": 21.4829,
+              "lng": 39.1953,
+              "name": "Al-Balad Beach",
+              "rating": 4.5,
+              "review_count": 1243,
+              "reviews": [
+                {
+                  "rating": 5,
+                  "text": "One of the best beaches in Jeddah! Clean water and amazing views. Go early morning to beat the crowds.",
+                  "user": "Ahmed K."
+                },
+                {
+                  "rating": 4,
+                  "text": "Beautiful spot for families. The water is warm and shallow near the shore. Bring your own shade though.",
+                  "user": "Sarah M."
+                },
+                {
+                  "rating": 5,
+                  "text": "Perfect for snorkeling! Saw tropical fish right off the shore. The sunset here is absolutely magical.",
+                  "user": "David L."
+                }
+              ],
+              "why_go": "A stunning stretch of Red Sea coastline with crystal-clear water, vibrant coral reefs just offshore, and breathtaking sunset views. Perfect for both relaxation and water sports."
+            },
+            {
+              "lat": 21.4849,
+              "lng": 39.1943,
+              "name": "Al-Faisaliyah Mall"
+            }
+          ],
+          "2": [
+            {
+              "cost": 0.0,
+              "description": "A festival featuring theater, dance, and music performances.",
+              "id": "evt_1_saudi_inte",
+              "is_live_event": true,
+              "lat": 21.4858,
+              "lng": 39.1925,
+              "name": "\ud83c\udfaa LIVE: Saudi International Fringe Festival",
+              "time": "TBD",
+              "venue": "King Abdulaziz Cultural Center"
+            },
+            {
+              "lat": 21.405944560057097,
+              "lng": 39.195999673130885,
+              "name": "Marina promenade stroll"
+            },
+            {
+              "lat": 21.448698656645963,
+              "lng": 39.22335162404652,
+              "name": "Beach camping"
+            },
+            {
+              "lat": 21.4863,
+              "lng": 39.1938,
+              "name": "Seafood Restaurant at Corniche"
+            }
+          ],
+          "3": [
+            {
+              "cost": 0.0,
+              "description": "",
+              "id": "evt_2_unknown_ev",
+              "is_live_event": true,
+              "lat": null,
+              "lng": null,
+              "name": "\ud83c\udfaa LIVE: Unknown Event",
+              "time": "TBD",
+              "venue": ""
+            },
+            {
+              "lat": 21.557168973100083,
+              "lng": 39.12523091128628,
+              "name": "Sunset cruise",
+              "rating": 4.4,
+              "review_count": 987,
+              "reviews": [
+                {
+                  "rating": 5,
+                  "text": "The most romantic evening of our trip! Saw dolphins playing alongside the boat. The dinner was excellent.",
+                  "user": "Lina H."
+                },
+                {
+                  "rating": 4,
+                  "text": "Beautiful sunset views and great food on board. Book in advance \u00e2\u20ac\u201d popular cruises sell out quickly.",
+                  "user": "Mike J."
+                },
+                {
+                  "rating": 4,
+                  "text": "Worth every riyal! The crew was friendly and the views of Jeddah's skyline from the water are gorgeous.",
+                  "user": "Rana T."
+                }
+              ],
+              "why_go": "Glide along the Red Sea coast as the sun paints the sky in shades of gold and crimson. Many cruises include dinner, live music, and dolphin spotting opportunities."
+            },
+            {
+              "lat": 21.548153993632162,
+              "lng": 39.22676998069719,
+              "name": "Historical downtown walking tour"
+            },
+            {
+              "lat": 21.536453703138395,
+              "lng": 39.2622822476398,
+              "name": "Corniche walk",
+              "rating": 4.3,
+              "review_count": 2891,
+              "reviews": [
+                {
+                  "rating": 5,
+                  "text": "Best walk in the city! The sculptures along the corniche are fascinating. Go at sunset for the best experience.",
+                  "user": "Fatima A."
+                },
+                {
+                  "rating": 4,
+                  "text": "Great place for evening walks. Lots of food stalls and caf\u00c3\u00a9s nearby. Gets busy on weekends.",
+                  "user": "Mohammed R."
+                },
+                {
+                  "rating": 4,
+                  "text": "The fountain show at night is spectacular! Bring a light jacket as it gets breezy after dark.",
+                  "user": "Lisa T."
+                }
+              ],
+              "why_go": "Jeddah's iconic waterfront promenade stretches for 30km along the Red Sea. Features stunning public art, fountains, and the famous King Fahd Fountain \u00e2\u20ac\u201d the tallest in the world."
+            }
+          ]
+        },
+        "destination": "coast",
+        "hotel": {
+          "lat": 21.4858,
+          "lng": 39.1925,
+          "name": "Four Seasons Hotel Jeddah"
+        },
+        "recommended_city": "Jeddah",
+        "vibe": "Beach, diving, seafood, Red Sea sunsets"
+      },
+      "budget": {
+        "activities": {
+          "per_day": 188.82,
+          "total": 566.46
+        },
+        "buffer": {
+          "per_day": 94.41,
+          "total": 283.23
+        },
+        "currency": "SAR",
+        "days": 3,
+        "food": {
+          "per_day": 283.23,
+          "total": 849.69
+        },
+        "is_feasible": true,
+        "lodging": {
+          "per_day": 377.64,
+          "total": 1132.92
+        },
+        "remaining": 2832.31,
+        "total": 3000.0,
+        "transport": 167.69,
+        "warnings": []
+      },
+      "dates": {
+        "end_date": "2026-05-08",
+        "start_date": "2026-05-06"
+      },
+      "events": {
+        "city": "Jeddah",
+        "end_date": "2026-05-08",
+        "events": [
+          {
+            "category": "exhibition",
+            "date": "2026-05-06",
+            "description": "A celebration of literature and knowledge from around the world.",
+            "estimated_cost_sar": 0.0,
+            "lat": 21.4884,
+            "lng": 39.1951,
+            "name": "Jeddah International Book Fair",
+            "source": "local_cache",
+            "time": "18:00 or TBD",
+            "venue": "King Fahad Library"
+          },
+          {
+            "category": "festival",
+            "date": "2026-05-06 - 2026-05-09",
+            "description": "A festival featuring theater, dance, and music performances.",
+            "estimated_cost_sar": 0.0,
+            "lat": 21.4858,
+            "lng": 39.1925,
+            "name": "Saudi International Fringe Festival",
+            "source": "local_cache",
+            "time": "TBD",
+            "venue": "King Abdulaziz Cultural Center"
+          },
+          {
+            "category": "event",
+            "date": "2026-05-06",
+            "description": "",
+            "estimated_cost_sar": 0.0,
+            "lat": null,
+            "lng": null,
+            "name": "Unknown Event",
+            "source": "local_cache",
+            "time": "TBD",
+            "venue": ""
+          }
+        ],
+        "scan_source": "hybrid",
+        "start_date": "2026-05-06",
+        "total_event_cost": 0.0
+      },
+      "full_trip_dataset": [],
+      "hospitality": {
+        "hotels": [],
+        "restaurants": []
+      },
+      "map": {
+        "dest_name": "Jeddah",
+        "destination": {
+          "lat": 21.4858,
+          "lng": 39.1925
+        },
+        "origin": {
+          "lat": 24.7136,
+          "lng": 46.6753
+        },
+        "origin_name": "Riyadh"
+      },
+      "path_type": "balanced",
+      "simulation_routes": {},
+      "timeline": {},
+      "total_transit_cost": 0,
+      "transport": {
+        "breakdown": "\ud83d\udcca Sedan | Fuel (RON 91): 500 km \u00f7 13.0 km/L = 38.5 L @ 2.18 SAR/L",
+        "cost_one_way": 83.85,
+        "cost_round_trip": 167.69,
+        "destination": "Jeddah",
+        "distance_km": 500,
+        "mode": "car",
+        "origin": "Riyadh",
+        "travel_time_str": "4h 33m",
+        "vehicle_type": "sedan"
+      },
+      "web_research": {
+        "city": "Jeddah",
+        "local_insights": [
+          {
+            "category": "culture",
+            "confidence": "medium",
+            "source": "Reddit",
+            "tip": "Haggle politely when shopping at souks (markets), it's a cultural norm but can be overwhelming for tourists."
+          },
+          {
+            "category": "safety",
+            "confidence": "high",
+            "source": "Lonely Planet",
+            "tip": "Use reputable taxi companies or ride-hailing apps like Careem to avoid scams."
+          },
+          {
+            "category": "weather",
+            "confidence": "medium",
+            "source": "TripAdvisor forums",
+            "tip": "Pack light, breathable clothing and a hat to protect yourself from the sun."
+          },
+          {
+            "category": "culture",
+            "confidence": "high",
+            "source": "Lonely Planet",
+            "tip": "Try to learn some basic Arabic phrases like 'as-salamu alaykum' (hello) and 'shukraan' (thank you), it will go a long way in showing respect for the culture."
+          },
+          {
+            "category": "transport",
+            "confidence": "medium",
+            "source": "Reddit",
+            "tip": "The best way to get around Jeddah is by using the metro or ride-hailing apps, avoid driving yourself unless you have experience with Saudi traffic laws."
+          }
+        ],
+        "research_date": "2026-05-05",
+        "scan_successful": true,
+        "social_posts": [
+          {
+            "author": "Saudi Tourism Board",
+            "category": "tip",
+            "content": "Discover the vibrant city of Jeddah with our top recommendations for restaurants, attractions and experiences. From traditional Saudi cuisine to modern art galleries, there's something for everyone in this exciting city! #JeddahTourism #SaudiArabia",
+            "likes": 23,
+            "platform": "x/twitter",
+            "posted_date": "2023-06-15T14:30:00Z",
+            "relevance_score": 0.92,
+            "url": "https://twitter.com/SaudiTourismBoard/status/1424218764321232"
+          }
+        ],
+        "trending_spots": [],
+        "weather_summary": "Jeddah has a hot desert climate with very little rainfall throughout the year, temperatures can reach up to 40\u00b0C in summer and drop to 10\u00b0C in winter."
+      }
+    },
+    {
+      "activities": {
+        "daily_plan": {
+          "1": [
+            {
+              "cost": 0.0,
+              "description": "A celebration of literature and knowledge from around the world.",
+              "id": "evt_0_jeddah_int",
+              "is_live_event": true,
+              "lat": 21.4884,
+              "lng": 39.1951,
+              "name": "\ud83c\udfaa LIVE: Jeddah International Book Fair",
+              "time": "18:00 or TBD",
+              "venue": "King Fahad Library"
+            },
+            {
+              "lat": 21.44391537209423,
+              "lng": 39.25422649587098,
+              "name": "Marina promenade stroll"
+            },
+            {
+              "lat": 21.489299673130883,
+              "lng": 39.15033790591647,
+              "name": "Historical downtown walking tour"
+            },
+            {
+              "lat": 21.418530911286283,
+              "lng": 39.25485399363217,
+              "name": "Fish market visit",
+              "rating": 4.2,
+              "review_count": 1321,
+              "reviews": [
+                {
+                  "rating": 4,
+                  "text": "Go early morning for the freshest catch. Pick your fish and the restaurant next door grills it perfectly!",
+                  "user": "Hassan B."
+                },
+                {
+                  "rating": 4,
+                  "text": "Fascinating cultural experience. The variety of Red Sea fish is amazing. Bargaining is half the fun.",
+                  "user": "Sophie W."
+                },
+                {
+                  "rating": 5,
+                  "text": "Best seafood I've ever had! The whole experience from selection to plate is unique. A hidden gem.",
+                  "user": "Rashid M."
+                }
+              ],
+              "why_go": "Jeddah's bustling fish market is a sensory overload \u00e2\u20ac\u201d mountains of fresh catch, animated haggling, and the option to pick your fish and have it cooked at adjacent restaurants."
+            }
+          ],
+          "2": [
+            {
+              "cost": 0.0,
+              "description": "A festival featuring theater, dance, and music performances.",
+              "id": "evt_1_saudi_inte",
+              "is_live_event": true,
+              "lat": 21.4858,
+              "lng": 39.1925,
+              "name": "\ud83c\udfaa LIVE: Saudi International Fringe Festival",
+              "time": "TBD",
+              "venue": "King Abdulaziz Cultural Center"
+            },
+            {
+              "lat": 21.4822,
+              "lng": 39.1745,
+              "name": "Jeddah Diving Center"
+            },
+            {
+              "lat": 21.414071174970246,
+              "lng": 39.2431537031384,
+              "name": "Seafood dinner by the shore"
+            },
+            {
+              "lat": 21.4831,
+              "lng": 39.1759,
+              "name": "Al-Balad Beach",
+              "rating": 4.5,
+              "review_count": 1243,
+              "reviews": [
+                {
+                  "rating": 5,
+                  "text": "One of the best beaches in Jeddah! Clean water and amazing views. Go early morning to beat the crowds.",
+                  "user": "Ahmed K."
+                },
+                {
+                  "rating": 4,
+                  "text": "Beautiful spot for families. The water is warm and shallow near the shore. Bring your own shade though.",
+                  "user": "Sarah M."
+                },
+                {
+                  "rating": 5,
+                  "text": "Perfect for snorkeling! Saw tropical fish right off the shore. The sunset here is absolutely magical.",
+                  "user": "David L."
+                }
+              ],
+              "why_go": "A stunning stretch of Red Sea coastline with crystal-clear water, vibrant coral reefs just offshore, and breathtaking sunset views. Perfect for both relaxation and water sports."
+            }
+          ],
+          "3": [
+            {
+              "cost": 0.0,
+              "description": "",
+              "id": "evt_2_unknown_ev",
+              "is_live_event": true,
+              "lat": null,
+              "lng": null,
+              "name": "\ud83c\udfaa LIVE: Unknown Event",
+              "time": "TBD",
+              "venue": ""
+            },
+            {
+              "lat": 21.4843,
+              "lng": 39.1767,
+              "name": "Red Sea Sunsets"
+            },
+            {
+              "lat": 21.4839,
+              "lng": 39.1751,
+              "name": "Jeddah Fish Market"
+            },
+            {
+              "lat": 21.441122725724174,
+              "lng": 39.26386897310008,
+              "name": "Corniche walk",
+              "rating": 4.3,
+              "review_count": 2891,
+              "reviews": [
+                {
+                  "rating": 5,
+                  "text": "Best walk in the city! The sculptures along the corniche are fascinating. Go at sunset for the best experience.",
+                  "user": "Fatima A."
+                },
+                {
+                  "rating": 4,
+                  "text": "Great place for evening walks. Lots of food stalls and caf\u00c3\u00a9s nearby. Gets busy on weekends.",
+                  "user": "Mohammed R."
+                },
+                {
+                  "rating": 4,
+                  "text": "The fountain show at night is spectacular! Bring a light jacket as it gets breezy after dark.",
+                  "user": "Lisa T."
+                }
+              ],
+              "why_go": "Jeddah's iconic waterfront promenade stretches for 30km along the Red Sea. Features stunning public art, fountains, and the famous King Fahd Fountain \u00e2\u20ac\u201d the tallest in the world."
+            }
+          ]
+        },
+        "destination": "coast",
+        "hotel": {
+          "lat": 21.4813,
+          "lng": 39.1734,
+          "name": "Four Seasons Hotel Jeddah"
+        },
+        "recommended_city": "Jeddah",
+        "vibe": "Beach, diving, seafood, Red Sea sunsets"
+      },
+      "budget": {
+        "activities": {
+          "per_day": 288.82,
+          "total": 866.46
+        },
+        "buffer": {
+          "per_day": 144.41,
+          "total": 433.23
+        },
+        "currency": "SAR",
+        "days": 3,
+        "food": {
+          "per_day": 433.23,
+          "total": 1299.69
+        },
+        "is_feasible": true,
+        "lodging": {
+          "per_day": 577.64,
+          "total": 1732.92
+        },
+        "remaining": 4332.31,
+        "total": 4500.0,
+        "transport": 167.69,
+        "warnings": []
+      },
+      "dates": {
+        "end_date": "2026-05-08",
+        "start_date": "2026-05-06"
+      },
+      "events": {
+        "city": "Jeddah",
+        "end_date": "2026-05-08",
+        "events": [
+          {
+            "category": "exhibition",
+            "date": "2026-05-06",
+            "description": "A celebration of literature and knowledge from around the world.",
+            "estimated_cost_sar": 0.0,
+            "lat": 21.4884,
+            "lng": 39.1951,
+            "name": "Jeddah International Book Fair",
+            "source": "local_cache",
+            "time": "18:00 or TBD",
+            "venue": "King Fahad Library"
+          },
+          {
+            "category": "festival",
+            "date": "2026-05-06 - 2026-05-09",
+            "description": "A festival featuring theater, dance, and music performances.",
+            "estimated_cost_sar": 0.0,
+            "lat": 21.4858,
+            "lng": 39.1925,
+            "name": "Saudi International Fringe Festival",
+            "source": "local_cache",
+            "time": "TBD",
+            "venue": "King Abdulaziz Cultural Center"
+          },
+          {
+            "category": "event",
+            "date": "2026-05-06",
+            "description": "",
+            "estimated_cost_sar": 0.0,
+            "lat": null,
+            "lng": null,
+            "name": "Unknown Event",
+            "source": "local_cache",
+            "time": "TBD",
+            "venue": ""
+          }
+        ],
+        "scan_source": "hybrid",
+        "start_date": "2026-05-06",
+        "total_event_cost": 0.0
+      },
+      "full_trip_dataset": [],
+      "hospitality": {
+        "hotels": [],
+        "restaurants": []
+      },
+      "map": {
+        "dest_name": "Jeddah",
+        "destination": {
+          "lat": 21.4858,
+          "lng": 39.1925
+        },
+        "origin": {
+          "lat": 24.7136,
+          "lng": 46.6753
+        },
+        "origin_name": "Riyadh"
+      },
+      "path_type": "premium",
+      "simulation_routes": {},
+      "timeline": {},
+      "total_transit_cost": 0,
+      "transport": {
+        "breakdown": "\ud83d\udcca Sedan | Fuel (RON 91): 500 km \u00f7 13.0 km/L = 38.5 L @ 2.18 SAR/L",
+        "cost_one_way": 83.85,
+        "cost_round_trip": 167.69,
+        "destination": "Jeddah",
+        "distance_km": 500,
+        "mode": "car",
+        "origin": "Riyadh",
+        "travel_time_str": "4h 33m",
+        "vehicle_type": "sedan"
+      },
+      "web_research": {
+        "city": "Jeddah",
+        "local_insights": [
+          {
+            "category": "culture",
+            "confidence": "medium",
+            "source": "Reddit",
+            "tip": "Haggle politely when shopping at souks (markets), it's a cultural norm but can be overwhelming for tourists."
+          },
+          {
+            "category": "safety",
+            "confidence": "high",
+            "source": "Lonely Planet",
+            "tip": "Use reputable taxi companies or ride-hailing apps like Careem to avoid scams."
+          },
+          {
+            "category": "weather",
+            "confidence": "medium",
+            "source": "TripAdvisor forums",
+            "tip": "Pack light, breathable clothing and a hat to protect yourself from the sun."
+          },
+          {
+            "category": "culture",
+            "confidence": "high",
+            "source": "Lonely Planet",
+            "tip": "Try to learn some basic Arabic phrases like 'as-salamu alaykum' (hello) and 'shukraan' (thank you), it will go a long way in showing respect for the culture."
+          },
+          {
+            "category": "transport",
+            "confidence": "medium",
+            "source": "Reddit",
+            "tip": "The best way to get around Jeddah is by using the metro or ride-hailing apps, avoid driving yourself unless you have experience with Saudi traffic laws."
+          }
+        ],
+        "research_date": "2026-05-05",
+        "scan_successful": true,
+        "social_posts": [
+          {
+            "author": "Saudi Tourism Board",
+            "category": "tip",
+            "content": "Discover the vibrant city of Jeddah with our top recommendations for restaurants, attractions and experiences. From traditional Saudi cuisine to modern art galleries, there's something for everyone in this exciting city! #JeddahTourism #SaudiArabia",
+            "likes": 23,
+            "platform": "x/twitter",
+            "posted_date": "2023-06-15T14:30:00Z",
+            "relevance_score": 0.92,
+            "url": "https://twitter.com/SaudiTourismBoard/status/1424218764321232"
+          }
+        ],
+        "trending_spots": [],
+        "weather_summary": "Jeddah has a hot desert climate with very little rainfall throughout the year, temperatures can reach up to 40\u00b0C in summer and drop to 10\u00b0C in winter."
+      }
+    }
+  ],
+  "recommendation": 1
+}

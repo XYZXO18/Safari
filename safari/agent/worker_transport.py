@@ -236,7 +236,9 @@ class TransportWorker:
     def _handle_timeline(self, req: dict) -> dict:
         daily_activities = req.get("daily_activities", {})
         hotel = req.get("hotel", {})
-        travel_mode = req.get("travel_mode", "flight")
+        travel_mode = req.get("travel_mode", "car")
+        origin = req.get("origin", "riyadh")
+        destination = req.get("destination", "coast")
         vehicle_type = req.get("vehicle_type", "default")
 
         hotel_lat = hotel.get("lat", 0)
@@ -246,9 +248,20 @@ class TransportWorker:
         has_own_car = travel_mode == "car"
 
         timeline = {}
-        total_transit_cost = 0
+        # Inter-city long-haul legs
+        from safari.tools.transport import calculate_transport_costs
+        inter_city_est = calculate_transport_costs(
+            mode=travel_mode,
+            origin=origin,
+            destination=destination,
+            vehicle_type=vehicle_type
+        )
+        
         # Ordered simulation points per day
         simulation_routes = {}
+        
+        # Full Trip Dataset (All legs from start to finish)
+        full_trip_dataset = []
 
         for day_str, acts in daily_activities.items():
             day = int(day_str)
@@ -265,6 +278,36 @@ class TransportWorker:
 
             current_lat, current_lng = hotel_lat, hotel_lng
             current_name = hotel_name
+            
+            # If Day 1, add the Inter-city leg from Origin to Destination
+            if day == 1:
+                from config import CITY_COORDS
+                origin_coords = CITY_COORDS.get(origin.lower(), {"lat": 24.7, "lng": 46.7})
+                
+                inter_city_leg = {
+                    "from_name": origin.title(),
+                    "from_lat": origin_coords["lat"],
+                    "from_lng": origin_coords["lng"],
+                    "to_name": hotel_name,
+                    "to_lat": hotel_lat,
+                    "to_lng": hotel_lng,
+                    "mode": f"{'🚗' if travel_mode == 'car' else '✈️'} Long-haul",
+                    "dist": inter_city_est.distance_km,
+                    "time_minutes": inter_city_est.travel_time_minutes,
+                    "cost": inter_city_est.cost_one_way,
+                    "type": "inter_city"
+                }
+                day_legs.append(inter_city_leg)
+                full_trip_dataset.append(inter_city_leg)
+                
+                # Update starting point for activities
+                sim_points.insert(0, {
+                    "name": origin.title(),
+                    "lat": origin_coords["lat"],
+                    "lng": origin_coords["lng"],
+                    "type": "origin",
+                    "day": day,
+                })
 
             car_parked_lat, car_parked_lng = hotel_lat, hotel_lng
             car_parked_name = hotel_name
@@ -391,6 +434,39 @@ class TransportWorker:
                 "name": hotel_name, "lat": hotel_lat, "lng": hotel_lng,
                 "type": "hotel_return", "day": day,
             })
+            
+            # If Last Day, add the Inter-city leg from Destination to Origin
+            if day == int(list(daily_activities.keys())[-1]):
+                from config import CITY_COORDS
+                origin_coords = CITY_COORDS.get(origin.lower(), {"lat": 24.7, "lng": 46.7})
+                
+                return_leg = {
+                    "from_name": hotel_name,
+                    "from_lat": hotel_lat,
+                    "from_lng": hotel_lng,
+                    "to_name": origin.title(),
+                    "to_lat": origin_coords["lat"],
+                    "to_lng": origin_coords["lng"],
+                    "mode": f"{'🚗' if travel_mode == 'car' else '✈️'} Return",
+                    "dist": inter_city_est.distance_km,
+                    "time_minutes": inter_city_est.travel_time_minutes,
+                    "cost": inter_city_est.cost_one_way,
+                    "type": "inter_city"
+                }
+                day_legs.append(return_leg)
+                full_trip_dataset.append(return_leg)
+                sim_points.append({
+                    "name": origin.title(),
+                    "lat": origin_coords["lat"],
+                    "lng": origin_coords["lng"],
+                    "type": "origin_return",
+                    "day": day,
+                })
+
+            # Add daily legs to full dataset
+            for leg in day_legs:
+                if leg not in full_trip_dataset:
+                    full_trip_dataset.append(leg)
 
             # Car rental recommendation
             rent_car_cost_per_day = 120
@@ -411,10 +487,21 @@ class TransportWorker:
             }
             simulation_routes[day_str] = sim_points
 
+        # Get travel time from first leg of full_trip_dataset if available
+        travel_time_str = ""
+        if full_trip_dataset:
+            first_leg = full_trip_dataset[0]
+            if first_leg.get("type") == "inter_city":
+                hrs = first_leg['time_minutes'] // 60
+                mins = first_leg['time_minutes'] % 60
+                travel_time_str = f"{hrs}h {mins}m"
+
         return {
             "action": "plan_timeline",
             "status": "success",
             "timeline": timeline,
             "total_transit_cost": round(total_transit_cost, 2),
             "simulation_routes": simulation_routes,
+            "full_trip_dataset": full_trip_dataset,
+            "inter_city_travel_time_str": travel_time_str
         }

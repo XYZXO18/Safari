@@ -14,6 +14,7 @@ const state = {
     vehicleType: 'default',
     days: 4,
     tripData: null,
+    hospitalityType: 'all',
 };
 
 // ─── Map Setup ───────────────────────────────────────────────────────────────
@@ -61,6 +62,8 @@ const loadingOverlay = $('loading-overlay');
 // Map overlays
 const tripInfo = $('trip-info');
 const budgetBar = $('budget-bar');
+const hotelGrid = $('hotel-comparison-grid');
+const hotelCitySelect = $('hotel-city-select');
 
 // Right panel
 const itineraryList = $('itinerary-list');
@@ -95,6 +98,38 @@ currencySelect.addEventListener('change', () => {
 originSelect.addEventListener('change', () => {
     state.origin = originSelect.value;
 });
+
+// ─── View Switching ─────────────────────────────────────────────────────────
+window.switchView = function(viewId) {
+    // Hide all views
+    document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden-view'));
+    // Show target view
+    const target = $(viewId);
+    if (target) target.classList.remove('hidden-view');
+
+    // Update indicators
+    document.querySelectorAll('.active-indicator').forEach(i => i.classList.add('hidden'));
+    const ind = $('ind-' + viewId);
+    if (ind) ind.classList.remove('hidden');
+
+    // Update nav active state
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => {
+        const onclick = n.getAttribute('onclick');
+        if (onclick && onclick.includes(viewId)) {
+            n.classList.add('active');
+        }
+    });
+
+    if (viewId === 'hotels-view') {
+        loadHospitality();
+    }
+
+    // Fix map rendering when becoming visible
+    if (viewId === 'map-view' && typeof map !== 'undefined') {
+        setTimeout(() => map.invalidateSize(), 100);
+    }
+};
 
 vehicleSelect.addEventListener('change', () => {
     state.vehicleType = vehicleSelect.value;
@@ -458,14 +493,14 @@ function renderItinerary(data) {
                     const leg = legs[index];
                     const mins = leg.time_minutes ? leg.time_minutes : null;
                     const timeTag = mins
-                        ? `<span class="leg-time-pill">🕐 ~${mins} min</span>`
+                        ? `<span class="leg-time-pill">🕐 ${mins} min</span>`
                         : '';
                     legHtml = `
                     <div class="transit-leg">
-                        <span>${leg.mode}</span>
-                        <span>${leg.dist.toFixed(1)} km</span>
+                        <span class="leg-mode-icon">${leg.mode.includes('🚗') ? '🚗' : leg.mode.includes('🚕') ? '🚕' : '🚌'}</span>
+                        <span class="leg-dist">📍 ${leg.dist.toFixed(1)} km</span>
                         ${timeTag}
-                        ${leg.cost > 0 ? `<span>${leg.cost.toFixed(0)} ${currency}</span>` : ''}
+                        ${leg.cost > 0 ? `<span class="leg-cost">💰 ${leg.cost.toFixed(0)} ${currency}</span>` : ''}
                     </div>`;
                 }
             }
@@ -511,13 +546,13 @@ function renderItinerary(data) {
             if (schedule.length < legs.length) {
                 const leg = legs[legs.length - 1];
                 const mins = leg.time_minutes || null;
-                const timeTag = mins ? `<span class="leg-time-pill">🕐 ~${mins} min</span>` : '';
+                const timeTag = mins ? `<span class="leg-time-pill">🕐 ${mins} min</span>` : '';
                 activitiesHtml += `
                 <div class="transit-leg">
-                    <span>${leg.mode}</span>
-                    <span>${leg.dist.toFixed(1)} km</span>
+                    <span class="leg-mode-icon">🚗</span>
+                    <span class="leg-dist">📍 ${leg.dist.toFixed(1)} km</span>
                     ${timeTag}
-                    ${leg.cost > 0 ? `<span>${leg.cost.toFixed(0)} ${currency}</span>` : ''}
+                    ${leg.cost > 0 ? `<span class="leg-cost">💰 ${leg.cost.toFixed(0)} ${currency}</span>` : ''}
                 </div>`;
             }
         }
@@ -605,6 +640,7 @@ function updateOverlays(data) {
     $('info-origin').textContent = data.map.origin_name;
     $('info-dest').textContent = data.map.dest_name;
     $('info-distance').textContent = fmt(data.transport.distance_km);
+    $('info-time').textContent = data.transport.travel_time_str || '--';
     $('info-days').textContent = data.budget.days;
     $('info-cost').textContent = fmt(data.budget.total);
     $('info-currency').textContent = data.budget.currency;
@@ -620,6 +656,22 @@ function updateOverlays(data) {
 
     // Show simulation controls
     $('sim-controls').classList.remove('hidden');
+
+    // Populate Transport Insight
+    const t = data.transport;
+    const insightPanel = $('transport-insight');
+    const insightContent = $('transport-insight-content');
+    if (insightPanel && insightContent) {
+        const modeEmoji = t.mode.includes('🚗') ? '🚗' : t.mode.includes('✈️') ? '✈️' : t.mode.includes('🚂') ? '🚂' : '🚌';
+        insightContent.innerHTML = `
+            I've calculated the best route from <span class="insight-pill">${t.origin}</span> to <span class="insight-pill">${t.destination}</span>. 
+            The total distance is <span class="insight-pill">${fmt(t.distance_km)} km</span>, taking approximately <span class="insight-pill">${t.travel_time_str}</span> via 
+            <span class="insight-pill">${t.mode}</span>. 
+            ${t.mode.includes('Drive') ? `Fuel costs for your <span class="insight-pill">${t.vehicle_type}</span> are estimated at <span class="insight-pill">${fmt(t.cost_round_trip)} ${c}</span> round-trip.` : ''}
+            Check the itinerary for a detailed daily breakdown of local taxi and walking legs!
+        `;
+        insightPanel.classList.remove('hidden');
+    }
 }
 
 // ─── Warnings ────────────────────────────────────────────────────────────────
@@ -635,7 +687,185 @@ function renderWarnings(data) {
     `).join('');
 }
 
-// ─── Plan Trip ───────────────────────────────────────────────────────────────
+// ─── Travel Log ──────────────────────────────────────────────────────────────
+function renderTravelLog(data) {
+    const dataset = data.full_trip_dataset || [];
+    const container = $('travel-dataset-panel');
+    const content = $('travel-log-content');
+    
+    if (dataset.length === 0) {
+        container.classList.add('hidden');
+        return;
+    }
+    
+    container.classList.remove('hidden');
+    content.innerHTML = `
+        <table class="travel-log-table">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Mode</th>
+                    <th>Dist</th>
+                    <th>Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${dataset.map(leg => {
+                    const hrs = Math.floor(leg.time_minutes / 60);
+                    const mins = leg.time_minutes % 60;
+                    const timeStr = hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`;
+                    return `
+                    <tr class="${leg.type === 'inter_city' ? 'inter-city-row' : ''}">
+                        <td>${leg.from_name}</td>
+                        <td>${leg.to_name}</td>
+                        <td>${leg.mode}</td>
+                        <td>${leg.dist.toFixed(1)} km</td>
+                        <td>${timeStr}</td>
+                    </tr>
+                    `;
+                }).join('')}
+            </tbody>
+        </table>
+    `;
+}
+
+// ─── Hospitality View Logic ──────────────────────────────────────────────────
+window.setHospitalityType = function(type, el) {
+    state.hospitalityType = type;
+    if (el) {
+        const parent = el.parentElement;
+        parent.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    }
+    loadHospitality();
+};
+
+async function loadHospitality() {
+    const city = hotelCitySelect.value;
+    const type = state.hospitalityType || 'all';
+    hotelGrid.innerHTML = `<div class="loading">Loading hospitality...</div>`;
+
+    try {
+        let results = [];
+        if (type === 'all') {
+            // Fetch everything
+            const res = await fetch(`/api/hospitality?city=${city}`);
+            results = await res.json();
+        } else {
+            const res = await fetch(`/api/hospitality?city=${city}&type=${type}`);
+            results = await res.json();
+        }
+        
+        if (results.length === 0) {
+            hotelGrid.innerHTML = `<div class="empty-state">No listings found for this city.</div>`;
+            return;
+        }
+
+        // Helper to render a card
+        const renderCard = (item) => {
+            const isHotel = item.type === 'hotel';
+            const isRest = item.type === 'restaurant';
+            const isCafe = item.type === 'cafe';
+            
+            const priceLabel = isHotel ? 'SAR / night' : 'SAR (Avg/Person)';
+            const bookBtnLabel = isHotel ? (item.empty_rooms <= 0 ? 'Fully Booked' : 'Choose Hotel') : 'View Menu';
+            const icon = isHotel ? '🏨' : isRest ? '🍴' : '☕';
+            
+            let detailsHtml = '';
+            if (isHotel) {
+                detailsHtml = `
+                <div class="availability" style="margin-bottom:15px; font-size:0.9em;">
+                    <span style="background:rgba(56,189,248,0.1); padding:2px 8px; border-radius:10px; color:var(--accent); font-weight:600;">${item.empty_rooms}</span>
+                    <span>rooms available</span>
+                </div>`;
+            } else {
+                detailsHtml = `
+                <div class="availability" style="margin-bottom:15px; font-size:0.9em;">
+                    <span style="background:rgba(34, 197, 94, 0.1); padding:2px 8px; border-radius:10px; color:#22c55e; font-weight:600;">Open</span>
+                    <span>${item.cuisine || 'Specialty'} | ${item.rating}⭐</span>
+                </div>`;
+            }
+
+            return `
+            <div class="card" style="border-top: 3px solid ${isHotel ? 'var(--accent)' : isRest ? '#22c55e' : '#f59e0b'}">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <span style="font-size:12px; font-weight:bold; color:var(--text-muted); text-transform:uppercase;">${icon} ${item.type}</span>
+                    <span style="font-size:14px;">${'★'.repeat(item.stars || 0)}${'⭐'.repeat(item.rating ? 1 : 0)}</span>
+                </div>
+                <h3>${item.name}</h3>
+                <div class="price-tag">${Math.round(item.price)} <span>${priceLabel}</span></div>
+                ${detailsHtml}
+                <button class="submit-btn" style="padding:10px; font-size:14px;" 
+                    ${(isHotel && item.empty_rooms <= 0) ? 'disabled' : ''} 
+                    onclick="${isHotel ? `askBooking(${item.id}, '${item.name}')` : `alert('Opening menu for ${item.name}...')`}">
+                    ${bookBtnLabel}
+                </button>
+            </div>
+            `;
+        };
+
+        if (type === 'all') {
+            // Group by type for better layout
+            const hotels = results.filter(i => i.type === 'hotel');
+            const rests = results.filter(i => i.type === 'restaurant');
+            const cafes = results.filter(i => i.type === 'cafe');
+            
+            let finalHtml = '';
+            if (hotels.length) {
+                finalHtml += `<div style="grid-column: 1/-1; margin-top:10px;"><h4 style="color:var(--accent)">🏨 Recommended Hotels</h4></div>`;
+                finalHtml += hotels.map(renderCard).join('');
+            }
+            if (rests.length) {
+                finalHtml += `<div style="grid-column: 1/-1; margin-top:20px;"><h4 style="color:#22c55e">🍴 Top Restaurants</h4></div>`;
+                finalHtml += rests.map(renderCard).join('');
+            }
+            if (cafes.length) {
+                finalHtml += `<div style="grid-column: 1/-1; margin-top:20px;"><h4 style="color:#f59e0b">☕ Popular Cafes</h4></div>`;
+                finalHtml += cafes.map(renderCard).join('');
+            }
+            hotelGrid.innerHTML = finalHtml;
+        } else {
+            hotelGrid.innerHTML = results.map(renderCard).join('');
+        }
+    } catch (e) {
+        hotelGrid.innerHTML = `<div class="empty-state">Failed to load hospitality data.</div>`;
+    }
+}
+
+let selectedHotelId = null;
+function askBooking(id, name) {
+    selectedHotelId = id;
+    if (confirm(`Would you like to book a room at ${name}?`)) {
+        confirmBooking();
+    }
+}
+
+async function confirmBooking() {
+    if (!selectedHotelId) return;
+    try {
+        const res = await fetch('/api/book', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({hotel_id: selectedHotelId})
+        });
+        if (res.ok) {
+            alert('Hotel booked successfully!');
+            loadHospitality();
+        }
+    } catch (e) {
+        alert('Booking failed.');
+    }
+}
+
+hotelCitySelect.addEventListener('change', loadHospitality);
+
+// Initialize view listeners
+function initViewListeners() {
+    // Nav items are already handled by onclick="switchView(...)" in HTML,
+    // but we can add more logic here if needed.
+}
+window.addEventListener('DOMContentLoaded', initViewListeners);
 async function planTrip() {
     loadingOverlay.classList.remove('hidden');
 
@@ -739,6 +969,22 @@ function selectPath(idx) {
 
     // Render warnings
     renderWarnings(data);
+    
+    // Render travel log
+    renderTravelLog(data);
+
+    // Auto-set hotel city for booking
+    if (data.map && data.map.dest_name) {
+        const dest = data.map.dest_name.toLowerCase();
+        // Check if destination is in our options
+        for (let opt of hotelCitySelect.options) {
+            if (opt.value === dest) {
+                hotelCitySelect.value = dest;
+                loadHospitality(); // Refresh hospitalty list for this city
+                break;
+            }
+        }
+    }
 
     // Update calendar
     const today = new Date().getDate();

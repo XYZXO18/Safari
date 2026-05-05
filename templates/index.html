@@ -298,7 +298,7 @@
 
             <div id="trip-info" class="trip-info hidden">
                 <div class="trip-route"><span id="info-origin">Origin</span> → <span id="info-dest">Dest</span></div>
-                <div class="trip-stats"><strong id="info-distance">0</strong>km | <strong id="info-days">0</strong>d | <strong id="info-cost">0</strong> <span id="info-currency">SAR</span></div>
+                <div class="trip-stats"><strong id="info-distance">0</strong>km | 🕐 <strong id="info-time">--</strong> | <strong id="info-days">0</strong>d | <strong id="info-cost">0</strong> <span id="info-currency">SAR</span></div>
             </div>
 
             <div id="sim-controls" class="sim-controls hidden">
@@ -307,6 +307,11 @@
                     <div id="sim-day-pills" class="sim-day-pills"></div>
                 </div>
                 <div id="sim-status" class="sim-status"></div>
+            </div>
+
+            <div id="transport-insight" class="transport-insight hidden">
+                <div class="insight-header"><span class="label-icon">🤖</span> Transport Agent Insight</div>
+                <div id="transport-insight-content" class="insight-content"></div>
             </div>
         </div>
 
@@ -325,6 +330,10 @@
                     <div class="empty-state"><p>Go to Plan tab to create a trip.</p></div>
                 </div>
                 <div class="web-research-panel hidden" id="web-research-panel"></div>
+                <div class="travel-dataset-panel hidden" id="travel-dataset-panel">
+                    <h3>🚗 Complete Travel Log</h3>
+                    <div id="travel-log-content"></div>
+                </div>
                 <div class="budget-details hidden" id="budget-details">
                     <h3>💰 Budget</h3>
                     <div class="budget-table" id="budget-table"></div>
@@ -334,6 +343,39 @@
         </div>
 
         <!-- ========================================== -->
+        <!-- VIEW 5: HOTELS                             -->
+        <!-- ========================================== -->
+        <div id="hotels-view" class="app-view hidden-view mobile-panel">
+            <div class="panel-header"><h2>🏨 Hospitality Explorer</h2></div>
+            <div class="panel-scroll-content">
+                <div class="trip-form" style="padding: 15px;">
+                    <div class="form-group">
+                        <label>City</label>
+                        <select id="hotel-city-select">
+                            <option value="riyadh">Riyadh</option>
+                            <option value="jeddah">Jeddah</option>
+                            <option value="dammam">Dammam</option>
+                            <option value="makkah">Makkah</option>
+                            <option value="madinah">Madinah</option>
+                            <option value="abha">Abha</option>
+                            <option value="al-ula">AlUla</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Looking for?</label>
+                        <div class="vibe-grid" style="grid-template-columns: repeat(4, 1fr); gap: 6px;">
+                            <div class="vibe-card active" onclick="setHospitalityType('all', this)" style="padding: 8px; font-size: 13px;">🌟 All</div>
+                            <div class="vibe-card" onclick="setHospitalityType('hotel', this)" style="padding: 8px; font-size: 13px;">🏨 Hotels</div>
+                            <div class="vibe-card" onclick="setHospitalityType('restaurant', this)" style="padding: 8px; font-size: 13px;">🍴 Food</div>
+                            <div class="vibe-card" onclick="setHospitalityType('cafe', this)" style="padding: 8px; font-size: 13px;">☕ Cafes</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="hotel-comparison-grid" class="comparison-grid" style="padding: 15px;">
+                    <div class="empty-state"><p>Select a city to compare hotels.</p></div>
+                </div>
+            </div>
+        </div>
         <!-- BOTTOM NAVIGATION                          -->
         <!-- ========================================== -->
         <nav class="bottom-nav">
@@ -355,7 +397,12 @@
             <a href="#" class="nav-item" onclick="switchView('itinerary-view')">
                 <div class="active-indicator hidden" id="ind-itinerary-view"></div>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                <span>Offers</span>
+                <span>Itinerary</span>
+            </a>
+            <a href="#" class="nav-item" onclick="switchView('hotels-view')">
+                <div class="active-indicator hidden" id="ind-hotels-view"></div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                <span>Hospit.</span>
             </a>
             <a href="#" class="nav-item">
                 <div class="active-indicator hidden"></div>
@@ -391,51 +438,15 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="/static/js/app.js"></script>
     <script>
-        // Intercept Plan Trip to automatically switch to Map View
-        const originalPlanBtnClick = document.getElementById('plan-btn').onclick;
-        document.getElementById('trip-form').addEventListener('submit', function(e) {
-            // Give app.js time to handle submit
-            setTimeout(() => {
-                if(document.getElementById('path-selection-overlay').classList.contains('hidden')) {
-                    // switchView('map-view');
-                }
-            }, 500);
-        });
-        
         // Listen to path selection from app.js to switch to Map View
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.target.id === 'results-panel' && !mutation.target.classList.contains('hidden')) {
-                    switchView('map-view');
+                    if (window.switchView) window.switchView('map-view');
                 }
             });
         });
         observer.observe(document.getElementById('results-panel'), { attributes: true, attributeFilter: ['class'] });
-
-        // Tab Switching Logic
-        function switchView(viewId) {
-            // Hide all views
-            document.querySelectorAll('.app-view').forEach(v => v.classList.add('hidden-view'));
-            // Remove active classes
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.querySelectorAll('.active-indicator').forEach(i => i.classList.add('hidden'));
-
-            // Show selected view
-            const targetView = document.getElementById(viewId);
-            if (targetView) targetView.classList.remove('hidden-view');
-            
-            // Activate corresponding nav item
-            const navItem = document.querySelector(`.nav-item[onclick="switchView('${viewId}')"]`);
-            if (navItem) {
-                navItem.classList.add('active');
-                navItem.querySelector('.active-indicator').classList.remove('hidden');
-            }
-
-            // Fix map rendering when becoming visible
-            if (viewId === 'map-view' && typeof map !== 'undefined') {
-                setTimeout(() => map.invalidateSize(), 100);
-            }
-        }
 
         // Auto Fill Logic
         function autoFill(type, p1, p2, p3) {
