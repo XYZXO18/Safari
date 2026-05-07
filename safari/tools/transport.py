@@ -21,6 +21,7 @@ from config import (
     TRANSPORT_RATES_PER_KM,
 )
 from safari.tools.fuel import calculate_driving_cost
+from safari.tools.almosafer import AlmosaferScraper
 
 
 @dataclass
@@ -202,9 +203,21 @@ def calculate_transport_costs(
         provider = ""
 
         if mode_lower == "flight":
-            routes = data.get("domestic_flights", {}).get("major_routes", [])
-            route_found = find_route(routes, origin, destination)
-            provider = "Domestic Airlines"
+            # Almosafer Priority Data Source
+            scraper = AlmosaferScraper()
+            travel_date = "2026-05-15" # Default calculation date
+            ams_flights = scraper.scrape_flights(origin, destination, travel_date)
+            
+            if ams_flights:
+                best_flight = min(ams_flights, key=lambda x: x["price_sar"])
+                cost_one_way = best_flight["price_sar"]
+                cost_rt = cost_one_way * 2 if round_trip else cost_one_way
+                time_mins = 95 + 120 # Duration + Airport Buffer
+                breakdown = f"✈️ Almosafer: {best_flight['airline']} - {cost_one_way} SAR"
+                # Set route_found to something truthy so we don't hit fallback
+                route_found = {"from": origin, "to": destination} 
+            else:
+                route_found = None
             
         elif mode_lower == "train":
             for network in data.get("train_networks", []):
@@ -223,21 +236,26 @@ def calculate_transport_costs(
                     break
 
         if route_found:
-            cost_one_way = float(route_found["average_cost_sar"])
-            cost_rt = cost_one_way * 2 if round_trip else cost_one_way
-            time_mins = parse_duration(route_found["average_duration"])
+            if cost_one_way == 0.0:
+                cost_one_way = float(route_found.get("average_cost_sar", 0))
             
-            # Add airport buffer time for flights
-            if mode_lower == "flight":
+            cost_rt = cost_one_way * 2 if round_trip else cost_one_way
+            
+            if "average_duration" in route_found:
+                time_mins = parse_duration(route_found["average_duration"])
+            
+            # Add airport buffer time for flights if time_mins was set from route_found
+            if mode_lower == "flight" and "average_duration" in route_found:
                 time_mins += 120
             
             breakdown = f"🎫 {provider} | Exact match found in logistics database for {route_found['from']} ↔ {route_found['to']}"
         else:
             # Fallback estimation if route not in JSON
             if mode_lower == "flight":
+                # Final fallback ONLY if Almosafer is totally unreachable
                 cost_one_way = dist * 0.45
                 time_mins = round((dist / 800) * 60) + 120
-                provider = "Estimated Flight"
+                breakdown = "⚠️ Almosafer unreachable. Using distance-based estimate."
             elif mode_lower == "train":
                 cost_one_way = dist * 0.25
                 time_mins = round((dist / 200) * 60) + 30

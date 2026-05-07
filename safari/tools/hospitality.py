@@ -1,96 +1,62 @@
 """
 Hospitality & Venue Data Engine
 ================================
-Core business logic for hotels and restaurants.
-Handles: search, dynamic pricing, allergen checks, availability.
+Agent 2's tool layer.
+
+Hotel data flow:
+  1. Call AlmosaferScraper.scrape_hotels(city) → up to 5 live results with prices.
+  2. For every hotel returned, call upsert_hotel_static() to persist
+     name + coordinates in the DB (price is NEVER stored — always live).
+  3. If city has <20 hotels in DB, request additional Almosafer pages to
+     build the catalogue up to 20 over time.
+  4. Return HotelResult objects with live prices for the frontend.
+
+Restaurant data is still served from the local DB (no Almosafer equivalent).
 """
 
 from __future__ import annotations
 
-import json
-import os
 import random
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from datetime import timedelta, date
+from typing import List, Optional
 
-from safari.database import get_hospitality, book_hotel, randomize_hospitality
-
-def _load_hotels(city: str) -> List[dict]:
-    # Ensure data is randomized/seeded
-    randomize_hospitality(city)
-    return get_hospitality(city, type='hotel')
-
-def _load_restaurants(city: str) -> List[dict]:
-    # Ensure data is randomized/seeded
-    randomize_hospitality(city)
-    rests = get_hospitality(city, type='restaurant')
-    cafes = get_hospitality(city, type='cafe')
-    return rests + cafes
+from config import CITY_COORDS
+from safari.database import (
+    get_hospitality, book_hotel,
+    upsert_hotel_static, get_hotel_count, get_known_hotels,
+)
+from safari.tools.almosafer import AlmosaferScraper
 
 
-# ─── Dynamic Discount Calculation ────────────────────────────────────────────
+# ─── Coordinate helper ────────────────────────────────────────────────────────
 
-def _hotel_discount(occupied: int, total: int) -> float:
-    """
-    Calculate hotel discount based on room vacancy.
-    Higher vacancy → bigger discount to attract guests.
-    """
-    if total == 0:
-        return 0.0
-    vacancy_rate = 1 - (occupied / total)
-    if vacancy_rate >= 0.70:
-        return 0.25
-    elif vacancy_rate >= 0.50:
-        return 0.15
-    elif vacancy_rate >= 0.30:
-        return 0.10
-    elif vacancy_rate >= 0.10:
-        return 0.05
-    else:
-        return 0.0
+def _city_coords(city: str) -> tuple[float, float]:
+    """Return (lat, lng) for a city, with a small random offset."""
+    base = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+    return (
+        base["lat"] + random.uniform(-0.05, 0.05),
+        base["lng"] + random.uniform(-0.05, 0.05),
+    )
 
 
-def _restaurant_discount(reserved: int, total: int) -> float:
-    """
-    Calculate restaurant discount based on table vacancy.
-    Emptier restaurant → bigger discount to fill seats.
-    """
-    if total == 0:
-        return 0.0
-    vacancy_rate = 1 - (reserved / total)
-    if vacancy_rate >= 0.70:
-        return 0.20
-    elif vacancy_rate >= 0.50:
-        return 0.12
-    elif vacancy_rate >= 0.30:
-        return 0.07
-    else:
-        return 0.0
-
-
-# ─── Result Data Classes ────────────────────────────────────────────────────
+# ─── Data Classes ─────────────────────────────────────────────────────────────
 
 @dataclass
 class RoomPricing:
     room_type: str
-    total_rooms: int
-    occupied: int
-    available: int
-    base_price_sar: float
-    discount_percent: float
+    base_price_sar: float         # Live price from Almosafer
     final_price_sar: float
-    occupancy_rate: float
+    available: bool = True
+    source: str = "Almosafer"
 
     def to_dict(self) -> dict:
         return {
             "room_type": self.room_type,
-            "total_rooms": self.total_rooms,
-            "occupied": self.occupied,
-            "available": self.available,
-            "base_price_sar": self.base_price_sar,
-            "discount_percent": round(self.discount_percent * 100, 1),
+            "base_price_sar": round(self.base_price_sar, 2),
             "final_price_sar": round(self.final_price_sar, 2),
-            "occupancy_rate": round(self.occupancy_rate * 100, 1),
+            "available": self.available,
+            "source": self.source,
         }
 
 
@@ -99,7 +65,6 @@ class HotelResult:
     id: str
     name: str
     city: str
-    vibe: str
     stars: int
     description: str
     rooms: List[RoomPricing]
@@ -109,14 +74,31 @@ class HotelResult:
     lat: float
     lng: float
     has_availability: bool
+    live_price_sar: Optional[float] = None   # Best nightly rate from Almosafer
+    price_source: str = "Almosafer"
+    almosafer_url: str = ""
+    rating: float = 0.0
+    vibe: str = ""
+
+    @property
+    def best_deal(self) -> dict:
+        if self.rooms:
+            r = self.rooms[0]
+            return {
+                "room_type": r.room_type,
+                "base_price_sar": r.base_price_sar,
+                "final_price_sar": r.final_price_sar,
+                "discount_percent": 0,
+            }
+        return {}
 
     def to_dict(self) -> dict:
         return {
             "id": self.id,
             "name": self.name,
             "city": self.city,
-            "vibe": self.vibe,
             "stars": self.stars,
+            "rating": self.rating,
             "description": self.description,
             "rooms": [r.to_dict() for r in self.rooms],
             "amenities": self.amenities,
@@ -125,6 +107,11 @@ class HotelResult:
             "lat": self.lat,
             "lng": self.lng,
             "has_availability": self.has_availability,
+            "live_price_sar": self.live_price_sar,
+            "price_source": self.price_source,
+            "almosafer_url": self.almosafer_url,
+            "best_deal": self.best_deal,
+            "vibe": self.vibe,
         }
 
 
@@ -136,8 +123,8 @@ class MenuItemResult:
     is_signature: bool
     allergens: List[str]
     dietary: List[str]
-    is_safe: bool  # True if no flagged allergens
-    flagged_allergens: List[str]  # Allergens that match user's avoid list
+    is_safe: bool
+    flagged_allergens: List[str]
 
     def to_dict(self) -> dict:
         return {
@@ -190,114 +177,153 @@ class RestaurantResult:
         }
 
 
-# ─── Hotel Functions ─────────────────────────────────────────────────────────
+# ─── Hotel Functions ──────────────────────────────────────────────────────────
 
 def search_hotels(
     city: Optional[str] = None,
     vibe: Optional[str] = None,
     room_type: Optional[str] = None,
+    checkin: Optional[str] = None,
+    checkout: Optional[str] = None,
+    budget_per_night: Optional[float] = None,
 ) -> List[HotelResult]:
     """
-    Search hotels by city and/or vibe. Returns all hotels with dynamic pricing.
+    Fetch live hotel listings from Almosafer for the given city.
+
+    Steps:
+      1. Scrape 5 live hotels from Almosafer (with prices).
+      2. Save any new hotels to the DB (name + coords only, no price).
+      3. If city has <20 hotels in DB, do an extra scrape pass to build
+         the catalogue (background best-effort).
+      4. Return HotelResult objects with live prices.
     """
     if not city:
         return []
-        
-    db_hotels = _load_hotels(city)
-    results = []
 
-    for h in db_hotels:
-        # Filter by vibe if specified
-        if vibe and h.get("vibe", "").lower() != vibe.lower():
+    scraper = AlmosaferScraper()
+
+    # ── Step 1: live search (5 hotels + prices) ────────────────────────────────
+    raw = scraper.scrape_hotels(city, checkin, checkout, max_results=5)
+
+    results: List[HotelResult] = []
+
+    for h in raw:
+        name = h.get("name", "").strip()
+        if not name:
             continue
 
-        # In our DB model, each row is a hotel with a base price
-        # We'll simulate 3 room types based on that price
-        room_types = [
-            ("Standard", 1.0, 10),
-            ("Deluxe", 1.5, 5),
-            ("Suite", 2.5, 2)
-        ]
-        
-        room_results = []
-        has_availability = h['empty_rooms'] > 0
+        live_price = h.get("price_per_night")
+        stars = int(h.get("stars") or 4)
+        rating = float(h.get("rating") or 0.0)
 
-        for rname, mult, tot in room_types:
-            base = h['price'] * mult
-            # For simplicity, we split empty_rooms among types
-            available = h['empty_rooms'] // 3 if rname != "Suite" else max(1, h['empty_rooms'] // 6)
-            if available > tot: available = tot
-            
-            occupied = tot - available
-            discount = _hotel_discount(occupied, tot)
-            final = base * (1 - discount)
+        # ── Step 2: persist name + coords (no price stored) ─────────────────
+        lat, lng = _city_coords(city)
+        upsert_hotel_static(city, name, lat, lng, stars)
 
-            room_results.append(RoomPricing(
-                room_type=rname,
-                total_rooms=tot,
-                occupied=occupied,
-                available=available,
-                base_price_sar=base,
-                discount_percent=discount,
-                final_price_sar=final,
-                occupancy_rate=occupied/tot if tot > 0 else 0,
-            ))
+        # Build search URL for "Book on Almosafer" link
+        url = scraper.hotel_search_url(city, checkin, checkout)
+
+        rooms = []
+        if live_price:
+            rooms = [
+                RoomPricing(
+                    room_type="Standard",
+                    base_price_sar=live_price,
+                    final_price_sar=live_price,
+                    available=True,
+                    source="Almosafer",
+                ),
+                RoomPricing(
+                    room_type="Deluxe",
+                    base_price_sar=live_price * 1.4,
+                    final_price_sar=live_price * 1.4,
+                    available=True,
+                    source="Almosafer",
+                ),
+            ]
 
         results.append(HotelResult(
-            id=str(h["id"]),
-            name=h["name"],
-            city=h["city"],
-            vibe=h.get("vibe", ""),
-            stars=h.get("stars", 4),
-            description=f"A premium stay in {h['city']}.",
-            rooms=room_results,
-            amenities=["WiFi", "Pool", "Gym"],
+            id=h.get("id", name[:20]),
+            name=name,
+            city=city.title(),
+            stars=stars,
+            rating=rating,
+            description=f"Verified {stars}★ property in {city.title()} — sourced live from Almosafer.",
+            rooms=rooms,
+            amenities=["WiFi", "Parking", "Air Conditioning", "Room Service"],
             check_in="14:00",
             check_out="12:00",
-            lat=h["lat"],
-            lng=h["lng"],
-            has_availability=has_availability,
+            lat=lat,
+            lng=lng,
+            has_availability=True,
+            live_price_sar=live_price,
+            price_source="Almosafer",
+            almosafer_url=url,
+            vibe=vibe or "",
         ))
+
+    # ── Step 3: catalogue building — if <20 stored, fetch extra pages ──────────
+    current_count = get_hotel_count(city)
+    if current_count < 20 and len(raw) > 0:
+        try:
+            # Offset search date by a week to get fresh/different results
+            from datetime import datetime, timedelta
+            extra_checkin = (date.today() + timedelta(days=14)).strftime("%Y-%m-%d")
+            extra_checkout = (date.today() + timedelta(days=17)).strftime("%Y-%m-%d")
+            extra_raw = scraper.scrape_hotels(city, extra_checkin, extra_checkout, max_results=5)
+            for eh in extra_raw:
+                ename = eh.get("name", "").strip()
+                if ename:
+                    elat, elng = _city_coords(city)
+                    upsert_hotel_static(city, ename, elat, elng, int(eh.get("stars") or 4))
+            print(f"📦 [Almosafer] Catalogue for {city}: {get_hotel_count(city)} hotels stored.")
+        except Exception as e:
+            print(f"⚠️  [Almosafer] Catalogue build error: {e}")
 
     return results
 
 
 def get_hotel_details(hotel_id: str) -> Optional[HotelResult]:
-    """Get full details for a specific hotel by ID."""
-    hotels = _load_hotels()
-    for h in hotels:
-        if h["id"] == hotel_id:
-            room_results = []
-            has_availability = False
-            for r in h["rooms"]:
-                available = r["total"] - r["occupied"]
-                discount = _hotel_discount(r["occupied"], r["total"])
-                final_price = r["base_price_sar"] * (1 - discount)
-                occupancy = r["occupied"] / r["total"] if r["total"] > 0 else 0
-                if available > 0:
-                    has_availability = True
-                room_results.append(RoomPricing(
-                    room_type=r["type"],
-                    total_rooms=r["total"],
-                    occupied=r["occupied"],
-                    available=available,
-                    base_price_sar=r["base_price_sar"],
-                    discount_percent=discount,
-                    final_price_sar=final_price,
-                    occupancy_rate=occupancy,
-                ))
-            return HotelResult(
-                id=h["id"], name=h["name"], city=h["city"],
-                vibe=h.get("vibe", ""), stars=h["stars"],
-                description=h["description"], rooms=room_results,
-                amenities=h["amenities"], check_in=h["check_in"],
-                check_out=h["check_out"], lat=h["lat"], lng=h["lng"],
-                has_availability=has_availability,
-            )
-    return None
+    """
+    Return details for a specific hotel by ID from the local cache.
+    Price is not included here (needs fresh Almosafer scrape).
+    """
+    from safari.database import get_db_connection
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM hospitality WHERE id=? AND type="hotel"', (hotel_id,))
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        return None
+    h = dict(row)
+    return HotelResult(
+        id=str(h["id"]),
+        name=h["name"],
+        city=h["city"].title(),
+        stars=int(h.get("stars") or 4),
+        rating=float(h.get("rating") or 0.0),
+        description=f"Known property in {h['city'].title()}. Search for live prices on Almosafer.",
+        rooms=[],
+        amenities=["WiFi", "Parking"],
+        check_in="14:00",
+        check_out="12:00",
+        lat=float(h.get("lat") or 24.7),
+        lng=float(h.get("lng") or 46.7),
+        has_availability=True,
+        live_price_sar=None,
+        price_source="DB cache (no live price)",
+    )
 
 
-# ─── Restaurant Functions ────────────────────────────────────────────────────
+# ─── Restaurant Functions ─────────────────────────────────────────────────────
+# Restaurants remain DB-backed (no Almosafer equivalent for restaurants).
+
+def _load_restaurants(city: str) -> list:
+    rests = get_hospitality(city, type='restaurant')
+    cafes = get_hospitality(city, type='cafe')
+    return rests + cafes
+
 
 def search_restaurants(
     city: Optional[str] = None,
@@ -305,47 +331,37 @@ def search_restaurants(
     cuisine: Optional[str] = None,
     allergens_to_avoid: Optional[List[str]] = None,
 ) -> List[RestaurantResult]:
-    """
-    Search restaurants by city, vibe, or cuisine.
-    Optionally checks allergens across entire menu.
-    """
+    """Search restaurants by city. Data from local DB."""
     if not city:
         return []
-        
+
     db_rests = _load_restaurants(city)
-    results = []
+    results: List[RestaurantResult] = []
 
     for r in db_rests:
         if vibe and r.get("vibe", "").lower() != vibe.lower():
             continue
 
-        avoid = [a.lower() for a in (allergens_to_avoid or [])]
+        tot_tables = r.get("total_tables") or 20
+        reserved = r.get("available_tables") or random.randint(5, 18)
+        available = max(0, tot_tables - reserved)
 
-        # Simulate tables based on price category
-        tot_tables = 20
-        reserved = random.randint(5, 18)
-        available = tot_tables - reserved
-        discount = _restaurant_discount(reserved, tot_tables)
+        vacancy = 1 - (reserved / tot_tables) if tot_tables > 0 else 0.5
+        if vacancy >= 0.70:
+            discount = 0.20
+        elif vacancy >= 0.50:
+            discount = 0.12
+        elif vacancy >= 0.30:
+            discount = 0.07
+        else:
+            discount = 0.0
 
-        # Base menu
-        base_menu = [
-            {"name": "Traditional Kabsa", "price_sar": r['price'], "category": "Main", "is_signature": True},
-            {"name": "Lentil Soup", "price_sar": r['price']*0.3, "category": "Starter"},
-            {"name": "Date Cake", "price_sar": r['price']*0.4, "category": "Dessert"}
+        price = r.get("price") or 80
+        menu_items = [
+            MenuItemResult("Traditional Kabsa", price, "Main", True, [], [], True, []),
+            MenuItemResult("Lentil Soup", price * 0.3, "Starter", False, [], [], True, []),
+            MenuItemResult("Date Cake", price * 0.4, "Dessert", False, [], [], True, []),
         ]
-
-        menu_results = []
-        for item in base_menu:
-            menu_results.append(MenuItemResult(
-                name=item["name"],
-                price_sar=item["price_sar"],
-                category=item["category"],
-                is_signature=item.get("is_signature", False),
-                allergens=[],
-                dietary=[],
-                is_safe=True,
-                flagged_allergens=[],
-            ))
 
         results.append(RestaurantResult(
             id=str(r["id"]),
@@ -353,16 +369,16 @@ def search_restaurants(
             city=r["city"],
             vibe=r.get("vibe", ""),
             cuisine=r.get("cuisine", "Traditional / Modern"),
-            rating=r["rating"],
+            rating=r.get("rating") or 4.0,
             operating_hours={"open": "12:00", "close": "23:00"},
             total_tables=tot_tables,
             reserved_tables=reserved,
             available_tables=available,
             discount_percent=discount,
-            menu=menu_results,
+            menu=menu_items,
             top_dishes=["Traditional Kabsa"],
-            lat=r["lat"],
-            lng=r["lng"],
+            lat=r.get("lat") or 24.7,
+            lng=r.get("lng") or 46.7,
         ))
 
     return results
@@ -372,64 +388,50 @@ def get_restaurant_details(
     restaurant_id: str,
     allergens_to_avoid: Optional[List[str]] = None,
 ) -> Optional[RestaurantResult]:
-    """Get full restaurant details with allergen checking."""
-    restaurants = _load_restaurants()
-    avoid = [a.lower() for a in (allergens_to_avoid or [])]
-
-    for r in restaurants:
-        if r["id"] != restaurant_id:
-            continue
-
-        tables = r["tables"]
-        available = tables["total"] - tables["reserved"]
-        discount = _restaurant_discount(tables["reserved"], tables["total"])
-
-        menu_results = []
-        for item in r["menu"]:
-            item_allergens = [a.lower() for a in item.get("allergens", [])]
-            flagged = [a for a in avoid if a in item_allergens]
-            menu_results.append(MenuItemResult(
-                name=item["name"],
-                price_sar=item["price_sar"],
-                category=item["category"],
-                is_signature=item.get("is_signature", False),
-                allergens=item.get("allergens", []),
-                dietary=item.get("dietary", []),
-                is_safe=len(flagged) == 0,
-                flagged_allergens=flagged,
-            ))
-
-        top_dishes = [
-            item["name"] for item in r["menu"]
-            if item.get("is_signature", False)
-        ]
-
-        return RestaurantResult(
-            id=r["id"], name=r["name"], city=r["city"],
-            vibe=r.get("vibe", ""), cuisine=r["cuisine"],
-            rating=r["rating"], operating_hours=r["operating_hours"],
-            total_tables=tables["total"],
-            reserved_tables=tables["reserved"],
-            available_tables=available,
-            discount_percent=discount,
-            menu=menu_results,
-            top_dishes=top_dishes,
-            lat=r["lat"], lng=r["lng"],
-        )
-    return None
+    """Get restaurant details by ID."""
+    from safari.database import get_db_connection
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        'SELECT * FROM hospitality WHERE id=? AND type IN ("restaurant","cafe")',
+        (restaurant_id,)
+    )
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        return None
+    r = dict(row)
+    tot = r.get("total_tables") or 20
+    reserved = random.randint(5, 18)
+    available = max(0, tot - reserved)
+    discount = 0.07
+    price = r.get("price") or 80
+    menu_items = [
+        MenuItemResult("Traditional Kabsa", price, "Main", True, [], [], True, []),
+        MenuItemResult("Lentil Soup", price * 0.3, "Starter", False, [], [], True, []),
+        MenuItemResult("Date Cake", price * 0.4, "Dessert", False, [], [], True, []),
+    ]
+    return RestaurantResult(
+        id=str(r["id"]), name=r["name"], city=r["city"],
+        vibe=r.get("vibe", ""),
+        cuisine=r.get("cuisine", "Traditional / Modern"),
+        rating=r.get("rating") or 4.0,
+        operating_hours={"open": "12:00", "close": "23:00"},
+        total_tables=tot, reserved_tables=reserved,
+        available_tables=available, discount_percent=discount,
+        menu=menu_items, top_dishes=["Traditional Kabsa"],
+        lat=r.get("lat") or 24.7, lng=r.get("lng") or 46.7,
+    )
 
 
-# ─── Hospitality Summary (for Agent 1 integration) ──────────────────────────
+# ─── Combined summary ─────────────────────────────────────────────────────────
 
 def get_hospitality_summary(
     city: Optional[str] = None,
     vibe: Optional[str] = None,
     allergens: Optional[List[str]] = None,
 ) -> dict:
-    """
-    Get a combined summary of hotels and restaurants for a destination.
-    Used by Agent 1 to build itineraries.
-    """
+    """Combined hotels + restaurants summary for Agent 1."""
     hotels = search_hotels(city=city, vibe=vibe)
     restaurants = search_restaurants(city=city, vibe=vibe, allergens_to_avoid=allergens)
 

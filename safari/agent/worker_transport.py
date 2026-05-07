@@ -112,6 +112,32 @@ class TransportWorker:
 
     # ─── Inter-city ──────────────────────────────────────────────────────────
 
+    def phase2_travel_costs(self, origin: str, destination: str, travel_mode: str, days: int) -> dict:
+        """
+        Fetch live flight and car rental prices from priority sources (Almosafer).
+        """
+        from safari.tools.almosafer import AlmosaferScraper
+        scraper = AlmosaferScraper()
+        
+        # Priority: Almosafer Flights
+        flights = []
+        if travel_mode.lower() == "flight":
+            travel_date = "2026-05-15" # Mock date for now
+            flights = scraper.scrape_flights(origin, destination, travel_date)
+            
+        # Mock model_dump behavior to match user's expected usage in app.py
+        class MockResult:
+            def __init__(self, data): self.data = data
+            def model_dump(self): return self.data
+            
+        return MockResult({
+            "status": "success",
+            "flights": flights,
+            "origin": origin,
+            "destination": destination,
+            "travel_mode": travel_mode
+        })
+
     def _handle_calculate(self, req: dict) -> dict:
         mode = req.get("mode", "car")
         origin = req.get("origin", "riyadh")

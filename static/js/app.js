@@ -676,6 +676,16 @@ function updateOverlays(data) {
     $('val-food').textContent = `${fmt(data.budget.food.total)} ${c}`;
     $('val-activities').textContent = `${fmt(data.budget.activities.total)} ${c}`;
     $('val-buffer').textContent = `${fmt(data.budget.buffer.total)} ${c}`;
+    const transportIcon = data.transport.mode === 'flight' ? '✈️' : (data.transport.mode === 'train' ? '🚄' : (data.transport.mode === 'bus' ? '🚌' : '🚗'));
+    const transportLabel = data.transport.mode.charAt(0).toUpperCase() + data.transport.mode.slice(1);
+    
+    // Update icons in segments
+    const transportSeg = document.querySelector('#seg-transport .seg-label');
+    if (transportSeg) transportSeg.textContent = transportIcon;
+    
+    const transportLogHeader = document.querySelector('.travel-dataset-panel h3');
+    if (transportLogHeader) transportLogHeader.textContent = `${transportIcon} Complete Travel Log`;
+
     budgetBar.classList.remove('hidden');
 
     // Show simulation controls
@@ -739,11 +749,12 @@ function renderTravelLog(data) {
                     const hrs = Math.floor(leg.time_minutes / 60);
                     const mins = leg.time_minutes % 60;
                     const timeStr = hrs > 0 ? `${hrs}h ${mins}m` : `${mins}m`;
+                    const modeIcon = leg.mode.includes('flight') ? '✈️' : (leg.mode.includes('train') ? '🚄' : (leg.mode.includes('bus') ? '🚌' : '🚗'));
                     return `
                     <tr class="${leg.type === 'inter_city' ? 'inter-city-row' : ''}">
                         <td>${leg.from_name}</td>
                         <td>${leg.to_name}</td>
-                        <td>${leg.mode}</td>
+                        <td>${modeIcon} ${leg.mode}</td>
                         <td>${leg.dist.toFixed(1)} km</td>
                         <td>${timeStr}</td>
                     </tr>
@@ -822,8 +833,18 @@ async function loadHospitality() {
             const isRest = item.type === 'restaurant';
             const isCafe = item.type === 'cafe';
             
-            const priceLabel = isHotel ? 'SAR / night' : 'SAR (Avg/Person)';
+            // For hotels: use live Almosafer price; for others use DB price
+            const displayPrice = isHotel
+                ? (item.live_price_sar || item.price || null)
+                : (item.price || null);
+            const priceLabel = isHotel ? 'SAR / night (Almosafer live)' : 'SAR (Avg/Person)';
             const icon = isHotel ? '🏨' : isRest ? '🍴' : '☕';
+            const priceHtml = isHotel
+                ? (displayPrice
+                    ? `<div class="price-tag" style="color:#4ade80;">${Math.round(displayPrice)} <span style="font-size:11px;opacity:0.8;">${priceLabel}</span></div>
+                       <div style="font-size:10px;color:var(--accent);margin-top:-6px;margin-bottom:8px;">📡 Live from Almosafer</div>`
+                    : `<div class="price-tag" style="color:#f97316;">Price not available — <a href="${item.almosafer_url || 'https://www.almosafer.com'}" target="_blank" style="color:var(--accent);">Check Almosafer</a></div>`)
+                : `<div class="price-tag">${displayPrice ? Math.round(displayPrice) : '—'} <span>${priceLabel}</span></div>`;
 
             // Hotel-specific trip-aware logic
             let isRec = false;
@@ -859,30 +880,40 @@ async function loadHospitality() {
                 // Trip-aware button
                 if (tripActive && lodgingPending) {
                     const days = state.tripData.budget.days;
-                    const totalCost = Math.round(item.price) * days;
+                    const totalCost = Math.round(displayPrice || 0) * days;
+                    const bookUrl = item.almosafer_url || 'https://www.almosafer.com';
                     tripBtnHtml = `
                         <div class="hotel-select-meta" style="margin-bottom:8px;">
                             <span>📅 ${days} nights = <strong>${fmt(totalCost)} SAR</strong></span>
                             ${distKm !== null ? `<span style="margin-left:8px;">📍 ${distKm.toFixed(1)} km from activities</span>` : ''}
                         </div>
                         ${overBudgetHtml}
-                        <button class="submit-btn" style="padding:10px; font-size:14px; background:linear-gradient(135deg,#4ade80,#10b981) !important;" 
-                            ${item.empty_rooms <= 0 ? 'disabled' : ''}
+                        <div style="display:flex;gap:8px;">
+                        <button class="submit-btn" style="padding:10px; font-size:14px; background:linear-gradient(135deg,#4ade80,#10b981) !important; flex:1;"
                             onclick="selectHospitalityHotel(${currentHotelIdx})">
-                            ${item.empty_rooms <= 0 ? 'Fully Booked' : (isSelected ? '✅ Selected' : '🏨 Select for Trip')}
-                        </button>`;
+                            ${isSelected ? '✅ Selected' : '🏨 Select for Trip'}
+                        </button>
+                        <a href="${bookUrl}" target="_blank" style="padding:10px 12px; font-size:12px; background:rgba(139,92,246,0.2); border:1px solid rgba(139,92,246,0.4); border-radius:10px; color:var(--accent); text-decoration:none; display:flex; align-items:center;">
+                            🔗 Almosafer
+                        </a>
+                        </div>`;
                 } else if (tripActive && isSelected) {
                     tripBtnHtml = `
                         <button class="submit-btn" style="padding:10px; font-size:14px; background:linear-gradient(135deg,#10b981,#059669) !important;" disabled>
                             ✅ Selected for Trip
                         </button>`;
                 } else {
+                    const bookUrl = item.almosafer_url || 'https://www.almosafer.com';
                     tripBtnHtml = `
-                        <button class="submit-btn" style="padding:10px; font-size:14px;" 
-                            ${item.empty_rooms <= 0 ? 'disabled' : ''} 
+                        <div style="display:flex;gap:8px;">
+                        <button class="submit-btn" style="padding:10px; font-size:14px; flex:1;"
                             onclick="askBooking(${item.id}, '${item.name.replace(/'/g, "\\'")}')">
-                            ${item.empty_rooms <= 0 ? 'Fully Booked' : 'Choose Hotel'}
-                        </button>`;
+                            Choose Hotel
+                        </button>
+                        <a href="${bookUrl}" target="_blank" style="padding:10px 12px; font-size:12px; background:rgba(139,92,246,0.2); border:1px solid rgba(139,92,246,0.4); border-radius:10px; color:var(--accent); text-decoration:none; display:flex; align-items:center;">
+                            🔗 Almosafer
+                        </a>
+                        </div>`;
                 }
             }
             
@@ -912,7 +943,7 @@ async function loadHospitality() {
                     <span style="font-size:14px;">${'★'.repeat(item.stars || 0)}${'⭐'.repeat(item.rating ? 1 : 0)}</span>
                 </div>
                 <h3>${item.name}</h3>
-                <div class="price-tag">${Math.round(item.price)} <span>${priceLabel}</span></div>
+                ${priceHtml}
                 ${detailsHtml}
                 ${isHotel ? tripBtnHtml : `
                     <button class="submit-btn" style="padding:10px; font-size:14px;" 
@@ -1122,6 +1153,19 @@ function renderPathSelection(paths, recommendationIdx) {
     
     paths.forEach((path, idx) => {
         const isRec = idx === recommendationIdx;
+        const card = document.createElement('div');
+        
+        if (path.error) {
+            card.className = `path-card error-path`;
+            card.innerHTML = `
+                <h3>${path.path_type} Path</h3>
+                <div class="path-error-msg">⚠️ Failed: ${path.error}</div>
+                <p style="font-size:12px; opacity:0.7;">This configuration is currently unavailable.</p>
+            `;
+            grid.appendChild(card);
+            return;
+        }
+
         const b = path.budget;
         const c = b.currency;
         
@@ -1134,7 +1178,6 @@ function renderPathSelection(paths, recommendationIdx) {
             features = `<li>✨ Premium activities</li><li>🚕 Max convenience transport</li><li>🏨 Luxury accommodations</li>`;
         }
 
-        const card = document.createElement('div');
         card.className = `path-card ${isRec ? 'recommended' : ''}`;
         card.innerHTML = `
             <h3>${path.path_type} Path</h3>
@@ -1275,12 +1318,16 @@ function renderBudgetDetailsLeft(data) {
         `;
     }
 
+    const transportIcon = t.mode === 'flight' ? '✈️' : (t.mode === 'train' ? '🚄' : (t.mode === 'bus' ? '🚌' : '🚗'));
+    const transportLabel = t.mode.charAt(0).toUpperCase() + t.mode.slice(1);
+
     container.innerHTML = `
         <h3 style="margin-top:20px;margin-bottom:15px;color:var(--text-primary);font-size:22px;">💰 Budget Breakdown</h3>
         <div class="budget-row">
-            <span class="budget-row-label">🚗 Transport</span>
+            <span class="budget-row-label">${transportIcon} ${transportLabel}</span>
             <span class="budget-row-value">${fmt(b.transport)} ${c}</span>
         </div>
+        ${t.breakdown && !isCar ? `<div style="font-size:11px; color:var(--accent); margin-top:-8px; margin-bottom:12px; opacity:0.8; padding-left:24px;">${t.breakdown}</div>` : ''}
         ${fuelBreakdownHtml}
         <div class="budget-row ${b.lodging.pending ? 'pending-row' : ''}">
             <span class="budget-row-label">🏨 Lodging</span>

@@ -29,6 +29,7 @@ from safari.agent.orchestrator_agent import OrchestratorAgent
 from safari.agent.worker_research import ResearchWorker
 from safari.agent.worker_hospitality import HospitalityWorker
 from safari.agent.worker_transport import TransportWorker
+from safari.agent.worker_fixer import FixerWorker
 from google import genai
 from safari.database import create_snapshot
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -214,6 +215,19 @@ def plan_trip():
             # Worker 2: Hospitality
             print("  -> [Worker 2: Hospitality] Fetching hotels and restaurants.")
             worker_2 = HospitalityWorker()
+            
+            # Initialize defaults in case of failure before these are set
+            hotel_data = activities.hotel
+            timeline_req = {
+                "action": "plan_timeline",
+                "daily_activities": activities.daily_activities,
+                "hotel": hotel_data,
+                "travel_mode": travel_mode,
+                "vehicle_type": vehicle_type,
+                "origin": origin,
+                "destination": destination,
+            }
+            
             try:
                 hosp_res = worker_2.process_request({
                     "action": "search_hotels",
@@ -251,7 +265,7 @@ def plan_trip():
                     origin=origin,
                     destination=activities.recommended_city,
                     travel_mode=travel_mode,
-                    days=int(getattr(request, 'days', 3))
+                    days=days
                 )
                 
                 hospitality_data = {
@@ -267,15 +281,7 @@ def plan_trip():
 
                 # Worker 3: Transport (Phase 3: Timeline)
                 print("  -> [Worker 3: Transport] Calculating routing and timeline.")
-                timeline_req = {
-                    "action": "plan_timeline",
-                    "daily_activities": activities.daily_activities,
-                    "hotel": hotel_data,
-                    "travel_mode": travel_mode,
-                    "vehicle_type": vehicle_type,
-                    "origin": origin,
-                    "destination": destination,
-                }
+                timeline_req["hotel"] = hotel_data # Update with possibly geolocated hotel
                 timeline_res = worker_3.process_request(timeline_req)
                 timeline = timeline_res.get("timeline", {})
                 total_transit_cost = timeline_res.get("total_transit_cost", 0)
@@ -533,15 +539,38 @@ def api_snapshot():
 
 @app.route('/api/hospitality', methods=['GET'])
 def api_get_hospitality():
+    """
+    Return hospitality listings for a city.
+    Hotels: fetched live from Almosafer (5 with prices + grow DB catalogue).
+    Restaurants/cafes: from local DB.
+    """
     city = request.args.get('city')
     item_type = request.args.get('type')
     if not city:
         return jsonify({"error": "City is required"}), 400
-    
-    from safari.database import get_hospitality, randomize_hospitality
-    randomize_hospitality(city)
-    data = get_hospitality(city, item_type)
-    return jsonify(data)
+
+    results = []
+
+    if item_type in (None, 'all', 'hotel'):
+        # Live Almosafer fetch
+        hosp_res = worker_hospitality.process_request({
+            "action": "search_hotels",
+            "city": city,
+        })
+        for h in hosp_res.get("hotels", []):
+            h["type"] = "hotel"
+            results.append(h)
+
+    if item_type in (None, 'all', 'restaurant', 'cafe'):
+        rest_res = worker_hospitality.process_request({
+            "action": "search_restaurants",
+            "city": city,
+        })
+        for r in rest_res.get("restaurants", []):
+            r["type"] = "restaurant"
+            results.append(r)
+
+    return jsonify(results)
 
 @app.route('/api/book', methods=['POST'])
 def api_book_hotel():
