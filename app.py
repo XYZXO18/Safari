@@ -27,8 +27,8 @@ from safari.tools.event_scanner import find_live_events
 from safari.tools.web_research import research_destination
 from safari.agent.orchestrator_agent import OrchestratorAgent
 from safari.agent.worker_research import ResearchWorker
-from safari.agent.worker_hospitality import HospitalityWorker
-from safari.agent.worker_transport import TransportWorker
+from safari.agent.worker_hospitality_live import HospitalityWorker
+from safari.agent.worker_transport_live import TransportWorker
 from google import genai
 from safari.database import create_snapshot
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -230,14 +230,43 @@ def plan_trip():
                 restaurants = rest_res.get("restaurants", [])
                 hospitality_data = {"hotels": hotels, "restaurants": restaurants}
                 
+                # Worker 3: Transport (Phase 1: Geocoding)
+                print("  -> [Worker 3: Transport] Resolving live coordinates for venues.")
+                worker_3 = TransportWorker()
+                
+                # Geolocate all venues found by Agent 2
+                geo_res = worker_3.process_request({
+                    "action": "geolocate_venues",
+                    "venues": hotels + restaurants,
+                    "city": activities.recommended_city
+                })
+                
+                geolocated = geo_res.get("venues", [])
+                hotels = [v for v in geolocated if v.get("type") == "hotel"]
+                restaurants = [v for v in geolocated if v.get("type") == "restaurant"]
+                
+                # Worker 3: Transport (Phase 2: Travel Costs)
+                print("  -> [Worker 3: Transport] Fetching live flight and car rental prices.")
+                travel_costs = worker_3.phase2_travel_costs(
+                    origin=origin,
+                    destination=activities.recommended_city,
+                    travel_mode=travel_mode,
+                    days=int(getattr(request, 'days', 3))
+                )
+                
+                hospitality_data = {
+                    "hotels": hotels, 
+                    "restaurants": restaurants,
+                    "travel_costs": travel_costs.model_dump()
+                }
+
                 hotel_data = activities.hotel
                 if hotels:
                     best_hotel = hotels[0]
                     hotel_data = {"name": best_hotel.get("name"), "lat": best_hotel.get("lat"), "lng": best_hotel.get("lng")}
 
-                # Worker 3: Transport
+                # Worker 3: Transport (Phase 3: Timeline)
                 print("  -> [Worker 3: Transport] Calculating routing and timeline.")
-                worker_3 = TransportWorker()
                 timeline_req = {
                     "action": "plan_timeline",
                     "daily_activities": activities.daily_activities,

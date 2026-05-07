@@ -17,8 +17,8 @@ from safari.agent.prompts import SAFARI_SYSTEM_PROMPT, ITINERARY_USER_PROMPT
 from safari.output.formatter import print_itinerary, format_itinerary
 
 from safari.agent.worker_research import ResearchWorker
-from safari.agent.worker_hospitality import HospitalityWorker
-from safari.agent.worker_transport import TransportWorker
+from safari.agent.worker_hospitality_live import HospitalityWorker
+from safari.agent.worker_transport_live import TransportWorker
 
 from rich.console import Console
 from rich.panel import Panel
@@ -68,7 +68,7 @@ class OrchestratorAgent:
         breakdown = budget_allocator(request.budget, transport_est.cost_round_trip, request.days, request.currency)
 
         # DELEGATE TO Worker 1: RESEARCH
-        console.print("\n  [bold magenta]🛠️ Orchestrator Agent → Worker 1 (Research): Gather activities & events...[/bold magenta]")
+        console.print("\n  [bold magenta][R] Orchestrator Agent -> Worker 1 (Research): Gather activities & events...[/bold magenta]")
         research_res = self.worker_1.process_request({
             "action": "gather_activities_and_events",
             "destination": request.destination,
@@ -84,48 +84,60 @@ class OrchestratorAgent:
         web_research = research_res["web_research"]
         vibe = research_res["vibe"]
 
-        # DELEGATE TO Worker 2: HOSPITALITY
-        console.print("  [bold yellow]🏨 Orchestrator Agent → Worker 2 (Hospitality): Fetch hotels & restaurants...[/bold yellow]")
-        hospitality_res = self.worker_2.process_request({
-            "action": "search_hotels",
-            "vibe": vibe
-        })
-        hotels = hospitality_res.get("hotels", [])
+        # ─── Worker 2 & 3: Hospitality & Transport (LIVE WEB) ───────────────────
+        from safari.agent.schemas import HospitalityInput
         
-        rest_res = self.worker_2.process_request({
-            "action": "search_restaurants",
-            "vibe": vibe,
-            "allergens": getattr(request, 'allergens', [])
-        })
-        restaurants = rest_res.get("restaurants", [])
-
-        # Filter hotels strictly by budget logic
-        budget_hotels = []
-        for h in hotels:
-            if not h.get("has_availability"): continue
-            affordable = [r for r in h.get("rooms", []) if r["final_price_sar"] <= breakdown.lodging_per_day * 1.2]
-            if affordable:
-                best = max(affordable, key=lambda r: r["discount_percent"])
-                h["best_deal"] = best
-                budget_hotels.append(h)
-        budget_hotels.sort(key=lambda h: h["best_deal"]["discount_percent"], reverse=True)
-        restaurants.sort(key=lambda r: r.get("rating", 0), reverse=True)
-
+        console.print("[bold yellow][H] [Agent 2] Searching live web for hotels/restaurants...[/bold yellow]")
+        hosp_input = HospitalityInput(
+            city=activities.recommended_city,
+            budget_per_night=breakdown.lodging_per_day,
+            currency=request.currency,
+            interests=request.interests.split(",") if request.interests else []
+        )
+        
+        # Phase 1: Scrape
+        hosp_output = self.worker_2.phase1_scrape(hosp_input)
+        venues = hosp_output.venues
+        
+        # Phase 2: Geolocate (Agent 3)
+        console.print("[bold cyan][T] [Agent 3] Resolving coordinates for live venues...[/bold cyan]")
+        geolocated = self.worker_3.phase1_geolocate(venues, activities.recommended_city)
+        
+        # Update venues with coords
+        hotels = [v.model_dump() for v in geolocated if v.type == 'hotel']
+        restaurants = [v.model_dump() for v in geolocated if v.type == 'restaurant']
         hospitality_data = {
-            "hotels": budget_hotels[:5],
-            "restaurants": restaurants[:5],
-            "hospitality_summary_text": f"Found {len(budget_hotels)} affordable hotels and {len(restaurants)} high-rated restaurants."
+            "hotels": hotels, 
+            "restaurants": restaurants,
+            "hospitality_summary_text": f"Found {len(hotels)} affordable hotels and {len(restaurants)} high-rated restaurants."
         }
-
-        # DELEGATE TO Worker 3: TRANSPORT
-        console.print("  [bold blue]🚗 Orchestrator Agent → Worker 3 (Transport): Calculate daily routes...[/bold blue]")
-        best_hotel_coords = {"name": budget_hotels[0]["name"], "lat": budget_hotels[0]["lat"], "lng": budget_hotels[0]["lng"]} if budget_hotels else activities.hotel
         
+        # Determine hotel reference point
+        if hotels:
+            best = hotels[0]
+            best_hotel_coords = {"name": best["name"], "lat": best["lat"], "lng": best["lng"]}
+        else:
+            best_hotel_coords = activities.hotel
+
+        # Phase 3: Travel Costs (Agent 3)
+        console.print("[bold blue][F] [Agent 3] Searching live travel pricing...[/bold blue]")
+        travel_costs = self.worker_3.phase2_travel_costs(
+            origin=request.origin,
+            destination=activities.recommended_city,
+            travel_mode=request.travel_mode,
+            days=request.days
+        )
+        hospitality_data["travel_costs"] = travel_costs.model_dump()
+
+        console.print("[bold magenta][M] [Agent 3] Planning timeline and routing...[/bold magenta]")
         timeline_res = self.worker_3.process_request({
             "action": "plan_timeline",
             "daily_activities": activities.daily_activities,
             "hotel": best_hotel_coords,
-            "travel_mode": request.travel_mode
+            "travel_mode": request.travel_mode,
+            "vehicle_type": request.vehicle_type,
+            "origin": request.origin,
+            "destination": request.destination,
         })
         activities.timeline = timeline_res.get("timeline", {})
         activities.total_transit_cost = timeline_res.get("total_transit_cost", 0)
@@ -137,7 +149,7 @@ class OrchestratorAgent:
         })
 
         # Master generation phase
-        console.print("  [bold green]✅ All 3 Workers have reported back. Orchestrator generating itinerary...[/bold green]")
+        console.print("  [bold green][V] All 3 Workers have reported back. Orchestrator generating itinerary...[/bold green]")
         
         llm_text = self._generate_itinerary_text(request, transport_est, breakdown, activities, event_scan, web_research, hospitality_data)
 

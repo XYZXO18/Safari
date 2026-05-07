@@ -26,17 +26,18 @@ from safari.agent.schemas import (
     GeolocatedVenue, VenueStub,
     FlightPricing, CarRentalPricing, TravelCosts
 )
+from rich.console import Console
+
 from safari.tools.live_distance import (
     geocode_venues,
     search_flight_prices,
-    search_flight_prices_fallback,
     search_car_rental_prices,
-    search_car_rental_fallback,
     get_road_distance,
 )
 from config import OLLAMA_URL, OLLAMA_MODEL, ROUTES
 
 logger = logging.getLogger(__name__)
+console = Console()
 
 
 # ─── Speed Table (unchanged from original) ─────────────────────────────────
@@ -100,6 +101,7 @@ class TransportWorker:
             List[GeolocatedVenue] with lat, lng, road_distance_km, drive_time_minutes
         """
         logger.info(f"[TransportWorker] Phase 1 — Geolocating {len(venue_stubs)} venues in {city}")
+        console.print(f"[bold cyan][T] [Agent 3] TransportWorker starting LIVE GEOCODING for {len(venue_stubs)} venues...[/bold cyan]")
 
         # Find hotel coords first (used as origin for road distances)
         hotel_coords: Optional[Tuple[float, float]] = None
@@ -155,6 +157,7 @@ class TransportWorker:
             TravelCosts with flight and/or car_rental populated
         """
         logger.info(f"[TransportWorker] Phase 2 — Live travel costs: {origin} → {destination} ({travel_mode})")
+        console.print(f"[bold blue][F] [Agent 3] TransportWorker searching LIVE TRAVEL COSTS for {origin} -> {destination}...[/bold blue]")
 
         flight: Optional[FlightPricing] = None
         car_rental: Optional[CarRentalPricing] = None
@@ -166,25 +169,25 @@ class TransportWorker:
         if travel_mode == "flight":
             logger.info("  🔍 Searching live flight prices...")
             flight = search_flight_prices(origin, destination, travel_date)
-            if not flight:
-                logger.warning("  ⚠️ Live flight search failed — using static fallback")
-                flight = search_flight_prices_fallback(origin, destination)
-            logger.info(
-                f"  ✅ Flight: {flight.price_one_way} {flight.currency} one-way "
-                f"({flight.airline or 'Unknown'}) [{flight.source}]"
-            )
+            if flight:
+                logger.info(
+                    f"  ✅ Flight: {flight.price_one_way} {flight.currency} one-way "
+                    f"({flight.airline or 'Unknown'}) [{flight.source}]"
+                )
+            else:
+                logger.warning("  ⚠️ No live flight prices found. (Fallback disabled)")
 
         # ── Car Rental Pricing ──────────────────────────────────────────────
         # Always search car rental (useful even for flight travelers who rent on arrival)
         logger.info("  🔍 Searching live car rental prices...")
         car_rental = search_car_rental_prices(city=destination, days=days)
-        if not car_rental:
-            logger.warning("  ⚠️ Live car rental search failed — using flat-rate fallback")
-            car_rental = search_car_rental_fallback(destination)
-        logger.info(
-            f"  ✅ Car rental: {car_rental.price_per_day} {car_rental.currency}/day "
-            f"({car_rental.company or 'Unknown'}) [{car_rental.source}]"
-        )
+        if car_rental:
+            logger.info(
+                f"  ✅ Car rental: {car_rental.price_per_day} {car_rental.currency}/day "
+                f"({car_rental.company or 'Unknown'}) [{car_rental.source}]"
+            )
+        else:
+            logger.warning("  ⚠️ No live car rental prices found. (Fallback disabled)")
 
         # ── Fuel Estimate (for car-drive travelers) ─────────────────────────
         if travel_mode == "car":

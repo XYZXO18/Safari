@@ -192,7 +192,7 @@ def _search_social_media(city: str, interests: str = "") -> List[SocialMediaPost
     Use Gemini's Google Search grounding to discover social media posts
     about a destination — trending food spots, hidden gems, local recommendations.
     """
-    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
+    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL, GEMINI_MODEL
 
     if not USE_LOCAL_AI and not GEMINI_API_KEY:
         return []
@@ -240,7 +240,7 @@ def _search_social_media(city: str, interests: str = "") -> List[SocialMediaPost
             text = res.json()["response"].strip()
         else:
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                model=GEMINI_MODEL,
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     tools=[{"google_search": {}}],
@@ -286,7 +286,7 @@ def _search_trending_spots(city: str, interests: str = "") -> List[TrendingSpot]
     Use Gemini's Google Search grounding to discover currently trending
     restaurants, cafés, attractions, and experiences in a city.
     """
-    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
+    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL, GEMINI_MODEL
 
     if not USE_LOCAL_AI and not GEMINI_API_KEY:
         return []
@@ -340,7 +340,7 @@ def _search_trending_spots(city: str, interests: str = "") -> List[TrendingSpot]
             text = res.json()["response"].strip()
         else:
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                model=GEMINI_MODEL,
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     tools=[{"google_search": {}}],
@@ -389,7 +389,7 @@ def _search_local_insights(city: str) -> tuple[List[LocalInsight], str]:
     Use Gemini's Google Search grounding to discover practical travel tips,
     weather info, and local insights from the web.
     """
-    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
+    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL, GEMINI_MODEL
 
     if not USE_LOCAL_AI and not GEMINI_API_KEY:
         return [], ""
@@ -433,7 +433,7 @@ def _search_local_insights(city: str) -> tuple[List[LocalInsight], str]:
             text = res.json()["response"].strip()
         else:
             response = client.models.generate_content(
-                model="gemini-2.0-flash",
+                model=GEMINI_MODEL,
                 contents=prompt,
                 config=types.GenerateContentConfig(
                     tools=[{"google_search": {}}],

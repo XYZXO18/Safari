@@ -88,7 +88,7 @@ class TestSchemas(unittest.TestCase):
                                      price_one_way=350, price_round_trip=640,
                                      source="gemini_grounding"),
                 car_rental=CarRentalPricing(city="Jeddah", price_per_day=120,
-                                            source="fallback_estimate"),
+                                            source="gemini_grounding"),
             ),
         )
         d = out.model_dump()
@@ -125,16 +125,10 @@ class TestLiveHospitalityTools(unittest.TestCase):
 
     @patch("safari.tools.live_hospitality._gemini_search_venues", return_value=[])
     @patch("safari.tools.live_hospitality._ddg_search_venues", return_value=[])
-    @patch("safari.tools.live_hospitality._fallback_db_venues")
-    def test_search_hotels_falls_back_to_db(self, mock_db, mock_ddg, mock_gemini):
-        mock_db.return_value = [
-            VenueStub(name="DB Hotel", type="hotel", price=300, lat=21.48, lng=39.19)
-        ]
+    def test_search_hotels_no_live_data(self, mock_ddg, mock_gemini):
         from safari.tools.live_hospitality import search_hotels_live
         results = search_hotels_live(city="Jeddah", budget_per_night=600)
-        self.assertEqual(results[0].name, "DB Hotel")
-        self.assertEqual(results[0].lat, 21.48)  # DB has coords
-        mock_db.assert_called_once()
+        self.assertEqual(len(results), 0)
 
 
 class TestLiveDistanceTools(unittest.TestCase):
@@ -177,28 +171,25 @@ class TestLiveDistanceTools(unittest.TestCase):
         self.assertEqual(result["source"], "osrm")
 
     @patch("requests.get", side_effect=Exception("Network error"))
-    def test_road_distance_haversine_fallback(self, mock_get):
+    def test_road_distance_osrm_failure(self, mock_get):
         from safari.tools.live_distance import get_road_distance
         result = get_road_distance(21.48, 39.19, 21.52, 39.17)
-        self.assertIn("distance_km", result)
-        self.assertEqual(result["source"], "haversine_corrected")
+        self.assertIsNone(result)
 
     @patch("safari.tools.live_distance.search_flight_prices", return_value=None)
-    def test_flight_search_fallback_triggered(self, mock_live):
-        from safari.tools.live_distance import search_flight_prices_fallback
-        result = search_flight_prices_fallback("Riyadh", "Jeddah")
-        self.assertIsInstance(result, FlightPricing)
-        self.assertGreater(result.price_one_way, 0)
-        self.assertEqual(result.source, "fallback_estimate")
+    def test_flight_search_no_data(self, mock_live):
+        from safari.tools.live_distance import search_flight_prices
+        result = search_flight_prices("Riyadh", "Jeddah")
+        self.assertIsNone(result)
 
 
 # ─── Agent Integration Tests ──────────────────────────────────────────────────
 
 class TestAgentHandoff(unittest.TestCase):
 
-    @patch("safari.tools.live_hospitality.search_hotels_live")
-    @patch("safari.tools.live_hospitality.search_restaurants_live")
-    @patch("safari.tools.live_hospitality.search_cafes_live")
+    @patch("safari.agent.worker_hospitality_live.search_hotels_live")
+    @patch("safari.agent.worker_hospitality_live.search_restaurants_live")
+    @patch("safari.agent.worker_hospitality_live.search_cafes_live")
     def test_agent2_phase1_returns_no_coords(self, mock_cafes, mock_rests, mock_hotels):
         """Agent 2 must return venues with lat=None (coordinates to be filled by Agent 3)."""
         mock_hotels.return_value = [VenueStub(name="Hilton Jeddah", type="hotel", price=490, rating=4.5)]
@@ -233,25 +224,23 @@ class TestAgentHandoff(unittest.TestCase):
             self.assertIsNotNone(v.lat)
             self.assertIsNotNone(v.lng)
 
-    @patch("safari.tools.live_distance.search_flight_prices", return_value=None)
-    @patch("safari.tools.live_distance.search_car_rental_prices", return_value=None)
-    def test_agent3_phase2_uses_fallbacks(self, mock_car, mock_flight):
-        """Agent 3 Phase 2 must always return a TravelCosts object, even if live search fails."""
+    @patch("safari.agent.worker_transport_live.search_flight_prices", return_value=None)
+    @patch("safari.agent.worker_transport_live.search_car_rental_prices", return_value=None)
+    def test_agent3_phase2_returns_empty_when_no_data(self, mock_car, mock_flight):
+        """Agent 3 Phase 2 should return TravelCosts with None fields if search fails."""
         from safari.agent.worker_transport_live import TransportWorker
         agent3 = TransportWorker()
         costs = agent3.phase2_travel_costs(origin="Riyadh", destination="Jeddah", travel_mode="flight")
 
-        self.assertIsNotNone(costs.flight)
-        self.assertIsNotNone(costs.car_rental)
-        self.assertGreater(costs.flight.price_one_way, 0)
-        self.assertGreater(costs.car_rental.price_per_day, 0)
+        self.assertIsNone(costs.flight)
+        self.assertIsNone(costs.car_rental)
 
     @patch("safari.agent.worker_hospitality_live.search_hotels_live")
     @patch("safari.agent.worker_hospitality_live.search_restaurants_live")
     @patch("safari.agent.worker_hospitality_live.search_cafes_live")
-    @patch("safari.tools.live_distance.geocode_nominatim")
-    @patch("safari.tools.live_distance.search_flight_prices", return_value=None)
-    @patch("safari.tools.live_distance.search_car_rental_prices", return_value=None)
+    @patch("safari.agent.worker_transport_live.geocode_venues")
+    @patch("safari.agent.worker_transport_live.search_flight_prices")
+    @patch("safari.agent.worker_transport_live.search_car_rental_prices")
     @patch("time.sleep")
     def test_full_two_phase_handoff(
         self, mock_sleep, mock_car, mock_flight,
@@ -265,7 +254,11 @@ class TestAgentHandoff(unittest.TestCase):
         mock_hotels.return_value = [VenueStub(name="Hilton Jeddah", type="hotel", price=490, rating=4.5)]
         mock_rests.return_value = [VenueStub(name="Al Baik", type="restaurant", price=35)]
         mock_cafes.return_value = [VenueStub(name="Peet's Coffee", type="cafe", price=25)]
-        mock_nom.return_value = (21.5234, 39.1731)
+        def side_effect_geocode(stubs, city, hotel_coords=None):
+            return [GeolocatedVenue(
+                name=s.name, type=s.type, lat=21.5, lng=39.2, geocode_source="nominatim"
+            ) for s in stubs]
+        mock_nom.side_effect = side_effect_geocode
 
         from safari.agent.worker_hospitality_live import HospitalityWorker
         from safari.agent.worker_transport_live import TransportWorker
@@ -290,14 +283,20 @@ class TestAgentHandoff(unittest.TestCase):
             self.assertIsNotNone(v.lng)
 
         # PHASE C: Agent 3 travel costs
-        costs = agent3.phase2_travel_costs("Riyadh", "Jeddah", "flight")
-        self.assertIsNotNone(costs.flight)
-        self.assertIsNotNone(costs.car_rental)
+        # Mocking success here to test full flow
+        with patch("safari.agent.worker_transport_live.search_flight_prices") as m_f, \
+             patch("safari.agent.worker_transport_live.search_car_rental_prices") as m_c:
+             m_f.return_value = FlightPricing(origin="Riyadh", destination="Jeddah", price_one_way=300, price_round_trip=580, source="gemini_grounding")
+             m_c.return_value = CarRentalPricing(city="Jeddah", price_per_day=100, source="gemini_grounding")
+             
+             costs = agent3.phase2_travel_costs("Riyadh", "Jeddah", "flight")
+             self.assertIsNotNone(costs.flight)
+             self.assertIsNotNone(costs.car_rental)
 
-        print("\n[PASS] Full two-phase hand-off test passed!")
-        print(f"   Hotels: {[v.name for v in geolocated if v.type=='hotel']}")
-        print(f"   Flight: {costs.flight.price_one_way} SAR ({costs.flight.source})")
-        print(f"   Car rental: {costs.car_rental.price_per_day} SAR/day ({costs.car_rental.source})")
+             print("\n[PASS] Full two-phase hand-off test passed!")
+             print(f"   Hotels: {[v.name for v in geolocated if v.type=='hotel']}")
+             print(f"   Flight: {costs.flight.price_one_way} SAR ({costs.flight.source})")
+             print(f"   Car rental: {costs.car_rental.price_per_day} SAR/day ({costs.car_rental.source})")
 
 
 # ─── Run ──────────────────────────────────────────────────────────────────────

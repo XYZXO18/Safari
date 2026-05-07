@@ -20,6 +20,8 @@ from typing import List, Optional
 from safari.agent.schemas import (
     HospitalityInput, HospitalityOutput, VenueStub
 )
+from rich.console import Console
+
 from safari.tools.live_hospitality import (
     search_hotels_live,
     search_restaurants_live,
@@ -27,6 +29,7 @@ from safari.tools.live_hospitality import (
 )
 
 logger = logging.getLogger(__name__)
+console = Console()
 
 
 class HospitalityWorker:
@@ -80,6 +83,7 @@ class HospitalityWorker:
             f"[HospitalityWorker] Phase 1 — Scraping live venues in {input_data.city} "
             f"(budget: {input_data.budget_per_night} {input_data.currency}/night)"
         )
+        console.print(f"[bold yellow][H] [Agent 2] HospitalityWorker starting LIVE WEB SCRAPE for {input_data.city}...[/bold yellow]")
 
         all_venues: List[VenueStub] = []
         warnings: List[str] = []

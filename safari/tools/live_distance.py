@@ -31,6 +31,7 @@ import math
 import logging
 import time
 from typing import List, Optional, Tuple
+from rich.console import Console
 
 from safari.agent.schemas import (
     GeolocatedVenue, VenueStub,
@@ -38,6 +39,7 @@ from safari.agent.schemas import (
 )
 
 logger = logging.getLogger(__name__)
+console = Console()
 
 # ─── Geocoding ────────────────────────────────────────────────────────────────
 
@@ -57,6 +59,7 @@ def geocode_nominatim(venue_name: str, city: str) -> Optional[Tuple[float, float
 
         if location:
             logger.debug(f"[Nominatim] ✅ {venue_name} → ({location.latitude:.4f}, {location.longitude:.4f})")
+            console.print(f"[bold cyan][N] [Agent 3] Nominatim Geocoding used for: {venue_name}[/bold cyan]")
             return (location.latitude, location.longitude)
 
         # Retry with just the city if full name fails
@@ -114,6 +117,7 @@ def geocode_gemini(venue_name: str, city: str) -> Optional[Tuple[float, float]]:
         # Sanity check: Saudi Arabia bounding box
         if 16.0 <= lat <= 32.5 and 34.5 <= lng <= 56.0:
             logger.debug(f"[Gemini Geocode] ✅ {venue_name} → ({lat:.4f}, {lng:.4f})")
+            console.print(f"[bold blue][G] [Agent 3] Gemini Search Geocoding used for: {venue_name}[/bold blue]")
             return (lat, lng)
 
         logger.warning(f"[Gemini Geocode] Coordinates out of Saudi Arabia bounds for {venue_name}")
@@ -158,6 +162,7 @@ def get_road_distance_osrm(
 
         if data.get("code") == "Ok" and data.get("routes"):
             route = data["routes"][0]
+            console.print(f"[bold magenta][O] [Agent 3] OSRM Road Distance used[/bold magenta]")
             return {
                 "distance_km": round(route["distance"] / 1000, 2),
                 "duration_minutes": round(route["duration"] / 60),
@@ -174,25 +179,15 @@ def get_road_distance_osrm(
 def get_road_distance(
     from_lat: float, from_lng: float,
     to_lat: float, to_lng: float,
-) -> dict:
+) -> Optional[dict]:
     """
     Get road distance between two points.
-    Tries OSRM first, falls back to Haversine × 1.3 road correction.
+    OSRM ONLY. No fallbacks.
     """
-    osrm = get_road_distance_osrm(from_lat, from_lng, to_lat, to_lng)
-    if osrm:
-        return osrm
-
-    # Haversine fallback with 1.3 road-correction factor
-    straight = _haversine(from_lat, from_lng, to_lat, to_lng)
-    road_km = round(straight * 1.3, 2)
-    drive_mins = round((road_km / 50) * 60)  # 50 km/h city average
-
-    return {
-        "distance_km": road_km,
-        "duration_minutes": drive_mins,
-        "source": "haversine_corrected",
-    }
+    routing = get_road_distance_osrm(from_lat, from_lng, to_lat, to_lng)
+    if not routing:
+        console.print(f"[bold red][!] [Agent 3] OSRM Road Distance API failed. (No fallback)[/bold red]")
+    return routing
 
 
 # ─── Geolocation of Venue List ────────────────────────────────────────────────
@@ -230,12 +225,8 @@ def geocode_venues(
                 lat, lng = coords
                 source = "gemini"
             else:
-                # Step 3: City-center fallback with small jitter
-                import random
-                lat = city_fallback["lat"] + random.uniform(-0.03, 0.03)
-                lng = city_fallback["lng"] + random.uniform(-0.03, 0.03)
-                source = "fallback"
-                logger.warning(f"[Geocode] Using fallback coords for: {stub.name}")
+                console.print(f"[bold red][!] [Agent 3] Geocoding failed for: {stub.name}. (No fallback)[/bold red]")
+                continue # Skip this venue if it can't be geolocated
 
         # Road distance from hotel (if hotel coords known)
         road_dist = None
@@ -312,6 +303,7 @@ def search_flight_prices(
         if one_way <= 0:
             return None
 
+        console.print(f"[bold green][F] [Agent 3] Gemini Flight Search used: {origin} to {destination}[/bold green]")
         return FlightPricing(
             origin=origin,
             destination=destination,
@@ -327,49 +319,6 @@ def search_flight_prices(
     except Exception as e:
         logger.error(f"[Flight Search] Failed ({origin}→{destination}): {e}")
         return None
-
-
-def search_flight_prices_fallback(origin: str, destination: str) -> FlightPricing:
-    """
-    Read from the existing static logistics JSON if live search fails.
-    """
-    try:
-        import os
-        json_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-            "safari_transportation_logistics_filtered.json"
-        )
-        with open(json_path, "r", encoding="utf-8") as f:
-            data = json.load(f)["saudi_arabia_transportation"]
-
-        routes = data.get("domestic_flights", {}).get("major_routes", [])
-        origin_l, dest_l = origin.lower(), destination.lower()
-        mapping = {"coast": "jeddah", "mountains": "abha", "desert": "alula"}
-        origin_l = mapping.get(origin_l, origin_l)
-        dest_l = mapping.get(dest_l, dest_l)
-
-        for r in routes:
-            if origin_l in r["from"].lower() and dest_l in r["to"].lower():
-                price = float(r["average_cost_sar"])
-                return FlightPricing(
-                    origin=origin, destination=destination,
-                    price_one_way=price, price_round_trip=price * 2,
-                    currency="SAR", source="fallback_estimate", confidence="low",
-                )
-
-    except Exception:
-        pass
-
-    # Hard fallback: distance-based estimate
-    from safari.tools.transport import _lookup_distance
-    dist = _lookup_distance(origin, destination)
-    price = round(dist * 0.45, 2)
-
-    return FlightPricing(
-        origin=origin, destination=destination,
-        price_one_way=price, price_round_trip=price * 2,
-        currency="SAR", source="fallback_estimate", confidence="low",
-    )
 
 
 # ─── Live Car Rental Prices ───────────────────────────────────────────────────
@@ -414,6 +363,7 @@ def search_car_rental_prices(
         if price <= 0:
             return None
 
+        console.print(f"[bold green][C] [Agent 3] Gemini Car Rental Search used for {city}[/bold green]")
         return CarRentalPricing(
             city=city,
             price_per_day=price,

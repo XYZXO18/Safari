@@ -14,7 +14,7 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 # ─── Model Configuration ─────────────────────────────────────────────────────
-GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_MODEL = "gemini-2.5-flash"
 
 # Local AI Configuration (Ollama) — used as fallback when Gemini is unavailable.
 # The new safari/ai_client.py handles the priority: Gemini first → Ollama fallback.

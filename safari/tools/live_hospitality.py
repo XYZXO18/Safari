@@ -18,10 +18,12 @@ import json
 import logging
 from datetime import datetime
 from typing import List, Optional
+from rich.console import Console
 
 from safari.agent.schemas import VenueStub
 
 logger = logging.getLogger(__name__)
+console = Console()
 
 
 # ─── Gemini Grounding Search ─────────────────────────────────────────────────
@@ -99,6 +101,7 @@ def _gemini_search_venues(
                 continue
 
         logger.info(f"[Gemini Grounding] Found {len(stubs)} {venue_type}(s) in {city}")
+        console.print(f"[bold green][G] [Agent 2] Gemini Search Grounding used for {venue_type}s in {city} (Found: {len(stubs)})[/bold green]")
         return stubs
 
     except Exception as e:
@@ -160,6 +163,7 @@ def _ddg_search_venues(
                 break
 
         logger.info(f"[DuckDuckGo] Found {len(stubs)} {venue_type}(s) in {city}")
+        console.print(f"[bold yellow][D] [Agent 2] DuckDuckGo Search used for {venue_type}s in {city} (Found: {len(stubs)})[/bold yellow]")
         return stubs
 
     except ImportError:
@@ -167,41 +171,6 @@ def _ddg_search_venues(
         return []
     except Exception as e:
         logger.error(f"[DuckDuckGo] Failed: {e}")
-        return []
-
-
-# ─── Static DB Fallback ──────────────────────────────────────────────────────
-
-def _fallback_db_venues(city: str, venue_type: str, max_results: int = 5) -> List[VenueStub]:
-    """
-    Last resort: pull from the existing Safari SQLite database.
-    Converts old DB format into VenueStub schema.
-    """
-    try:
-        from safari.database import get_hospitality
-
-        db_type = "hotel" if venue_type == "hotel" else "restaurant"
-        rows = get_hospitality(city, type=db_type)
-
-        stubs = []
-        for r in rows[:max_results]:
-            stubs.append(VenueStub(
-                name=r["name"],
-                type=venue_type,
-                price=float(r.get("price", 0)),
-                currency="SAR",
-                rating=float(r.get("rating", 0)) or None,
-                description=f"Fallback data for {r['name']} in {city}",
-                source_url=None,
-                lat=r.get("lat"),
-                lng=r.get("lng"),
-            ))
-
-        logger.info(f"[Fallback DB] Found {len(stubs)} {venue_type}(s) in {city}")
-        return stubs
-
-    except Exception as e:
-        logger.error(f"[Fallback DB] Failed: {e}")
         return []
 
 
@@ -215,7 +184,7 @@ def search_hotels_live(
 ) -> List[VenueStub]:
     """
     Search for real hotels with live prices.
-    Tries Gemini → DuckDuckGo → Fallback DB in order.
+    Tries Gemini → DuckDuckGo. No DB fallback.
     """
     query = (
         f"best hotels in {city} under {budget_per_night} {currency} per night "
@@ -232,9 +201,8 @@ def search_hotels_live(
     if results:
         return results
 
-    # Static DB last resort
-    logger.warning(f"[Hotels] All live sources failed for {city}. Using fallback DB.")
-    return _fallback_db_venues(city, "hotel", max_results)
+    console.print(f"[bold red][!] [Agent 2] No live hotels found for {city}. (Fallback DB disabled)[/bold red]")
+    return []
 
 
 def search_restaurants_live(
@@ -246,7 +214,7 @@ def search_restaurants_live(
 ) -> List[VenueStub]:
     """
     Search for real restaurants with live prices.
-    Tries Gemini → DuckDuckGo → Fallback DB in order.
+    Tries Gemini → DuckDuckGo. No DB fallback.
     """
     cuisine_hint = f"{'and'.join(interests)} cuisine" if interests else "local cuisine"
     allergen_hint = f"without {', '.join(allergens)}" if allergens else ""
@@ -263,8 +231,8 @@ def search_restaurants_live(
     if results:
         return results
 
-    logger.warning(f"[Restaurants] All live sources failed for {city}. Using fallback DB.")
-    return _fallback_db_venues(city, "restaurant", max_results)
+    console.print(f"[bold red][!] [Agent 2] No live restaurants found for {city}. (Fallback DB disabled)[/bold red]")
+    return []
 
 
 def search_cafes_live(
@@ -272,7 +240,7 @@ def search_cafes_live(
     max_results: int = 3,
 ) -> List[VenueStub]:
     """
-    Search for real cafes. Follows same Gemini → DDG → DB priority.
+    Search for real cafes. Tries Gemini → DuckDuckGo. No DB fallback.
     """
     query = f"best cafes coffee shops in {city} 2025 2026 price"
 
@@ -284,5 +252,5 @@ def search_cafes_live(
     if results:
         return results
 
-    logger.warning(f"[Cafes] All live sources failed for {city}. Using fallback DB.")
-    return _fallback_db_venues(city, "cafe", max_results)
+    console.print(f"[bold red][!] [Agent 2] No live cafes found for {city}. (Fallback DB disabled)[/bold red]")
+    return []
