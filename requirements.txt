@@ -4,3 +4,8 @@ pydantic>=2.0.0
 rich>=13.0.0
 flask>=3.0.0
 requests>=2.31.0
+
+# ── Live Agent 2 & 3 Dependencies ─────────────────────────────────────────────
+geopy>=2.4.0              # Nominatim geocoding (OSM, free, no key)
+duckduckgo-search>=6.0.0  # DuckDuckGo web search fallback (no API key needed)
+httpx>=0.27.0             # Async-capable HTTP client (OSRM, future async support)
