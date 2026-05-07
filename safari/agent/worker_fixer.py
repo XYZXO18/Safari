@@ -2,7 +2,7 @@
 import json
 from typing import Dict, Any
 from safari.agent.prompts import FIXER_SYSTEM_PROMPT
-from safari.ai_client import call_ai
+from safari.ai_client import generate_json
 from config import CITY_COORDS
 
 class FixerWorker:
@@ -28,9 +28,7 @@ class FixerWorker:
         
         try:
             # Try cloud AI for high-quality repair, fallback to simple logic if even AI fails
-            resp = call_ai(prompt, system=FIXER_SYSTEM_PROMPT, json_mode=True)
-            if isinstance(resp, str):
-                return json.loads(resp)
+            resp = generate_json(prompt, system=FIXER_SYSTEM_PROMPT)
             return resp
         except Exception as e:
             print(f"❌ [Fixer Agent] AI repair failed: {e}. Falling back to hardcoded defaults.")
