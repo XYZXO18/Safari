@@ -248,6 +248,7 @@ class TransportWorker:
         has_own_car = travel_mode == "car"
 
         timeline = {}
+        total_transit_cost = 0.0
         # Inter-city long-haul legs
         from safari.tools.transport import calculate_transport_costs
         inter_city_est = calculate_transport_costs(
