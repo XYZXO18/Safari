@@ -14,7 +14,7 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 # ─── Model Configuration ─────────────────────────────────────────────────────
-GEMINI_MODEL = "gemini-flash-latest"
+GEMINI_MODEL = "gemini-2.5-flash"
 
 # Local AI Configuration (Ollama) — used as fallback when Gemini is unavailable.
 # The new safari/ai_client.py handles the priority: Gemini first → Ollama fallback.
@@ -191,7 +191,56 @@ DESTINATIONS = {
     },
 }
 
+# ─── City → Vibe resolver ────────────────────────────────────────────────────
+# Used when the user picks a specific city instead of a vibe category.
+CITY_TO_VIBE = {
+    "jeddah":   "coast",
+    "yanbu":    "coast",
+    "umluj":    "coast",
+    "al lith":  "coast",
+    "abha":     "mountains",
+    "taif":     "mountains",
+    "al baha":  "mountains",
+    "al-ula":   "desert",
+    "riyadh":   "city",
+    "dammam":   "city",
+    "medina":   "city",
+    "madinah":  "city",
+    "makkah":   "city",
+    "tabuk":    "desert",
+    "hail":     "desert",
+}
+
 # ─── City Coordinates (lat, lng) ─────────────────────────────────────────────
+# ─── Airport Mapping ────────────────────────────────────────────────────────
+# Maps every known city to the nearest airport city.
+# Cities that ARE airports map to themselves (distance 0).
+# Cities without a direct airport map to the nearest hub.
+AIRPORTS = {
+    # ── Cities with their own commercial airport ──────────────────────────────
+    "riyadh":   {"airport_city": "riyadh",  "iata": "RUH", "name": "King Khalid Intl",           "km_to_airport": 0},
+    "jeddah":   {"airport_city": "jeddah",  "iata": "JED", "name": "King Abdulaziz Intl",         "km_to_airport": 0},
+    "dammam":   {"airport_city": "dammam",  "iata": "DMM", "name": "King Fahd Intl",              "km_to_airport": 0},
+    "abha":     {"airport_city": "abha",    "iata": "AHB", "name": "Abha Regional Airport",       "km_to_airport": 0},
+    "al-ula":   {"airport_city": "al-ula",  "iata": "ULH", "name": "Prince Abdul Majeed Airport", "km_to_airport": 0},
+    "yanbu":    {"airport_city": "yanbu",   "iata": "YNB", "name": "Prince Abdul Mohsen Airport", "km_to_airport": 0},
+    "taif":     {"airport_city": "taif",    "iata": "TIF", "name": "Taif Regional Airport",       "km_to_airport": 0},
+    "medina":   {"airport_city": "medina",  "iata": "MED", "name": "Prince Mohammad bin Abdulaziz Airport", "km_to_airport": 0},
+    "tabuk":    {"airport_city": "tabuk",   "iata": "TUU", "name": "Tabuk Regional Airport",      "km_to_airport": 0},
+    # ── Cities without a direct airport — nearest hub ─────────────────────────
+    "makkah":   {"airport_city": "jeddah",  "iata": "JED", "name": "King Abdulaziz Intl (nearest)", "km_to_airport": 85},
+    "umluj":    {"airport_city": "yanbu",   "iata": "YNB", "name": "Prince Abdul Mohsen Airport (nearest)", "km_to_airport": 170},
+    "al baha":  {"airport_city": "taif",    "iata": "TIF", "name": "Taif Regional Airport (nearest)", "km_to_airport": 100},
+    "al lith":  {"airport_city": "jeddah",  "iata": "JED", "name": "King Abdulaziz Intl (nearest)", "km_to_airport": 145},
+    "jubail":   {"airport_city": "dammam",  "iata": "DMM", "name": "King Fahd Intl (nearest)",    "km_to_airport": 100},
+    "al-ahsa":  {"airport_city": "dammam",  "iata": "DMM", "name": "King Fahd Intl (nearest)",    "km_to_airport": 155},
+    # ── Vibe defaults → nearest hub ──────────────────────────────────────────
+    "coast":     {"airport_city": "jeddah",  "iata": "JED", "name": "King Abdulaziz Intl",        "km_to_airport": 0},
+    "mountains": {"airport_city": "abha",    "iata": "AHB", "name": "Abha Regional Airport",      "km_to_airport": 0},
+    "desert":    {"airport_city": "al-ula",  "iata": "ULH", "name": "Prince Abdul Majeed Airport","km_to_airport": 0},
+    "city":      {"airport_city": "riyadh",  "iata": "RUH", "name": "King Khalid Intl",           "km_to_airport": 0},
+}
+
 CITY_COORDS = {
     "riyadh":   {"lat": 24.7136, "lng": 46.6753},
     "jeddah":   {"lat": 21.4858, "lng": 39.1925},

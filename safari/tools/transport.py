@@ -19,9 +19,9 @@ from typing import Optional
 from config import (
     ROUTES,
     TRANSPORT_RATES_PER_KM,
+    CITY_COORDS,
 )
 from safari.tools.fuel import calculate_driving_cost
-from safari.tools.almosafer import AlmosaferScraper
 
 
 @dataclass
@@ -61,25 +61,41 @@ class TransportEstimate:
 
 def _lookup_distance(origin: str, destination: str) -> float:
     """
-    Look up the distance between two points from the route table.
-    Falls back to a default estimate if the exact pair is not found.
+    Get real road distance between two cities.
+    Tries OSRM live routing first; falls back to ROUTES table.
     """
+    from config import CITY_COORDS, ROUTES
+    from safari.tools.almosafer import CITY_ALMOSAFER_SLUG
+
+    # Resolve vibe names to real cities for coordinate lookup
+    origin_city = CITY_ALMOSAFER_SLUG.get(origin.lower(), origin).lower()
+    dest_city = CITY_ALMOSAFER_SLUG.get(destination.lower(), destination).lower()
+
+    orig_coords = CITY_COORDS.get(origin_city) or CITY_COORDS.get(origin.lower())
+    dest_coords = CITY_COORDS.get(dest_city) or CITY_COORDS.get(destination.lower())
+
+    if orig_coords and dest_coords:
+        try:
+            from safari.tools.live_distance import get_road_distance_osrm
+            result = get_road_distance_osrm(
+                orig_coords["lat"], orig_coords["lng"],
+                dest_coords["lat"], dest_coords["lng"],
+            )
+            if result and result.get("distance_km", 0) > 0:
+                return result["distance_km"]
+        except Exception as e:
+            print(f"[Transport] OSRM distance failed ({origin}→{destination}): {e}")
+
+    # Fallback: ROUTES table
     origin_l = origin.lower().strip()
     dest_l = destination.lower().strip()
-
-    # Direct lookup
     if (origin_l, dest_l) in ROUTES:
         return ROUTES[(origin_l, dest_l)]
-
-    # Reverse lookup (routes are symmetric)
     if (dest_l, origin_l) in ROUTES:
         return ROUTES[(dest_l, origin_l)]
-
-    # Default by vibe
     if ("default", dest_l) in ROUTES:
         return ROUTES[("default", dest_l)]
 
-    # Final fallback
     return 500.0
 
 
@@ -203,20 +219,25 @@ def calculate_transport_costs(
         provider = ""
 
         if mode_lower == "flight":
-            # Almosafer Priority Data Source
-            scraper = AlmosaferScraper()
-            travel_date = "2026-05-15" # Default calculation date
-            ams_flights = scraper.scrape_flights(origin, destination, travel_date)
-            
-            if ams_flights:
-                best_flight = min(ams_flights, key=lambda x: x["price_sar"])
-                cost_one_way = best_flight["price_sar"]
-                cost_rt = cost_one_way * 2 if round_trip else cost_one_way
-                time_mins = 95 + 120 # Duration + Airport Buffer
-                breakdown = f"✈️ Almosafer: {best_flight['airline']} - {cost_one_way} SAR"
-                # Set route_found to something truthy so we don't hit fallback
-                route_found = {"from": origin, "to": destination} 
-            else:
+            # Almosafer flight pages are JS-rendered and cannot be scraped statically.
+            # Use Gemini Search Grounding for live prices instead.
+            from safari.tools.almosafer import CITY_ALMOSAFER_SLUG
+            resolved_origin = CITY_ALMOSAFER_SLUG.get(origin.lower(), origin.title())
+            resolved_dest = CITY_ALMOSAFER_SLUG.get(destination.lower(), destination.title())
+            try:
+                from safari.tools.live_distance import search_flight_prices
+                flight_pricing = search_flight_prices(resolved_origin, resolved_dest)
+                if flight_pricing and flight_pricing.price_one_way > 0:
+                    cost_one_way = flight_pricing.price_one_way
+                    cost_rt = flight_pricing.price_round_trip if round_trip else cost_one_way
+                    time_mins = (flight_pricing.duration_minutes or 90) + 60
+                    airline = flight_pricing.airline or "Flight"
+                    breakdown = f"✈️ {airline}: {cost_one_way:.0f} SAR one-way [{flight_pricing.source}]"
+                    route_found = {"from": resolved_origin, "to": resolved_dest}
+                else:
+                    route_found = None
+            except Exception as e:
+                print(f"[Transport] Gemini flight search failed: {e}")
                 route_found = None
             
         elif mode_lower == "train":

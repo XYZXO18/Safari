@@ -116,14 +116,39 @@ class TransportWorker:
         """
         Fetch live flight and car rental prices from priority sources (Almosafer).
         """
-        from safari.tools.almosafer import AlmosaferScraper
-        scraper = AlmosaferScraper()
-        
-        # Priority: Almosafer Flights
+        from safari.tools.almosafer import CITY_ALMOSAFER_SLUG
+
         flights = []
         if travel_mode.lower() == "flight":
-            travel_date = "2026-05-15" # Mock date for now
-            flights = scraper.scrape_flights(origin, destination, travel_date)
+            resolved_origin = CITY_ALMOSAFER_SLUG.get(origin.lower(), origin.title())
+            resolved_dest = CITY_ALMOSAFER_SLUG.get(destination.lower(), destination.title())
+            try:
+                from safari.tools.live_distance import (
+                    search_flight_prices, find_nearest_airport, build_via_airport_journey,
+                )
+                airport_info = find_nearest_airport(origin.lower())
+                if not airport_info["has_own_airport"]:
+                    # Origin has no airport — build via-airport combined journey
+                    via = build_via_airport_journey(resolved_origin, resolved_dest)
+                    if via:
+                        flights = [{
+                            "airline": f"Via {via['airport_iata']}: {via['leg1']['note']} + {via['leg2']['airline'] or 'Flight'}",
+                            "price_sar": via["total_one_way"],
+                            "duration": f"{via['total_time_minutes']}m",
+                            "source": "via_airport",
+                            "via_airport": via,
+                        }]
+                else:
+                    flight_pricing = search_flight_prices(resolved_origin, resolved_dest)
+                    if flight_pricing and flight_pricing.price_one_way > 0:
+                        flights = [{
+                            "airline": flight_pricing.airline or "Flight",
+                            "price_sar": flight_pricing.price_one_way,
+                            "duration": f"{flight_pricing.duration_minutes or 90}m",
+                            "source": flight_pricing.source,
+                        }]
+            except Exception as e:
+                print(f"[Worker3] Gemini flight search failed: {e}")
             
         # Mock model_dump behavior to match user's expected usage in app.py
         class MockResult:

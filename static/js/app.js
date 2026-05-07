@@ -15,8 +15,11 @@ const state = {
     days: 4,
     tripData: null,
     hospitalityType: 'all',
-    selectedHotel: null,  // Track chosen hotel
+    selectedHotel: null,
 };
+
+// In-memory cache for hospitality results — prevents re-searching on tab switch
+let _hospCache = { city: null, type: null, data: null };
 
 // ─── Map Setup ───────────────────────────────────────────────────────────────
 const map = L.map('map', {
@@ -124,6 +127,10 @@ window.switchView = function(viewId) {
 
     if (viewId === 'hotels-view') {
         loadHospitality();
+    }
+
+    if (viewId === 'transport-view') {
+        loadTransportHub();
     }
 
     // Fix map rendering when becoming visible
@@ -776,10 +783,9 @@ window.setHospitalityType = function(type, el) {
     loadHospitality();
 };
 
-async function loadHospitality() {
+async function loadHospitality(forceRefresh = false) {
     const city = hotelCitySelect.value;
     const type = state.hospitalityType || 'all';
-    hotelGrid.innerHTML = `<div class="loading">Loading hospitality...</div>`;
 
     // Check if a trip is active and lodging is still pending
     const tripActive = state.tripData && state.tripData.budget;
@@ -787,14 +793,20 @@ async function loadHospitality() {
 
     try {
         let results = [];
-        if (type === 'all') {
-            const res = await fetch(`/api/hospitality?city=${city}`);
-            results = await res.json();
+        if (!forceRefresh && _hospCache.city === city && _hospCache.type === type && _hospCache.data) {
+            results = _hospCache.data;
         } else {
-            const res = await fetch(`/api/hospitality?city=${city}&type=${type}`);
-            results = await res.json();
+            hotelGrid.innerHTML = `<div class="loading">Loading hospitality...</div>`;
+            if (type === 'all') {
+                const res = await fetch(`/api/hospitality?city=${city}`);
+                results = await res.json();
+            } else {
+                const res = await fetch(`/api/hospitality?city=${city}&type=${type}`);
+                results = await res.json();
+            }
+            _hospCache = { city, type, data: results };
         }
-        
+
         if (results.length === 0) {
             hotelGrid.innerHTML = `<div class="empty-state">No listings found for this city.</div>`;
             return;
@@ -1024,86 +1036,84 @@ async function confirmBooking() {
 }
 
 // ─── Select Hotel from Hospitality Tab for Trip ─────────────────────────────
-// Called when user clicks "Select for Trip" on a hotel card in the Hospit. tab.
-// Uses the DB-seeded hotel data and applies it to the active trip budget.
 window.selectHospitalityHotel = function(hotelIdx) {
     if (!state.tripData) return;
 
-    // Get the hotel list from the currently rendered grid
-    // We need to re-fetch the hotels from the DOM data or use the cached results
-    // Simplest: re-read from the hospitality API cache
-    const city = hotelCitySelect.value;
-    fetch(`/api/hospitality?city=${city}&type=hotel`)
-        .then(r => r.json())
-        .then(hotels => {
-            if (!hotels || hotelIdx >= hotels.length) return;
+    // Use the cached results — same list that was rendered, no extra API call
+    if (!_hospCache.data) return;
+    const hotels = _hospCache.data.filter(i => i.type === 'hotel');
+    if (hotelIdx >= hotels.length) return;
 
-            const h = hotels[hotelIdx];
-            const price = Math.round(h.price);
-            const days = state.tripData.budget.days;
-            const totalBudget = state.tripData.budget.total;
-            const transportCost = state.tripData.budget.transport;
+    const h = hotels[hotelIdx];
+    // live_price_sar is the Gemini-sourced price; fall back to rooms[0] if missing
+    const price = Math.round(
+        h.live_price_sar ||
+        (h.rooms && h.rooms[0] && h.rooms[0].final_price_sar) ||
+        0
+    );
+    if (!price) { alert('No price available for this hotel.'); return; }
 
-            // Save selected hotel
-            state.selectedHotel = {
-                name: h.name,
-                price_per_night: price,
-                lat: h.lat,
-                lng: h.lng,
-                stars: h.stars,
-                idx: hotelIdx,
-            };
+    const days = state.tripData.budget.days;
+    const totalBudget = state.tripData.budget.total;
+    const transportCost = state.tripData.budget.transport;
 
-            // Recalculate budget:
-            // Total → Transport → Hotel → remainder split into food/activities/buffer
-            const lodgingTotal = price * days;
-            const afterTransportAndHotel = totalBudget - transportCost - lodgingTotal;
-            const remaining = Math.max(afterTransportAndHotel, 0);
+    state.selectedHotel = {
+        name: h.name,
+        price_per_night: price,
+        lat: h.lat,
+        lng: h.lng,
+        stars: h.stars,
+        idx: hotelIdx,
+    };
 
-            const foodTotal = remaining * 0.50;
-            const activitiesTotal = remaining * 0.33;
-            const bufferTotal = remaining * 0.17;
+    const lodgingTotal = price * days;
+    const afterTransportAndHotel = totalBudget - transportCost - lodgingTotal;
+    const remaining = Math.max(afterTransportAndHotel, 0);
 
-            const b = state.tripData.budget;
-            b.lodging = {
-                total: round2(lodgingTotal),
-                per_day: round2(price),
-                pending: false,
-                max_budget: b.lodging.max_budget || lodgingTotal,
-                max_per_day: b.lodging.max_per_day || price,
-            };
-            b.food = { total: round2(foodTotal), per_day: round2(foodTotal / days) };
-            b.activities = { total: round2(activitiesTotal), per_day: round2(activitiesTotal / days) };
-            b.buffer = { total: round2(bufferTotal), per_day: round2(bufferTotal / days) };
-            b.remaining = round2(remaining);
+    const foodTotal = remaining * 0.50;
+    const activitiesTotal = remaining * 0.33;
+    const bufferTotal = remaining * 0.17;
 
-            if (remaining <= 0) {
-                b.warnings = b.warnings || [];
-                if (!b.warnings.includes('Hotel cost + transport exceeds your total budget!')) {
-                    b.warnings.push('Hotel cost + transport exceeds your total budget!');
-                }
-                b.is_feasible = false;
-            }
+    const b = state.tripData.budget;
+    b.lodging = {
+        total: round2(lodgingTotal),
+        per_day: round2(price),
+        pending: false,
+        max_budget: b.lodging.max_budget || lodgingTotal,
+        max_per_day: b.lodging.max_per_day || price,
+    };
+    b.food = { total: round2(foodTotal), per_day: round2(foodTotal / days) };
+    b.activities = { total: round2(activitiesTotal), per_day: round2(activitiesTotal / days) };
+    b.buffer = { total: round2(bufferTotal), per_day: round2(bufferTotal / days) };
+    b.remaining = round2(remaining);
 
-            // Re-render all views
-            renderItinerary(state.tripData);
-            renderBudgetDetails(state.tripData);
-            renderBudgetDetailsLeft(state.tripData);
-            updateOverlays(state.tripData);
-            renderWarnings(state.tripData);
+    if (remaining <= 0) {
+        b.warnings = b.warnings || [];
+        if (!b.warnings.includes('Hotel cost + transport exceeds your total budget!')) {
+            b.warnings.push('Hotel cost + transport exceeds your total budget!');
+        }
+        b.is_feasible = false;
+    }
 
-            // Refresh the hospitality grid to show selected state
-            loadHospitality();
-        })
-        .catch(e => console.error('Hotel selection failed:', e));
+    renderItinerary(state.tripData);
+    renderBudgetDetails(state.tripData);
+    renderBudgetDetailsLeft(state.tripData);
+    updateOverlays(state.tripData);
+    renderWarnings(state.tripData);
+    saveTripState();
+
+    // Re-render grid from cache to show ✅ Selected badge (no new API call)
+    loadHospitality();
 };
 
-hotelCitySelect.addEventListener('change', loadHospitality);
+hotelCitySelect.addEventListener('change', () => {
+    _hospCache = { city: null, type: null, data: null };
+    loadHospitality();
+});
 
 // Initialize view listeners
 function initViewListeners() {
-    // Nav items are already handled by onclick="switchView(...)" in HTML,
-    // but we can add more logic here if needed.
+    restoreTripState();
 }
 window.addEventListener('DOMContentLoaded', initViewListeners);
 async function planTrip() {
@@ -1232,8 +1242,10 @@ function selectPath(idx) {
     // Setup simulation
     setupSimulation(data);
 
-    // Reset hotel selection on new path and refresh Hospit. tab
+    // Reset hotel/transport caches for new trip/path
     state.selectedHotel = null;
+    _hospCache = { city: null, type: null, data: null };
+    _transportCache = { options: null, local: null, rental: null };
     if (data.map && data.map.dest_name) {
         const dest = data.map.dest_name.toLowerCase();
         for (let opt of hotelCitySelect.options) {
@@ -1244,12 +1256,72 @@ function selectPath(idx) {
             }
         }
     }
+
+    saveTripState();
 }
 
 $('edit-trip-btn').addEventListener('click', () => {
     $('results-panel').classList.add('hidden');
     $('trip-form').classList.remove('hidden');
+    localStorage.removeItem('safari_trip');
+    _hospCache = { city: null, type: null, data: null };
 });
+
+window.clearTripForm = function() {
+    // Reset all form fields to defaults
+    state.budget = 3000;
+    state.currency = 'SAR';
+    state.origin = 'riyadh';
+    state.destination = 'coast';
+    state.travelMode = 'car';
+    state.vehicleType = 'default';
+    state.days = 4;
+    state.tripData = null;
+    state.selectedHotel = null;
+    state.paths = null;
+
+    // Reset UI controls
+    budgetInput.value = 3000;
+    budgetSlider.value = 3000;
+    budgetDisplay.textContent = '3,000';
+    currencySelect.value = 'SAR';
+    originSelect.value = 'riyadh';
+    daysValue.textContent = '4';
+
+    // Reset vibe cards
+    document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
+    const coastCard = document.querySelector('.vibe-card[data-vibe="coast"]');
+    if (coastCard) coastCard.classList.add('active');
+
+    // Reset travel mode buttons
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    const carBtn = document.querySelector('.mode-btn[data-mode="car"]');
+    if (carBtn) carBtn.classList.add('active');
+    vehicleGroup.classList.remove('hidden');
+
+    // Reset vehicle select
+    vehicleSelect.value = 'default';
+
+    // Reset interests
+    const interestsInput = $('interests-input');
+    if (interestsInput) interestsInput.value = '';
+
+    // Reset specific city
+    const specificCity = $('specific-city-select');
+    if (specificCity) specificCity.value = '';
+
+    // Hide results, show form
+    $('results-panel').classList.add('hidden');
+    $('trip-form').classList.remove('hidden');
+
+    // Clear caches and persisted state
+    localStorage.removeItem('safari_trip');
+    _hospCache = { city: null, type: null, data: null };
+    _transportCache = { options: null, local: null, rental: null };
+
+    // Clear map
+    clearMap();
+};
 
 function renderBudgetDetailsLeft(data) {
     const b = data.budget;
@@ -1658,7 +1730,397 @@ function stopSimulation() {
     $('sim-btn').classList.remove('playing');
 }
 
+// ─── Trip State Persistence ──────────────────────────────────────────────────
+
+function saveTripState() {
+    try {
+        localStorage.setItem('safari_trip', JSON.stringify({
+            paths: state.paths,
+            recommendation: state.recommendation,
+            tripData: state.tripData,
+            selectedHotel: state.selectedHotel,
+            destCity: hotelCitySelect.value,
+        }));
+    } catch(e) { console.warn('saveTripState failed:', e); }
+}
+
+function restoreTripState() {
+    try {
+        const raw = localStorage.getItem('safari_trip');
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved || !saved.tripData) return;
+
+        state.paths = saved.paths || [];
+        state.recommendation = saved.recommendation || 0;
+        state.tripData = saved.tripData;
+        state.selectedHotel = saved.selectedHotel || null;
+
+        // Show results panel
+        $('trip-form').classList.add('hidden');
+        $('results-panel').classList.remove('hidden');
+
+        const data = state.tripData;
+        drawRoute(data.map.origin, data.map.destination, data.map.origin_name, data.map.dest_name, data);
+        updateOverlays(data);
+        renderItinerary(data);
+        renderHospitalityDeals(data);
+        renderWebResearch(data);
+        renderBudgetDetailsLeft(data);
+        renderWarnings(data);
+        renderTravelLog(data);
+        const today = new Date().getDate();
+        renderCalendar(today + 1, data.budget.days);
+        setupSimulation(data);
+
+        if (saved.destCity) {
+            for (let opt of hotelCitySelect.options) {
+                if (opt.value === saved.destCity) {
+                    hotelCitySelect.value = saved.destCity;
+                    break;
+                }
+            }
+        }
+    } catch(e) { console.warn('restoreTripState failed:', e); }
+}
+
 function round2(n) {
     return Math.round(n * 100) / 100;
 }
+
+// ─── Transport Hub ────────────────────────────────────────────────────────────
+
+let _transportCache = { options: null, local: null, rental: null };
+
+window.loadTransportHub = async function(forceRefresh = false) {
+    const container = $('transport-hub-content');
+    if (!container) return;
+
+    const trip = state.tripData;
+    if (!trip) {
+        container.innerHTML = `
+            <div class="empty-state" style="padding:40px 20px; text-align:center;">
+                <div style="font-size:48px; margin-bottom:16px;">🚀</div>
+                <div style="font-size:16px; font-weight:600; margin-bottom:8px;">No active trip</div>
+                <div style="font-size:13px; opacity:0.6;">Plan a trip first to see transport options.</div>
+            </div>`;
+        return;
+    }
+
+    const origin = trip.transport.origin;
+    const destination = trip.transport.destination;
+    const mode = trip.transport.mode;
+    const days = trip.budget.days;
+    const distKm = trip.transport.distance_km || 0;
+
+    // Use cache if available and not forced refresh
+    if (!forceRefresh && _transportCache.options && _transportCache.local) {
+        _renderTransportHub(container, trip, _transportCache.options, _transportCache.local, _transportCache.rental);
+        return;
+    }
+
+    container.innerHTML = `<div class="loading" style="padding:40px; text-align:center;">🔍 Searching transport options...</div>`;
+
+    try {
+        const [optRes, localRes] = await Promise.all([
+            fetch(`/api/transport/options?origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}&mode=${mode}&days=${days}`).then(r => r.json()),
+            fetch(`/api/transport/local?city=${encodeURIComponent(destination)}`).then(r => r.json()),
+        ]);
+
+        _transportCache.options = optRes;
+        _transportCache.local = localRes;
+        _renderTransportHub(container, trip, optRes, localRes, null);
+    } catch(e) {
+        container.innerHTML = `<div class="empty-state">Failed to load transport data.</div>`;
+    }
+};
+
+function _renderTransportHub(container, trip, options, local, _) {
+    const mode = trip.transport.mode;
+    const isCar = mode === 'car' || mode === 'driving';
+    const currency = trip.budget.currency || 'SAR';
+    const days = trip.budget.days;
+    const distKm = trip.transport.distance_km || 0;
+
+    let html = '';
+
+    // ── Section 1: Getting There ──────────────────────────────────────────────
+    html += `
+    <div class="transport-section">
+        <h3 style="font-size:18px; font-weight:700; color:var(--text-primary); margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.08);">
+            ✈️ Getting There — ${trip.transport.origin} → ${trip.transport.destination}
+        </h3>`;
+
+    if (isCar) {
+        // Car mode — show fuel breakdown prominently
+        const t = trip.transport;
+        html += `
+        <div class="card" style="border-top:3px solid #4ade80;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-weight:700; font-size:16px;">🚗 Driving</span>
+                <span style="color:#4ade80; font-size:20px; font-weight:700;">${fmt(t.cost_round_trip)} ${currency}</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px; color:var(--text-secondary);">
+                <span>Distance</span><span style="color:var(--text-primary);">${fmt(t.distance_km)} km</span>
+                <span>Est. drive time</span><span style="color:var(--text-primary);">${t.travel_time_str || '—'}</span>
+                <span>One-way cost</span><span style="color:#fbbf24;">${fmt(t.cost_one_way)} ${currency}</span>
+                <span>Round-trip</span><span style="color:#4ade80; font-weight:600;">${fmt(t.cost_round_trip)} ${currency}</span>
+            </div>
+            ${t.breakdown ? `<div style="margin-top:10px; font-size:11px; color:var(--accent); opacity:0.8;">${t.breakdown}</div>` : ''}
+        </div>`;
+    } else if (mode === 'flight') {
+        // Via-airport combined journey (origin has no airport)
+        if (options.via_airport) {
+            const via = options.via_airport;
+            const l1 = via.leg1;
+            const l2 = via.leg2;
+            const l1Icon = l1.mode === 'car' ? '🚗' : '🚌';
+            const l1Label = l1.mode === 'car' ? 'Drive' : 'Bus (SAPTCO)';
+            html += `
+            <div style="padding:10px 14px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.3); border-radius:12px; margin-bottom:14px; font-size:12px; color:#fbbf24;">
+                ⚠️ No airport in <strong>${via.origin.replace(/^\w/, c => c.toUpperCase())}</strong>.
+                Nearest: <strong>${via.airport_name}</strong> (${via.airport_iata}) — ${l1.distance_km} km away.
+            </div>
+            <div class="card" style="border-top:3px solid #60a5fa;">
+                <div style="font-size:11px; font-weight:700; color:#60a5fa; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:14px;">Combined Journey</div>
+
+                <div style="display:flex; align-items:stretch; gap:0; margin-bottom:16px;">
+                    <!-- Leg 1 -->
+                    <div style="flex:1; padding:12px; background:rgba(255,255,255,0.04); border-radius:10px 0 0 10px; border-right:1px solid rgba(255,255,255,0.08);">
+                        <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Leg 1</div>
+                        <div style="font-weight:700; margin-bottom:6px;">${l1Icon} ${l1Label}</div>
+                        <div style="font-size:12px; color:var(--text-secondary);">${via.origin.replace(/^\w/, c => c.toUpperCase())} → ${via.airport_city.replace(/^\w/, c => c.toUpperCase())}</div>
+                        <div style="font-size:12px; color:var(--text-secondary);">${l1.distance_km} km · ${l1.time_minutes}m</div>
+                        <div style="font-size:14px; font-weight:700; color:#fbbf24; margin-top:6px;">${fmt(l1.cost_sar)} SAR</div>
+                    </div>
+                    <!-- Leg 2 -->
+                    <div style="flex:1; padding:12px; background:rgba(255,255,255,0.04); border-radius:0 10px 10px 0;">
+                        <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Leg 2</div>
+                        <div style="font-weight:700; margin-bottom:6px;">✈️ ${l2.airline || 'Flight'}</div>
+                        <div style="font-size:12px; color:var(--text-secondary);">${via.airport_iata} → ${via.destination.replace(/^\w/, c => c.toUpperCase())}</div>
+                        ${l2.duration_minutes ? `<div style="font-size:12px; color:var(--text-secondary);">${Math.floor(l2.duration_minutes/60)}h ${l2.duration_minutes%60}m</div>` : ''}
+                        <div style="font-size:14px; font-weight:700; color:#60a5fa; margin-top:6px;">${fmt(l2.price_one_way)} SAR</div>
+                    </div>
+                </div>
+
+                <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-size:11px; color:var(--text-muted);">Total one-way</div>
+                        <div style="font-size:20px; font-weight:700; color:#4ade80;">${fmt(via.total_one_way)} SAR</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div style="font-size:11px; color:var(--text-muted);">Round-trip</div>
+                        <div style="font-size:16px; font-weight:700; color:#a78bfa;">${fmt(via.total_round_trip)} SAR</div>
+                    </div>
+                </div>
+
+                <!-- Leg 1 alternative -->
+                <div style="margin-top:12px; padding:10px; background:rgba(255,255,255,0.03); border-radius:8px; font-size:12px; color:var(--text-muted);">
+                    <div style="margin-bottom:4px; color:var(--text-secondary);">Alternative for leg 1:</div>
+                    <div style="display:flex; gap:16px;">
+                        <span>🚗 Drive: <strong style="color:var(--text-primary);">${fmt(via.also_available.car_to_airport.cost)} SAR</strong> (${via.also_available.car_to_airport.time_minutes}m)</span>
+                        <span>🚌 Bus: <strong style="color:var(--text-primary);">${fmt(via.also_available.bus_to_airport.cost)} SAR</strong> (${via.also_available.bus_to_airport.time_minutes}m)</span>
+                    </div>
+                </div>
+            </div>`;
+        } else {
+            const flights = options.flights || [];
+            if (flights.length > 0) {
+                flights.forEach(f => {
+                    html += `
+                    <div class="card" style="border-top:3px solid #60a5fa;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <span style="font-weight:700; font-size:16px;">✈️ ${f.airline || 'Flight'}</span>
+                            <span style="color:#60a5fa; font-size:20px; font-weight:700;">${fmt(f.price_one_way)} ${currency}</span>
+                        </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px; color:var(--text-secondary);">
+                            <span>One-way</span><span style="color:#60a5fa;">${fmt(f.price_one_way)} ${currency}</span>
+                            <span>Round-trip</span><span style="color:#4ade80; font-weight:600;">${fmt(f.price_round_trip)} ${currency}</span>
+                            ${f.duration_minutes ? `<span>Flight time</span><span style="color:var(--text-primary);">${Math.floor(f.duration_minutes/60)}h ${f.duration_minutes%60}m</span>` : ''}
+                        </div>
+                        <div style="font-size:10px; color:var(--accent); margin-top:8px; opacity:0.7;">📡 ${f.source === 'gemini_grounding' ? 'Live via Gemini Search' : 'Estimated'} · ${f.confidence || ''} confidence</div>
+                        ${options.note ? `<div style="font-size:11px; color:var(--text-muted); margin-top:4px;">ℹ️ ${options.note}</div>` : ''}
+                    </div>`;
+                });
+            } else {
+                html += `<div class="empty-state" style="padding:20px;">No live flight data available. <a href="https://www.almosafer.com" target="_blank" style="color:var(--accent);">Check Almosafer ↗</a></div>`;
+            }
+        }
+    } else if (mode === 'bus') {
+        const busOptions = options.options || [];
+        const operator = options.operator || 'Bus';
+        if (busOptions.length > 0) {
+            html += `<div style="font-size:12px; color:var(--accent); margin-bottom:12px;">🚌 Operator: ${operator}</div>`;
+            busOptions.forEach(b => {
+                html += `
+                <div class="card" style="border-top:3px solid #f59e0b;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <span style="font-weight:700; font-size:16px;">🚌 ${b.class || 'Standard'}</span>
+                        <span style="color:#f59e0b; font-size:20px; font-weight:700;">${fmt(b.price_sar)} SAR</span>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px; color:var(--text-secondary);">
+                        ${b.duration_hours ? `<span>Duration</span><span style="color:var(--text-primary);">${b.duration_hours}h</span>` : ''}
+                        ${b.frequency ? `<span>Frequency</span><span style="color:var(--text-primary);">${b.frequency}</span>` : ''}
+                    </div>
+                </div>`;
+            });
+            if (options.booking_url) {
+                html += `<a href="${options.booking_url}" target="_blank" class="submit-btn" style="display:block; text-align:center; text-decoration:none; margin-top:8px;">🎫 Book on ${operator}</a>`;
+            }
+        } else {
+            html += `<div class="empty-state" style="padding:20px;">No bus service found for this route. <a href="https://www.saptco.com.sa" target="_blank" style="color:var(--accent);">Check SAPTCO ↗</a></div>`;
+        }
+    } else if (mode === 'train') {
+        const trainOptions = options.options || [];
+        const operator = options.operator || 'Train';
+        if (trainOptions.length > 0) {
+            html += `<div style="font-size:12px; color:var(--accent); margin-bottom:12px;">🚄 Operator: ${operator}</div>`;
+            trainOptions.forEach(t => {
+                html += `
+                <div class="card" style="border-top:3px solid #a78bfa;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <span style="font-weight:700; font-size:16px;">🚄 ${t.class || 'Economy'}</span>
+                        <span style="color:#a78bfa; font-size:20px; font-weight:700;">${fmt(t.price_sar)} SAR</span>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px; color:var(--text-secondary);">
+                        ${t.duration_minutes ? `<span>Duration</span><span style="color:var(--text-primary);">${Math.floor(t.duration_minutes/60)}h ${t.duration_minutes%60}m</span>` : ''}
+                        ${t.frequency ? `<span>Frequency</span><span style="color:var(--text-primary);">${t.frequency}</span>` : ''}
+                    </div>
+                </div>`;
+            });
+            if (options.booking_url) {
+                html += `<a href="${options.booking_url}" target="_blank" class="submit-btn" style="display:block; text-align:center; text-decoration:none; margin-top:8px;">🎫 Book on ${operator}</a>`;
+            }
+        } else {
+            html += `<div class="empty-state" style="padding:20px;">No train service found for this route. <a href="https://www.sar.com.sa" target="_blank" style="color:var(--accent);">Check SAR ↗</a></div>`;
+        }
+    }
+
+    // ── Car Rental Option (for non-car modes) ─────────────────────────────────
+    if (!isCar && options.car_rental) {
+        const r = options.car_rental;
+        const f = options.fuel_if_renting;
+        const rentalTotal = r.total_for_trip;
+        const fuelTotal = f ? f.cost_round_trip : 0;
+        const grandTotal = rentalTotal + fuelTotal;
+        html += `
+        <div class="card" style="border-top:3px solid #34d399; margin-top:16px;">
+            <div style="font-size:12px; font-weight:700; color:#34d399; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">🚗 Rent a Car at Destination</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:13px; color:var(--text-secondary);">
+                <span>Vehicle</span><span style="color:var(--text-primary);">${r.vehicle_type || 'Economy'}</span>
+                <span>Company</span><span style="color:var(--text-primary);">${r.company || 'Various'}</span>
+                <span>${r.currency}/day</span><span style="color:#fbbf24; font-weight:600;">${fmt(r.price_per_day)}</span>
+                <span>For ${days} days</span><span style="color:#fbbf24; font-weight:600;">${fmt(rentalTotal)} ${currency}</span>
+                ${f ? `<span>⛽ Fuel (round-trip)</span><span style="color:#fb923c;">${fmt(f.cost_round_trip)} ${currency}</span>` : ''}
+                ${f ? `<span>&nbsp;&nbsp;${f.liters}L @ ${f.price_per_liter} SAR/L</span><span style="color:var(--text-muted); font-size:11px;">${f.fuel_name}</span>` : ''}
+            </div>
+            <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size:13px; color:var(--text-secondary);">Total estimate</span>
+                <span style="font-size:18px; font-weight:700; color:#34d399;">${fmt(grandTotal)} ${currency}</span>
+            </div>
+            <button class="submit-btn" style="margin-top:12px; padding:10px; font-size:13px; background:linear-gradient(135deg,#34d399,#059669) !important;"
+                onclick="addCarRentalToTrip(${r.price_per_day}, ${fuelTotal}, ${days})">
+                + Add to Trip Budget
+            </button>
+        </div>`;
+    }
+
+    html += `</div>`; // end Getting There section
+
+    // ── Section 2: Getting Around ─────────────────────────────────────────────
+    html += `
+    <div class="transport-section" style="margin-top:24px;">
+        <h3 style="font-size:18px; font-weight:700; color:var(--text-primary); margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.08);">
+            🗺️ Getting Around — ${trip.transport.destination}
+        </h3>`;
+
+    // Public Transit
+    const transit = local.public_transit || [];
+    if (transit.length > 0) {
+        const typeColors = { metro: '#60a5fa', bus: '#f59e0b', tram: '#34d399', ridehail: '#a78bfa' };
+        const typeIcons = { metro: '🚇', bus: '🚌', tram: '🚋', ridehail: '📱' };
+        html += `<div style="font-size:13px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px;">Public Transport</div>`;
+        transit.forEach(t => {
+            const color = typeColors[t.type] || 'var(--accent)';
+            const icon = typeIcons[t.type] || '🚌';
+            html += `
+            <div class="card" style="border-top:3px solid ${color}; margin-bottom:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                    <span style="font-weight:700;">${icon} ${t.name}</span>
+                    <span style="color:${color}; font-weight:700; font-size:15px;">${t.fare_min_sar}–${t.fare_max_sar} SAR</span>
+                </div>
+                <div style="font-size:12px; color:var(--text-secondary); margin-bottom:6px;">${t.coverage || ''}</div>
+                ${t.app ? `<div style="font-size:11px; color:var(--accent);">📲 ${t.app}</div>` : ''}
+                ${t.notes ? `<div style="font-size:11px; color:var(--text-muted); margin-top:4px; opacity:0.8;">ℹ️ ${t.notes}</div>` : ''}
+            </div>`;
+        });
+    }
+
+    // Taxi / Ride-hailing
+    if (local.taxi) {
+        const taxi = local.taxi;
+        html += `
+        <div style="font-size:13px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; margin-top:16px;">🚕 Taxi / Ride-Hailing</div>
+        <div class="card" style="border-top:3px solid #fb923c;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
+                <div>
+                    <div style="color:var(--text-muted); font-size:11px; margin-bottom:2px;">Short trip</div>
+                    <div style="color:#fb923c; font-weight:700;">${taxi.short_trip_sar} SAR</div>
+                </div>
+                <div>
+                    <div style="color:var(--text-muted); font-size:11px; margin-bottom:2px;">Medium trip</div>
+                    <div style="color:#fb923c; font-weight:700;">${taxi.medium_trip_sar} SAR</div>
+                </div>
+                <div style="grid-column:1/-1;">
+                    <div style="color:var(--text-muted); font-size:11px; margin-bottom:2px;">Airport → City center</div>
+                    <div style="color:#fbbf24; font-weight:700;">${taxi.airport_to_city_sar} SAR</div>
+                </div>
+            </div>
+            <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+                ${taxi.apps.map(a => `<span style="padding:3px 8px; background:rgba(251,146,60,0.12); border:1px solid rgba(251,146,60,0.3); border-radius:20px; font-size:11px; color:#fb923c;">${a}</span>`).join('')}
+            </div>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:8px; opacity:0.7;">ℹ️ ${taxi.note}</div>
+        </div>`;
+    }
+
+    html += `</div>`; // end Getting Around section
+
+    // ── Refresh button ────────────────────────────────────────────────────────
+    html += `
+    <div style="text-align:center; margin-top:20px; padding-bottom:20px;">
+        <button onclick="loadTransportHub(true)" style="background:none; border:1px solid rgba(255,255,255,0.15); color:var(--text-muted); padding:8px 20px; border-radius:20px; font-size:12px; cursor:pointer;">
+            🔄 Refresh transport data
+        </button>
+    </div>`;
+
+    container.innerHTML = html;
+}
+
+window.addCarRentalToTrip = function(pricePerDay, fuelCost, days) {
+    if (!state.tripData) return;
+    const rentalTotal = pricePerDay * days;
+    const total = rentalTotal + fuelCost;
+    const b = state.tripData.budget;
+
+    if (!b.car_rental) {
+        b.car_rental = { per_day: round2(pricePerDay), total: round2(rentalTotal), fuel: round2(fuelCost) };
+        // Deduct from buffer first, then activities
+        let remaining = total;
+        if (b.buffer.total >= remaining) {
+            b.buffer.total = round2(b.buffer.total - remaining);
+            b.buffer.per_day = round2(b.buffer.total / days);
+        } else {
+            remaining -= b.buffer.total;
+            b.buffer.total = 0; b.buffer.per_day = 0;
+            b.activities.total = round2(Math.max(0, b.activities.total - remaining));
+            b.activities.per_day = round2(b.activities.total / days);
+        }
+        renderBudgetDetailsLeft(state.tripData);
+        renderItinerary(state.tripData);
+        saveTripState();
+        alert(`🚗 Car rental added! ${fmt(rentalTotal)} SAR rental + ${fmt(fuelCost)} SAR fuel = ${fmt(total)} SAR deducted from buffer/activities budget.`);
+    } else {
+        alert('Car rental already added to this trip.');
+    }
+};
 

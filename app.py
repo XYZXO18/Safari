@@ -9,10 +9,13 @@ import sys
 import os
 import io
 
-# Force UTF-8 on Windows
+# Force UTF-8 on Windows without replacing the stream (avoids crash on Flask reloader)
 if sys.platform == "win32":
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, io.UnsupportedOperation):
+        pass
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -72,8 +75,8 @@ def plan_trip():
     try:
         budget = float(data.get("budget", 3000))
         travel_mode = data.get("travel_mode", "car")
-        destination = data.get("destination", "coast")
-        days = int(data.get("days", 3))
+        destination = data.get("destination", "coast").strip().lower()
+        days = max(int(data.get("days", 3)), 1)
         origin = data.get("origin", "riyadh")
         vehicle_type = data.get("vehicle_type", "default")
         currency = data.get("currency", "SAR")
@@ -82,6 +85,17 @@ def plan_trip():
         interests = data.get("interests", "")
     except (ValueError, TypeError) as e:
         return jsonify({"error": f"Invalid input: {e}"}), 400
+
+    # Resolve a specific city name to its vibe + remember the city
+    from config import CITY_TO_VIBE
+    specific_city = None
+    if destination not in DESTINATIONS:
+        resolved_vibe = CITY_TO_VIBE.get(destination)
+        if resolved_vibe:
+            specific_city = destination          # e.g. "jeddah"
+            destination = resolved_vibe          # e.g. "coast"
+        else:
+            destination = "coast"               # unknown input → safe fallback
 
     # If dates not provided, compute from today
     if not start_date or not end_date:
@@ -110,10 +124,10 @@ def plan_trip():
                 currency=currency,
             )
 
-            # Scan for live events
+            # Scan for live events — use the specific city if the user picked one
             dest_info = DESTINATIONS.get(destination.lower(), DESTINATIONS.get("coast", {}))
             cities = dest_info.get("cities", [])
-            scan_city = cities[0] if cities else destination.title()
+            scan_city = specific_city.title() if specific_city else (cities[0] if cities else destination.title())
 
             event_scan = find_live_events(
                 location=scan_city,
@@ -136,6 +150,10 @@ def plan_trip():
                 daily_activities_budget=adjusted_activities_budget,
                 currency=currency,
             )
+
+            # Pin to the specific city the user chose (overrides region default)
+            if specific_city:
+                activities.recommended_city = specific_city.title()
 
             # Inject live events
             if event_scan.has_events:
@@ -662,6 +680,193 @@ def api_recommend_hotel():
         "centroid": {"lat": round(centroid_lat, 5), "lng": round(centroid_lng, 5)},
         "distances_km": distances,
         "reason": f"Closest to the center of {len(act_coords)} planned activities (~{best_dist:.1f} km)"
+    })
+
+
+@app.route('/api/transport/options', methods=['GET'])
+def api_transport_options():
+    """
+    Get inter-city transport options for a route.
+    Query params: origin, destination, mode (flight|bus|train), days
+    Returns live results (cached 1 day).
+    """
+    origin = request.args.get('origin', '').strip()
+    destination = request.args.get('destination', '').strip()
+    mode = request.args.get('mode', 'flight').lower()
+    days = int(request.args.get('days', 1))
+
+    if not origin or not destination:
+        return jsonify({"error": "origin and destination required"}), 400
+
+    from safari.database import get_inter_city_transport, save_inter_city_transport
+
+    # Return cached result if available
+    cached = get_inter_city_transport(origin, destination, mode)
+    if cached:
+        cached['cached'] = True
+        return jsonify(cached)
+
+    from safari.tools.live_distance import (
+        search_flight_prices, search_buses_live, search_trains_live,
+        search_car_rental_prices, search_car_rental_fallback,
+        find_nearest_airport, build_via_airport_journey,
+    )
+    from safari.tools.fuel import calculate_driving_cost
+    from config import AIRPORTS
+
+    result = {"origin": origin, "destination": destination, "mode": mode, "cached": False}
+
+    if mode == "flight":
+        # Check whether the origin city has its own airport
+        airport_info = find_nearest_airport(origin)
+        if not airport_info["has_own_airport"]:
+            # Origin has no airport → build a via-airport two-leg journey
+            via = build_via_airport_journey(origin, destination)
+            if via:
+                result["via_airport"] = via
+                result["flights"] = []
+                result["note"] = (
+                    f"No airport in {origin.title()}. Showing combined journey via "
+                    f"{airport_info['name']} ({airport_info['iata']})."
+                )
+            else:
+                result["flights"] = []
+                result["note"] = f"No airport in {origin.title()} and flight search failed."
+        else:
+            pricing = search_flight_prices(origin, destination)
+            if pricing:
+                result["flights"] = [{
+                    "airline": pricing.airline or "Flight",
+                    "price_one_way": pricing.price_one_way,
+                    "price_round_trip": pricing.price_round_trip,
+                    "duration_minutes": pricing.duration_minutes,
+                    "currency": "SAR",
+                    "source": pricing.source,
+                    "confidence": pricing.confidence,
+                }]
+            else:
+                result["flights"] = []
+            result["note"] = "Prices from Gemini Search Grounding — check airline sites for exact fares."
+
+    elif mode == "bus":
+        bus_data = search_buses_live(origin, destination)
+        result.update(bus_data)
+
+    elif mode == "train":
+        train_data = search_trains_live(origin, destination)
+        result.update(train_data)
+
+    # Also include car rental for non-car modes (for at-destination use)
+    rental = search_car_rental_prices(destination, days) or search_car_rental_fallback(destination)
+    from safari.tools.transport import _lookup_distance
+    dist_km = _lookup_distance(origin, destination)
+    fuel_data = calculate_driving_cost(dist_km, fuel_type="91", round_trip=True)
+    result["car_rental"] = {
+        "price_per_day": rental.price_per_day,
+        "total_for_trip": round(rental.price_per_day * days, 2),
+        "vehicle_type": rental.vehicle_type,
+        "company": rental.company,
+        "currency": "SAR",
+        "source": rental.source,
+    }
+    result["fuel_if_renting"] = {
+        "distance_km_roundtrip": round(dist_km * 2, 1),
+        "cost_round_trip": fuel_data["cost_round_trip"],
+        "liters": round(fuel_data["liters_one_way"] * 2, 1),
+        "price_per_liter": fuel_data["price_per_liter"],
+        "fuel_name": fuel_data["fuel_name"],
+    }
+
+    save_inter_city_transport(origin, destination, mode, result)
+    return jsonify(result)
+
+
+@app.route('/api/transport/local', methods=['GET'])
+def api_transport_local():
+    """
+    Get local transport options for a destination city.
+    Returns: public transit (cached 7 days) + taxi estimate ranges.
+    Query params: city
+    """
+    city = request.args.get('city', '').strip()
+    if not city:
+        return jsonify({"error": "city required"}), 400
+
+    from safari.database import get_public_transit, save_public_transit
+    from safari.tools.live_distance import search_public_transit_live
+
+    transit = get_public_transit(city)
+    if not transit:
+        transit = search_public_transit_live(city)
+        if transit:
+            save_public_transit(city, transit)
+
+    # Taxi ranges per city (conservative estimates based on Uber/Careem Saudi pricing)
+    taxi_ranges = {
+        "riyadh":  {"short": "12–25", "medium": "25–60", "airport": "60–120"},
+        "jeddah":  {"short": "10–20", "medium": "20–50", "airport": "50–100"},
+        "dammam":  {"short": "10–20", "medium": "20–45", "airport": "40–80"},
+        "makkah":  {"short": "15–30", "medium": "30–70", "airport": "70–130"},
+        "madinah": {"short": "10–20", "medium": "20–45", "airport": "50–90"},
+        "abha":    {"short": "8–15",  "medium": "15–35", "airport": "35–65"},
+    }
+    taxi = taxi_ranges.get(city.lower(), {"short": "10–25", "medium": "25–60", "airport": "50–110"})
+
+    return jsonify({
+        "city": city,
+        "public_transit": transit,
+        "taxi": {
+            "currency": "SAR",
+            "short_trip_sar": taxi["short"],
+            "medium_trip_sar": taxi["medium"],
+            "airport_to_city_sar": taxi["airport"],
+            "apps": ["Uber", "Careem", "Jeeny"],
+            "note": "Estimated fare ranges — actual cost depends on distance and time of day.",
+        },
+    })
+
+
+@app.route('/api/transport/car-rental', methods=['GET'])
+def api_car_rental():
+    """
+    Get car rental prices + fuel estimate for a destination city.
+    Query params: city, days, distance_km (optional one-way distance from origin)
+    """
+    city = request.args.get('city', '').strip()
+    days = int(request.args.get('days', 3))
+    distance_km = float(request.args.get('distance_km', 0))
+
+    if not city:
+        return jsonify({"error": "city required"}), 400
+
+    from safari.tools.live_distance import search_car_rental_prices, search_car_rental_fallback
+    from safari.tools.fuel import calculate_driving_cost
+
+    rental = search_car_rental_prices(city, days) or search_car_rental_fallback(city)
+
+    fuel_data = None
+    if distance_km > 0:
+        fuel_data = calculate_driving_cost(distance_km, fuel_type="91", round_trip=True)
+
+    return jsonify({
+        "city": city,
+        "days": days,
+        "rental": {
+            "price_per_day": rental.price_per_day,
+            "total_rental_cost": round(rental.price_per_day * days, 2),
+            "vehicle_type": rental.vehicle_type or "Economy",
+            "company": rental.company or "Various",
+            "currency": "SAR",
+            "source": rental.source,
+            "confidence": rental.confidence,
+        },
+        "fuel": {
+            "cost_round_trip": fuel_data["cost_round_trip"] if fuel_data else None,
+            "liters_round_trip": round(fuel_data["liters_one_way"] * 2, 1) if fuel_data else None,
+            "price_per_liter": fuel_data["price_per_liter"] if fuel_data else 2.18,
+            "fuel_name": fuel_data["fuel_name"] if fuel_data else "RON 91",
+        } if fuel_data else None,
+        "total_estimate": round(rental.price_per_day * days + (fuel_data["cost_round_trip"] if fuel_data else 0), 2),
     })
 
 

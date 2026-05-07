@@ -28,11 +28,10 @@ import requests
 
 # Fix Windows console encoding so emoji/Unicode in print() doesn't crash
 if sys.platform == "win32":
-    import io
     try:
-        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
-    except AttributeError:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, IOError):
         pass
 
 # ─── City → IATA + Almosafer slug mapping ─────────────────────────────────────
@@ -422,6 +421,10 @@ class AlmosaferScraper:
         Returns flight options with live prices.
         No mock data.
         """
+        # Resolve vibe names (coast/mountains/desert/city) to real city names
+        origin_display = CITY_ALMOSAFER_SLUG.get(origin.lower(), origin.title())
+        destination_display = CITY_ALMOSAFER_SLUG.get(destination.lower(), destination.title())
+
         if not dep_date:
             dep_date = (date.today() + timedelta(days=7)).strftime("%Y-%m-%d")
 
@@ -430,7 +433,7 @@ class AlmosaferScraper:
 
         html = _fetch_page(url)
         if not html:
-            print(f"⚠️  [Almosafer] No HTML received for flight search {origin}→{destination}.")
+            print(f"⚠️  [Almosafer] No HTML received for flight search {origin_display}→{destination_display}.")
             return []
 
         flights: List[Dict] = []
@@ -477,7 +480,7 @@ class AlmosaferScraper:
                 print(f"⚠️  [Almosafer] Flight BS4 parse error: {e}")
 
         if not flights:
-            print(f"❌ [Almosafer] Could not extract flight data for {origin}→{destination}.")
+            print(f"❌ [Almosafer] Could not extract flight data for {origin_display}→{destination_display}.")
 
         return flights[:5]
 

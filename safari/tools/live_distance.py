@@ -91,6 +91,8 @@ def geocode_gemini(venue_name: str, city: str) -> Optional[Tuple[float, float]]:
         from google import genai
         from google.genai import types
 
+        from safari.gemini_log import log_gemini
+        log_gemini("Agent 3 · Transport", f"geocoding '{venue_name}' in {city}")
         client = genai.Client(api_key=GEMINI_API_KEY)
         prompt = (
             f"Search Google for the exact GPS coordinates of '{venue_name}' in {city}, Saudi Arabia. "
@@ -274,6 +276,8 @@ def search_flight_prices(
         from google import genai
         from google.genai import types
 
+        from safari.gemini_log import log_gemini
+        log_gemini("Agent 3 · Transport", f"flight prices {origin} -> {destination}")
         client = genai.Client(api_key=GEMINI_API_KEY)
 
         date_hint = f"on {travel_date}" if travel_date else "in the next few weeks"
@@ -338,6 +342,8 @@ def search_car_rental_prices(
         from google import genai
         from google.genai import types
 
+        from safari.gemini_log import log_gemini
+        log_gemini("Agent 3 · Transport", f"car rental prices in {city}")
         client = genai.Client(api_key=GEMINI_API_KEY)
         prompt = (
             f"Search Google for the cheapest car rental per day in {city}, Saudi Arabia right now. "
@@ -390,3 +396,265 @@ def search_car_rental_fallback(city: str) -> CarRentalPricing:
         source="fallback_estimate",
         confidence="low",
     )
+
+
+# ─── Live Bus / Train Search ──────────────────────────────────────────────────
+
+# ─── Airport Lookup ──────────────────────────────────────────────────────────
+
+def find_nearest_airport(city: str) -> dict:
+    """
+    Return the nearest airport info for a city.
+    Returns dict with keys: airport_city, iata, name, km_to_airport, has_own_airport.
+    Falls back to a Gemini search if city is not in the AIRPORTS table.
+    """
+    from config import AIRPORTS
+    city_lower = city.lower().strip()
+    info = AIRPORTS.get(city_lower)
+    if info:
+        return {**info, "has_own_airport": info["km_to_airport"] == 0}
+
+    # Unknown city — ask Gemini for nearest airport
+    try:
+        from config import GEMINI_API_KEY, GEMINI_MODEL
+        if not GEMINI_API_KEY:
+            return {"airport_city": city, "iata": "???", "name": "Unknown Airport",
+                    "km_to_airport": 0, "has_own_airport": True}
+        from google import genai
+        from google.genai import types
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        prompt = (
+            f"What is the nearest commercial airport to {city}, Saudi Arabia? "
+            f"Return ONLY valid JSON: {{\"airport_city\": string, \"iata\": string, "
+            f"\"name\": string, \"km_to_airport\": number}}. No other text."
+        )
+        response = client.models.generate_content(
+            model=GEMINI_MODEL, contents=prompt,
+            config=types.GenerateContentConfig(
+                tools=[types.Tool(google_search=types.GoogleSearch())], temperature=0.0,
+            ),
+        )
+        raw = re.sub(r"^```(?:json)?\s*", "", response.text.strip())
+        raw = re.sub(r"\s*```$", "", raw)
+        data = json.loads(raw)
+        km = float(data.get("km_to_airport", 0))
+        return {
+            "airport_city": data.get("airport_city", city),
+            "iata": data.get("iata", "???"),
+            "name": data.get("name", "Airport"),
+            "km_to_airport": km,
+            "has_own_airport": km == 0,
+        }
+    except Exception as e:
+        logger.error(f"[Airport Lookup] Failed for {city}: {e}")
+        return {"airport_city": city, "iata": "???", "name": "Nearest Airport",
+                "km_to_airport": 0, "has_own_airport": True}
+
+
+def build_via_airport_journey(
+    origin: str,
+    destination: str,
+    travel_date: Optional[str] = None,
+) -> Optional[dict]:
+    """
+    For origins without a direct airport, builds a two-leg journey:
+      Leg 1: origin → nearest_airport  (car or bus — whichever is cheaper)
+      Leg 2: nearest_airport → destination  (flight)
+
+    Returns a dict describing both legs + totals, or None if flight search fails.
+    """
+    airport_info = find_nearest_airport(origin)
+    if airport_info["has_own_airport"]:
+        return None  # origin has its own airport — no via-journey needed
+
+    airport_city = airport_info["airport_city"]
+    km_to_airport = airport_info["km_to_airport"]
+
+    # Leg 1 costs: drive vs SAPTCO bus
+    from safari.tools.fuel import calculate_driving_cost
+    fuel = calculate_driving_cost(km_to_airport, fuel_type="91", round_trip=False)
+    leg1_car_cost = fuel["cost_one_way"]
+    leg1_bus_cost = round(km_to_airport * 0.15, 2)       # ~0.15 SAR/km for SAPTCO
+    leg1_car_time = round((km_to_airport / 110) * 60)    # minutes at 110 km/h
+    leg1_bus_time = round((km_to_airport / 80) * 60) + 30  # slower + boarding
+
+    # Use the cheaper leg1 option as the recommended one
+    leg1_mode = "car" if leg1_car_cost <= leg1_bus_cost else "bus"
+    leg1_cost = leg1_car_cost if leg1_mode == "car" else leg1_bus_cost
+    leg1_time = leg1_car_time if leg1_mode == "car" else leg1_bus_time
+
+    # Leg 2: flight from airport_city → destination
+    flight = search_flight_prices(airport_city, destination, travel_date)
+    if not flight:
+        return None
+
+    total_one_way = round(leg1_cost + flight.price_one_way, 2)
+    total_round_trip = round(leg1_cost * 2 + flight.price_round_trip, 2)
+    total_time = leg1_time + (flight.duration_minutes or 90) + 90  # +90 for airport
+
+    return {
+        "type": "via_airport",
+        "origin": origin,
+        "destination": destination,
+        "airport_city": airport_city,
+        "airport_iata": airport_info["iata"],
+        "airport_name": airport_info["name"],
+        "leg1": {
+            "from": origin,
+            "to": airport_city,
+            "mode": leg1_mode,
+            "distance_km": km_to_airport,
+            "cost_sar": leg1_cost,
+            "time_minutes": leg1_time,
+            "fuel_detail": fuel if leg1_mode == "car" else None,
+            "note": f"{'Drive' if leg1_mode == 'car' else 'Bus (SAPTCO)'} to {airport_info['name']}",
+        },
+        "leg2": {
+            "from": airport_city,
+            "to": destination,
+            "mode": "flight",
+            "airline": flight.airline,
+            "price_one_way": flight.price_one_way,
+            "price_round_trip": flight.price_round_trip,
+            "duration_minutes": flight.duration_minutes,
+            "source": flight.source,
+        },
+        "total_one_way": total_one_way,
+        "total_round_trip": total_round_trip,
+        "total_time_minutes": total_time,
+        "also_available": {
+            "car_to_airport": {"cost": leg1_car_cost, "time_minutes": leg1_car_time},
+            "bus_to_airport": {"cost": leg1_bus_cost, "time_minutes": leg1_bus_time},
+        },
+    }
+
+
+def _gemini_transport_search(prompt: str, caller_label: str) -> Optional[dict]:
+    """Shared Gemini search helper for bus/train/transit queries. Returns parsed dict or None."""
+    try:
+        from config import GEMINI_API_KEY, GEMINI_MODEL
+        if not GEMINI_API_KEY:
+            return None
+        from google import genai
+        from google.genai import types
+        from safari.gemini_log import log_gemini
+        log_gemini("Agent 3 · Transport", caller_label)
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        response = client.models.generate_content(
+            model=GEMINI_MODEL,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                tools=[types.Tool(google_search=types.GoogleSearch())],
+                temperature=0.0,
+            ),
+        )
+        raw = response.text.strip()
+        raw = re.sub(r"^```(?:json)?\s*", "", raw)
+        raw = re.sub(r"\s*```$", "", raw)
+        return json.loads(raw)
+    except Exception as e:
+        logger.error(f"[Gemini Transport] {caller_label} failed: {e}")
+        return None
+
+
+def search_buses_live(origin: str, destination: str) -> dict:
+    """
+    Search for bus routes between two Saudi cities via Gemini.
+    Returns a dict with operator, options list, and source.
+    """
+    prompt = (
+        f"Search for bus services from {origin} to {destination} in Saudi Arabia right now. "
+        f"Include SAPTCO and any other operators. "
+        f"Return ONLY valid JSON: {{\"operator\": string, \"options\": ["
+        f"{{\"class\": string, \"price_sar\": number, \"duration_hours\": number, \"frequency\": string}}], "
+        f"\"booking_url\": string or null}}. "
+        f"Return an empty options array if no service exists."
+    )
+    data = _gemini_transport_search(prompt, f"bus {origin}→{destination}")
+    if data and data.get("options"):
+        console.print(f"[bold green][B] Gemini Bus Search: {origin}→{destination} ({len(data['options'])} options)[/bold green]")
+        data["source"] = "gemini_grounding"
+        return data
+    return {"operator": "SAPTCO", "options": [], "source": "not_found"}
+
+
+def search_trains_live(origin: str, destination: str) -> dict:
+    """
+    Search for train routes between two Saudi cities via Gemini.
+    Covers SAR (Saudi Railways) and Haramain High-Speed Railway.
+    """
+    prompt = (
+        f"Search for train services from {origin} to {destination} in Saudi Arabia. "
+        f"Include SAR (Saudi Railways Organization) and Haramain High-Speed Railway. "
+        f"Return ONLY valid JSON: {{\"operator\": string, \"options\": ["
+        f"{{\"class\": string, \"price_sar\": number, \"duration_minutes\": number, \"frequency\": string}}], "
+        f"\"booking_url\": string or null}}. "
+        f"Return an empty options array if no direct service exists."
+    )
+    data = _gemini_transport_search(prompt, f"train {origin}→{destination}")
+    if data and data.get("options"):
+        console.print(f"[bold green][T] Gemini Train Search: {origin}→{destination} ({len(data['options'])} options)[/bold green]")
+        data["source"] = "gemini_grounding"
+        return data
+    return {"operator": "SAR", "options": [], "source": "not_found"}
+
+
+def search_public_transit_live(city: str) -> list:
+    """
+    Search for local public transit options in a Saudi city via Gemini.
+    Returns list of transit systems with fare info. Cached in DB for 7 days.
+    """
+    prompt = (
+        f"Search for local public transportation options in {city}, Saudi Arabia. "
+        f"Include metro lines, city buses, tram, and ride-hailing apps. "
+        f"Return ONLY a valid JSON array: ["
+        f"{{\"type\": string (metro/bus/tram/ridehail), \"name\": string, "
+        f"\"fare_min_sar\": number, \"fare_max_sar\": number, "
+        f"\"coverage\": string (short description of what areas it covers), "
+        f"\"app\": string or null, \"notes\": string or null}}]. "
+        f"Only include services that actually operate in {city}."
+    )
+    data = _gemini_transport_search(prompt, f"public transit {city}")
+    if isinstance(data, list) and data:
+        console.print(f"[bold green][P] Gemini Public Transit: {city} ({len(data)} services)[/bold green]")
+        return data
+    # Fallback: well-known static data for major cities
+    return _public_transit_fallback(city)
+
+
+def _public_transit_fallback(city: str) -> list:
+    """Minimal static fallback for cities where Gemini search fails."""
+    city_lower = city.lower()
+    fallbacks = {
+        "riyadh": [
+            {"type": "metro", "name": "Riyadh Metro", "fare_min_sar": 4, "fare_max_sar": 6,
+             "coverage": "6 lines covering central Riyadh, KAFD, King Abdullah, Riyadh Park",
+             "app": "Riyadh Metro App", "notes": "Fully operational since 2024"},
+            {"type": "bus", "name": "Riyadh Bus (Mowasalat)", "fare_min_sar": 3, "fare_max_sar": 4,
+             "coverage": "Connects major districts and metro stations", "app": "Mowasalat App", "notes": None},
+            {"type": "ridehail", "name": "Uber / Careem", "fare_min_sar": 10, "fare_max_sar": 80,
+             "coverage": "City-wide", "app": "Uber / Careem", "notes": "Most convenient option"},
+        ],
+        "jeddah": [
+            {"type": "bus", "name": "Jeddah Bus (Hafilat)", "fare_min_sar": 4, "fare_max_sar": 4,
+             "coverage": "Major arterial routes across Jeddah", "app": "Hafilat App", "notes": None},
+            {"type": "ridehail", "name": "Uber / Careem", "fare_min_sar": 10, "fare_max_sar": 80,
+             "coverage": "City-wide", "app": "Uber / Careem", "notes": None},
+        ],
+        "makkah": [
+            {"type": "metro", "name": "Haramain High-Speed Railway (to Jeddah/Madinah)", "fare_min_sar": 65, "fare_max_sar": 235,
+             "coverage": "Makkah ↔ Jeddah ↔ Madinah", "app": "HHR App", "notes": "Inter-city, not local"},
+            {"type": "bus", "name": "Makkah Bus", "fare_min_sar": 3, "fare_max_sar": 5,
+             "coverage": "City routes + Holy Sites shuttle", "app": None, "notes": "Frequent during Hajj/Umrah season"},
+        ],
+        "madinah": [
+            {"type": "metro", "name": "Haramain High-Speed Railway (to Jeddah/Makkah)", "fare_min_sar": 65, "fare_max_sar": 235,
+             "coverage": "Madinah ↔ Jeddah ↔ Makkah", "app": "HHR App", "notes": "Inter-city"},
+            {"type": "ridehail", "name": "Uber / Careem", "fare_min_sar": 8, "fare_max_sar": 50,
+             "coverage": "City-wide", "app": "Uber / Careem", "notes": None},
+        ],
+    }
+    return fallbacks.get(city_lower, [
+        {"type": "ridehail", "name": "Uber / Careem", "fare_min_sar": 10, "fare_max_sar": 80,
+         "coverage": "City-wide", "app": "Uber / Careem", "notes": "Available in most Saudi cities"},
+    ])

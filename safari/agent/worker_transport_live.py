@@ -440,8 +440,8 @@ class TransportWorker:
             day_driving_cost = 0.0
 
             for act in acts:
-                dest_lat = act.get("lat", current_lat)
-                dest_lng = act.get("lng", current_lng)
+                dest_lat = act.get("lat") or current_lat
+                dest_lng = act.get("lng") or current_lng
                 act_name = act.get("name", "Stop")
 
                 dist = self._haversine(current_lat, current_lng, dest_lat, dest_lng)

@@ -81,6 +81,7 @@ def _call_gemini(
     json_mode: bool = False,
     use_search: bool = False,
     timeout: int = 60,
+    caller: str = "ai_client",
 ) -> Optional[str]:
     """Call Google Gemini API. Returns text or None on failure."""
     global _gemini_available
@@ -91,6 +92,10 @@ def _call_gemini(
     client = _get_gemini_client()
     if not client:
         return None
+
+    from safari.gemini_log import log_gemini
+    mode = "search-grounded" if use_search else ("json" if json_mode else "text")
+    log_gemini(caller, mode)
 
     try:
         from google.genai import types
@@ -103,7 +108,9 @@ def _call_gemini(
         if system:
             config_kwargs["system_instruction"] = system
 
-        if json_mode:
+        # Cannot combine response_mime_type with Google Search tool — Gemini rejects it.
+        # When using search, parse JSON from the text response manually instead.
+        if json_mode and not use_search:
             config_kwargs["response_mime_type"] = "application/json"
 
         tools = []
@@ -178,6 +185,7 @@ def generate(
     temperature: float = 0.7,
     max_tokens: int = 4096,
     timeout: int = 60,
+    caller: str = "ai_client · generate",
 ) -> str:
     """
     Generate text using AI. Tries Gemini first, falls back to Ollama.
@@ -199,6 +207,7 @@ def generate(
         temperature=temperature,
         max_tokens=max_tokens,
         timeout=timeout,
+        caller=caller,
     )
     if result:
         return result
@@ -222,6 +231,7 @@ def generate_json(
     system: str = "",
     temperature: float = 0.2,
     timeout: int = 60,
+    caller: str = "ai_client · generate_json",
 ) -> dict:
     """
     Generate a JSON response. Tries Gemini (with JSON mime type) first,
@@ -237,6 +247,7 @@ def generate_json(
         temperature=temperature,
         json_mode=True,
         timeout=timeout,
+        caller=caller,
     )
     if text:
         try:
@@ -268,15 +279,13 @@ def generate_with_search(
     temperature: float = 0.3,
     json_mode: bool = False,
     timeout: int = 60,
+    caller: str = "ai_client · search",
 ) -> str:
     """
-    Generate with web search grounding.
-    Gemini uses Google Search tool. Ollama fallback uses DuckDuckGo + prompt injection.
-
-    Returns:
-        Generated text string.
+    Generate with Google Search grounding via Gemini.
+    Gemini's built-in Google Search is the only search source — no DDG fallback.
+    Returns empty string if Gemini is unavailable.
     """
-    # Try Gemini with Google Search
     result = _call_gemini(
         prompt=prompt,
         system=system,
@@ -284,26 +293,9 @@ def generate_with_search(
         use_search=True,
         json_mode=json_mode,
         timeout=timeout,
+        caller=caller,
     )
-    if result:
-        return result
-
-    # Fallback: DuckDuckGo search + Ollama
-    print("[AI Client] Search fallback: DDG + Ollama...")
-    search_context = _ddg_search(prompt)
-    enriched_prompt = f"Based on these web search results:\n{search_context}\n\n{prompt}" if search_context else prompt
-
-    result = _call_ollama(
-        prompt=enriched_prompt,
-        system=system,
-        temperature=temperature,
-        json_mode=json_mode,
-        timeout=timeout,
-    )
-    if result:
-        return result
-
-    return "AI search generation failed on both Gemini and Ollama."
+    return result or ""
 
 
 # ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -327,18 +319,6 @@ def _parse_json(text: str) -> dict:
     return json.loads(text)
 
 
-def _ddg_search(query: str, max_results: int = 5) -> str:
-    """Fetch search results from DuckDuckGo for Ollama fallback."""
-    try:
-        from duckduckgo_search import DDGS
-        with DDGS() as ddgs:
-            results = list(ddgs.text(query, max_results=max_results))
-            return "\n".join(
-                [f"Source: {r.get('title', '')} - {r.get('body', '')}" for r in results]
-            )
-    except Exception as e:
-        print(f"[AI Client] DDG search failed: {e}")
-        return ""
 
 
 def get_provider_status() -> dict:

@@ -226,6 +226,34 @@
                     </div>
                 </div>
 
+                <!-- Specific City (optional) -->
+                <div class="form-group">
+                    <label for="specific-city-select"><span class="label-icon">📍</span> Specific City <span style="font-size:0.78em;opacity:0.55;font-weight:400;">(optional)</span></label>
+                    <select id="specific-city-select" style="width:100%;padding:12px 16px;border-radius:12px;background:var(--glass,rgba(255,255,255,0.07));border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:1rem;outline:none;">
+                        <option value="">— Any city in region —</option>
+                        <optgroup label="🏖️ Coast">
+                            <option value="jeddah">Jeddah</option>
+                            <option value="yanbu">Yanbu</option>
+                            <option value="umluj">Umluj</option>
+                        </optgroup>
+                        <optgroup label="⛰️ Mountains">
+                            <option value="abha">Abha</option>
+                            <option value="taif">Taif</option>
+                            <option value="al baha">Al Baha</option>
+                        </optgroup>
+                        <optgroup label="🏜️ Desert">
+                            <option value="al-ula">AlUla</option>
+                            <option value="tabuk">Tabuk</option>
+                        </optgroup>
+                        <optgroup label="🏙️ City">
+                            <option value="riyadh">Riyadh</option>
+                            <option value="dammam">Dammam</option>
+                            <option value="medina">Medina</option>
+                            <option value="makkah">Makkah</option>
+                        </optgroup>
+                    </select>
+                </div>
+
                 <!-- Event Interests -->
                 <div class="form-group">
                     <label for="interests-input"><span class="label-icon">🎭</span> Interests</label>
@@ -264,10 +292,18 @@
                     </div>
                 </div>
 
-                <!-- Submit -->
-                <button type="submit" class="submit-btn" id="plan-btn">
-                    <span>🧭 Plan My Trip</span>
-                </button>
+                <!-- Submit + Clear -->
+                <div style="display:flex; gap:10px; margin-top:4px;">
+                    <button type="submit" class="submit-btn" id="plan-btn" style="flex:1;">
+                        <span>🧭 Plan My Trip</span>
+                    </button>
+                    <button type="button" id="clear-btn" onclick="clearTripForm()"
+                        style="flex:0 0 auto; padding:14px 18px; background:rgba(239,68,68,0.12); border:1px solid rgba(239,68,68,0.35); color:#f87171; border-radius:14px; font-size:14px; font-weight:600; cursor:pointer; transition:background 0.2s;"
+                        onmouseover="this.style.background='rgba(239,68,68,0.22)'"
+                        onmouseout="this.style.background='rgba(239,68,68,0.12)'">
+                        🗑️ Clear
+                    </button>
+                </div>
             </form>
 
             <div id="results-panel" class="results-panel hidden">
@@ -376,6 +412,17 @@
                 </div>
             </div>
         </div>
+        <!-- VIEW 6: TRANSPORT HUB                     -->
+        <!-- ========================================== -->
+        <div id="transport-view" class="app-view hidden-view mobile-panel">
+            <div class="panel-header"><h2>🚀 Transport Hub</h2></div>
+            <div class="panel-scroll-content">
+                <div id="transport-hub-content" style="padding:15px;">
+                    <div class="empty-state"><p>Plan a trip first to see transport options.</p></div>
+                </div>
+            </div>
+        </div>
+
         <!-- BOTTOM NAVIGATION                          -->
         <!-- ========================================== -->
         <nav class="bottom-nav">
@@ -404,10 +451,10 @@
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                 <span>Hospit.</span>
             </a>
-            <a href="#" class="nav-item">
-                <div class="active-indicator hidden"></div>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                <span>Profile</span>
+            <a href="#" class="nav-item" onclick="switchView('transport-view')">
+                <div class="active-indicator hidden" id="ind-transport-view"></div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><rect x="9" y="11" width="14" height="10" rx="1"/><circle cx="12" cy="21" r="1"/><circle cx="20" cy="21" r="1"/></svg>
+                <span>Transport</span>
             </a>
         </nav>
         
@@ -447,6 +494,41 @@
             });
         });
         observer.observe(document.getElementById('results-panel'), { attributes: true, attributeFilter: ['class'] });
+
+        // ── City picker logic ──────────────────────────────────────────────────
+        const CITY_VIBE_MAP = {
+            'jeddah':'coast','yanbu':'coast','umluj':'coast',
+            'abha':'mountains','taif':'mountains','al baha':'mountains',
+            'al-ula':'desert','tabuk':'desert',
+            'riyadh':'city','dammam':'city','medina':'city','makkah':'city',
+        };
+
+        document.getElementById('specific-city-select').addEventListener('change', function() {
+            const city = this.value;
+            const vibe = CITY_VIBE_MAP[city] || null;
+            if (city && vibe) {
+                // Highlight the matching vibe card without clearing the city picker
+                document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
+                const vibeBtn = document.querySelector('.vibe-card[data-vibe="' + vibe + '"]');
+                if (vibeBtn) vibeBtn.classList.add('active');
+                // Override state so the API call uses the city directly
+                if (typeof state !== 'undefined') state.destination = city;
+            } else {
+                // Reset to whatever vibe card is active
+                if (typeof state !== 'undefined') {
+                    const active = document.querySelector('.vibe-card.active');
+                    if (active) state.destination = active.dataset.vibe;
+                }
+            }
+        });
+
+        // When a vibe card is clicked manually, clear the city picker
+        document.querySelectorAll('.vibe-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.getElementById('specific-city-select').value = '';
+            });
+        });
+        // ──────────────────────────────────────────────────────────────────────
 
         // Auto Fill Logic
         function autoFill(type, p1, p2, p3) {

@@ -68,6 +68,27 @@ def init_db():
     )
     ''')
 
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS public_transit (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        city TEXT NOT NULL UNIQUE,
+        data_json TEXT NOT NULL,
+        date_added TEXT NOT NULL
+    )
+    ''')
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS inter_city_transport (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        origin TEXT NOT NULL,
+        destination TEXT NOT NULL,
+        mode TEXT NOT NULL,
+        data_json TEXT NOT NULL,
+        date_added TEXT NOT NULL,
+        UNIQUE(origin, destination, mode)
+    )
+    ''')
+
     conn.commit()
     conn.close()
 
@@ -115,6 +136,19 @@ def get_cached_events(city, start_date, end_date):
     SELECT * FROM events
     WHERE city = ? AND event_date >= ? AND event_date <= ?
     ''', (city.lower(), start_date, end_date))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+
+def get_any_events_for_city(city: str, limit: int = 20) -> list:
+    """Return all stored events for a city regardless of date (fallback when web search fails)."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        'SELECT * FROM events WHERE city = ? ORDER BY date_added DESC LIMIT ?',
+        (city.lower(), limit)
+    )
     rows = cursor.fetchall()
     conn.close()
     return [dict(row) for row in rows]
@@ -245,3 +279,61 @@ def book_hotel(hotel_id):
     )
     conn.commit()
     conn.close()
+
+
+# ─── Public Transit Cache ─────────────────────────────────────────────────────
+
+def save_public_transit(city: str, data: list) -> None:
+    """Cache public transit options for a city (valid 7 days — prices rarely change)."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        'INSERT OR REPLACE INTO public_transit (city, data_json, date_added) VALUES (?, ?, ?)',
+        (city.lower(), json.dumps(data), date.today().isoformat())
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_public_transit(city: str, max_age_days: int = 7) -> list:
+    """Return cached public transit for city if within max_age_days, else empty list."""
+    from datetime import timedelta
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cutoff = (date.today() - timedelta(days=max_age_days)).isoformat()
+    cursor.execute(
+        'SELECT data_json FROM public_transit WHERE city = ? AND date_added >= ?',
+        (city.lower(), cutoff)
+    )
+    row = cursor.fetchone()
+    conn.close()
+    return json.loads(row['data_json']) if row else []
+
+
+# ─── Inter-city Transport Cache ───────────────────────────────────────────────
+
+def save_inter_city_transport(origin: str, destination: str, mode: str, data: dict) -> None:
+    """Cache flight/bus/train search results for a route (valid 1 day)."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        'INSERT OR REPLACE INTO inter_city_transport (origin, destination, mode, data_json, date_added) VALUES (?, ?, ?, ?, ?)',
+        (origin.lower(), destination.lower(), mode.lower(), json.dumps(data), date.today().isoformat())
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_inter_city_transport(origin: str, destination: str, mode: str, max_age_days: int = 1) -> dict:
+    """Return cached transport data for a route if within max_age_days, else empty dict."""
+    from datetime import timedelta
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cutoff = (date.today() - timedelta(days=max_age_days)).isoformat()
+    cursor.execute(
+        'SELECT data_json FROM inter_city_transport WHERE origin=? AND destination=? AND mode=? AND date_added >= ?',
+        (origin.lower(), destination.lower(), mode.lower(), cutoff)
+    )
+    row = cursor.fetchone()
+    conn.close()
+    return json.loads(row['data_json']) if row else {}

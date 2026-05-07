@@ -128,6 +128,8 @@ def budget_allocator(
         warnings.append("Transport alone exceeds total budget!")
         remaining = 0
 
+    days = max(days, 1)  # guard against zero
+
     if remaining > 0 and (remaining / days) < 100:
         warnings.append(
             f"Very tight budget: only {remaining / days:.0f} {currency}/day after transport."

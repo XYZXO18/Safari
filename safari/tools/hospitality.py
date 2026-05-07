@@ -4,14 +4,13 @@ Hospitality & Venue Data Engine
 Agent 2's tool layer.
 
 Hotel data flow:
-  1. Call AlmosaferScraper.scrape_hotels(city) → up to 5 live results with prices.
+  1. Call search_hotels_live() (Gemini Search Grounding) → up to 5 live results with prices.
   2. For every hotel returned, call upsert_hotel_static() to persist
      name + coordinates in the DB (price is NEVER stored — always live).
-  3. If city has <20 hotels in DB, request additional Almosafer pages to
-     build the catalogue up to 20 over time.
-  4. Return HotelResult objects with live prices for the frontend.
+  3. If city has <20 hotels in DB, run a second search to build the catalogue.
+  4. Return HotelResult objects with live prices.
 
-Restaurant data is still served from the local DB (no Almosafer equivalent).
+Restaurant data is still served from the local DB (no live equivalent).
 """
 
 from __future__ import annotations
@@ -26,7 +25,8 @@ from safari.database import (
     get_hospitality, book_hotel,
     upsert_hotel_static, get_hotel_count, get_known_hotels,
 )
-from safari.tools.almosafer import AlmosaferScraper
+from safari.tools.almosafer import AlmosaferScraper  # kept for hotel_search_url only
+from safari.tools.live_hospitality import search_hotels_live
 
 
 # ─── Coordinate helper ────────────────────────────────────────────────────────
@@ -45,10 +45,10 @@ def _city_coords(city: str) -> tuple[float, float]:
 @dataclass
 class RoomPricing:
     room_type: str
-    base_price_sar: float         # Live price from Almosafer
+    base_price_sar: float
     final_price_sar: float
     available: bool = True
-    source: str = "Almosafer"
+    source: str = "Gemini Search"
 
     def to_dict(self) -> dict:
         return {
@@ -74,8 +74,8 @@ class HotelResult:
     lat: float
     lng: float
     has_availability: bool
-    live_price_sar: Optional[float] = None   # Best nightly rate from Almosafer
-    price_source: str = "Almosafer"
+    live_price_sar: Optional[float] = None
+    price_source: str = "Gemini Search"
     almosafer_url: str = ""
     rating: float = 0.0
     vibe: str = ""
@@ -188,67 +188,55 @@ def search_hotels(
     budget_per_night: Optional[float] = None,
 ) -> List[HotelResult]:
     """
-    Fetch live hotel listings from Almosafer for the given city.
+    Fetch live hotel listings via Gemini Search Grounding.
 
     Steps:
-      1. Scrape 5 live hotels from Almosafer (with prices).
+      1. Call search_hotels_live() (Gemini) for 5 results with prices.
       2. Save any new hotels to the DB (name + coords only, no price).
-      3. If city has <20 hotels in DB, do an extra scrape pass to build
-         the catalogue (background best-effort).
+      3. If city has <20 hotels in DB, run a second search to grow catalogue.
       4. Return HotelResult objects with live prices.
     """
     if not city:
         return []
 
     scraper = AlmosaferScraper()
+    booking_url = scraper.hotel_search_url(city, checkin, checkout)
 
-    # ── Step 1: live search (5 hotels + prices) ────────────────────────────────
-    raw = scraper.scrape_hotels(city, checkin, checkout, max_results=5)
+    # ── Step 1: live Gemini search (5 hotels + prices) ────────────────────────
+    live_stubs = search_hotels_live(
+        city=city,
+        budget_per_night=budget_per_night or 500.0,
+        max_results=5,
+    )
 
     results: List[HotelResult] = []
 
-    for h in raw:
-        name = h.get("name", "").strip()
+    for stub in live_stubs:
+        name = stub.name.strip()
         if not name:
             continue
 
-        live_price = h.get("price_per_night")
-        stars = int(h.get("stars") or 4)
-        rating = float(h.get("rating") or 0.0)
+        live_price = stub.price or 0.0
+        rating = float(stub.rating or 0.0)
 
         # ── Step 2: persist name + coords (no price stored) ─────────────────
         lat, lng = _city_coords(city)
-        upsert_hotel_static(city, name, lat, lng, stars)
-
-        # Build search URL for "Book on Almosafer" link
-        url = scraper.hotel_search_url(city, checkin, checkout)
+        upsert_hotel_static(city, name, lat, lng, 4)
 
         rooms = []
-        if live_price:
+        if live_price > 0:
             rooms = [
-                RoomPricing(
-                    room_type="Standard",
-                    base_price_sar=live_price,
-                    final_price_sar=live_price,
-                    available=True,
-                    source="Almosafer",
-                ),
-                RoomPricing(
-                    room_type="Deluxe",
-                    base_price_sar=live_price * 1.4,
-                    final_price_sar=live_price * 1.4,
-                    available=True,
-                    source="Almosafer",
-                ),
+                RoomPricing("Standard", live_price, live_price, True, "Gemini Search"),
+                RoomPricing("Deluxe", live_price * 1.4, live_price * 1.4, True, "Gemini Search"),
             ]
 
         results.append(HotelResult(
-            id=h.get("id", name[:20]),
+            id=name[:20],
             name=name,
             city=city.title(),
-            stars=stars,
+            stars=4,
             rating=rating,
-            description=f"Verified {stars}★ property in {city.title()} — sourced live from Almosafer.",
+            description=stub.description or f"Hotel in {city.title()}",
             rooms=rooms,
             amenities=["WiFi", "Parking", "Air Conditioning", "Room Service"],
             check_in="14:00",
@@ -256,38 +244,34 @@ def search_hotels(
             lat=lat,
             lng=lng,
             has_availability=True,
-            live_price_sar=live_price,
-            price_source="Almosafer",
-            almosafer_url=url,
+            live_price_sar=live_price if live_price > 0 else None,
+            price_source="Gemini Search",
+            almosafer_url=booking_url,
             vibe=vibe or "",
         ))
 
-    # ── Step 3: catalogue building — if <20 stored, fetch extra pages ──────────
-    current_count = get_hotel_count(city)
-    if current_count < 20 and len(raw) > 0:
+    # ── Step 3: catalogue building — grow DB to 20+ hotels ───────────────────
+    if get_hotel_count(city) < 20:
         try:
-            # Offset search date by a week to get fresh/different results
-            from datetime import datetime, timedelta
-            extra_checkin = (date.today() + timedelta(days=14)).strftime("%Y-%m-%d")
-            extra_checkout = (date.today() + timedelta(days=17)).strftime("%Y-%m-%d")
-            extra_raw = scraper.scrape_hotels(city, extra_checkin, extra_checkout, max_results=5)
-            for eh in extra_raw:
-                ename = eh.get("name", "").strip()
+            extra = search_hotels_live(
+                city=city,
+                budget_per_night=(budget_per_night or 500.0) * 1.5,
+                max_results=5,
+            )
+            for stub in extra:
+                ename = stub.name.strip()
                 if ename:
                     elat, elng = _city_coords(city)
-                    upsert_hotel_static(city, ename, elat, elng, int(eh.get("stars") or 4))
-            print(f"📦 [Almosafer] Catalogue for {city}: {get_hotel_count(city)} hotels stored.")
+                    upsert_hotel_static(city, ename, elat, elng, 4)
+            print(f"📦 [Gemini] Catalogue for {city}: {get_hotel_count(city)} hotels stored.")
         except Exception as e:
-            print(f"⚠️  [Almosafer] Catalogue build error: {e}")
+            print(f"⚠️  [Gemini] Catalogue build error: {e}")
 
     return results
 
 
 def get_hotel_details(hotel_id: str) -> Optional[HotelResult]:
-    """
-    Return details for a specific hotel by ID from the local cache.
-    Price is not included here (needs fresh Almosafer scrape).
-    """
+    """Return details for a specific hotel by ID from the local cache."""
     from safari.database import get_db_connection
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -303,7 +287,7 @@ def get_hotel_details(hotel_id: str) -> Optional[HotelResult]:
         city=h["city"].title(),
         stars=int(h.get("stars") or 4),
         rating=float(h.get("rating") or 0.0),
-        description=f"Known property in {h['city'].title()}. Search for live prices on Almosafer.",
+        description=f"Known property in {h['city'].title()}.",
         rooms=[],
         amenities=["WiFi", "Parking"],
         check_in="14:00",
@@ -317,7 +301,6 @@ def get_hotel_details(hotel_id: str) -> Optional[HotelResult]:
 
 
 # ─── Restaurant Functions ─────────────────────────────────────────────────────
-# Restaurants remain DB-backed (no Almosafer equivalent for restaurants).
 
 def _load_restaurants(city: str) -> list:
     rests = get_hospitality(city, type='restaurant')
@@ -404,7 +387,6 @@ def get_restaurant_details(
     tot = r.get("total_tables") or 20
     reserved = random.randint(5, 18)
     available = max(0, tot - reserved)
-    discount = 0.07
     price = r.get("price") or 80
     menu_items = [
         MenuItemResult("Traditional Kabsa", price, "Main", True, [], [], True, []),
@@ -418,7 +400,7 @@ def get_restaurant_details(
         rating=r.get("rating") or 4.0,
         operating_hours={"open": "12:00", "close": "23:00"},
         total_tables=tot, reserved_tables=reserved,
-        available_tables=available, discount_percent=discount,
+        available_tables=available, discount_percent=0.07,
         menu=menu_items, top_dishes=["Traditional Kabsa"],
         lat=r.get("lat") or 24.7, lng=r.get("lng") or 46.7,
     )
@@ -431,7 +413,7 @@ def get_hospitality_summary(
     vibe: Optional[str] = None,
     allergens: Optional[List[str]] = None,
 ) -> dict:
-    """Combined hotels + restaurants summary for Agent 1."""
+    """Combined hotels + restaurants summary."""
     hotels = search_hotels(city=city, vibe=vibe)
     restaurants = search_restaurants(city=city, vibe=vibe, allergens_to_avoid=allergens)
 
