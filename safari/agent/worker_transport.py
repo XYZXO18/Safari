@@ -203,13 +203,20 @@ class TransportWorker:
     # ─── Haversine ───────────────────────────────────────────────────────────
 
     def _haversine(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-        R = 6371
-        dlat = math.radians(lat2 - lat1)
-        dlon = math.radians(lon2 - lon1)
-        a = (math.sin(dlat / 2) ** 2 +
-             math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2)
-        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-        return R * c
+        # Handle cases where coordinates might be None or invalid
+        try:
+            if lat1 is None or lon1 is None or lat2 is None or lon2 is None:
+                return 0.0
+            
+            R = 6371
+            dlat = math.radians(float(lat2) - float(lat1))
+            dlon = math.radians(float(lon2) - float(lon1))
+            a = (math.sin(dlat / 2) ** 2 +
+                 math.cos(math.radians(float(lat1))) * math.cos(math.radians(float(lat2))) * math.sin(dlon / 2) ** 2)
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+            return R * c
+        except (TypeError, ValueError):
+            return 0.0
 
     # ─── Daily Timeline ──────────────────────────────────────────────────────
 
@@ -241,13 +248,14 @@ class TransportWorker:
         destination = req.get("destination", "coast")
         vehicle_type = req.get("vehicle_type", "default")
 
-        hotel_lat = hotel.get("lat", 0)
-        hotel_lng = hotel.get("lng", 0)
-        hotel_name = hotel.get("name", "Hotel")
+        hotel_lat = float(hotel.get("lat") or 0)
+        hotel_lng = float(hotel.get("lng") or 0)
+        hotel_name = hotel.get("name") or "Hotel"
 
         has_own_car = travel_mode == "car"
 
         timeline = {}
+        total_transit_cost = 0.0
         # Inter-city long-haul legs
         from safari.tools.transport import calculate_transport_costs
         inter_city_est = calculate_transport_costs(
@@ -316,9 +324,12 @@ class TransportWorker:
             day_driving_cost = 0.0
 
             for act in acts:
-                dest_lat = act.get("lat", current_lat)
-                dest_lng = act.get("lng", current_lng)
-                act_name = act.get("name", "Stop")
+                dest_lat = act.get("lat")
+                if dest_lat is None: dest_lat = current_lat
+                dest_lng = act.get("lng")
+                if dest_lng is None: dest_lng = current_lng
+                
+                act_name = act.get("name") or "Stop"
 
                 dist = self._haversine(current_lat, current_lng, dest_lat, dest_lng)
                 if dist < 0.05:

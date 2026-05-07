@@ -27,8 +27,8 @@ from safari.tools.event_scanner import find_live_events
 from safari.tools.web_research import research_destination
 from safari.agent.orchestrator_agent import OrchestratorAgent
 from safari.agent.worker_research import ResearchWorker
-from safari.agent.worker_hospitality_live import HospitalityWorker
-from safari.agent.worker_transport_live import TransportWorker
+from safari.agent.worker_hospitality import HospitalityWorker
+from safari.agent.worker_transport import TransportWorker
 from google import genai
 from safari.database import create_snapshot
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -285,13 +285,26 @@ def plan_trip():
             except Exception as e:
                 import traceback
                 traceback.print_exc()
-                print(f"Workers failed: {e}")
-                hospitality_data = {"hotels": [], "restaurants": []}
-                timeline = {}
-                total_transit_cost = 0
-                simulation_routes = {}
-                full_trip_dataset = []
-                travel_time_str = ""
+                error_msg = str(e)
+                print(f"⚠️ [Orchestrator] Workers failed: {error_msg}. Calling Fixer Agent...")
+                
+                fixer = FixerWorker()
+                # Attempt to fix hospitality
+                hospitality_data = fixer.process_request(
+                    {"city": activities.recommended_city, "vibe": path_type}, 
+                    error_msg, "Hospitality"
+                )
+                
+                # Attempt to fix transport/timeline
+                timeline_res = fixer.process_request(
+                    timeline_req, error_msg, "Transport"
+                )
+                
+                timeline = timeline_res.get("timeline", {})
+                total_transit_cost = timeline_res.get("total_transit_cost", 0)
+                simulation_routes = timeline_res.get("simulation_routes", {})
+                full_trip_dataset = timeline_res.get("full_trip_dataset", [])
+                travel_time_str = timeline_res.get("inter_city_travel_time_str", "4h (Est)")
 
             # Lodging is PENDING until user selects a hotel
             # We keep the allocated lodging budget as max_lodging_budget for reference,
