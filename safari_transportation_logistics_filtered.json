@@ -1,0 +1,224 @@
+{
+  "saudi_arabia_transportation": {
+    "metadata": {
+      "system_target": "Safari Travel Planning System",
+      "description": "Filtered routing, pricing, and duration data specifically for Riyadh, Jeddah, Dammam, Makkah, Madinah, Abha, and AlUla."
+    },
+    "train_networks": [
+      {
+        "network_name": "Haramain High-Speed Railway (HHR)",
+        "description": "High-speed rail connecting the holy cities via the western coast.",
+        "stations": [
+          "Makkah",
+          "Jeddah (Al-Sulaymaniyah)",
+          "King Abdulaziz International Airport (KAIA)",
+          "Madinah"
+        ],
+        "routes": [
+          {
+            "from": "Makkah",
+            "to": "Madinah",
+            "average_cost_sar": 150,
+            "average_duration": "2h 45m"
+          },
+          {
+            "from": "Jeddah",
+            "to": "Makkah",
+            "average_cost_sar": 46,
+            "average_duration": "35m"
+          },
+          {
+            "from": "Jeddah",
+            "to": "Madinah",
+            "average_cost_sar": 115,
+            "average_duration": "2h 00m"
+          },
+          {
+            "from": "KAIA (Airport)",
+            "to": "Makkah",
+            "average_cost_sar": 50,
+            "average_duration": "55m"
+          }
+        ]
+      },
+      {
+        "network_name": "SAR East Train Network",
+        "description": "Intercity line connecting the capital to the Eastern Province.",
+        "stations": [
+          "Riyadh",
+          "Dammam"
+        ],
+        "routes": [
+          {
+            "from": "Riyadh",
+            "to": "Dammam",
+            "average_cost_sar": 110,
+            "average_duration": "4h 10m"
+          }
+        ]
+      }
+    ],
+    "domestic_flights": {
+      "major_airlines": [
+        "Saudia",
+        "Flynas",
+        "Flyadeal"
+      ],
+      "pricing_note": "Prices are average one-way economy fares in SAR.",
+      "major_routes": [
+        {
+          "from": "Riyadh (RUH)",
+          "to": "Jeddah (JED)",
+          "average_cost_sar": 250,
+          "average_duration": "1h 45m"
+        },
+        {
+          "from": "Riyadh (RUH)",
+          "to": "Dammam (DMM)",
+          "average_cost_sar": 180,
+          "average_duration": "1h 05m"
+        },
+        {
+          "from": "Riyadh (RUH)",
+          "to": "Madinah (MED)",
+          "average_cost_sar": 220,
+          "average_duration": "1h 30m"
+        },
+        {
+          "from": "Riyadh (RUH)",
+          "to": "Abha (AHB)",
+          "average_cost_sar": 260,
+          "average_duration": "1h 40m"
+        },
+        {
+          "from": "Riyadh (RUH)",
+          "to": "AlUla (ULH)",
+          "average_cost_sar": 550,
+          "average_duration": "1h 50m"
+        },
+        {
+          "from": "Jeddah (JED)",
+          "to": "Dammam (DMM)",
+          "average_cost_sar": 350,
+          "average_duration": "2h 10m"
+        },
+        {
+          "from": "Jeddah (JED)",
+          "to": "Madinah (MED)",
+          "average_cost_sar": 150,
+          "average_duration": "1h 00m"
+        },
+        {
+          "from": "Jeddah (JED)",
+          "to": "Abha (AHB)",
+          "average_cost_sar": 200,
+          "average_duration": "1h 15m"
+        },
+        {
+          "from": "Jeddah (JED)",
+          "to": "AlUla (ULH)",
+          "average_cost_sar": 450,
+          "average_duration": "1h 20m"
+        },
+        {
+          "from": "Dammam (DMM)",
+          "to": "Madinah (MED)",
+          "average_cost_sar": 320,
+          "average_duration": "2h 05m"
+        },
+        {
+          "from": "Dammam (DMM)",
+          "to": "Abha (AHB)",
+          "average_cost_sar": 380,
+          "average_duration": "2h 15m"
+        },
+        {
+          "from": "Dammam (DMM)",
+          "to": "AlUla (ULH)",
+          "average_cost_sar": 650,
+          "average_duration": "2h 15m"
+        }
+      ]
+    },
+    "bus_networks": [
+      {
+        "network_name": "SAPTCO Intercity Bus",
+        "description": "Primary national bus network connecting major cities.",
+        "major_routes": [
+          {
+            "from": "Riyadh",
+            "to": "Jeddah",
+            "average_cost_sar": 230,
+            "average_duration": "13h 30m"
+          },
+          {
+            "from": "Jeddah",
+            "to": "Riyadh",
+            "average_cost_sar": 230,
+            "average_duration": "14h 40m"
+          },
+          {
+            "from": "Riyadh",
+            "to": "Dammam",
+            "average_cost_sar": 110,
+            "average_duration": "6h 00m"
+          },
+          {
+            "from": "Riyadh",
+            "to": "Abha",
+            "average_cost_sar": 250,
+            "average_duration": "14h 39m"
+          },
+          {
+            "from": "Riyadh",
+            "to": "Makkah",
+            "average_cost_sar": 220,
+            "average_duration": "12h 30m"
+          },
+          {
+            "from": "Riyadh",
+            "to": "Madinah",
+            "average_cost_sar": 210,
+            "average_duration": "11h 00m"
+          },
+          {
+            "from": "Jeddah",
+            "to": "Dammam",
+            "average_cost_sar": 290,
+            "average_duration": "19h 00m"
+          },
+          {
+            "from": "Jeddah",
+            "to": "Madinah",
+            "average_cost_sar": 65,
+            "average_duration": "5h 30m"
+          },
+          {
+            "from": "Jeddah",
+            "to": "Abha",
+            "average_cost_sar": 140,
+            "average_duration": "10h 00m"
+          },
+          {
+            "from": "Dammam",
+            "to": "Abha",
+            "average_cost_sar": 310,
+            "average_duration": "21h 00m"
+          },
+          {
+            "from": "Madinah",
+            "to": "Makkah",
+            "average_cost_sar": 65,
+            "average_duration": "5h 30m"
+          },
+          {
+            "from": "Madinah",
+            "to": "AlUla",
+            "average_cost_sar": 100,
+            "average_duration": "4h 30m"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -22,7 +22,9 @@ def _load_hotels(city: str) -> List[dict]:
 def _load_restaurants(city: str) -> List[dict]:
     # Ensure data is randomized/seeded
     randomize_hospitality(city)
-    return get_hospitality(city, type='restaurant')
+    rests = get_hospitality(city, type='restaurant')
+    cafes = get_hospitality(city, type='cafe')
+    return rests + cafes
 
 
 # ─── Dynamic Discount Calculation ────────────────────────────────────────────
@@ -349,7 +351,7 @@ def search_restaurants(
             name=r["name"],
             city=r["city"],
             vibe=r.get("vibe", ""),
-            cuisine="Traditional / Modern",
+            cuisine=r.get("cuisine", "Traditional / Modern"),
             rating=r["rating"],
             operating_hours={"open": "12:00", "close": "23:00"},
             total_tables=tot_tables,

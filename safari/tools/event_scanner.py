@@ -127,76 +127,54 @@ def _search_events_web(city: str, start_date: str, end_date: str, interests: str
     pop-up events, and social-media-trending gatherings in the given
     city during the specified date range.
     """
-    from config import GEMINI_API_KEY, USE_LOCAL_AI, OLLAMA_URL, OLLAMA_MODEL
+    from config import USE_LOCAL_AI
 
-    if not USE_LOCAL_AI and not GEMINI_API_KEY:
+    interests_str = f" The user is specifically interested in: {interests}." if interests else ""
+
+    from config import CITY_COORDS
+    city_coords = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+    lat_ex = city_coords["lat"]
+    lng_ex = city_coords["lng"]
+
+    prompt = (
+        f"Search the web for live events, concerts, festivals, exhibitions, "
+        f"pop-up experiences, and social media trending gatherings happening in "
+        f"{city}, Saudi Arabia between {start_date} and {end_date}.{interests_str} "
+        f"Include events from sites like: eventbrite.com, ticketmaster.com, "
+        f"visitSaudi.com, x.com, instagram.com. "
+        f"Return ONLY a raw JSON array of up to 10 most interesting events "
+        f"with this exact structure per item: "
+        f'{{"name": "...", "date": "...", "time": "18:00 or TBD", "estimated_cost_sar": 0, '
+        f'"category": "concert|festival|popup|exhibition|sport", '
+        f'"description": "one sentence", "venue": "venue name", '
+        f'"lat": {lat_ex}, "lng": {lng_ex}}}'
+        f"\nIMPORTANT: Provide accurate lat/lng coordinates for {city}. Do not just copy the example coordinates."
+        f"\nIf no events are found, return an empty array: []"
+    )
+
+    from safari.ai_client import generate_with_search, _parse_json
+
+    text = generate_with_search(
+        prompt=prompt,
+        json_mode=True,
+        timeout=60,
+    )
+    
+    if not text or "AI search generation failed" in text:
         return []
 
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        data = _parse_json(text)
+    except Exception as e:
+        print(f"Failed to parse event JSON: {e}")
+        return []
 
-        interests_str = f" The user is specifically interested in: {interests}." if interests else ""
+    # Handle both array and object responses
+    if isinstance(data, dict):
+        data = data.get("events", [data])
 
-        from config import CITY_COORDS
-        city_coords = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
-        lat_ex = city_coords["lat"]
-        lng_ex = city_coords["lng"]
-
-        prompt = (
-            f"Search the web for live events, concerts, festivals, exhibitions, "
-            f"pop-up experiences, and social media trending gatherings happening in "
-            f"{city}, Saudi Arabia between {start_date} and {end_date}.{interests_str} "
-            f"Include events from sites like: eventbrite.com, ticketmaster.com, "
-            f"visitSaudi.com, x.com, instagram.com. "
-            f"Return ONLY a raw JSON array of up to 10 most interesting events "
-            f"with this exact structure per item: "
-            f'{{"name": "...", "date": "...", "time": "18:00 or TBD", "estimated_cost_sar": 0, '
-            f'"category": "concert|festival|popup|exhibition|sport", '
-            f'"description": "one sentence", "venue": "venue name", '
-            f'"lat": {lat_ex}, "lng": {lng_ex}}}'
-            f"\nIMPORTANT: Provide accurate lat/lng coordinates for {city}. Do not just copy the example coordinates."
-            f"\nIf no events are found, return an empty array: []"
-        )
-
-        if USE_LOCAL_AI:
-            import requests
-            search_query = f"live events festivals concerts popup {city} Saudi Arabia {start_date} {end_date} {interests}"
-            search_context = get_ddg_results(search_query, max_results=8)
-            prompt_with_context = f"Based on these live web search results:\n{search_context}\n\n{prompt}"
-            
-            payload = {
-                "model": OLLAMA_MODEL,
-                "prompt": prompt_with_context,
-                "stream": False,
-                "format": "json",
-                "options": {"temperature": 0.3}
-            }
-            res = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=60)
-            res.raise_for_status()
-            text = res.json()["response"].strip()
-        else:
-            response = client.models.generate_content(
-                model="gemini-2.0-flash",
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    tools=[{"google_search": {}}],
-                    temperature=0.3,
-                    response_mime_type="application/json",
-                ),
-            )
-            text = response.text.strip()
-        text = text.strip()
-        start_idx = text.find('[')
-        end_idx = text.rfind(']')
-        if start_idx != -1 and end_idx != -1:
-            text = text[start_idx:end_idx+1]
-        data = json.loads(text)
-
-        # Handle both array and object responses
-        if isinstance(data, dict):
-            data = data.get("events", [data])
-
-        events = []
+    events = []
+    if isinstance(data, list):
         for item in data[:10]:  # Cap at 10 events
             events.append(LiveEvent(
                 name=item.get("name", "Unknown Event"),
@@ -211,11 +189,7 @@ def _search_events_web(city: str, start_date: str, end_date: str, interests: str
                 lng=item.get("lng"),
             ))
 
-        return events
-
-    except Exception as e:
-        print(f"Event web search failed: {e}")
-        return []
+    return events
 
 
 # ─── Method B: Local Seasonal Event Database ────────────────────────────────
@@ -420,6 +394,17 @@ def find_live_events(
                 lng=item['lng']
             ))
         print(f"   [Cache Hit] Found {len(events)} events in database for {location}")
+
+        # Filter cached events by interests
+        if interests:
+            keywords = [k.strip().lower() for k in interests.split(",")]
+            filtered = []
+            for ev in events:
+                ev_text = f"{ev.name} {ev.description} {ev.category}".lower()
+                if any(k in ev_text for k in keywords):
+                    filtered.append(ev)
+            events = filtered
+            print(f"   [Cache Hit] {len(events)} events match interests: {interests}")
 
     # ─── Step 2: Try web search if needed (e.g. if cache has < 3 events) ──
     if len(events) < 3:

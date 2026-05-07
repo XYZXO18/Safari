@@ -15,6 +15,7 @@ const state = {
     days: 4,
     tripData: null,
     hospitalityType: 'all',
+    selectedHotel: null,  // Track chosen hotel
 };
 
 // ─── Map Setup ───────────────────────────────────────────────────────────────
@@ -326,9 +327,12 @@ function drawRoute(originCoords, destCoords, originName, destName, data) {
             data.hospitality.restaurants.forEach(r => {
                 if (r.lat && r.lng) {
                     const rLatLng = [r.lat, r.lng];
+                    const isCafe = r.cuisine && r.cuisine.toLowerCase().includes('cafe');
+                    const emoji = isCafe ? '☕' : '🍽️';
+                    const gradient = isCafe ? 'linear-gradient(135deg,#f59e0b,#ea580c)' : 'linear-gradient(135deg,#10b981,#06b6d4)';
                     const rMarker = L.marker(rLatLng, { icon: L.divIcon({
                         className: '',
-                        html: `<div class="hotel-marker" style="background:linear-gradient(135deg,#10b981,#06b6d4);font-size:15px;">🍽️</div>`,
+                        html: `<div class="hotel-marker" style="background:${gradient};font-size:15px;">${emoji}</div>`,
                         iconSize: [32,32], iconAnchor: [16,16]
                     }) })
                         .addTo(map)
@@ -469,7 +473,9 @@ function renderItinerary(data) {
     const days = data.budget.days;
     const daily = data.activities.daily_plan;
     const currency = data.budget.currency;
-    const perDay = data.budget.lodging.per_day + data.budget.food.per_day + data.budget.activities.per_day;
+    const lodgingPending = data.budget.lodging.pending;
+    const lodgingPerDay = lodgingPending ? 0 : data.budget.lodging.per_day;
+    const perDay = lodgingPerDay + data.budget.food.per_day + data.budget.activities.per_day;
 
     for (let d = 1; d <= days; d++) {
         const acts = daily[String(d)] || [];
@@ -567,13 +573,26 @@ function renderItinerary(data) {
         }
 
         // Add lodging and food info
-        activitiesHtml += `
-            ${recommendationHtml}
+        let lodgingLineHtml;
+        if (lodgingPending) {
+            lodgingLineHtml = `
+            <div class="activity-item lodging-pending-item" style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05);cursor:pointer" onclick="switchView('hotels-view')">
+                <span class="activity-time"></span>
+                <span class="activity-icon">🏨</span>
+                <span style="color:#fbbf24;">Lodging: <em>Go to Hospit. tab to choose →</em></span>
+            </div>`;
+        } else {
+            lodgingLineHtml = `
             <div class="activity-item" style="margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.05)">
                 <span class="activity-time"></span>
                 <span class="activity-icon">🏨</span>
-                <span>Lodging: ~${fmt(data.budget.lodging.per_day)} ${currency}</span>
-            </div>
+                <span>Lodging: ~${fmt(data.budget.lodging.per_day)} ${currency}/night${state.selectedHotel ? ' — ' + state.selectedHotel.name : ''}</span>
+            </div>`;
+        }
+
+        activitiesHtml += `
+            ${recommendationHtml}
+            ${lodgingLineHtml}
             <div class="activity-item">
                 <span class="activity-time"></span>
                 <span class="activity-icon">🍽️</span>
@@ -597,15 +616,18 @@ function renderItinerary(data) {
 function renderBudgetDetails(data) {
     const b = data.budget;
     const c = b.currency;
+    const lodgingPending = b.lodging.pending;
+    const lodgingLabel = lodgingPending ? '<span class="pending-pulse">⏳ Pending hotel selection</span>' : `${fmt(b.lodging.total)} ${c}`;
+    const lodgingBarWidth = lodgingPending ? 0 : (b.lodging.total/b.total*100).toFixed(1);
 
     budgetTable.innerHTML = `
         <div class="budget-row">
             <span class="budget-row-label">🚗 Transport (round-trip)</span>
             <span class="budget-row-value">${fmt(b.transport)} ${c}</span>
         </div>
-        <div class="budget-row">
+        <div class="budget-row ${lodgingPending ? 'pending-row' : ''}">
             <span class="budget-row-label">🏨 Lodging (${b.days} nights)</span>
-            <span class="budget-row-value">${fmt(b.lodging.total)} ${c}</span>
+            <span class="budget-row-value">${lodgingLabel}</span>
         </div>
         <div class="budget-row">
             <span class="budget-row-label">🍽️ Food (${b.days} days)</span>
@@ -625,7 +647,7 @@ function renderBudgetDetails(data) {
         </div>
         <div class="budget-vis-bar">
             <div class="vis-segment" style="width:${(b.transport/b.total*100).toFixed(1)}%;background:var(--color-transport)"></div>
-            <div class="vis-segment" style="width:${(b.lodging.total/b.total*100).toFixed(1)}%;background:var(--color-lodging)"></div>
+            <div class="vis-segment" style="width:${lodgingBarWidth}%;background:var(--color-lodging)"></div>
             <div class="vis-segment" style="width:${(b.food.total/b.total*100).toFixed(1)}%;background:var(--color-food)"></div>
             <div class="vis-segment" style="width:${(b.activities.total/b.total*100).toFixed(1)}%;background:var(--color-activities)"></div>
             <div class="vis-segment" style="width:${(b.buffer.total/b.total*100).toFixed(1)}%;background:var(--color-buffer)"></div>
@@ -647,8 +669,10 @@ function updateOverlays(data) {
     tripInfo.classList.remove('hidden');
 
     const c = data.budget.currency;
+    const lodgingPending = data.budget.lodging.pending;
+    const lodgingValText = lodgingPending ? '⏳ Pending' : `${fmt(data.budget.lodging.total)} ${c}`;
     $('val-transport').textContent = `${fmt(data.budget.transport)} ${c}`;
-    $('val-lodging').textContent = `${fmt(data.budget.lodging.total)} ${c}`;
+    $('val-lodging').textContent = lodgingValText;
     $('val-food').textContent = `${fmt(data.budget.food.total)} ${c}`;
     $('val-activities').textContent = `${fmt(data.budget.activities.total)} ${c}`;
     $('val-buffer').textContent = `${fmt(data.budget.buffer.total)} ${c}`;
@@ -746,10 +770,13 @@ async function loadHospitality() {
     const type = state.hospitalityType || 'all';
     hotelGrid.innerHTML = `<div class="loading">Loading hospitality...</div>`;
 
+    // Check if a trip is active and lodging is still pending
+    const tripActive = state.tripData && state.tripData.budget;
+    const lodgingPending = tripActive && state.tripData.budget.lodging.pending;
+
     try {
         let results = [];
         if (type === 'all') {
-            // Fetch everything
             const res = await fetch(`/api/hospitality?city=${city}`);
             results = await res.json();
         } else {
@@ -762,6 +789,33 @@ async function loadHospitality() {
             return;
         }
 
+        // If trip is active, get hotel recommendation (closest to activities)
+        let recommendedIdx = -1;
+        let distances = [];
+        let recReason = '';
+        const allHotels = results.filter(i => i.type === 'hotel');
+        if (tripActive && allHotels.length > 0) {
+            try {
+                const recRes = await fetch('/api/recommend-hotel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        hotels: allHotels,
+                        activities_daily_plan: state.tripData.activities.daily_plan,
+                    }),
+                });
+                if (recRes.ok) {
+                    const recData = await recRes.json();
+                    recommendedIdx = recData.recommended_hotel_index || 0;
+                    distances = recData.distances_km || [];
+                    recReason = recData.reason || '';
+                }
+            } catch (e) { console.warn('Rec failed:', e); }
+        }
+
+        // Track hotel index within the hotel-only list
+        let hotelIdx = 0;
+
         // Helper to render a card
         const renderCard = (item) => {
             const isHotel = item.type === 'hotel';
@@ -769,8 +823,68 @@ async function loadHospitality() {
             const isCafe = item.type === 'cafe';
             
             const priceLabel = isHotel ? 'SAR / night' : 'SAR (Avg/Person)';
-            const bookBtnLabel = isHotel ? (item.empty_rooms <= 0 ? 'Fully Booked' : 'Choose Hotel') : 'View Menu';
             const icon = isHotel ? '🏨' : isRest ? '🍴' : '☕';
+
+            // Hotel-specific trip-aware logic
+            let isRec = false;
+            let isSelected = false;
+            let distKm = null;
+            let currentHotelIdx = -1;
+            let tripBtnHtml = '';
+            let badgeHtml = '';
+            let overBudgetHtml = '';
+
+            if (isHotel) {
+                currentHotelIdx = hotelIdx;
+                isRec = currentHotelIdx === recommendedIdx;
+                isSelected = state.selectedHotel && state.selectedHotel.name === item.name;
+                distKm = distances[currentHotelIdx] !== undefined ? distances[currentHotelIdx] : null;
+                hotelIdx++;
+
+                if (isRec) {
+                    badgeHtml = `<div class="rec-badge">📍 Closest to Activities</div>`;
+                }
+                if (isSelected) {
+                    badgeHtml = `<div class="selected-badge">✅ Selected</div>`;
+                }
+
+                // Over-budget check
+                if (tripActive && state.tripData.budget.lodging.max_per_day) {
+                    const maxPD = state.tripData.budget.lodging.max_per_day;
+                    if (item.price > maxPD * 1.2) {
+                        overBudgetHtml = `<div class="over-budget-warn">⚠️ Exceeds suggested lodging budget (~${fmt(maxPD)} SAR/night)</div>`;
+                    }
+                }
+
+                // Trip-aware button
+                if (tripActive && lodgingPending) {
+                    const days = state.tripData.budget.days;
+                    const totalCost = Math.round(item.price) * days;
+                    tripBtnHtml = `
+                        <div class="hotel-select-meta" style="margin-bottom:8px;">
+                            <span>📅 ${days} nights = <strong>${fmt(totalCost)} SAR</strong></span>
+                            ${distKm !== null ? `<span style="margin-left:8px;">📍 ${distKm.toFixed(1)} km from activities</span>` : ''}
+                        </div>
+                        ${overBudgetHtml}
+                        <button class="submit-btn" style="padding:10px; font-size:14px; background:linear-gradient(135deg,#4ade80,#10b981) !important;" 
+                            ${item.empty_rooms <= 0 ? 'disabled' : ''}
+                            onclick="selectHospitalityHotel(${currentHotelIdx})">
+                            ${item.empty_rooms <= 0 ? 'Fully Booked' : (isSelected ? '✅ Selected' : '🏨 Select for Trip')}
+                        </button>`;
+                } else if (tripActive && isSelected) {
+                    tripBtnHtml = `
+                        <button class="submit-btn" style="padding:10px; font-size:14px; background:linear-gradient(135deg,#10b981,#059669) !important;" disabled>
+                            ✅ Selected for Trip
+                        </button>`;
+                } else {
+                    tripBtnHtml = `
+                        <button class="submit-btn" style="padding:10px; font-size:14px;" 
+                            ${item.empty_rooms <= 0 ? 'disabled' : ''} 
+                            onclick="askBooking(${item.id}, '${item.name.replace(/'/g, "\\'")}')">
+                            ${item.empty_rooms <= 0 ? 'Fully Booked' : 'Choose Hotel'}
+                        </button>`;
+                }
+            }
             
             let detailsHtml = '';
             if (isHotel) {
@@ -787,8 +901,12 @@ async function loadHospitality() {
                 </div>`;
             }
 
+            const cardBorderColor = isHotel ? (isSelected ? '#4ade80' : isRec ? 'var(--accent)' : 'var(--accent)') : isRest ? '#22c55e' : '#f59e0b';
+            const cardExtraClass = isHotel ? (isSelected ? 'hotel-selected' : isRec ? 'hotel-recommended' : '') : '';
+
             return `
-            <div class="card" style="border-top: 3px solid ${isHotel ? 'var(--accent)' : isRest ? '#22c55e' : '#f59e0b'}">
+            <div class="card ${cardExtraClass}" style="border-top: 3px solid ${cardBorderColor}; position:relative; overflow:hidden;">
+                ${badgeHtml}
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                     <span style="font-size:12px; font-weight:bold; color:var(--text-muted); text-transform:uppercase;">${icon} ${item.type}</span>
                     <span style="font-size:14px;">${'★'.repeat(item.stars || 0)}${'⭐'.repeat(item.rating ? 1 : 0)}</span>
@@ -796,25 +914,41 @@ async function loadHospitality() {
                 <h3>${item.name}</h3>
                 <div class="price-tag">${Math.round(item.price)} <span>${priceLabel}</span></div>
                 ${detailsHtml}
-                <button class="submit-btn" style="padding:10px; font-size:14px;" 
-                    ${(isHotel && item.empty_rooms <= 0) ? 'disabled' : ''} 
-                    onclick="${isHotel ? `askBooking(${item.id}, '${item.name}')` : `alert('Opening menu for ${item.name}...')`}">
-                    ${bookBtnLabel}
-                </button>
+                ${isHotel ? tripBtnHtml : `
+                    <button class="submit-btn" style="padding:10px; font-size:14px;" 
+                        onclick="alert('Opening menu for ${item.name.replace(/'/g, "\\'")}...')">
+                        View Menu
+                    </button>
+                `}
             </div>
             `;
         };
 
+        // Build the trip-aware header banner
+        let headerHtml = '';
+        if (lodgingPending) {
+            const maxBudget = state.tripData.budget.lodging.max_per_day || 0;
+            headerHtml = `
+            <div style="grid-column:1/-1; padding:12px 16px; background:linear-gradient(135deg,rgba(251,191,36,0.1),rgba(245,158,11,0.05)); border:1px solid rgba(251,191,36,0.3); border-radius:12px; margin-bottom:10px;">
+                <div style="font-size:15px; font-weight:700; color:#fbbf24; margin-bottom:4px;">⏳ Select a hotel for your trip</div>
+                <div style="font-size:12px; color:var(--text-secondary);">Your lodging budget is pending. Pick a hotel to finalize your trip budget.
+                ${maxBudget > 0 ? ` Suggested max: <strong style="color:var(--accent)">~${fmt(maxBudget)} SAR/night</strong>` : ''}
+                </div>
+            </div>`;
+        }
+
         if (type === 'all') {
-            // Group by type for better layout
             const hotels = results.filter(i => i.type === 'hotel');
             const rests = results.filter(i => i.type === 'restaurant');
             const cafes = results.filter(i => i.type === 'cafe');
             
-            let finalHtml = '';
+            let finalHtml = headerHtml;
             if (hotels.length) {
-                finalHtml += `<div style="grid-column: 1/-1; margin-top:10px;"><h4 style="color:var(--accent)">🏨 Recommended Hotels</h4></div>`;
+                finalHtml += `<div style="grid-column: 1/-1; margin-top:10px;"><h4 style="color:var(--accent)">🏨 Hotels</h4></div>`;
                 finalHtml += hotels.map(renderCard).join('');
+            }
+            if (recReason && tripActive) {
+                finalHtml += `<div style="grid-column:1/-1;" class="rec-reason">💡 ${recReason}</div>`;
             }
             if (rests.length) {
                 finalHtml += `<div style="grid-column: 1/-1; margin-top:20px;"><h4 style="color:#22c55e">🍴 Top Restaurants</h4></div>`;
@@ -826,7 +960,7 @@ async function loadHospitality() {
             }
             hotelGrid.innerHTML = finalHtml;
         } else {
-            hotelGrid.innerHTML = results.map(renderCard).join('');
+            hotelGrid.innerHTML = headerHtml + results.map(renderCard).join('');
         }
     } catch (e) {
         hotelGrid.innerHTML = `<div class="empty-state">Failed to load hospitality data.</div>`;
@@ -857,6 +991,81 @@ async function confirmBooking() {
         alert('Booking failed.');
     }
 }
+
+// ─── Select Hotel from Hospitality Tab for Trip ─────────────────────────────
+// Called when user clicks "Select for Trip" on a hotel card in the Hospit. tab.
+// Uses the DB-seeded hotel data and applies it to the active trip budget.
+window.selectHospitalityHotel = function(hotelIdx) {
+    if (!state.tripData) return;
+
+    // Get the hotel list from the currently rendered grid
+    // We need to re-fetch the hotels from the DOM data or use the cached results
+    // Simplest: re-read from the hospitality API cache
+    const city = hotelCitySelect.value;
+    fetch(`/api/hospitality?city=${city}&type=hotel`)
+        .then(r => r.json())
+        .then(hotels => {
+            if (!hotels || hotelIdx >= hotels.length) return;
+
+            const h = hotels[hotelIdx];
+            const price = Math.round(h.price);
+            const days = state.tripData.budget.days;
+            const totalBudget = state.tripData.budget.total;
+            const transportCost = state.tripData.budget.transport;
+
+            // Save selected hotel
+            state.selectedHotel = {
+                name: h.name,
+                price_per_night: price,
+                lat: h.lat,
+                lng: h.lng,
+                stars: h.stars,
+                idx: hotelIdx,
+            };
+
+            // Recalculate budget:
+            // Total → Transport → Hotel → remainder split into food/activities/buffer
+            const lodgingTotal = price * days;
+            const afterTransportAndHotel = totalBudget - transportCost - lodgingTotal;
+            const remaining = Math.max(afterTransportAndHotel, 0);
+
+            const foodTotal = remaining * 0.50;
+            const activitiesTotal = remaining * 0.33;
+            const bufferTotal = remaining * 0.17;
+
+            const b = state.tripData.budget;
+            b.lodging = {
+                total: round2(lodgingTotal),
+                per_day: round2(price),
+                pending: false,
+                max_budget: b.lodging.max_budget || lodgingTotal,
+                max_per_day: b.lodging.max_per_day || price,
+            };
+            b.food = { total: round2(foodTotal), per_day: round2(foodTotal / days) };
+            b.activities = { total: round2(activitiesTotal), per_day: round2(activitiesTotal / days) };
+            b.buffer = { total: round2(bufferTotal), per_day: round2(bufferTotal / days) };
+            b.remaining = round2(remaining);
+
+            if (remaining <= 0) {
+                b.warnings = b.warnings || [];
+                if (!b.warnings.includes('Hotel cost + transport exceeds your total budget!')) {
+                    b.warnings.push('Hotel cost + transport exceeds your total budget!');
+                }
+                b.is_feasible = false;
+            }
+
+            // Re-render all views
+            renderItinerary(state.tripData);
+            renderBudgetDetails(state.tripData);
+            renderBudgetDetailsLeft(state.tripData);
+            updateOverlays(state.tripData);
+            renderWarnings(state.tripData);
+
+            // Refresh the hospitality grid to show selected state
+            loadHospitality();
+        })
+        .catch(e => console.error('Hotel selection failed:', e));
+};
 
 hotelCitySelect.addEventListener('change', loadHospitality);
 
@@ -973,25 +1182,25 @@ function selectPath(idx) {
     // Render travel log
     renderTravelLog(data);
 
-    // Auto-set hotel city for booking
-    if (data.map && data.map.dest_name) {
-        const dest = data.map.dest_name.toLowerCase();
-        // Check if destination is in our options
-        for (let opt of hotelCitySelect.options) {
-            if (opt.value === dest) {
-                hotelCitySelect.value = dest;
-                loadHospitality(); // Refresh hospitalty list for this city
-                break;
-            }
-        }
-    }
-
     // Update calendar
     const today = new Date().getDate();
     renderCalendar(today + 1, state.days);
 
     // Setup simulation
     setupSimulation(data);
+
+    // Reset hotel selection on new path and refresh Hospit. tab
+    state.selectedHotel = null;
+    if (data.map && data.map.dest_name) {
+        const dest = data.map.dest_name.toLowerCase();
+        for (let opt of hotelCitySelect.options) {
+            if (opt.value === dest) {
+                hotelCitySelect.value = dest;
+                loadHospitality();
+                break;
+            }
+        }
+    }
 }
 
 $('edit-trip-btn').addEventListener('click', () => {
@@ -1073,7 +1282,10 @@ function renderBudgetDetailsLeft(data) {
             <span class="budget-row-value">${fmt(b.transport)} ${c}</span>
         </div>
         ${fuelBreakdownHtml}
-        <div class="budget-row"><span class="budget-row-label">🏨 Lodging</span><span class="budget-row-value">${fmt(b.lodging.total)} ${c}</span></div>
+        <div class="budget-row ${b.lodging.pending ? 'pending-row' : ''}">
+            <span class="budget-row-label">🏨 Lodging</span>
+            <span class="budget-row-value">${b.lodging.pending ? '<span class="pending-pulse">⏳ Select hotel</span>' : fmt(b.lodging.total) + ' ' + c}</span>
+        </div>
         <div class="budget-row"><span class="budget-row-label">🍽️ Food</span><span class="budget-row-value">${fmt(b.food.total)} ${c}</span></div>
         <div class="budget-row"><span class="budget-row-label">🎯 Activities</span><span class="budget-row-value">${fmt(b.activities.total)} ${c}</span></div>
         <div class="budget-row"><span class="budget-row-label">🛡️ Buffer</span><span class="budget-row-value">${fmt(b.buffer.total)} ${c}</span></div>
@@ -1397,5 +1609,9 @@ function stopSimulation() {
     clearVehicle();
     $('sim-btn').textContent = '▶ Simulate';
     $('sim-btn').classList.remove('playing');
+}
+
+function round2(n) {
+    return Math.round(n * 100) / 100;
 }
 

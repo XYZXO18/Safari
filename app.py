@@ -264,6 +264,9 @@ def plan_trip():
                 full_trip_dataset = []
                 travel_time_str = ""
 
+            # Lodging is PENDING until user selects a hotel
+            # We keep the allocated lodging budget as max_lodging_budget for reference,
+            # but set actual lodging to 0 until hotel is chosen.
             return {
                 "path_type": path_type,
                 "transport": {
@@ -283,7 +286,7 @@ def plan_trip():
                     "transport": transport.cost_round_trip,
                     "remaining": breakdown.remaining_budget,
                     "days": days,
-                    "lodging": {"total": breakdown.lodging_total, "per_day": breakdown.lodging_per_day},
+                    "lodging": {"total": 0, "per_day": 0, "pending": True, "max_budget": breakdown.lodging_total, "max_per_day": breakdown.lodging_per_day},
                     "food": {"total": breakdown.food_total, "per_day": breakdown.food_per_day},
                     "activities": {"total": breakdown.activities_total, "per_day": breakdown.activities_per_day},
                     "buffer": {"total": breakdown.buffer_total, "per_day": breakdown.buffer_per_day},
@@ -317,10 +320,28 @@ def plan_trip():
             }
 
         paths = []
-        # Generate 3 alternative paths
-        paths.append(build_trip_path("budget", budget * 0.7, activities_limit=30))
-        paths.append(build_trip_path("balanced", budget))
-        paths.append(build_trip_path("premium", budget * 1.5))
+        # Generate 3 alternative paths IN PARALLEL (massive speed boost)
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+        path_configs = [
+            ("budget",   budget * 0.7, 30),
+            ("balanced", budget,       None),
+            ("premium",  budget * 1.5, None),
+        ]
+
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            futures = {
+                executor.submit(build_trip_path, ptype, pbudget, plimit): idx
+                for idx, (ptype, pbudget, plimit) in enumerate(path_configs)
+            }
+            results = [None, None, None]
+            for future in as_completed(futures):
+                idx = futures[future]
+                try:
+                    results[idx] = future.result()
+                except Exception as e:
+                    print(f"Path {path_configs[idx][0]} failed: {e}")
+                    results[idx] = {"path_type": path_configs[idx][0], "error": str(e)}
+            paths = results
 
         return jsonify({
             "paths": paths,
@@ -490,6 +511,87 @@ def api_book_hotel():
     from safari.database import book_hotel
     book_hotel(hotel_id)
     return jsonify({"status": "success", "message": "Hotel booked successfully"})
+
+
+@app.route('/api/select-hotel', methods=['POST'])
+def api_select_hotel():
+    """User selects a hotel — recalculate lodging into the budget."""
+    data = request.json
+    hotel_name = data.get('hotel_name', '')
+    price_per_night = float(data.get('price_per_night', 0))
+    days = int(data.get('days', 1))
+    total_budget = float(data.get('total_budget', 0))
+    currency = data.get('currency', 'SAR')
+
+    lodging_total = price_per_night * days
+    return jsonify({
+        "status": "success",
+        "hotel_name": hotel_name,
+        "lodging": {
+            "total": round(lodging_total, 2),
+            "per_day": round(price_per_night, 2),
+            "pending": False,
+        }
+    })
+
+
+@app.route('/api/recommend-hotel', methods=['POST'])
+def api_recommend_hotel():
+    """
+    Find the hotel closest to the geographic centroid of all planned activities.
+    Expects JSON: { hotels: [...], activities_daily_plan: {...} }
+    Returns the recommended hotel with a distance score.
+    """
+    import math
+    data = request.json
+    hotels = data.get('hotels', [])
+    daily_plan = data.get('activities_daily_plan', {})
+
+    if not hotels:
+        return jsonify({"error": "No hotels provided"}), 400
+
+    # Collect all activity coordinates
+    act_coords = []
+    for day_key, acts in daily_plan.items():
+        for act in acts:
+            if isinstance(act, dict) and act.get('lat') and act.get('lng'):
+                act_coords.append((act['lat'], act['lng']))
+
+    if not act_coords:
+        # No geo-located activities — just return the first hotel
+        return jsonify({"recommended_hotel_index": 0, "reason": "No activity coordinates available"})
+
+    # Compute centroid of activities
+    centroid_lat = sum(c[0] for c in act_coords) / len(act_coords)
+    centroid_lng = sum(c[1] for c in act_coords) / len(act_coords)
+
+    # Find hotel closest to centroid (Haversine distance)
+    def haversine(lat1, lng1, lat2, lng2):
+        R = 6371  # Earth radius in km
+        dlat = math.radians(lat2 - lat1)
+        dlng = math.radians(lng2 - lng1)
+        a = math.sin(dlat/2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlng/2)**2
+        return R * 2 * math.asin(math.sqrt(a))
+
+    best_idx = 0
+    best_dist = float('inf')
+    distances = []
+    for i, h in enumerate(hotels):
+        if h.get('lat') and h.get('lng'):
+            d = haversine(centroid_lat, centroid_lng, h['lat'], h['lng'])
+            distances.append(round(d, 2))
+            if d < best_dist:
+                best_dist = d
+                best_idx = i
+        else:
+            distances.append(None)
+
+    return jsonify({
+        "recommended_hotel_index": best_idx,
+        "centroid": {"lat": round(centroid_lat, 5), "lng": round(centroid_lng, 5)},
+        "distances_km": distances,
+        "reason": f"Closest to the center of {len(act_coords)} planned activities (~{best_dist:.1f} km)"
+    })
 
 
 if __name__ == "__main__":

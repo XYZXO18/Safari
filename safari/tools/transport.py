@@ -129,6 +129,11 @@ def calculate_transport_costs(
 
     mode_lower = mode.lower().strip()
 
+    cost_one_way = 0.0
+    cost_rt = 0.0
+    breakdown = ""
+    time_mins = 0
+
     if mode_lower in ("car", "driving"):
         # ─── Use the local fuel_prices.json database ───────────────────────
         fuel_result = calculate_driving_cost(
@@ -148,26 +153,107 @@ def calculate_transport_costs(
             f"{fuel_result['liters_one_way']:.1f} L "
             f"@ {fuel_result['price_per_liter']:.2f} SAR/L"
         )
-
-    else:
-        raise ValueError(f"Unknown transport mode: {mode}")
-
-    # Estimate travel time
-    if mode_lower in ("car", "driving"):
-        # Saudi highway speed approx 110-120 km/h avg including stops
         avg_speed = 110 
         time_mins = round((dist / avg_speed) * 60)
-    elif mode_lower == "flight":
-        # Flight time + 2 hours buffer for airport
-        time_mins = round((dist / 800) * 60) + 120
-    elif mode_lower == "train":
-        # Haramain High Speed or SAR: avg 200 km/h
-        time_mins = round((dist / 200) * 60) + 30
-    elif mode_lower == "bus":
-        # Bus speed approx 80 km/h
-        time_mins = round((dist / 80) * 60) + 30
+
     else:
-        time_mins = 0
+        # Load the transportation logistics JSON
+        import json
+        import os
+        import re
+        
+        json_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "safari_transportation_logistics_filtered.json")
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)["saudi_arabia_transportation"]
+        except Exception as e:
+            print(f"Error loading transport JSON: {e}")
+            data = {}
+
+        def parse_duration(duration_str):
+            """Convert '2h 45m' to minutes."""
+            h_match = re.search(r'(\d+)h', duration_str)
+            m_match = re.search(r'(\d+)m', duration_str)
+            h = int(h_match.group(1)) if h_match else 0
+            m = int(m_match.group(1)) if m_match else 0
+            return h * 60 + m
+
+        def find_route(routes_list, orig, dest):
+            orig_lower = orig.lower()
+            dest_lower = dest.lower()
+            
+            # Map common names (like coast -> jeddah)
+            mapping = {"coast": "jeddah", "mountains": "abha", "desert": "alula", "city": "riyadh"}
+            o_clean = mapping.get(orig_lower, orig_lower)
+            d_clean = mapping.get(dest_lower, dest_lower)
+
+            for route in routes_list:
+                r_from = route["from"].lower()
+                r_to = route["to"].lower()
+                # Direct match
+                if (o_clean in r_from and d_clean in r_to):
+                    return route
+                # Reverse match (assume symmetric pricing/time for simplicity)
+                if (d_clean in r_from and o_clean in r_to):
+                    return route
+            return None
+
+        route_found = None
+        provider = ""
+
+        if mode_lower == "flight":
+            routes = data.get("domestic_flights", {}).get("major_routes", [])
+            route_found = find_route(routes, origin, destination)
+            provider = "Domestic Airlines"
+            
+        elif mode_lower == "train":
+            for network in data.get("train_networks", []):
+                r = find_route(network.get("routes", []), origin, destination)
+                if r:
+                    route_found = r
+                    provider = network.get("network_name", "Train")
+                    break
+                    
+        elif mode_lower == "bus":
+            for network in data.get("bus_networks", []):
+                r = find_route(network.get("major_routes", []), origin, destination)
+                if r:
+                    route_found = r
+                    provider = network.get("network_name", "Bus")
+                    break
+
+        if route_found:
+            cost_one_way = float(route_found["average_cost_sar"])
+            cost_rt = cost_one_way * 2 if round_trip else cost_one_way
+            time_mins = parse_duration(route_found["average_duration"])
+            
+            # Add airport buffer time for flights
+            if mode_lower == "flight":
+                time_mins += 120
+            
+            breakdown = f"🎫 {provider} | Exact match found in logistics database for {route_found['from']} ↔ {route_found['to']}"
+        else:
+            # Fallback estimation if route not in JSON
+            if mode_lower == "flight":
+                cost_one_way = dist * 0.45
+                time_mins = round((dist / 800) * 60) + 120
+                provider = "Estimated Flight"
+            elif mode_lower == "train":
+                cost_one_way = dist * 0.25
+                time_mins = round((dist / 200) * 60) + 30
+                provider = "Estimated Train"
+            elif mode_lower == "bus":
+                cost_one_way = dist * 0.15
+                time_mins = round((dist / 80) * 60) + 30
+                provider = "Estimated Bus"
+            else:
+                cost_one_way = dist * 0.3
+                time_mins = 0
+                provider = "Unknown Transport"
+
+            cost_rt = cost_one_way * 2 if round_trip else cost_one_way
+            breakdown = f"📊 {provider} | Estimated distance-based calculation ({cost_one_way / dist:.2f} SAR/km)"
+
 
     return TransportEstimate(
         mode=mode_lower,
