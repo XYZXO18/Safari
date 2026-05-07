@@ -202,6 +202,87 @@
             color: var(--text-muted);
             margin-top: 40px;
         }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.1);
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .live-badge::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #34d399;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .rating-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .rating-score {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 8px;
+        }
+
+        .no-price {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .almosafer-btn {
+            display: block;
+            width: 100%;
+            padding: 11px;
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            background: transparent;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background 0.2s, color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .almosafer-btn:hover {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .catalogue-count {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -223,11 +304,13 @@
             </select>
         </div>
 
+        <div id="catalogue-info" class="catalogue-count"></div>
+
         <div id="hotel-grid" class="comparison-grid">
             <!-- Cards loaded via JS -->
         </div>
 
-        <div id="loading" class="loading hidden">Refreshing live data...</div>
+        <div id="loading" class="loading hidden">Fetching live prices from Almosafer...</div>
     </div>
 
     <div id="booking-modal" class="modal-overlay">
@@ -248,38 +331,68 @@
             const city = document.getElementById('city-select').value;
             const grid = document.getElementById('hotel-grid');
             const loader = document.getElementById('loading');
-            
+            const info = document.getElementById('catalogue-info');
+
             grid.innerHTML = '';
+            info.textContent = '';
             loader.classList.remove('hidden');
 
             try {
-                const res = await fetch(`/api/hospitality?city=${city}&type=hotel`);
+                const res = await fetch(`/api/hospitality?city=${encodeURIComponent(city)}&type=hotel`);
                 const data = await res.json();
-                
-                grid.innerHTML = data.map(h => `
+
+                if (!data.length) {
+                    grid.innerHTML = '<p style="color:var(--text-muted);text-align:center;grid-column:1/-1;">No hotels found on Almosafer for this city right now. Try again later.</p>';
+                    return;
+                }
+
+                // Show how many hotels are in the growing catalogue
+                const catRes = await fetch(`/api/hotels?city=${encodeURIComponent(city)}`);
+                const catData = await catRes.json();
+                const catCount = catData.city_catalogue_size || 0;
+                if (catCount > 0) {
+                    info.textContent = `${catCount} hotels discovered in ${city.charAt(0).toUpperCase()+city.slice(1)} so far — showing 5 live prices`;
+                }
+
+                grid.innerHTML = data.map(h => {
+                    const stars = '★'.repeat(Math.min(h.stars || 4, 5));
+                    const price = h.live_price_sar;
+                    const priceHtml = price
+                        ? `<div class="price-tag">${Math.round(price).toLocaleString()} <span>SAR / night</span></div>`
+                        : `<div class="no-price">Price unavailable — check Almosafer</div>`;
+                    const ratingHtml = h.rating > 0
+                        ? `<div class="rating-row"><span class="rating-score">★ ${h.rating.toFixed(1)}</span> Guest rating</div>`
+                        : '';
+                    const almosaferUrl = h.almosafer_url || '#';
+                    const safeName = (h.name || '').replace(/'/g, "\\'");
+
+                    return `
                     <div class="card">
+                        <div class="live-badge">LIVE · Almosafer</div>
                         <h2>${h.name}</h2>
-                        <div class="stars">${'★'.repeat(h.stars)}</div>
-                        <div class="price-tag">${Math.round(h.price)} <span>SAR / night</span></div>
-                        <div class="availability">
-                            <span class="rooms-count">${h.empty_rooms}</span>
-                            <span>rooms available now</span>
-                        </div>
-                        <button class="book-btn" ${h.empty_rooms <= 0 ? 'disabled' : ''} onclick="askBooking(${h.id}, '${h.name}')">
-                            ${h.empty_rooms <= 0 ? 'Fully Booked' : 'Choose this Hotel'}
+                        <div class="stars">${stars}</div>
+                        ${ratingHtml}
+                        ${priceHtml}
+                        <button class="book-btn" onclick="askBooking('${h.id}', '${safeName}', ${price || 0}, '${almosaferUrl}')">
+                            Choose this Hotel
                         </button>
-                    </div>
-                `).join('');
+                        <a class="almosafer-btn" href="${almosaferUrl}" target="_blank" rel="noopener">
+                            View on Almosafer ↗
+                        </a>
+                    </div>`;
+                }).join('');
+
             } catch (e) {
-                grid.innerHTML = '<p>Failed to load hospitality data.</p>';
+                grid.innerHTML = '<p style="color:var(--text-muted);text-align:center;grid-column:1/-1;">Failed to load hotel data.</p>';
             } finally {
                 loader.classList.add('hidden');
             }
         }
 
-        function askBooking(id, name) {
-            selectedHotel = id;
-            document.getElementById('modal-text').innerText = `Would you like to reserve a room at ${name}? This will update live availability.`;
+        function askBooking(id, name, pricePerNight, almosaferUrl) {
+            selectedHotel = { id, name, pricePerNight, almosaferUrl };
+            const priceStr = pricePerNight > 0 ? ` at SAR ${Math.round(pricePerNight).toLocaleString()}/night` : '';
+            document.getElementById('modal-text').innerText = `Reserve a room at ${name}${priceStr}? You'll be taken to Almosafer to complete your booking.`;
             document.getElementById('booking-modal').classList.add('active');
         }
 
@@ -288,30 +401,11 @@
             selectedHotel = null;
         }
 
-        document.getElementById('confirm-booking').onclick = async () => {
+        document.getElementById('confirm-booking').onclick = () => {
             if (!selectedHotel) return;
-            
-            const btn = document.getElementById('confirm-booking');
-            btn.disabled = true;
-            btn.innerText = 'Booking...';
-
-            try {
-                const res = await fetch('/api/book', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({hotel_id: selectedHotel})
-                });
-                
-                if (res.ok) {
-                    closeModal();
-                    loadHotels(); // Refresh data
-                }
-            } catch (e) {
-                alert('Booking failed.');
-            } finally {
-                btn.disabled = false;
-                btn.innerText = 'Confirm Booking';
-            }
+            closeModal();
+            // Open Almosafer to complete booking — price is always live there
+            window.open(selectedHotel.almosaferUrl || 'https://www.almosafer.com/en', '_blank', 'noopener');
         };
 
         document.getElementById('city-select').onchange = loadHotels;

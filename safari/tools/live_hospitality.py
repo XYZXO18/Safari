@@ -178,31 +178,76 @@ def _ddg_search_venues(
 
 def search_hotels_live(
     city: str,
-    budget_per_night: float,
+    budget_per_night: float = 500.0,
     currency: str = "SAR",
     max_results: int = 5,
 ) -> List[VenueStub]:
     """
-    Search for real hotels with live prices.
-    Tries Gemini → DuckDuckGo. No DB fallback.
+    Fetch live hotel listings from Almosafer for the given city.
+    - Returns exactly max_results (default 5) hotels with real-time prices.
+    - Every new hotel found is saved to the local DB (name + location only, no price).
+    - If the city catalogue has fewer than 20 hotels, a second scrape pass runs
+      to build it up over time.
     """
-    query = (
-        f"best hotels in {city} under {budget_per_night} {currency} per night "
-        f"with price 2025 2026 booking"
-    )
+    from safari.tools.almosafer import AlmosaferScraper
+    from safari.database import upsert_hotel_static, get_hotel_count
+    from config import CITY_COORDS
+    import random
 
-    # Try Gemini grounding first
-    results = _gemini_search_venues(query, "hotel", city, max_results)
-    if results:
-        return results
+    console.print(f"[bold cyan][A] [Agent 2] Fetching live hotels from Almosafer for {city}...[/bold cyan]")
 
-    # DuckDuckGo fallback
-    results = _ddg_search_venues(query, "hotel", city, budget_per_night, max_results)
-    if results:
-        return results
+    scraper = AlmosaferScraper()
+    raw = scraper.scrape_hotels(city, max_results=max_results)
 
-    console.print(f"[bold red][!] [Agent 2] No live hotels found for {city}. (Fallback DB disabled)[/bold red]")
-    return []
+    stubs: List[VenueStub] = []
+    for h in raw:
+        name = h.get("name", "").strip()
+        if not name:
+            continue
+
+        price = h.get("price_per_night") or 0.0
+        stars = int(h.get("stars") or 4)
+        rating = float(h.get("rating") or 0.0)
+
+        # Save new hotel to DB — name + coords only, price is never stored
+        base = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+        lat = base["lat"] + random.uniform(-0.05, 0.05)
+        lng = base["lng"] + random.uniform(-0.05, 0.05)
+        upsert_hotel_static(city, name, lat, lng, stars)
+
+        stubs.append(VenueStub(
+            name=name,
+            type="hotel",
+            price=price,
+            currency="SAR",
+            rating=rating if rating > 0 else None,
+            description=f"{stars}★ hotel in {city.title()} — live from Almosafer",
+            source_url=scraper.hotel_search_url(city, None, None),
+        ))
+
+    # Catalogue building: if city has <20 known hotels, scrape extra dates to grow it
+    current_count = get_hotel_count(city)
+    if current_count < 20 and len(raw) > 0:
+        try:
+            from datetime import date, timedelta
+            extra_ci = (date.today() + timedelta(days=14)).strftime("%Y-%m-%d")
+            extra_co = (date.today() + timedelta(days=17)).strftime("%Y-%m-%d")
+            extra_raw = scraper.scrape_hotels(city, extra_ci, extra_co, max_results=5)
+            for eh in extra_raw:
+                ename = eh.get("name", "").strip()
+                if ename:
+                    base = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+                    elat = base["lat"] + random.uniform(-0.05, 0.05)
+                    elng = base["lng"] + random.uniform(-0.05, 0.05)
+                    upsert_hotel_static(city, ename, elat, elng, int(eh.get("stars") or 4))
+            logger.info(f"[Almosafer] Catalogue for {city}: {get_hotel_count(city)} hotels stored.")
+        except Exception as e:
+            logger.warning(f"[Almosafer] Catalogue build error: {e}")
+
+    if not stubs:
+        console.print(f"[bold red][!] [Agent 2] Almosafer returned no hotels for {city}.[/bold red]")
+
+    return stubs[:max_results]
 
 
 def search_restaurants_live(
