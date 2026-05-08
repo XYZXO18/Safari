@@ -50,5 +50,31 @@
       "confidence": "medium"
     },
     "ts": 1778247623.1501062
+  },
+  "flight__riyadh__doha": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Doha",
+      "price_one_way": 322.5,
+      "price_round_trip": 596.62,
+      "currency": "SAR",
+      "airline": "Flynas",
+      "duration_minutes": 85,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778248290.2055871
+  },
+  "rental__doha": {
+    "data": {
+      "city": "Doha",
+      "price_per_day": 32.1,
+      "currency": "SAR",
+      "vehicle_type": "Compact",
+      "company": "GREEN MOTION",
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778248425.9523313
   }
 }

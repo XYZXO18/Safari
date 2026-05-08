@@ -8509,5 +8509,4886 @@
       "recommendation": 0
     },
     "cached_at": "2026-05-08T13:38:03.510266+00:00"
+  },
+  "8c359db068231d351bf2e905ef0f6c34": {
+    "params": {
+      "budget": 500.0,
+      "travel_mode": "car",
+      "destination": "united arab emirates",
+      "days": 7,
+      "origin": "riyadh",
+      "vehicle_type": "default",
+      "currency": "SAR",
+      "start_date": "",
+      "end_date": "",
+      "interests": ""
+    },
+    "result": {
+      "paths": [
+        {
+          "transport": {
+            "mode": "car",
+            "origin": "Riyadh",
+            "destination": "Dubai",
+            "distance_km": 1054.43,
+            "travel_time_str": "9h 35m",
+            "cost_one_way": 191.55,
+            "cost_round_trip": 383.11,
+            "breakdown": "📊 Car | Fuel (RON 91): 1054 km ÷ 12.0 km/L = 87.9 L @ 2.18 SAR/L",
+            "vehicle_type": "default"
+          },
+          "budget": {
+            "total": 500.0,
+            "currency": "SAR",
+            "transport": 383.11,
+            "remaining": 116.88999999999999,
+            "days": 7,
+            "lodging": {
+              "total": 0,
+              "per_day": 0,
+              "pending": true,
+              "max_budget": 46.76,
+              "max_per_day": 6.68
+            },
+            "food": {
+              "total": 35.07,
+              "per_day": 5.01
+            },
+            "activities": {
+              "total": 23.38,
+              "per_day": 3.34
+            },
+            "buffer": {
+              "total": 11.69,
+              "per_day": 1.67
+            },
+            "is_feasible": true,
+            "warnings": [
+              "Very tight budget: only 17 SAR/day after transport."
+            ]
+          },
+          "activities": {
+            "destination": "city",
+            "vibe": "Urban exploration, nightlife, shopping, dining",
+            "recommended_city": "Dubai",
+            "daily_plan": {
+              "1": [
+                {
+                  "id": "trend_7_the_dubai_",
+                  "name": "🔥 TRENDING: The Dubai Frame",
+                  "lat": 25.2494,
+                  "lng": 55.3088,
+                  "is_trending_spot": true,
+                  "cost": 51.0,
+                  "category": "attraction",
+                  "description": "The world's largest picture frame, offering unique panoramic views of both old and new Dubai from its 150-meter height, serving as an iconic architectural landmark.",
+                  "social_buzz": "An iconic landmark popular for its unique views and Instagrammable photo opportunities.",
+                  "rating": 4.5,
+                  "price_range": "$",
+                  "tags": [
+                    "landmark",
+                    "views",
+                    "architecture",
+                    "photography"
+                  ],
+                  "source": "Onalulu, Tripoto, Arabian Luxury Tours"
+                },
+                {
+                  "id": "trend_0_dinner_by_",
+                  "name": "🔥 TRENDING: Dinner by Heston Blumenthal",
+                  "lat": 25.1147,
+                  "lng": 55.1824,
+                  "is_trending_spot": true,
+                  "cost": 765.0,
+                  "category": "restaurant",
+                  "description": "An award-winning high-end restaurant at Atlantis The Royal, celebrated for its theatrical and complex dishes inspired by historic British recipes.",
+                  "social_buzz": "Awarded 'Restaurant of the Year 2024', known for its celebrity chef and unique culinary experience.",
+                  "rating": 4.8,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "fine dining",
+                    "European cuisine",
+                    "luxury",
+                    "Atlantis The Royal"
+                  ],
+                  "source": "Time Out Dubai, Wondergifts.ae"
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 25.272429262042902,
+                  "lng": 55.27625838631598
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 25.162078427412947,
+                  "lng": 55.20211030533388
+                },
+                {
+                  "name": "Global Village",
+                  "lat": 25.0528,
+                  "lng": 55.3819
+                }
+              ],
+              "2": [
+                {
+                  "id": "trend_1_brix_café",
+                  "name": "🔥 TRENDING: BRIX Café",
+                  "lat": 25.163,
+                  "lng": 55.2396,
+                  "is_trending_spot": true,
+                  "cost": 102.0,
+                  "category": "cafe",
+                  "description": "Named Time Out Dubai's best cafe for 2026, this spot offers top-tier specialty coffee and delightful views over the serene Jumeirah Fishing Harbour.",
+                  "social_buzz": "Award-winning coffee, scenic views, and a cozy, Instagrammable atmosphere.",
+                  "rating": 4.7,
+                  "price_range": "$$",
+                  "tags": [
+                    "specialty coffee",
+                    "cafe",
+                    "views",
+                    "Jumeirah"
+                  ],
+                  "source": "Time Out Dubai"
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 25.162078427412947,
+                  "lng": 55.20211030533388
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 25.272429262042902,
+                  "lng": 55.27625838631598
+                },
+                {
+                  "name": "Global Village",
+                  "lat": 25.0528,
+                  "lng": 55.3819
+                }
+              ],
+              "3": [
+                {
+                  "id": "trend_2_museum_of_",
+                  "name": "🔥 TRENDING: Museum of the Future",
+                  "lat": 25.2186,
+                  "lng": 55.2801,
+                  "is_trending_spot": true,
+                  "cost": 152.0,
+                  "category": "attraction",
+                  "description": "An iconic architectural marvel that offers an immersive journey into future possibilities, showcasing cutting-edge technology, AI, and sustainable practices.",
+                  "social_buzz": "Trending for its futuristic design, innovative exhibits, and highly Instagrammable exterior.",
+                  "rating": 4.7,
+                  "price_range": "$$",
+                  "tags": [
+                    "museum",
+                    "technology",
+                    "architecture",
+                    "futuristic"
+                  ],
+                  "source": "Onalulu, Vitrum Marketing, Ocean Front real estate"
+                },
+                {
+                  "name": "Global Village",
+                  "lat": 25.0528,
+                  "lng": 55.3819
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 25.272429262042902,
+                  "lng": 55.27625838631598
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 25.162078427412947,
+                  "lng": 55.20211030533388
+                }
+              ],
+              "4": [
+                {
+                  "id": "trend_3_aya_univer",
+                  "name": "🔥 TRENDING: AYA Universe",
+                  "lat": 25.2285,
+                  "lng": 55.3235,
+                  "is_trending_spot": true,
+                  "cost": 128.0,
+                  "category": "attraction",
+                  "description": "A futuristic entertainment hub at WAFI City Mall, providing a multisensory immersive experience across 12 interactive zones with high-tech sound, lights, and graphics.",
+                  "social_buzz": "Highly popular for its unique digital art and immersive, Instagram-worthy experiences.",
+                  "rating": 4.6,
+                  "price_range": "$$",
+                  "tags": [
+                    "interactive art",
+                    "digital art",
+                    "entertainment",
+                    "immersive"
+                  ],
+                  "source": "TBO Academy, Vitrum Marketing, Explorer Tours"
+                },
+                {
+                  "name": "Global Village",
+                  "lat": 25.0528,
+                  "lng": 55.3819
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 25.272429262042902,
+                  "lng": 55.27625838631598
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 25.162078427412947,
+                  "lng": 55.20211030533388
+                }
+              ],
+              "5": [
+                {
+                  "id": "trend_4_white_duba",
+                  "name": "🔥 TRENDING: WHITE Dubai",
+                  "lat": 25.1388,
+                  "lng": 55.2974,
+                  "is_trending_spot": true,
+                  "cost": 510.0,
+                  "category": "nightlife",
+                  "description": "A luxurious rooftop nightclub located at Meydan Racecourse, renowned for its stunning city skyline views, top-tier entertainment, and vibrant party atmosphere.",
+                  "social_buzz": "Known as the ultimate rooftop party spot with celebrity sightings and world-class DJs.",
+                  "rating": 4.2,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "nightclub",
+                    "rooftop",
+                    "luxury",
+                    "party",
+                    "DJs"
+                  ],
+                  "source": "Travel Divas, Top 10 Must-Visit Dubai Nightclubs"
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 25.272429262042902,
+                  "lng": 55.27625838631598
+                },
+                {
+                  "name": "Global Village",
+                  "lat": 25.0528,
+                  "lng": 55.3819
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 25.162078427412947,
+                  "lng": 55.20211030533388
+                }
+              ],
+              "6": [
+                {
+                  "id": "trend_5_desert_saf",
+                  "name": "🔥 TRENDING: Desert Safari",
+                  "lat": 24.7938,
+                  "lng": 55.4851,
+                  "is_trending_spot": true,
+                  "cost": 357.0,
+                  "category": "unique experience",
+                  "description": "A quintessential Dubai adventure offering thrilling dune bashing, camel rides, sandboarding, and traditional Bedouin-style dinner and entertainment under the stars.",
+                  "social_buzz": "A must-do experience for tourists seeking adventure and cultural immersion in the Arabian Desert.",
+                  "rating": 4.8,
+                  "price_range": "$$$",
+                  "tags": [
+                    "adventure",
+                    "desert",
+                    "culture",
+                    "safari",
+                    "outdoor"
+                  ],
+                  "source": "Onalulu, Agoda.com, Hala Arabia Travel & Tourism LLC"
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 25.162078427412947,
+                  "lng": 55.20211030533388
+                },
+                {
+                  "name": "Global Village",
+                  "lat": 25.0528,
+                  "lng": 55.3819
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 25.272429262042902,
+                  "lng": 55.27625838631598
+                }
+              ],
+              "7": [
+                {
+                  "id": "trend_6_tapasake",
+                  "name": "🔥 TRENDING: Tapasake",
+                  "lat": 25.2255,
+                  "lng": 55.309,
+                  "is_trending_spot": true,
+                  "cost": 612.0,
+                  "category": "restaurant",
+                  "description": "Located at One&Only One Za'abeel, this restaurant offers authentic South American cuisine with breathtaking, uninterrupted views of the Dubai skyline from the UAE's longest suspended infinity pool.",
+                  "social_buzz": "Trending as a new luxury opening with stunning views and a unique infinity pool dining experience.",
+                  "rating": 4.6,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "fine dining",
+                    "South American",
+                    "views",
+                    "infinity pool",
+                    "luxury"
+                  ],
+                  "source": "GRAZIA Guide"
+                },
+                {
+                  "name": "Global Village",
+                  "lat": 25.0528,
+                  "lng": 55.3819
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 25.272429262042902,
+                  "lng": 55.27625838631598
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 25.162078427412947,
+                  "lng": 55.20211030533388
+                }
+              ]
+            },
+            "hotel": {
+              "name": "Atlantis, The Palm",
+              "lat": 25.1252,
+              "lng": 55.117
+            }
+          },
+          "events": {
+            "city": "Dubai",
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-15",
+            "events": [],
+            "total_event_cost": 0,
+            "scan_source": "file_cache"
+          },
+          "web_research": {
+            "city": "Dubai",
+            "research_date": "2026-05-08",
+            "social_posts": [
+              {
+                "platform": "blog",
+                "author": "Traverse Blog",
+                "content": "The XVA Art Hotel in Al Fahidi is highlighted as a true hidden gem in Dubai, offering a unique, intimate gallery-like experience with individually designed rooms and an outstanding café.",
+                "category": "hidden_gem",
+                "relevance_score": 0.95,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFdokkgOz9cvO1WllJNqIhBza4pc69idM-O8R2dQ3L1ZpOCahYDzPXRc1fVkPfFGXlcpDtWss1OpBehWKdTTrHW7hKzvmPgPOOJVIwSLvAYQ006ZC4jVh9ZmNUY0Abjhm_-wOKL10ibRflp8dw=",
+                "likes": 0,
+                "posted_date": "February 16 2026"
+              },
+              {
+                "platform": "blog",
+                "author": "Traverse Blog",
+                "content": "Aura Skypool, Dubai's highest 360° infinity pool atop the Ritz-Carlton, is recommended for a luxe, adults-only pool and lounge experience perfect for sunset cocktails and socializing.",
+                "category": "attraction",
+                "relevance_score": 0.92,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFdokkgOz9cvO1WllJNqIhBza4pc69idM-O8R2dQ3L1ZpOCahYDzPXRc1fVkPfFGXlcpDtWss1OpBehWKdTTrHW7hKzvmPgPOOJVIwSLvAYQ006ZC4jVh9ZmNUY0Abjhm_-wOKL10ibRflp8dw=",
+                "likes": 0,
+                "posted_date": "February 16 2026"
+              },
+              {
+                "platform": "blog",
+                "author": "EXO Travel Blog",
+                "content": "Saudi Arabia offers unique experiences like an overnight desert camp in Wadi Disah, set among sandstone cliffs and date palms, providing a memorable stargazing experience with expert guides.",
+                "category": "unique_experience",
+                "relevance_score": 0.94,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGDyE3kJ1FWN7-XFwq6kT7J5_neg8i2uUfkHukDrCu6N7kYjDNjTq37AL9cKb9s7HiwSGxWkg_y9zV6AFGOUj--Y3CpruBQ3keq3-LG6s9OZuqiOJKF4qih2F54ht08vjefuTe2boROuFcRio63JfWjHEu1faQKO2HndWBA9-sK",
+                "likes": 0,
+                "posted_date": "February 09 2026"
+              },
+              {
+                "platform": "blog",
+                "author": "Johnny Africa",
+                "content": "The Old Town of Al'Ula in Saudi Arabia is a must-visit, especially at night, for its magical colors and lighting, offering a charming atmosphere for people-watching at local cafes.",
+                "category": "must_visit",
+                "relevance_score": 0.93,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQENOM3M-Ub4-Z_Ot4fCnwOq3op6d3HuA_EUANJz5asu7BnujBLNpsYHtZEp_rwrBOJW_X6YjobhtaBhziJNCbZL_Ja-uzXETgQ5wOOhWGFXhPzCuRiaredG0nzSzDnYD9LFDN9FTx0jkCny6lYWDoot5rg=",
+                "likes": 0,
+                "posted_date": "January 09 2026"
+              },
+              {
+                "platform": "blog",
+                "author": "The Travelista",
+                "content": "For a luxurious dining experience in Dubai, At.Mosphere at the top of the Burj Khalifa is recommended for drinks with incredible city views and a perfect vantage point for the Dubai Fountains.",
+                "category": "restaurant",
+                "relevance_score": 0.9,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHrTlaVBsbPr1ePu_iSql2R8bQJg1RHyv5SpWxCjf1aKidqfYsDZlGUQzBHEstOGqx1wSTlvSlqO38Q1Hufw0bCOZpDTWvdDKPtbUNPAWi1yE1uJfmer6tJS7z8UKMfXg8fQgxkmE5JbwGcAjiQr-yvP9zmqg==",
+                "likes": 0,
+                "posted_date": "July 26 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "The Travelista",
+                "content": "Al Hallab is highlighted as the best place in Dubai to try local Arabic food, with recommendations for mezze items like hummus, moutabel, muhammara, and refreshing lemon and mint juice.",
+                "category": "local_food",
+                "relevance_score": 0.95,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHrTlaVBsbPr1ePu_iSql2R8bQJg1RHyv5SpWxCjf1aKidqfYsDZlGUQzBHEstOGqx1wSTlvSlqO38Q1Hufw0bCOZpDTWvdDKPtbUNPAWi1yE1uJfmer6tJS7z8UKMfXg8fQgxkmE5JbwGcAjiQr-yvP9zmqg==",
+                "likes": 0,
+                "posted_date": "July 26 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "The National",
+                "content": "Dubai Restaurant Week, extended until May 31, 2026, offers opportunities to try new flavors at venues like Demon Duck for pan-Asian cuisine and 11 Woodfire for Michelin-starred open-fire cooking.",
+                "category": "restaurant",
+                "relevance_score": 0.96,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHwLVEw1s1L-ZF3_YoKK5NZk2p-XSQvSleRpNpYgg1FhXhfg0k5AWHzXUe29l2t7MTdumTpXr-FyR7fBZm9fIIAfTHFJa7s1KjOrYV9HIKykA-XP50RAI-u9gU7EWB3Tq20vNF3eO0jIvr9EhXuB5-rARBLwFs9LEOpX_XXp2C31dq1o6rnPPF4U0ydiHBvTGeqkNa0U0afjSrxmq_Em",
+                "likes": 0,
+                "posted_date": "May 08 2026"
+              },
+              {
+                "platform": "blog",
+                "author": "The MICHELIN Guide",
+                "content": "The expansion of The MICHELIN Guide to Saudi Arabia highlights a dynamic culinary culture blending ancient traditions with global ambition, featuring traditional foods like jareesh porridge and cheesy sambosa dumplings.",
+                "category": "local_food",
+                "relevance_score": 0.94,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHAJ3qVoGkzxBRR2NPQh7mfhKSnBujY5ha8NSU5I3rLwLkgSvo6ysNIaK41o5N3UkKRE0KbUTqbskYtuXqtPnmTmYALYAY5ePyiBKngWaL-kikmaO1y7EKS-TTroNvrM0RPybIi5pPkZp-x6ICWjCiqV-ZYGoTol12L-g2JjVikw3C6cI4d2julOm9Ktk26y6hVuhE=",
+                "likes": 0,
+                "posted_date": "June 24 2025"
+              }
+            ],
+            "trending_spots": [
+              {
+                "name": "Dinner by Heston Blumenthal",
+                "category": "restaurant",
+                "description": "An award-winning high-end restaurant at Atlantis The Royal, celebrated for its theatrical and complex dishes inspired by historic British recipes.",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 765.0,
+                "rating": 4.8,
+                "source": "Time Out Dubai, Wondergifts.ae",
+                "lat": 25.1147,
+                "lng": 55.1824,
+                "social_buzz": "Awarded 'Restaurant of the Year 2024', known for its celebrity chef and unique culinary experience.",
+                "tags": [
+                  "fine dining",
+                  "European cuisine",
+                  "luxury",
+                  "Atlantis The Royal"
+                ]
+              },
+              {
+                "name": "BRIX Café",
+                "category": "cafe",
+                "description": "Named Time Out Dubai's best cafe for 2026, this spot offers top-tier specialty coffee and delightful views over the serene Jumeirah Fishing Harbour.",
+                "price_range": "$$",
+                "estimated_cost_sar": 102.0,
+                "rating": 4.7,
+                "source": "Time Out Dubai",
+                "lat": 25.163,
+                "lng": 55.2396,
+                "social_buzz": "Award-winning coffee, scenic views, and a cozy, Instagrammable atmosphere.",
+                "tags": [
+                  "specialty coffee",
+                  "cafe",
+                  "views",
+                  "Jumeirah"
+                ]
+              },
+              {
+                "name": "Museum of the Future",
+                "category": "attraction",
+                "description": "An iconic architectural marvel that offers an immersive journey into future possibilities, showcasing cutting-edge technology, AI, and sustainable practices.",
+                "price_range": "$$",
+                "estimated_cost_sar": 152.0,
+                "rating": 4.7,
+                "source": "Onalulu, Vitrum Marketing, Ocean Front real estate",
+                "lat": 25.2186,
+                "lng": 55.2801,
+                "social_buzz": "Trending for its futuristic design, innovative exhibits, and highly Instagrammable exterior.",
+                "tags": [
+                  "museum",
+                  "technology",
+                  "architecture",
+                  "futuristic"
+                ]
+              },
+              {
+                "name": "AYA Universe",
+                "category": "attraction",
+                "description": "A futuristic entertainment hub at WAFI City Mall, providing a multisensory immersive experience across 12 interactive zones with high-tech sound, lights, and graphics.",
+                "price_range": "$$",
+                "estimated_cost_sar": 128.0,
+                "rating": 4.6,
+                "source": "TBO Academy, Vitrum Marketing, Explorer Tours",
+                "lat": 25.2285,
+                "lng": 55.3235,
+                "social_buzz": "Highly popular for its unique digital art and immersive, Instagram-worthy experiences.",
+                "tags": [
+                  "interactive art",
+                  "digital art",
+                  "entertainment",
+                  "immersive"
+                ]
+              },
+              {
+                "name": "WHITE Dubai",
+                "category": "nightlife",
+                "description": "A luxurious rooftop nightclub located at Meydan Racecourse, renowned for its stunning city skyline views, top-tier entertainment, and vibrant party atmosphere.",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 510.0,
+                "rating": 4.2,
+                "source": "Travel Divas, Top 10 Must-Visit Dubai Nightclubs",
+                "lat": 25.1388,
+                "lng": 55.2974,
+                "social_buzz": "Known as the ultimate rooftop party spot with celebrity sightings and world-class DJs.",
+                "tags": [
+                  "nightclub",
+                  "rooftop",
+                  "luxury",
+                  "party",
+                  "DJs"
+                ]
+              },
+              {
+                "name": "Desert Safari",
+                "category": "unique experience",
+                "description": "A quintessential Dubai adventure offering thrilling dune bashing, camel rides, sandboarding, and traditional Bedouin-style dinner and entertainment under the stars.",
+                "price_range": "$$$",
+                "estimated_cost_sar": 357.0,
+                "rating": 4.8,
+                "source": "Onalulu, Agoda.com, Hala Arabia Travel & Tourism LLC",
+                "lat": 24.7938,
+                "lng": 55.4851,
+                "social_buzz": "A must-do experience for tourists seeking adventure and cultural immersion in the Arabian Desert.",
+                "tags": [
+                  "adventure",
+                  "desert",
+                  "culture",
+                  "safari",
+                  "outdoor"
+                ]
+              },
+              {
+                "name": "Tapasake",
+                "category": "restaurant",
+                "description": "Located at One&Only One Za'abeel, this restaurant offers authentic South American cuisine with breathtaking, uninterrupted views of the Dubai skyline from the UAE's longest suspended infinity pool.",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 612.0,
+                "rating": 4.6,
+                "source": "GRAZIA Guide",
+                "lat": 25.2255,
+                "lng": 55.309,
+                "social_buzz": "Trending as a new luxury opening with stunning views and a unique infinity pool dining experience.",
+                "tags": [
+                  "fine dining",
+                  "South American",
+                  "views",
+                  "infinity pool",
+                  "luxury"
+                ]
+              },
+              {
+                "name": "The Dubai Frame",
+                "category": "attraction",
+                "description": "The world's largest picture frame, offering unique panoramic views of both old and new Dubai from its 150-meter height, serving as an iconic architectural landmark.",
+                "price_range": "$",
+                "estimated_cost_sar": 51.0,
+                "rating": 4.5,
+                "source": "Onalulu, Tripoto, Arabian Luxury Tours",
+                "lat": 25.2494,
+                "lng": 55.3088,
+                "social_buzz": "An iconic landmark popular for its unique views and Instagrammable photo opportunities.",
+                "tags": [
+                  "landmark",
+                  "views",
+                  "architecture",
+                  "photography"
+                ]
+              }
+            ],
+            "local_insights": [
+              {
+                "tip": "Pack lightweight, breathable fabrics like cotton and linen, along with loose-fitting clothes that cover shoulders and knees for modesty in public and religious sites.",
+                "category": "weather",
+                "source": "travel blogs, TripAdvisor, Reddit",
+                "confidence": "high"
+              },
+              {
+                "tip": "Always carry high-SPF sunscreen, sunglasses, and a wide-brimmed hat or cap to protect yourself from the intense sun.",
+                "category": "weather",
+                "source": "travel blogs, TripAdvisor",
+                "confidence": "high"
+              },
+              {
+                "tip": "Stay hydrated by carrying a reusable water bottle and utilizing free water stations available across the city.",
+                "category": "weather",
+                "source": "travel blogs, TripAdvisor",
+                "confidence": "high"
+              },
+              {
+                "tip": "Use discount cards like The Entertainer or city passes such as the Dubai Pass to save significantly on attractions, restaurants, and activities.",
+                "category": "money_saving",
+                "source": "travel blogs, Reddit",
+                "confidence": "high"
+              },
+              {
+                "tip": "Consider traveling during off-peak seasons (May-August) to find lower hotel and flight rates.",
+                "category": "money_saving",
+                "source": "travel blogs",
+                "confidence": "high"
+              },
+              {
+                "tip": "Opt for budget-friendly accommodation in areas like Bur Dubai, Deira, or Al Barsha, especially those with good metro access.",
+                "category": "money_saving",
+                "source": "travel blogs, Reddit",
+                "confidence": "high"
+              },
+              {
+                "tip": "Eat at local cafeterias and traditional Arabic restaurants in Old Dubai (Bur Dubai, Deira, Karama, Satwa) for authentic and affordable meals.",
+                "category": "money_saving",
+                "source": "travel blogs, Reddit",
+                "confidence": "high"
+              },
+              {
+                "tip": "Explore free attractions such as public beaches (JBR Beach, Kite Beach), the Dubai Mall Fountain Show, Dubai Marina Walk, and the historic Al Seef or Dubai Creek.",
+                "category": "money_saving",
+                "source": "Reddit, travel blogs",
+                "confidence": "high"
+              }
+            ],
+            "weather_summary": "Dubai in May experiences very hot and sunny weather with average daytime temperatures ranging from 35°C to 40°C, high humidity, and virtually no rainfall, making outdoor activities challenging during peak hours.",
+            "scan_successful": true
+          },
+          "dates": {
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-15"
+          },
+          "map": {
+            "origin": {
+              "lat": 24.7136,
+              "lng": 46.6753
+            },
+            "destination": {
+              "lat": 25.2048,
+              "lng": 55.2708
+            },
+            "origin_name": "Riyadh",
+            "dest_name": "Dubai"
+          },
+          "hospitality": {
+            "hotels": [],
+            "restaurants": [
+              {
+                "id": "318",
+                "name": "Al Fanar Restaurant & Cafe",
+                "city": "dubai",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.6,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 13,
+                "available_tables": 7,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 70.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 21.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 28.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.160850502685104,
+                "lng": 55.266686362615246
+              },
+              {
+                "id": "322",
+                "name": "Aseelah",
+                "city": "dubai",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 5.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 5,
+                "available_tables": 15,
+                "discount_percent": 20.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 125.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 37.5,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 50.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.18486747331516,
+                "lng": 55.30072035935906
+              },
+              {
+                "id": "321",
+                "name": "Logma",
+                "city": "dubai",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.8,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 16,
+                "available_tables": 4,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 60.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 18.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 24.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.236136467555777,
+                "lng": 55.27566134524904
+              },
+              {
+                "id": "320",
+                "name": "Siraj Restaurant",
+                "city": "dubai",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 15,
+                "available_tables": 5,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 100.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 30.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 40.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.21400019819498,
+                "lng": 55.287346401029716
+              },
+              {
+                "id": "325",
+                "name": "% Arabica",
+                "city": "dubai",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.5,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 12,
+                "available_tables": 8,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 23.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 6.8999999999999995,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 9.200000000000001,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.176376419624948,
+                "lng": 55.2687461003714
+              },
+              {
+                "id": "324",
+                "name": "Amongst Few Café",
+                "city": "dubai",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 15,
+                "available_tables": 5,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 76.5,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 22.95,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 30.6,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.186811454911023,
+                "lng": 55.271607541518776
+              },
+              {
+                "id": "319",
+                "name": "Arabian Tea House Restaurant & Cafe",
+                "city": "dubai",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 5.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 14,
+                "available_tables": 6,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 50.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 15.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 20.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.195136398528852,
+                "lng": 55.26612411241867
+              },
+              {
+                "id": "323",
+                "name": "BRIX Café",
+                "city": "dubai",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.5,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 15,
+                "available_tables": 5,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 76.5,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 22.95,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 30.6,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.164862721062732,
+                "lng": 55.25708105653286
+              }
+            ],
+            "travel_costs": {
+              "status": "success",
+              "flights": [],
+              "origin": "riyadh",
+              "destination": "Dubai",
+              "travel_mode": "car"
+            }
+          },
+          "timeline": {
+            "1": {
+              "legs": [
+                {
+                  "from_name": "Riyadh",
+                  "from_lat": 24.7136,
+                  "from_lng": 46.6753,
+                  "to_name": "Atlantis, The Palm",
+                  "to_lat": 25.1252,
+                  "to_lng": 55.117,
+                  "mode": "🚗 Long-haul",
+                  "dist": 0,
+                  "time_minutes": 0,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                },
+                {
+                  "from_name": "Atlantis, The Palm",
+                  "from_lat": 25.1252,
+                  "from_lng": 55.117,
+                  "to_name": "🔥 TRENDING: The Dubai Frame",
+                  "to_lat": 25.2494,
+                  "to_lng": 55.3088,
+                  "mode": "🚗 Drive",
+                  "dist": 23.73,
+                  "time_minutes": 13,
+                  "cost": 4.31
+                },
+                {
+                  "from_name": "🔥 TRENDING: The Dubai Frame",
+                  "from_lat": 25.2494,
+                  "from_lng": 55.3088,
+                  "to_name": "🔥 TRENDING: Dinner by Heston Blumenthal",
+                  "to_lat": 25.1147,
+                  "to_lng": 55.1824,
+                  "mode": "🚗 Drive",
+                  "dist": 19.65,
+                  "time_minutes": 24,
+                  "cost": 3.57
+                },
+                {
+                  "from_name": "🔥 TRENDING: Dinner by Heston Blumenthal",
+                  "from_lat": 25.1147,
+                  "from_lng": 55.1824,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 25.272429262042902,
+                  "to_lng": 55.27625838631598,
+                  "mode": "🚗 Drive",
+                  "dist": 19.92,
+                  "time_minutes": 24,
+                  "cost": 3.62
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 25.272429262042902,
+                  "from_lng": 55.27625838631598,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 25.162078427412947,
+                  "to_lng": 55.20211030533388,
+                  "mode": "🚗 Drive",
+                  "dist": 14.36,
+                  "time_minutes": 17,
+                  "cost": 2.61
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 25.162078427412947,
+                  "from_lng": 55.20211030533388,
+                  "to_name": "Global Village",
+                  "to_lat": 25.0528,
+                  "to_lng": 55.3819,
+                  "mode": "🚗 Drive",
+                  "dist": 21.8,
+                  "time_minutes": 12,
+                  "cost": 3.96
+                },
+                {
+                  "from_name": "Global Village",
+                  "from_lat": 25.0528,
+                  "from_lng": 55.3819,
+                  "to_name": "Atlantis, The Palm",
+                  "to_lat": 25.1252,
+                  "to_lng": 55.117,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 27.86,
+                  "time_minutes": 15,
+                  "cost": 5.06
+                }
+              ],
+              "day_cost": 23.13,
+              "recommendation": ""
+            },
+            "2": {
+              "legs": [
+                {
+                  "from_name": "Atlantis, The Palm",
+                  "from_lat": 25.1252,
+                  "from_lng": 55.117,
+                  "to_name": "🔥 TRENDING: BRIX Café",
+                  "to_lat": 25.163,
+                  "to_lng": 55.2396,
+                  "mode": "🚗 Drive",
+                  "dist": 13.04,
+                  "time_minutes": 16,
+                  "cost": 2.37
+                },
+                {
+                  "from_name": "🔥 TRENDING: BRIX Café",
+                  "from_lat": 25.163,
+                  "from_lng": 55.2396,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 25.162078427412947,
+                  "to_lng": 55.20211030533388,
+                  "mode": "🚗 Drive",
+                  "dist": 3.77,
+                  "time_minutes": 5,
+                  "cost": 0.69
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 25.162078427412947,
+                  "from_lng": 55.20211030533388,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 25.272429262042902,
+                  "to_lng": 55.27625838631598,
+                  "mode": "🚗 Drive",
+                  "dist": 14.36,
+                  "time_minutes": 17,
+                  "cost": 2.61
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 25.272429262042902,
+                  "from_lng": 55.27625838631598,
+                  "to_name": "Global Village",
+                  "to_lat": 25.0528,
+                  "to_lng": 55.3819,
+                  "mode": "🚗 Drive",
+                  "dist": 26.64,
+                  "time_minutes": 15,
+                  "cost": 4.84
+                },
+                {
+                  "from_name": "Global Village",
+                  "from_lat": 25.0528,
+                  "from_lng": 55.3819,
+                  "to_name": "Atlantis, The Palm",
+                  "to_lat": 25.1252,
+                  "to_lng": 55.117,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 27.86,
+                  "time_minutes": 15,
+                  "cost": 5.06
+                }
+              ],
+              "day_cost": 15.57,
+              "recommendation": ""
+            },
+            "3": {
+              "legs": [
+                {
+                  "from_name": "Atlantis, The Palm",
+                  "from_lat": 25.1252,
+                  "from_lng": 55.117,
+                  "to_name": "🔥 TRENDING: Museum of the Future",
+                  "to_lat": 25.2186,
+                  "to_lng": 55.2801,
+                  "mode": "🚗 Drive",
+                  "dist": 19.42,
+                  "time_minutes": 23,
+                  "cost": 3.53
+                },
+                {
+                  "from_name": "🔥 TRENDING: Museum of the Future",
+                  "from_lat": 25.2186,
+                  "from_lng": 55.2801,
+                  "to_name": "Global Village",
+                  "to_lat": 25.0528,
+                  "to_lng": 55.3819,
+                  "mode": "🚗 Drive",
+                  "dist": 21.09,
+                  "time_minutes": 12,
+                  "cost": 3.83
+                },
+                {
+                  "from_name": "Global Village",
+                  "from_lat": 25.0528,
+                  "from_lng": 55.3819,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 25.272429262042902,
+                  "to_lng": 55.27625838631598,
+                  "mode": "🚗 Drive",
+                  "dist": 26.64,
+                  "time_minutes": 15,
+                  "cost": 4.84
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 25.272429262042902,
+                  "from_lng": 55.27625838631598,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 25.162078427412947,
+                  "to_lng": 55.20211030533388,
+                  "mode": "🚗 Drive",
+                  "dist": 14.36,
+                  "time_minutes": 17,
+                  "cost": 2.61
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 25.162078427412947,
+                  "from_lng": 55.20211030533388,
+                  "to_name": "Atlantis, The Palm",
+                  "to_lat": 25.1252,
+                  "to_lng": 55.117,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 9.5,
+                  "time_minutes": 11,
+                  "cost": 1.73
+                }
+              ],
+              "day_cost": 16.54,
+              "recommendation": ""
+            },
+            "4": {
+              "legs": [
+                {
+                  "from_name": "Atlantis, The Palm",
+                  "from_lat": 25.1252,
+                  "from_lng": 55.117,
+                  "to_name": "🔥 TRENDING: AYA Universe",
+                  "to_lat": 25.2285,
+                  "to_lng": 55.3235,
+                  "mode": "🚗 Drive",
+                  "dist": 23.74,
+                  "time_minutes": 13,
+                  "cost": 4.31
+                },
+                {
+                  "from_name": "🔥 TRENDING: AYA Universe",
+                  "from_lat": 25.2285,
+                  "from_lng": 55.3235,
+                  "to_name": "Global Village",
+                  "to_lat": 25.0528,
+                  "to_lng": 55.3819,
+                  "mode": "🚗 Drive",
+                  "dist": 20.4,
+                  "time_minutes": 11,
+                  "cost": 3.71
+                },
+                {
+                  "from_name": "Global Village",
+                  "from_lat": 25.0528,
+                  "from_lng": 55.3819,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 25.272429262042902,
+                  "to_lng": 55.27625838631598,
+                  "mode": "🚗 Drive",
+                  "dist": 26.64,
+                  "time_minutes": 15,
+                  "cost": 4.84
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 25.272429262042902,
+                  "from_lng": 55.27625838631598,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 25.162078427412947,
+                  "to_lng": 55.20211030533388,
+                  "mode": "🚗 Drive",
+                  "dist": 14.36,
+                  "time_minutes": 17,
+                  "cost": 2.61
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 25.162078427412947,
+                  "from_lng": 55.20211030533388,
+                  "to_name": "Atlantis, The Palm",
+                  "to_lat": 25.1252,
+                  "to_lng": 55.117,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 9.5,
+                  "time_minutes": 11,
+                  "cost": 1.73
+                }
+              ],
+              "day_cost": 17.2,
+              "recommendation": ""
+            },
+            "5": {
+              "legs": [
+                {
+                  "from_name": "Atlantis, The Palm",
+                  "from_lat": 25.1252,
+                  "from_lng": 55.117,
+                  "to_name": "🔥 TRENDING: WHITE Dubai",
+                  "to_lat": 25.1388,
+                  "to_lng": 55.2974,
+                  "mode": "🚗 Drive",
+                  "dist": 18.22,
+                  "time_minutes": 22,
+                  "cost": 3.31
+                },
+                {
+                  "from_name": "🔥 TRENDING: WHITE Dubai",
+                  "from_lat": 25.1388,
+                  "from_lng": 55.2974,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 25.272429262042902,
+                  "to_lng": 55.27625838631598,
+                  "mode": "🚗 Drive",
+                  "dist": 15.01,
+                  "time_minutes": 18,
+                  "cost": 2.73
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 25.272429262042902,
+                  "from_lng": 55.27625838631598,
+                  "to_name": "Global Village",
+                  "to_lat": 25.0528,
+                  "to_lng": 55.3819,
+                  "mode": "🚗 Drive",
+                  "dist": 26.64,
+                  "time_minutes": 15,
+                  "cost": 4.84
+                },
+                {
+                  "from_name": "Global Village",
+                  "from_lat": 25.0528,
+                  "from_lng": 55.3819,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 25.162078427412947,
+                  "to_lng": 55.20211030533388,
+                  "mode": "🚗 Drive",
+                  "dist": 21.8,
+                  "time_minutes": 12,
+                  "cost": 3.96
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 25.162078427412947,
+                  "from_lng": 55.20211030533388,
+                  "to_name": "Atlantis, The Palm",
+                  "to_lat": 25.1252,
+                  "to_lng": 55.117,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 9.5,
+                  "time_minutes": 11,
+                  "cost": 1.73
+                }
+              ],
+              "day_cost": 16.57,
+              "recommendation": ""
+            },
+            "6": {
+              "legs": [
+                {
+                  "from_name": "Atlantis, The Palm",
+                  "from_lat": 25.1252,
+                  "from_lng": 55.117,
+                  "to_name": "🔥 TRENDING: Desert Safari",
+                  "to_lat": 24.7938,
+                  "to_lng": 55.4851,
+                  "mode": "🚗 Drive",
+                  "dist": 52.3,
+                  "time_minutes": 29,
+                  "cost": 9.5
+                },
+                {
+                  "from_name": "🔥 TRENDING: Desert Safari",
+                  "from_lat": 24.7938,
+                  "from_lng": 55.4851,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 25.162078427412947,
+                  "to_lng": 55.20211030533388,
+                  "mode": "🚗 Drive",
+                  "dist": 49.91,
+                  "time_minutes": 27,
+                  "cost": 9.07
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 25.162078427412947,
+                  "from_lng": 55.20211030533388,
+                  "to_name": "Global Village",
+                  "to_lat": 25.0528,
+                  "to_lng": 55.3819,
+                  "mode": "🚗 Drive",
+                  "dist": 21.8,
+                  "time_minutes": 12,
+                  "cost": 3.96
+                },
+                {
+                  "from_name": "Global Village",
+                  "from_lat": 25.0528,
+                  "from_lng": 55.3819,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 25.272429262042902,
+                  "to_lng": 55.27625838631598,
+                  "mode": "🚗 Drive",
+                  "dist": 26.64,
+                  "time_minutes": 15,
+                  "cost": 4.84
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 25.272429262042902,
+                  "from_lng": 55.27625838631598,
+                  "to_name": "Atlantis, The Palm",
+                  "to_lat": 25.1252,
+                  "to_lng": 55.117,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 22.91,
+                  "time_minutes": 12,
+                  "cost": 4.16
+                }
+              ],
+              "day_cost": 31.53,
+              "recommendation": ""
+            },
+            "7": {
+              "legs": [
+                {
+                  "from_name": "Atlantis, The Palm",
+                  "from_lat": 25.1252,
+                  "from_lng": 55.117,
+                  "to_name": "🔥 TRENDING: Tapasake",
+                  "to_lat": 25.2255,
+                  "to_lng": 55.309,
+                  "mode": "🚗 Drive",
+                  "dist": 22.31,
+                  "time_minutes": 12,
+                  "cost": 4.05
+                },
+                {
+                  "from_name": "🔥 TRENDING: Tapasake",
+                  "from_lat": 25.2255,
+                  "from_lng": 55.309,
+                  "to_name": "Global Village",
+                  "to_lat": 25.0528,
+                  "to_lng": 55.3819,
+                  "mode": "🚗 Drive",
+                  "dist": 20.56,
+                  "time_minutes": 11,
+                  "cost": 3.73
+                },
+                {
+                  "from_name": "Global Village",
+                  "from_lat": 25.0528,
+                  "from_lng": 55.3819,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 25.272429262042902,
+                  "to_lng": 55.27625838631598,
+                  "mode": "🚗 Drive",
+                  "dist": 26.64,
+                  "time_minutes": 15,
+                  "cost": 4.84
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 25.272429262042902,
+                  "from_lng": 55.27625838631598,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 25.162078427412947,
+                  "to_lng": 55.20211030533388,
+                  "mode": "🚗 Drive",
+                  "dist": 14.36,
+                  "time_minutes": 17,
+                  "cost": 2.61
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 25.162078427412947,
+                  "from_lng": 55.20211030533388,
+                  "to_name": "Atlantis, The Palm",
+                  "to_lat": 25.1252,
+                  "to_lng": 55.117,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 9.5,
+                  "time_minutes": 11,
+                  "cost": 1.73
+                },
+                {
+                  "from_name": "Atlantis, The Palm",
+                  "from_lat": 25.1252,
+                  "from_lng": 55.117,
+                  "to_name": "Riyadh",
+                  "to_lat": 24.7136,
+                  "to_lng": 46.6753,
+                  "mode": "🚗 Return",
+                  "dist": 0,
+                  "time_minutes": 0,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                }
+              ],
+              "day_cost": 16.96,
+              "recommendation": ""
+            }
+          },
+          "total_transit_cost": 137.5,
+          "simulation_routes": {
+            "1": [
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin",
+                "day": 1
+              },
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: The Dubai Frame",
+                "lat": 25.2494,
+                "lng": 55.3088,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: Dinner by Heston Blumenthal",
+                "lat": 25.1147,
+                "lng": 55.1824,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 25.272429262042902,
+                "lng": 55.27625838631598,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 25.162078427412947,
+                "lng": 55.20211030533388,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Global Village",
+                "lat": 25.0528,
+                "lng": 55.3819,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel_return",
+                "day": 1
+              }
+            ],
+            "2": [
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: BRIX Café",
+                "lat": 25.163,
+                "lng": 55.2396,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 25.162078427412947,
+                "lng": 55.20211030533388,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 25.272429262042902,
+                "lng": 55.27625838631598,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Global Village",
+                "lat": 25.0528,
+                "lng": 55.3819,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel_return",
+                "day": 2
+              }
+            ],
+            "3": [
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: Museum of the Future",
+                "lat": 25.2186,
+                "lng": 55.2801,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Global Village",
+                "lat": 25.0528,
+                "lng": 55.3819,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 25.272429262042902,
+                "lng": 55.27625838631598,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 25.162078427412947,
+                "lng": 55.20211030533388,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel_return",
+                "day": 3
+              }
+            ],
+            "4": [
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel",
+                "day": 4
+              },
+              {
+                "name": "🔥 TRENDING: AYA Universe",
+                "lat": 25.2285,
+                "lng": 55.3235,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Global Village",
+                "lat": 25.0528,
+                "lng": 55.3819,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 25.272429262042902,
+                "lng": 55.27625838631598,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 25.162078427412947,
+                "lng": 55.20211030533388,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel_return",
+                "day": 4
+              }
+            ],
+            "5": [
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel",
+                "day": 5
+              },
+              {
+                "name": "🔥 TRENDING: WHITE Dubai",
+                "lat": 25.1388,
+                "lng": 55.2974,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 25.272429262042902,
+                "lng": 55.27625838631598,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Global Village",
+                "lat": 25.0528,
+                "lng": 55.3819,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 25.162078427412947,
+                "lng": 55.20211030533388,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel_return",
+                "day": 5
+              }
+            ],
+            "6": [
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel",
+                "day": 6
+              },
+              {
+                "name": "🔥 TRENDING: Desert Safari",
+                "lat": 24.7938,
+                "lng": 55.4851,
+                "type": "activity",
+                "day": 6
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 25.162078427412947,
+                "lng": 55.20211030533388,
+                "type": "activity",
+                "day": 6
+              },
+              {
+                "name": "Global Village",
+                "lat": 25.0528,
+                "lng": 55.3819,
+                "type": "activity",
+                "day": 6
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 25.272429262042902,
+                "lng": 55.27625838631598,
+                "type": "activity",
+                "day": 6
+              },
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel_return",
+                "day": 6
+              }
+            ],
+            "7": [
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel",
+                "day": 7
+              },
+              {
+                "name": "🔥 TRENDING: Tapasake",
+                "lat": 25.2255,
+                "lng": 55.309,
+                "type": "activity",
+                "day": 7
+              },
+              {
+                "name": "Global Village",
+                "lat": 25.0528,
+                "lng": 55.3819,
+                "type": "activity",
+                "day": 7
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 25.272429262042902,
+                "lng": 55.27625838631598,
+                "type": "activity",
+                "day": 7
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 25.162078427412947,
+                "lng": 55.20211030533388,
+                "type": "activity",
+                "day": 7
+              },
+              {
+                "name": "Atlantis, The Palm",
+                "lat": 25.1252,
+                "lng": 55.117,
+                "type": "hotel_return",
+                "day": 7
+              },
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin_return",
+                "day": 7
+              }
+            ]
+          },
+          "full_trip_dataset": [
+            {
+              "from_name": "Riyadh",
+              "from_lat": 24.7136,
+              "from_lng": 46.6753,
+              "to_name": "Atlantis, The Palm",
+              "to_lat": 25.1252,
+              "to_lng": 55.117,
+              "mode": "🚗 Long-haul",
+              "dist": 0,
+              "time_minutes": 0,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Atlantis, The Palm",
+              "from_lat": 25.1252,
+              "from_lng": 55.117,
+              "to_name": "🔥 TRENDING: The Dubai Frame",
+              "to_lat": 25.2494,
+              "to_lng": 55.3088,
+              "mode": "🚗 Drive",
+              "dist": 23.73,
+              "time_minutes": 13,
+              "cost": 4.31
+            },
+            {
+              "from_name": "🔥 TRENDING: The Dubai Frame",
+              "from_lat": 25.2494,
+              "from_lng": 55.3088,
+              "to_name": "🔥 TRENDING: Dinner by Heston Blumenthal",
+              "to_lat": 25.1147,
+              "to_lng": 55.1824,
+              "mode": "🚗 Drive",
+              "dist": 19.65,
+              "time_minutes": 24,
+              "cost": 3.57
+            },
+            {
+              "from_name": "🔥 TRENDING: Dinner by Heston Blumenthal",
+              "from_lat": 25.1147,
+              "from_lng": 55.1824,
+              "to_name": "City center landmark walk",
+              "to_lat": 25.272429262042902,
+              "to_lng": 55.27625838631598,
+              "mode": "🚗 Drive",
+              "dist": 19.92,
+              "time_minutes": 24,
+              "cost": 3.62
+            },
+            {
+              "from_name": "City center landmark walk",
+              "from_lat": 25.272429262042902,
+              "from_lng": 55.27625838631598,
+              "to_name": "Modern architecture sightseeing",
+              "to_lat": 25.162078427412947,
+              "to_lng": 55.20211030533388,
+              "mode": "🚗 Drive",
+              "dist": 14.36,
+              "time_minutes": 17,
+              "cost": 2.61
+            },
+            {
+              "from_name": "Modern architecture sightseeing",
+              "from_lat": 25.162078427412947,
+              "from_lng": 55.20211030533388,
+              "to_name": "Global Village",
+              "to_lat": 25.0528,
+              "to_lng": 55.3819,
+              "mode": "🚗 Drive",
+              "dist": 21.8,
+              "time_minutes": 12,
+              "cost": 3.96
+            },
+            {
+              "from_name": "Global Village",
+              "from_lat": 25.0528,
+              "from_lng": 55.3819,
+              "to_name": "Atlantis, The Palm",
+              "to_lat": 25.1252,
+              "to_lng": 55.117,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 27.86,
+              "time_minutes": 15,
+              "cost": 5.06
+            },
+            {
+              "from_name": "Atlantis, The Palm",
+              "from_lat": 25.1252,
+              "from_lng": 55.117,
+              "to_name": "🔥 TRENDING: BRIX Café",
+              "to_lat": 25.163,
+              "to_lng": 55.2396,
+              "mode": "🚗 Drive",
+              "dist": 13.04,
+              "time_minutes": 16,
+              "cost": 2.37
+            },
+            {
+              "from_name": "🔥 TRENDING: BRIX Café",
+              "from_lat": 25.163,
+              "from_lng": 55.2396,
+              "to_name": "Modern architecture sightseeing",
+              "to_lat": 25.162078427412947,
+              "to_lng": 55.20211030533388,
+              "mode": "🚗 Drive",
+              "dist": 3.77,
+              "time_minutes": 5,
+              "cost": 0.69
+            },
+            {
+              "from_name": "Modern architecture sightseeing",
+              "from_lat": 25.162078427412947,
+              "from_lng": 55.20211030533388,
+              "to_name": "City center landmark walk",
+              "to_lat": 25.272429262042902,
+              "to_lng": 55.27625838631598,
+              "mode": "🚗 Drive",
+              "dist": 14.36,
+              "time_minutes": 17,
+              "cost": 2.61
+            },
+            {
+              "from_name": "City center landmark walk",
+              "from_lat": 25.272429262042902,
+              "from_lng": 55.27625838631598,
+              "to_name": "Global Village",
+              "to_lat": 25.0528,
+              "to_lng": 55.3819,
+              "mode": "🚗 Drive",
+              "dist": 26.64,
+              "time_minutes": 15,
+              "cost": 4.84
+            },
+            {
+              "from_name": "Atlantis, The Palm",
+              "from_lat": 25.1252,
+              "from_lng": 55.117,
+              "to_name": "🔥 TRENDING: Museum of the Future",
+              "to_lat": 25.2186,
+              "to_lng": 55.2801,
+              "mode": "🚗 Drive",
+              "dist": 19.42,
+              "time_minutes": 23,
+              "cost": 3.53
+            },
+            {
+              "from_name": "🔥 TRENDING: Museum of the Future",
+              "from_lat": 25.2186,
+              "from_lng": 55.2801,
+              "to_name": "Global Village",
+              "to_lat": 25.0528,
+              "to_lng": 55.3819,
+              "mode": "🚗 Drive",
+              "dist": 21.09,
+              "time_minutes": 12,
+              "cost": 3.83
+            },
+            {
+              "from_name": "Global Village",
+              "from_lat": 25.0528,
+              "from_lng": 55.3819,
+              "to_name": "City center landmark walk",
+              "to_lat": 25.272429262042902,
+              "to_lng": 55.27625838631598,
+              "mode": "🚗 Drive",
+              "dist": 26.64,
+              "time_minutes": 15,
+              "cost": 4.84
+            },
+            {
+              "from_name": "Modern architecture sightseeing",
+              "from_lat": 25.162078427412947,
+              "from_lng": 55.20211030533388,
+              "to_name": "Atlantis, The Palm",
+              "to_lat": 25.1252,
+              "to_lng": 55.117,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 9.5,
+              "time_minutes": 11,
+              "cost": 1.73
+            },
+            {
+              "from_name": "Atlantis, The Palm",
+              "from_lat": 25.1252,
+              "from_lng": 55.117,
+              "to_name": "🔥 TRENDING: AYA Universe",
+              "to_lat": 25.2285,
+              "to_lng": 55.3235,
+              "mode": "🚗 Drive",
+              "dist": 23.74,
+              "time_minutes": 13,
+              "cost": 4.31
+            },
+            {
+              "from_name": "🔥 TRENDING: AYA Universe",
+              "from_lat": 25.2285,
+              "from_lng": 55.3235,
+              "to_name": "Global Village",
+              "to_lat": 25.0528,
+              "to_lng": 55.3819,
+              "mode": "🚗 Drive",
+              "dist": 20.4,
+              "time_minutes": 11,
+              "cost": 3.71
+            },
+            {
+              "from_name": "Atlantis, The Palm",
+              "from_lat": 25.1252,
+              "from_lng": 55.117,
+              "to_name": "🔥 TRENDING: WHITE Dubai",
+              "to_lat": 25.1388,
+              "to_lng": 55.2974,
+              "mode": "🚗 Drive",
+              "dist": 18.22,
+              "time_minutes": 22,
+              "cost": 3.31
+            },
+            {
+              "from_name": "🔥 TRENDING: WHITE Dubai",
+              "from_lat": 25.1388,
+              "from_lng": 55.2974,
+              "to_name": "City center landmark walk",
+              "to_lat": 25.272429262042902,
+              "to_lng": 55.27625838631598,
+              "mode": "🚗 Drive",
+              "dist": 15.01,
+              "time_minutes": 18,
+              "cost": 2.73
+            },
+            {
+              "from_name": "Global Village",
+              "from_lat": 25.0528,
+              "from_lng": 55.3819,
+              "to_name": "Modern architecture sightseeing",
+              "to_lat": 25.162078427412947,
+              "to_lng": 55.20211030533388,
+              "mode": "🚗 Drive",
+              "dist": 21.8,
+              "time_minutes": 12,
+              "cost": 3.96
+            },
+            {
+              "from_name": "Atlantis, The Palm",
+              "from_lat": 25.1252,
+              "from_lng": 55.117,
+              "to_name": "🔥 TRENDING: Desert Safari",
+              "to_lat": 24.7938,
+              "to_lng": 55.4851,
+              "mode": "🚗 Drive",
+              "dist": 52.3,
+              "time_minutes": 29,
+              "cost": 9.5
+            },
+            {
+              "from_name": "🔥 TRENDING: Desert Safari",
+              "from_lat": 24.7938,
+              "from_lng": 55.4851,
+              "to_name": "Modern architecture sightseeing",
+              "to_lat": 25.162078427412947,
+              "to_lng": 55.20211030533388,
+              "mode": "🚗 Drive",
+              "dist": 49.91,
+              "time_minutes": 27,
+              "cost": 9.07
+            },
+            {
+              "from_name": "City center landmark walk",
+              "from_lat": 25.272429262042902,
+              "from_lng": 55.27625838631598,
+              "to_name": "Atlantis, The Palm",
+              "to_lat": 25.1252,
+              "to_lng": 55.117,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 22.91,
+              "time_minutes": 12,
+              "cost": 4.16
+            },
+            {
+              "from_name": "Atlantis, The Palm",
+              "from_lat": 25.1252,
+              "from_lng": 55.117,
+              "to_name": "Riyadh",
+              "to_lat": 24.7136,
+              "to_lng": 46.6753,
+              "mode": "🚗 Return",
+              "dist": 0,
+              "time_minutes": 0,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Atlantis, The Palm",
+              "from_lat": 25.1252,
+              "from_lng": 55.117,
+              "to_name": "🔥 TRENDING: Tapasake",
+              "to_lat": 25.2255,
+              "to_lng": 55.309,
+              "mode": "🚗 Drive",
+              "dist": 22.31,
+              "time_minutes": 12,
+              "cost": 4.05
+            },
+            {
+              "from_name": "🔥 TRENDING: Tapasake",
+              "from_lat": 25.2255,
+              "from_lng": 55.309,
+              "to_name": "Global Village",
+              "to_lat": 25.0528,
+              "to_lng": 55.3819,
+              "mode": "🚗 Drive",
+              "dist": 20.56,
+              "time_minutes": 11,
+              "cost": 3.73
+            }
+          ]
+        }
+      ],
+      "recommendation": 0
+    },
+    "cached_at": "2026-05-08T13:49:08.597817+00:00"
+  },
+  "75db8843f54b95fdc40641ca527593eb": {
+    "params": {
+      "budget": 20000.0,
+      "travel_mode": "flight",
+      "destination": "qatar",
+      "days": 7,
+      "origin": "riyadh",
+      "vehicle_type": "default",
+      "currency": "SAR",
+      "start_date": "",
+      "end_date": "",
+      "interests": ""
+    },
+    "result": {
+      "paths": [
+        {
+          "transport": {
+            "mode": "flight",
+            "origin": "Riyadh",
+            "destination": "Doha",
+            "distance_km": 582.19,
+            "travel_time_str": "2h 25m",
+            "cost_one_way": 322.5,
+            "cost_round_trip": 645.0,
+            "breakdown": "🎫  | Exact match found in logistics database for Riyadh ↔ Doha",
+            "vehicle_type": "default"
+          },
+          "budget": {
+            "total": 20000.0,
+            "currency": "SAR",
+            "transport": 645.0,
+            "remaining": 19355.0,
+            "days": 7,
+            "lodging": {
+              "total": 0,
+              "per_day": 0,
+              "pending": true,
+              "max_budget": 7742.0,
+              "max_per_day": 1106.0
+            },
+            "food": {
+              "total": 5806.5,
+              "per_day": 829.5
+            },
+            "activities": {
+              "total": 3871.0,
+              "per_day": 553.0
+            },
+            "buffer": {
+              "total": 1935.5,
+              "per_day": 276.5
+            },
+            "is_feasible": true,
+            "warnings": []
+          },
+          "activities": {
+            "destination": "city",
+            "vibe": "Urban exploration, nightlife, shopping, dining",
+            "recommended_city": "Doha",
+            "daily_plan": {
+              "1": [
+                {
+                  "id": "trend_7_the_pearl-",
+                  "name": "🔥 TRENDING: The Pearl-Qatar",
+                  "lat": 25.378,
+                  "lng": 51.526,
+                  "is_trending_spot": true,
+                  "cost": 309.0,
+                  "category": "attraction|shopping",
+                  "description": "An opulent man-made island featuring luxury residences, high-end boutiques, international restaurants, and picturesque marinas, often referred to as the 'Arabian Riviera.'",
+                  "social_buzz": "A symbol of luxury and modern Doha, frequently showcased on social media for its stunning architecture, upscale lifestyle, and diverse entertainment options.",
+                  "rating": 4.7,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "luxury",
+                    "shopping",
+                    "dining",
+                    "marina",
+                    "modern architecture"
+                  ],
+                  "source": "Tripadvisor, Hotels.com, Viator"
+                },
+                {
+                  "id": "trend_0_souq_waqif",
+                  "name": "🔥 TRENDING: Souq Waqif",
+                  "lat": 25.2891,
+                  "lng": 51.5354,
+                  "is_trending_spot": true,
+                  "cost": 80.0,
+                  "category": "attraction|shopping",
+                  "description": "A historic marketplace offering a labyrinth of alleyways filled with spices, textiles, handicrafts, traditional restaurants, and shisha lounges, providing a deep dive into Qatari culture.",
+                  "social_buzz": "Constantly buzzing, especially in the evenings, with locals and tourists enjoying the vibrant atmosphere, traditional performances, and diverse culinary options.",
+                  "rating": 4.7,
+                  "price_range": "$",
+                  "tags": [
+                    "traditional market",
+                    "culture",
+                    "shopping",
+                    "dining",
+                    "historic"
+                  ],
+                  "source": "Tripadvisor, Google Maps, local blogs"
+                },
+                {
+                  "name": "National museum visit",
+                  "lat": 25.302224122926447,
+                  "lng": 51.46859088033424
+                },
+                {
+                  "name": "Katara Cultural Village",
+                  "lat": 25.36095,
+                  "lng": 51.52437
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 25.214832687390714,
+                  "lng": 51.469657208920005
+                }
+              ],
+              "2": [
+                {
+                  "id": "trend_1_museum_of_",
+                  "name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+                  "lat": 25.2928,
+                  "lng": 51.5394,
+                  "is_trending_spot": true,
+                  "cost": 52.0,
+                  "category": "attraction",
+                  "description": "An architectural masterpiece designed by I.M. Pei, housing an an extensive collection of Islamic art and artifacts spanning 14 centuries, set on the Doha waterfront.",
+                  "social_buzz": "Praised for its stunning architecture, serene atmosphere, and world-class collections, often featured in travel photography.",
+                  "rating": 4.6,
+                  "price_range": "$",
+                  "tags": [
+                    "museum",
+                    "art",
+                    "architecture",
+                    "culture",
+                    "history"
+                  ],
+                  "source": "Tripadvisor, Google Maps, GetYourGuide"
+                },
+                {
+                  "name": "Boulevard Riyadh City",
+                  "lat": 25.29869459961551,
+                  "lng": 51.57258998647313,
+                  "rating": 4.3,
+                  "review_count": 5432,
+                  "why_go": "Riyadh's premier entertainment district â€” a massive complex with world-class dining, live events, concerts, gaming zones, and themed areas. Think of it as Saudi Arabia's Times Square.",
+                  "reviews": [
+                    {
+                      "user": "Maha R.",
+                      "rating": 4,
+                      "text": "So much to do! We spent 6 hours and still didn't see everything. The Japanese zone is incredible."
+                    },
+                    {
+                      "user": "Omar F.",
+                      "rating": 5,
+                      "text": "The atmosphere at night is electric. Great food, great shows, great people. A must-visit in Riyadh."
+                    },
+                    {
+                      "user": "Jenny L.",
+                      "rating": 4,
+                      "text": "Impressive entertainment complex but can get very crowded on weekends. Go on weekdays if you can."
+                    }
+                  ]
+                },
+                {
+                  "name": "Fine dining experience",
+                  "lat": 25.359859115557462,
+                  "lng": 51.53153670150173,
+                  "rating": 4.6,
+                  "review_count": 876,
+                  "why_go": "Saudi Arabia's dining scene has exploded with world-class restaurants. From Michelin-starred chefs to innovative Saudi-fusion cuisine, the culinary scene rivals Dubai and London.",
+                  "reviews": [
+                    {
+                      "user": "Nadia Q.",
+                      "rating": 5,
+                      "text": "The tasting menu was incredible â€” each course told a story of Saudi ingredients. Service was impeccable."
+                    },
+                    {
+                      "user": "Robert H.",
+                      "rating": 4,
+                      "text": "Didn't expect this level of dining in Saudi Arabia. The rooftop setting overlooking the city was stunning."
+                    },
+                    {
+                      "user": "Lamis A.",
+                      "rating": 5,
+                      "text": "The Saudi-Japanese fusion was creative and delicious. The staff made us feel like royalty."
+                    }
+                  ]
+                },
+                {
+                  "name": "Rooftop café",
+                  "lat": 25.207189224530534,
+                  "lng": 51.5328256857036
+                }
+              ],
+              "3": [
+                {
+                  "id": "trend_2_nobu_doha",
+                  "name": "🔥 TRENDING: Nobu Doha",
+                  "lat": 25.3262,
+                  "lng": 51.5369,
+                  "is_trending_spot": true,
+                  "cost": 515.0,
+                  "category": "restaurant",
+                  "description": "The world's largest Nobu restaurant, offering Japanese-Peruvian fusion cuisine in an iconic setting on its own private pier with 360-degree views of the city.",
+                  "social_buzz": "Celebrated for its exquisite food, unique overwater location, and stunning sunset views, making it a popular spot for luxury dining and special occasions.",
+                  "rating": 4.7,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "fine dining",
+                    "Japanese-Peruvian",
+                    "luxury",
+                    "views",
+                    "iconic"
+                  ],
+                  "source": "Wanderlog, Le Petit Chef, Google Maps"
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 25.283613483662222,
+                  "lng": 51.55170763236942
+                },
+                {
+                  "name": "Local souq haggling",
+                  "lat": 25.282666533223956,
+                  "lng": 51.50156177522734
+                },
+                {
+                  "name": "Nobu Doha",
+                  "lat": 25.324903557715,
+                  "lng": 51.539890766144
+                }
+              ],
+              "4": [
+                {
+                  "id": "trend_3_boho_socia",
+                  "name": "🔥 TRENDING: BOHO Social",
+                  "lat": 25.3601,
+                  "lng": 51.5276,
+                  "is_trending_spot": true,
+                  "cost": 258.0,
+                  "category": "restaurant|cafe",
+                  "description": "An Instagram-worthy spot known for its bohemian-chic interiors, diverse menu of nutrient-packed salad bowls and grills, and stunning panoramic views of Katara.",
+                  "social_buzz": "Highly popular on social media for its aesthetic decor, beautiful plating, and scenic outdoor terrace, attracting those looking for a stylish dining experience.",
+                  "rating": 4.5,
+                  "price_range": "$$$",
+                  "tags": [
+                    "instagrammable",
+                    "bohemian",
+                    "brunch",
+                    "views",
+                    "trendy"
+                  ],
+                  "source": "Wanderlog, Time Out Doha, Google reviews"
+                },
+                {
+                  "name": "Doha Corniche",
+                  "lat": 25.2882,
+                  "lng": 51.5357
+                },
+                {
+                  "name": "Museum of Islamic Art (MIA)",
+                  "lat": 25.2905,
+                  "lng": 51.5368
+                },
+                {
+                  "name": "Mall exploration",
+                  "lat": 25.32909175502963,
+                  "lng": 51.54076301079798
+                }
+              ],
+              "5": [
+                {
+                  "id": "trend_4_flat_white",
+                  "name": "🔥 TRENDING: Flat White Specialty Coffee",
+                  "lat": 25.367,
+                  "lng": 51.52,
+                  "is_trending_spot": true,
+                  "cost": 41.0,
+                  "category": "cafe",
+                  "description": "A pioneer in Doha's craft coffee scene, known for introducing the Australian flat white and offering exceptional coffee knowledge in industrial-chic interiors.",
+                  "social_buzz": "A favorite among coffee enthusiasts and locals for its quality brews, cozy ambiance, and contribution to Doha's evolving coffee culture.",
+                  "rating": 4.6,
+                  "price_range": "$",
+                  "tags": [
+                    "specialty coffee",
+                    "cafe",
+                    "trendy",
+                    "local favorite",
+                    "brunch"
+                  ],
+                  "source": "Forbes Travel Guide, Enjoy Travel, local blogs"
+                },
+                {
+                  "name": "Villaggio Mall",
+                  "lat": 25.26056,
+                  "lng": 51.44306
+                },
+                {
+                  "name": "Souq Waqif",
+                  "lat": 25.2874,
+                  "lng": 51.5332
+                },
+                {
+                  "name": "Historical Diriyah tour",
+                  "lat": 25.226072569320575,
+                  "lng": 51.46774465782717,
+                  "rating": 4.5,
+                  "review_count": 1654,
+                  "why_go": "The birthplace of Saudi Arabia and a UNESCO World Heritage Site. The restored mud-brick At-Turaif district showcases 300 years of Saudi history and Najdi architecture at its finest.",
+                  "reviews": [
+                    {
+                      "user": "Fahd K.",
+                      "rating": 5,
+                      "text": "Beautifully restored! The architecture is stunning and the museum tells the story of how Saudi Arabia was founded."
+                    },
+                    {
+                      "user": "Patricia M.",
+                      "rating": 4,
+                      "text": "A peaceful escape from Riyadh's bustle. The restaurants inside the complex are excellent."
+                    },
+                    {
+                      "user": "Saad J.",
+                      "rating": 5,
+                      "text": "Walking through the old streets at sunset is magical. The new Bujairi Terrace restaurants have amazing views."
+                    }
+                  ]
+                }
+              ],
+              "6": [
+                {
+                  "id": "trend_5_dhow_cruis",
+                  "name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+                  "lat": 25.2917,
+                  "lng": 51.5383,
+                  "is_trending_spot": true,
+                  "cost": 155.0,
+                  "category": "unique experience",
+                  "description": "A relaxing traditional wooden boat cruise along the Doha Corniche, offering breathtaking sunset views of the city skyline, often including dinner and Arabic hospitality.",
+                  "social_buzz": "A quintessential Doha experience, frequently shared for its picturesque views, romantic atmosphere, and cultural charm, especially at sunset.",
+                  "rating": 4.8,
+                  "price_range": "$$",
+                  "tags": [
+                    "cultural",
+                    "scenic",
+                    "sunset",
+                    "romantic",
+                    "boat trip"
+                  ],
+                  "source": "GetYourGuide, Hotels.com, TravelPulse"
+                },
+                {
+                  "name": "Art gallery visit",
+                  "lat": 25.222303293663852,
+                  "lng": 51.545026101035546
+                },
+                {
+                  "name": "The Pearl-Qatar",
+                  "lat": 25.3678,
+                  "lng": 51.5509
+                },
+                {
+                  "name": "Historical palaces walking tour",
+                  "lat": 25.243103361197775,
+                  "lng": 51.46276196846433
+                }
+              ],
+              "7": [
+                {
+                  "id": "trend_6_la_vista_5",
+                  "name": "🔥 TRENDING: La Vista 55",
+                  "lat": 25.3236,
+                  "lng": 51.523,
+                  "is_trending_spot": true,
+                  "cost": 206.0,
+                  "category": "nightlife",
+                  "description": "A high-energy bar located on the 55th floor of the InterContinental Doha The City, offering stunning panoramic views of the West Bay skyline, Cuban tunes, and tasty tacos.",
+                  "social_buzz": "Popular for its impressive views, vibrant atmosphere, and Latin music, making it a go-to spot for a sophisticated night out.",
+                  "rating": 4.3,
+                  "price_range": "$$$",
+                  "tags": [
+                    "rooftop bar",
+                    "nightlife",
+                    "views",
+                    "cocktails",
+                    "trendy"
+                  ],
+                  "source": "Travel Guides, Time Out Doha"
+                },
+                {
+                  "name": "National Museum of Qatar (NMoQ)",
+                  "lat": 25.2879,
+                  "lng": 51.5494
+                }
+              ]
+            },
+            "hotel": {
+              "name": "Mandarin Oriental, Doha",
+              "lat": 25.2858,
+              "lng": 51.5258
+            }
+          },
+          "events": {
+            "city": "Doha",
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-15",
+            "events": [],
+            "total_event_cost": 0,
+            "scan_source": "none"
+          },
+          "web_research": {
+            "city": "Doha",
+            "research_date": "2026-05-08",
+            "social_posts": [
+              {
+                "platform": "blog",
+                "author": "Anoushka Probyn",
+                "content": "The Mina District, located in the Old Port of Doha, is highlighted as one of the most Instagrammable spots with its unique pastel-colored buildings, shops, cafes, and a beautiful fish market. It offers a unique experience away from the city's skyscrapers.",
+                "category": "hidden_gem",
+                "relevance_score": 0.95,
+                "url": "https://anoushkas.blog/doha-travel-guide/",
+                "likes": 0,
+                "posted_date": "January 11, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Seasoned Traveller",
+                "content": "Turkey Central Restaurant is a bustling, multi-storey establishment known for its grilled meats and skewers, particularly the 'tepsi kebabı'. It's a favorite among locals for its good value and big flavors.",
+                "category": "restaurant",
+                "relevance_score": 0.92,
+                "url": "https://seasonedtraveller.com/where-to-eat-in-doha/",
+                "likes": 0,
+                "posted_date": "July 17, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Silly Suitcase",
+                "content": "The Museum of Illusions Doha is recommended as a unique and offbeat experience, offering interactive exhibits that challenge perception and provide 'Instagrammable moments'. It's highly rated for all ages.",
+                "category": "hidden_gem",
+                "relevance_score": 0.9,
+                "url": "https://sillysuitcase.com/doha-hidden-gems/",
+                "likes": 0,
+                "posted_date": "March 17, 2026"
+              },
+              {
+                "platform": "blog",
+                "author": "Being Christina Jane",
+                "content": "A desert safari tour, including thrilling dune bashing, is a highly recommended unique experience in Doha. It's an unforgettable adventure for thrill-seekers.",
+                "category": "unique_experience",
+                "relevance_score": 0.93,
+                "url": "https://beingchristinajane.com/doha-travel-guide/",
+                "likes": 0,
+                "posted_date": "November 19, 2025"
+              },
+              {
+                "platform": "reddit",
+                "author": "Reddit user",
+                "content": "For nightlife, Sora Sky Lounge is recommended for the best view of the Doha skyline, offering a less busy alternative to other spots. Nightlife in Doha is generally quiet and concentrated in West Bay and The Pearl.",
+                "category": "nightlife",
+                "relevance_score": 0.88,
+                "url": "https://www.reddit.com/r/qatar/comments/142279i/night_life_downtown_doha/",
+                "likes": 0,
+                "posted_date": "June 06, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Great Value Vacations",
+                "content": "Visitors to Qatar are advised to dress modestly, ensuring shoulders and knees are covered in public places, out of respect for the local Muslim culture. Alcohol consumption is restricted to licensed hotel restaurants and bars.",
+                "category": "tip",
+                "relevance_score": 0.9,
+                "url": "https://www.greatvaluevacations.com/travel-guide/middle-east/qatar/doha/travel-tips",
+                "likes": 0,
+                "posted_date": "Undated (reviewed by travel expert)"
+              },
+              {
+                "platform": "blog",
+                "author": "Karlie Place",
+                "content": "Parisa Restaurant in West Bay is described as an opulent Persian restaurant with intricate mirror work and sparkling chandeliers, offering a magical atmosphere and must-try signature kebabs and saffron rice.",
+                "category": "restaurant",
+                "relevance_score": 0.91,
+                "url": "https://karlieplace.com/ultimate-guide-to-qatar-15-must-visit-destinations-for-luxury-and-culture/",
+                "likes": 0,
+                "posted_date": "November 29, 2024"
+              },
+              {
+                "platform": "government_advisory",
+                "author": "U.S. Department of State",
+                "content": "A travel advisory issued on March 2, 2026, recommends reconsidering travel to Qatar due to the risk of armed conflict. The U.S. Embassy in Doha has suspended routine consular services and encourages Americans to depart.",
+                "category": "warning",
+                "relevance_score": 1.0,
+                "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/qatar-travel-advisory.html",
+                "likes": 0,
+                "posted_date": "March 02, 2026"
+              }
+            ],
+            "trending_spots": [
+              {
+                "name": "Souq Waqif",
+                "category": "attraction|shopping",
+                "description": "A historic marketplace offering a labyrinth of alleyways filled with spices, textiles, handicrafts, traditional restaurants, and shisha lounges, providing a deep dive into Qatari culture.",
+                "price_range": "$",
+                "estimated_cost_sar": 80.0,
+                "rating": 4.7,
+                "source": "Tripadvisor, Google Maps, local blogs",
+                "lat": 25.2891,
+                "lng": 51.5354,
+                "social_buzz": "Constantly buzzing, especially in the evenings, with locals and tourists enjoying the vibrant atmosphere, traditional performances, and diverse culinary options.",
+                "tags": [
+                  "traditional market",
+                  "culture",
+                  "shopping",
+                  "dining",
+                  "historic"
+                ]
+              },
+              {
+                "name": "Museum of Islamic Art (MIA)",
+                "category": "attraction",
+                "description": "An architectural masterpiece designed by I.M. Pei, housing an an extensive collection of Islamic art and artifacts spanning 14 centuries, set on the Doha waterfront.",
+                "price_range": "$",
+                "estimated_cost_sar": 52.0,
+                "rating": 4.6,
+                "source": "Tripadvisor, Google Maps, GetYourGuide",
+                "lat": 25.2928,
+                "lng": 51.5394,
+                "social_buzz": "Praised for its stunning architecture, serene atmosphere, and world-class collections, often featured in travel photography.",
+                "tags": [
+                  "museum",
+                  "art",
+                  "architecture",
+                  "culture",
+                  "history"
+                ]
+              },
+              {
+                "name": "Nobu Doha",
+                "category": "restaurant",
+                "description": "The world's largest Nobu restaurant, offering Japanese-Peruvian fusion cuisine in an iconic setting on its own private pier with 360-degree views of the city.",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 515.0,
+                "rating": 4.7,
+                "source": "Wanderlog, Le Petit Chef, Google Maps",
+                "lat": 25.3262,
+                "lng": 51.5369,
+                "social_buzz": "Celebrated for its exquisite food, unique overwater location, and stunning sunset views, making it a popular spot for luxury dining and special occasions.",
+                "tags": [
+                  "fine dining",
+                  "Japanese-Peruvian",
+                  "luxury",
+                  "views",
+                  "iconic"
+                ]
+              },
+              {
+                "name": "BOHO Social",
+                "category": "restaurant|cafe",
+                "description": "An Instagram-worthy spot known for its bohemian-chic interiors, diverse menu of nutrient-packed salad bowls and grills, and stunning panoramic views of Katara.",
+                "price_range": "$$$",
+                "estimated_cost_sar": 258.0,
+                "rating": 4.5,
+                "source": "Wanderlog, Time Out Doha, Google reviews",
+                "lat": 25.3601,
+                "lng": 51.5276,
+                "social_buzz": "Highly popular on social media for its aesthetic decor, beautiful plating, and scenic outdoor terrace, attracting those looking for a stylish dining experience.",
+                "tags": [
+                  "instagrammable",
+                  "bohemian",
+                  "brunch",
+                  "views",
+                  "trendy"
+                ]
+              },
+              {
+                "name": "Flat White Specialty Coffee",
+                "category": "cafe",
+                "description": "A pioneer in Doha's craft coffee scene, known for introducing the Australian flat white and offering exceptional coffee knowledge in industrial-chic interiors.",
+                "price_range": "$",
+                "estimated_cost_sar": 41.0,
+                "rating": 4.6,
+                "source": "Forbes Travel Guide, Enjoy Travel, local blogs",
+                "lat": 25.367,
+                "lng": 51.52,
+                "social_buzz": "A favorite among coffee enthusiasts and locals for its quality brews, cozy ambiance, and contribution to Doha's evolving coffee culture.",
+                "tags": [
+                  "specialty coffee",
+                  "cafe",
+                  "trendy",
+                  "local favorite",
+                  "brunch"
+                ]
+              },
+              {
+                "name": "Dhow Cruise (Sunset/Dinner)",
+                "category": "unique experience",
+                "description": "A relaxing traditional wooden boat cruise along the Doha Corniche, offering breathtaking sunset views of the city skyline, often including dinner and Arabic hospitality.",
+                "price_range": "$$",
+                "estimated_cost_sar": 155.0,
+                "rating": 4.8,
+                "source": "GetYourGuide, Hotels.com, TravelPulse",
+                "lat": 25.2917,
+                "lng": 51.5383,
+                "social_buzz": "A quintessential Doha experience, frequently shared for its picturesque views, romantic atmosphere, and cultural charm, especially at sunset.",
+                "tags": [
+                  "cultural",
+                  "scenic",
+                  "sunset",
+                  "romantic",
+                  "boat trip"
+                ]
+              },
+              {
+                "name": "La Vista 55",
+                "category": "nightlife",
+                "description": "A high-energy bar located on the 55th floor of the InterContinental Doha The City, offering stunning panoramic views of the West Bay skyline, Cuban tunes, and tasty tacos.",
+                "price_range": "$$$",
+                "estimated_cost_sar": 206.0,
+                "rating": 4.3,
+                "source": "Travel Guides, Time Out Doha",
+                "lat": 25.3236,
+                "lng": 51.523,
+                "social_buzz": "Popular for its impressive views, vibrant atmosphere, and Latin music, making it a go-to spot for a sophisticated night out.",
+                "tags": [
+                  "rooftop bar",
+                  "nightlife",
+                  "views",
+                  "cocktails",
+                  "trendy"
+                ]
+              },
+              {
+                "name": "The Pearl-Qatar",
+                "category": "attraction|shopping",
+                "description": "An opulent man-made island featuring luxury residences, high-end boutiques, international restaurants, and picturesque marinas, often referred to as the 'Arabian Riviera.'",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 309.0,
+                "rating": 4.7,
+                "source": "Tripadvisor, Hotels.com, Viator",
+                "lat": 25.378,
+                "lng": 51.526,
+                "social_buzz": "A symbol of luxury and modern Doha, frequently showcased on social media for its stunning architecture, upscale lifestyle, and diverse entertainment options.",
+                "tags": [
+                  "luxury",
+                  "shopping",
+                  "dining",
+                  "marina",
+                  "modern architecture"
+                ]
+              }
+            ],
+            "local_insights": [
+              {
+                "tip": "Pack breathable fabrics like linen or cotton, long sleeves, and wide-leg trousers to stay cool and adhere to modesty requirements.",
+                "category": "weather",
+                "source": "Packfits, Wandering Weather, Asher & Lyric, Qatar Dresscode Explained, Sidxt",
+                "confidence": "high"
+              },
+              {
+                "tip": "Bring a light jacket or cardigan for air-conditioned indoor spaces, which can be quite cold.",
+                "category": "weather",
+                "source": "Packfits, Wandering Weather, Asher & Lyric",
+                "confidence": "high"
+              },
+              {
+                "tip": "Essential sun protection includes high-SPF sunscreen, UV-protective sunglasses, and a wide-brim hat.",
+                "category": "weather",
+                "source": "Packfits, Wandering Weather, Qatar Dresscode Explained, Sidxt",
+                "confidence": "high"
+              },
+              {
+                "tip": "Wear comfortable walking shoes or sneakers for city exploration and closed, grippy shoes for desert excursions.",
+                "category": "weather",
+                "source": "Packfits, Wandering Weather, Qatar Dresscode Explained",
+                "confidence": "high"
+              },
+              {
+                "tip": "Schedule outdoor activities for early morning or late afternoon to avoid the scorching midday heat.",
+                "category": "weather",
+                "source": "Packfits",
+                "confidence": "high"
+              },
+              {
+                "tip": "Utilize the cheap and efficient Doha Metro, with rides costing QR2 per trip and capped at QR6 per day.",
+                "category": "money_saving",
+                "source": "Lonely Planet, Reddit, Travel with Niyo",
+                "confidence": "high"
+              },
+              {
+                "tip": "Consider Qatar Airways stopover deals, which can include accommodation for a very low price.",
+                "category": "money_saving",
+                "source": "Lonely Planet",
+                "confidence": "high"
+              },
+              {
+                "tip": "Drink tap water, which is safe to consume, and carry a reusable bottle to save money on bottled water.",
+                "category": "money_saving",
+                "source": "Lonely Planet",
+                "confidence": "high"
+              }
+            ],
+            "weather_summary": "Doha, Qatar is currently experiencing hot and sunny conditions with temperatures around 38-39°C (100-102°F) and a RealFeel of 37°C (98°F).",
+            "scan_successful": true
+          },
+          "dates": {
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-15"
+          },
+          "map": {
+            "origin": {
+              "lat": 24.7136,
+              "lng": 46.6753
+            },
+            "destination": {
+              "lat": 25.2854,
+              "lng": 51.531
+            },
+            "origin_name": "Riyadh",
+            "dest_name": "Doha"
+          },
+          "hospitality": {
+            "hotels": [
+              {
+                "id": "Palm Inn Hotel Doha",
+                "name": "Palm Inn Hotel Doha",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 4.2,
+                "description": "The staff were incredibly friendly, and always helpful.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 80.08,
+                    "final_price_sar": 80.08,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 112.11,
+                    "final_price_sar": 112.11,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "has_availability": true,
+                "live_price_sar": 80.08,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 80.08,
+                  "final_price_sar": 80.08,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Premier Inn Doha Air",
+                "name": "Premier Inn Doha Airport",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 4.5,
+                "description": "This hotel is conveniently located right by Abu Bakr As-Siddique Masjid.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 98.28,
+                    "final_price_sar": 98.28,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 137.59,
+                    "final_price_sar": 137.59,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.271802502211454,
+                "lng": 51.547245051066014,
+                "has_availability": true,
+                "live_price_sar": 98.28,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 98.28,
+                  "final_price_sar": 98.28,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "K108 Hotel",
+                "name": "K108 Hotel",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 4.3,
+                "description": "Guests enjoy features like an outdoor pool, a gym, and a rooftop terrace.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 178.36,
+                    "final_price_sar": 178.36,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 249.7,
+                    "final_price_sar": 249.7,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.32785099543929,
+                "lng": 51.57988014321436,
+                "has_availability": true,
+                "live_price_sar": 178.36,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 178.36,
+                  "final_price_sar": 178.36,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "DoubleTree by Hilton",
+                "name": "DoubleTree by Hilton Hotel Doha Old Town",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 4.5,
+                "description": "This luxury hotel features a full-service spa, an outdoor pool, and a 24-hour gym.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 254.8,
+                    "final_price_sar": 254.8,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 356.72,
+                    "final_price_sar": 356.72,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.2881854403953,
+                "lng": 51.559882178327896,
+                "has_availability": true,
+                "live_price_sar": 254.8,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 254.8,
+                  "final_price_sar": 254.8,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "The Ned Doha",
+                "name": "The Ned Doha",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 4.8,
+                "description": "Rated by travelers as one of the best in the city, offering excellent amenities and breakfast options.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 578.76,
+                    "final_price_sar": 578.76,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 810.26,
+                    "final_price_sar": 810.26,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.24974968583336,
+                "lng": 51.536061367749575,
+                "has_availability": true,
+                "live_price_sar": 578.76,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 578.76,
+                  "final_price_sar": 578.76,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              }
+            ],
+            "restaurants": [
+              {
+                "id": "347",
+                "name": "Al Jasra Traditional Food",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 15,
+                "available_tables": 5,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 40.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 12.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 16.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.279936130601897,
+                "lng": 51.54151561212349
+              },
+              {
+                "id": "345",
+                "name": "Jiwan Restaurant",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.2,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 13,
+                "available_tables": 7,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 250.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 75.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 100.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.29520478469878,
+                "lng": 51.56823808365047
+              },
+              {
+                "id": "349",
+                "name": "Parisa Souq Waqif",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 18,
+                "available_tables": 2,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 150.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 45.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 60.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.277638725356717,
+                "lng": 51.486228600164125
+              },
+              {
+                "id": "348",
+                "name": "Shay Al Shoomos",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.5,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 17,
+                "available_tables": 3,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 75.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 22.5,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 30.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.308215699593497,
+                "lng": 51.500965915179926
+              },
+              {
+                "id": "346",
+                "name": "Walima",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.7,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 13,
+                "available_tables": 7,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 250.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 75.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 100.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.289942390279407,
+                "lng": 51.55025730904713
+              },
+              {
+                "id": "352",
+                "name": "Black Rose Coffee Shop",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.8,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 7,
+                "available_tables": 13,
+                "discount_percent": 12.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 45.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 13.5,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 18.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.280724112418675,
+                "lng": 51.54020019819498
+              },
+              {
+                "id": "350",
+                "name": "Flow",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.8,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 9,
+                "available_tables": 11,
+                "discount_percent": 12.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 57.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 17.099999999999998,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 22.8,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.307090269570686,
+                "lng": 51.48705050268511
+              },
+              {
+                "id": "351",
+                "name": "Meesh Time Café",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 13,
+                "available_tables": 7,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 41.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 12.299999999999999,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 16.400000000000002,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.281286362615244,
+                "lng": 51.52133639852885
+              }
+            ],
+            "travel_costs": {
+              "status": "success",
+              "flights": [
+                {
+                  "airline": "Flynas",
+                  "price_sar": 322.5,
+                  "duration": "85m",
+                  "source": "gemini_grounding"
+                }
+              ],
+              "origin": "riyadh",
+              "destination": "Doha",
+              "travel_mode": "flight"
+            }
+          },
+          "timeline": {
+            "1": {
+              "legs": [
+                {
+                  "from_name": "Riyadh",
+                  "from_lat": 24.7136,
+                  "from_lng": 46.6753,
+                  "to_name": "Palm Inn Hotel Doha",
+                  "to_lat": 25.236885292658584,
+                  "to_lng": 51.50465286607955,
+                  "mode": "✈️ Long-haul",
+                  "dist": 0,
+                  "time_minutes": 120,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                },
+                {
+                  "from_name": "Palm Inn Hotel Doha",
+                  "from_lat": 25.236885292658584,
+                  "from_lng": 51.50465286607955,
+                  "to_name": "🔥 TRENDING: The Pearl-Qatar",
+                  "to_lat": 25.378,
+                  "to_lng": 51.526,
+                  "mode": "🚌 Public Transport",
+                  "dist": 15.84,
+                  "time_minutes": 27,
+                  "cost": 16.88
+                },
+                {
+                  "from_name": "🔥 TRENDING: The Pearl-Qatar",
+                  "from_lat": 25.378,
+                  "from_lng": 51.526,
+                  "to_name": "🔥 TRENDING: Souq Waqif",
+                  "to_lat": 25.2891,
+                  "to_lng": 51.5354,
+                  "mode": "🚌 Public Transport",
+                  "dist": 9.93,
+                  "time_minutes": 17,
+                  "cost": 12.45
+                },
+                {
+                  "from_name": "🔥 TRENDING: Souq Waqif",
+                  "from_lat": 25.2891,
+                  "from_lng": 51.5354,
+                  "to_name": "National museum visit",
+                  "to_lat": 25.302224122926447,
+                  "to_lng": 51.46859088033424,
+                  "mode": "🚌 Public Transport",
+                  "dist": 6.87,
+                  "time_minutes": 12,
+                  "cost": 10.15
+                },
+                {
+                  "from_name": "National museum visit",
+                  "from_lat": 25.302224122926447,
+                  "from_lng": 51.46859088033424,
+                  "to_name": "Katara Cultural Village",
+                  "to_lat": 25.36095,
+                  "to_lng": 51.52437,
+                  "mode": "🚌 Public Transport",
+                  "dist": 8.61,
+                  "time_minutes": 15,
+                  "cost": 11.45
+                },
+                {
+                  "from_name": "Katara Cultural Village",
+                  "from_lat": 25.36095,
+                  "from_lng": 51.52437,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 25.214832687390714,
+                  "to_lng": 51.469657208920005,
+                  "mode": "🚌 Public Transport",
+                  "dist": 17.15,
+                  "time_minutes": 29,
+                  "cost": 17.87
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 25.214832687390714,
+                  "from_lng": 51.469657208920005,
+                  "to_name": "Palm Inn Hotel Doha",
+                  "to_lat": 25.236885292658584,
+                  "to_lng": 51.50465286607955,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 4.29,
+                  "time_minutes": 5,
+                  "cost": 20.73
+                }
+              ],
+              "day_cost": 89.53,
+              "recommendation": ""
+            },
+            "2": {
+              "legs": [
+                {
+                  "from_name": "Palm Inn Hotel Doha",
+                  "from_lat": 25.236885292658584,
+                  "from_lng": 51.50465286607955,
+                  "to_name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+                  "to_lat": 25.2928,
+                  "to_lng": 51.5394,
+                  "mode": "🚌 Public Transport",
+                  "dist": 7.13,
+                  "time_minutes": 12,
+                  "cost": 10.35
+                },
+                {
+                  "from_name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+                  "from_lat": 25.2928,
+                  "from_lng": 51.5394,
+                  "to_name": "Boulevard Riyadh City",
+                  "to_lat": 25.29869459961551,
+                  "to_lng": 51.57258998647313,
+                  "mode": "🚌 Public Transport",
+                  "dist": 3.4,
+                  "time_minutes": 6,
+                  "cost": 7.55
+                },
+                {
+                  "from_name": "Boulevard Riyadh City",
+                  "from_lat": 25.29869459961551,
+                  "from_lng": 51.57258998647313,
+                  "to_name": "Fine dining experience",
+                  "to_lat": 25.359859115557462,
+                  "to_lng": 51.53153670150173,
+                  "mode": "🚌 Public Transport",
+                  "dist": 7.95,
+                  "time_minutes": 14,
+                  "cost": 10.97
+                },
+                {
+                  "from_name": "Fine dining experience",
+                  "from_lat": 25.359859115557462,
+                  "from_lng": 51.53153670150173,
+                  "to_name": "Rooftop café",
+                  "to_lat": 25.207189224530534,
+                  "to_lng": 51.5328256857036,
+                  "mode": "🚌 Public Transport",
+                  "dist": 16.98,
+                  "time_minutes": 29,
+                  "cost": 17.73
+                },
+                {
+                  "from_name": "Rooftop café",
+                  "from_lat": 25.207189224530534,
+                  "from_lng": 51.5328256857036,
+                  "to_name": "Palm Inn Hotel Doha",
+                  "to_lat": 25.236885292658584,
+                  "to_lng": 51.50465286607955,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 4.35,
+                  "time_minutes": 5,
+                  "cost": 20.88
+                }
+              ],
+              "day_cost": 67.48,
+              "recommendation": ""
+            },
+            "3": {
+              "legs": [
+                {
+                  "from_name": "Palm Inn Hotel Doha",
+                  "from_lat": 25.236885292658584,
+                  "from_lng": 51.50465286607955,
+                  "to_name": "🔥 TRENDING: Nobu Doha",
+                  "to_lat": 25.3262,
+                  "to_lng": 51.5369,
+                  "mode": "🚌 Public Transport",
+                  "dist": 10.45,
+                  "time_minutes": 18,
+                  "cost": 12.84
+                },
+                {
+                  "from_name": "🔥 TRENDING: Nobu Doha",
+                  "from_lat": 25.3262,
+                  "from_lng": 51.5369,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 25.283613483662222,
+                  "to_lng": 51.55170763236942,
+                  "mode": "🚌 Public Transport",
+                  "dist": 4.96,
+                  "time_minutes": 9,
+                  "cost": 8.72
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 25.283613483662222,
+                  "from_lng": 51.55170763236942,
+                  "to_name": "Local souq haggling",
+                  "to_lat": 25.282666533223956,
+                  "to_lng": 51.50156177522734,
+                  "mode": "🚌 Public Transport",
+                  "dist": 5.04,
+                  "time_minutes": 9,
+                  "cost": 8.78
+                },
+                {
+                  "from_name": "Local souq haggling",
+                  "from_lat": 25.282666533223956,
+                  "from_lng": 51.50156177522734,
+                  "to_name": "Nobu Doha",
+                  "to_lat": 25.324903557715,
+                  "to_lng": 51.539890766144,
+                  "mode": "🚌 Public Transport",
+                  "dist": 6.07,
+                  "time_minutes": 10,
+                  "cost": 9.56
+                },
+                {
+                  "from_name": "Nobu Doha",
+                  "from_lat": 25.324903557715,
+                  "from_lng": 51.539890766144,
+                  "to_name": "Palm Inn Hotel Doha",
+                  "to_lat": 25.236885292658584,
+                  "to_lng": 51.50465286607955,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 10.41,
+                  "time_minutes": 11,
+                  "cost": 36.02
+                }
+              ],
+              "day_cost": 75.92,
+              "recommendation": ""
+            },
+            "4": {
+              "legs": [
+                {
+                  "from_name": "Palm Inn Hotel Doha",
+                  "from_lat": 25.236885292658584,
+                  "from_lng": 51.50465286607955,
+                  "to_name": "🔥 TRENDING: BOHO Social",
+                  "to_lat": 25.3601,
+                  "to_lng": 51.5276,
+                  "mode": "🚌 Public Transport",
+                  "dist": 13.89,
+                  "time_minutes": 24,
+                  "cost": 15.42
+                },
+                {
+                  "from_name": "🔥 TRENDING: BOHO Social",
+                  "from_lat": 25.3601,
+                  "from_lng": 51.5276,
+                  "to_name": "Doha Corniche",
+                  "to_lat": 25.2882,
+                  "to_lng": 51.5357,
+                  "mode": "🚌 Public Transport",
+                  "dist": 8.04,
+                  "time_minutes": 14,
+                  "cost": 11.03
+                },
+                {
+                  "from_name": "Doha Corniche",
+                  "from_lat": 25.2882,
+                  "from_lng": 51.5357,
+                  "to_name": "Museum of Islamic Art (MIA)",
+                  "to_lat": 25.2905,
+                  "to_lng": 51.5368,
+                  "mode": "🚶 Walk",
+                  "dist": 0.28,
+                  "time_minutes": 3,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Museum of Islamic Art (MIA)",
+                  "from_lat": 25.2905,
+                  "from_lng": 51.5368,
+                  "to_name": "Mall exploration",
+                  "to_lat": 25.32909175502963,
+                  "to_lng": 51.54076301079798,
+                  "mode": "🚌 Public Transport",
+                  "dist": 4.31,
+                  "time_minutes": 7,
+                  "cost": 8.23
+                },
+                {
+                  "from_name": "Mall exploration",
+                  "from_lat": 25.32909175502963,
+                  "from_lng": 51.54076301079798,
+                  "to_name": "Palm Inn Hotel Doha",
+                  "to_lat": 25.236885292658584,
+                  "to_lng": 51.50465286607955,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 10.88,
+                  "time_minutes": 12,
+                  "cost": 37.19
+                }
+              ],
+              "day_cost": 71.87,
+              "recommendation": ""
+            },
+            "5": {
+              "legs": [
+                {
+                  "from_name": "Palm Inn Hotel Doha",
+                  "from_lat": 25.236885292658584,
+                  "from_lng": 51.50465286607955,
+                  "to_name": "🔥 TRENDING: Flat White Specialty Coffee",
+                  "to_lat": 25.367,
+                  "to_lng": 51.52,
+                  "mode": "🚌 Public Transport",
+                  "dist": 14.55,
+                  "time_minutes": 25,
+                  "cost": 15.91
+                },
+                {
+                  "from_name": "🔥 TRENDING: Flat White Specialty Coffee",
+                  "from_lat": 25.367,
+                  "from_lng": 51.52,
+                  "to_name": "Villaggio Mall",
+                  "to_lat": 25.26056,
+                  "to_lng": 51.44306,
+                  "mode": "🚌 Public Transport",
+                  "dist": 14.14,
+                  "time_minutes": 24,
+                  "cost": 15.6
+                },
+                {
+                  "from_name": "Villaggio Mall",
+                  "from_lat": 25.26056,
+                  "from_lng": 51.44306,
+                  "to_name": "Souq Waqif",
+                  "to_lat": 25.2874,
+                  "to_lng": 51.5332,
+                  "mode": "🚌 Public Transport",
+                  "dist": 9.54,
+                  "time_minutes": 16,
+                  "cost": 12.16
+                },
+                {
+                  "from_name": "Souq Waqif",
+                  "from_lat": 25.2874,
+                  "from_lng": 51.5332,
+                  "to_name": "Historical Diriyah tour",
+                  "to_lat": 25.226072569320575,
+                  "to_lng": 51.46774465782717,
+                  "mode": "🚌 Public Transport",
+                  "dist": 9.48,
+                  "time_minutes": 16,
+                  "cost": 12.11
+                },
+                {
+                  "from_name": "Historical Diriyah tour",
+                  "from_lat": 25.226072569320575,
+                  "from_lng": 51.46774465782717,
+                  "to_name": "Palm Inn Hotel Doha",
+                  "to_lat": 25.236885292658584,
+                  "to_lng": 51.50465286607955,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 3.9,
+                  "time_minutes": 4,
+                  "cost": 19.76
+                }
+              ],
+              "day_cost": 75.54,
+              "recommendation": ""
+            },
+            "6": {
+              "legs": [
+                {
+                  "from_name": "Palm Inn Hotel Doha",
+                  "from_lat": 25.236885292658584,
+                  "from_lng": 51.50465286607955,
+                  "to_name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+                  "to_lat": 25.2917,
+                  "to_lng": 51.5383,
+                  "mode": "🚌 Public Transport",
+                  "dist": 6.97,
+                  "time_minutes": 12,
+                  "cost": 10.23
+                },
+                {
+                  "from_name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+                  "from_lat": 25.2917,
+                  "from_lng": 51.5383,
+                  "to_name": "Art gallery visit",
+                  "to_lat": 25.222303293663852,
+                  "to_lng": 51.545026101035546,
+                  "mode": "🚌 Public Transport",
+                  "dist": 7.75,
+                  "time_minutes": 13,
+                  "cost": 10.81
+                },
+                {
+                  "from_name": "Art gallery visit",
+                  "from_lat": 25.222303293663852,
+                  "from_lng": 51.545026101035546,
+                  "to_name": "The Pearl-Qatar",
+                  "to_lat": 25.3678,
+                  "to_lng": 51.5509,
+                  "mode": "🚌 Public Transport",
+                  "dist": 16.19,
+                  "time_minutes": 28,
+                  "cost": 17.14
+                },
+                {
+                  "from_name": "The Pearl-Qatar",
+                  "from_lat": 25.3678,
+                  "from_lng": 51.5509,
+                  "to_name": "Historical palaces walking tour",
+                  "to_lat": 25.243103361197775,
+                  "to_lng": 51.46276196846433,
+                  "mode": "🚌 Public Transport",
+                  "dist": 16.45,
+                  "time_minutes": 28,
+                  "cost": 17.34
+                },
+                {
+                  "from_name": "Historical palaces walking tour",
+                  "from_lat": 25.243103361197775,
+                  "from_lng": 51.46276196846433,
+                  "to_name": "Palm Inn Hotel Doha",
+                  "to_lat": 25.236885292658584,
+                  "to_lng": 51.50465286607955,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 4.27,
+                  "time_minutes": 5,
+                  "cost": 20.67
+                }
+              ],
+              "day_cost": 76.2,
+              "recommendation": ""
+            },
+            "7": {
+              "legs": [
+                {
+                  "from_name": "Palm Inn Hotel Doha",
+                  "from_lat": 25.236885292658584,
+                  "from_lng": 51.50465286607955,
+                  "to_name": "🔥 TRENDING: La Vista 55",
+                  "to_lat": 25.3236,
+                  "to_lng": 51.523,
+                  "mode": "🚌 Public Transport",
+                  "dist": 9.82,
+                  "time_minutes": 17,
+                  "cost": 12.36
+                },
+                {
+                  "from_name": "🔥 TRENDING: La Vista 55",
+                  "from_lat": 25.3236,
+                  "from_lng": 51.523,
+                  "to_name": "National Museum of Qatar (NMoQ)",
+                  "to_lat": 25.2879,
+                  "to_lng": 51.5494,
+                  "mode": "🚌 Public Transport",
+                  "dist": 4.78,
+                  "time_minutes": 8,
+                  "cost": 8.58
+                },
+                {
+                  "from_name": "National Museum of Qatar (NMoQ)",
+                  "from_lat": 25.2879,
+                  "from_lng": 51.5494,
+                  "to_name": "Palm Inn Hotel Doha",
+                  "to_lat": 25.236885292658584,
+                  "to_lng": 51.50465286607955,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 7.24,
+                  "time_minutes": 8,
+                  "cost": 28.1
+                },
+                {
+                  "from_name": "Palm Inn Hotel Doha",
+                  "from_lat": 25.236885292658584,
+                  "from_lng": 51.50465286607955,
+                  "to_name": "Riyadh",
+                  "to_lat": 24.7136,
+                  "to_lng": 46.6753,
+                  "mode": "✈️ Return",
+                  "dist": 0,
+                  "time_minutes": 120,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                }
+              ],
+              "day_cost": 49.05,
+              "recommendation": ""
+            }
+          },
+          "total_transit_cost": 505.57,
+          "simulation_routes": {
+            "1": [
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin",
+                "day": 1
+              },
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: The Pearl-Qatar",
+                "lat": 25.378,
+                "lng": 51.526,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: Souq Waqif",
+                "lat": 25.2891,
+                "lng": 51.5354,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "National museum visit",
+                "lat": 25.302224122926447,
+                "lng": 51.46859088033424,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Katara Cultural Village",
+                "lat": 25.36095,
+                "lng": 51.52437,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 25.214832687390714,
+                "lng": 51.469657208920005,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel_return",
+                "day": 1
+              }
+            ],
+            "2": [
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+                "lat": 25.2928,
+                "lng": 51.5394,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Boulevard Riyadh City",
+                "lat": 25.29869459961551,
+                "lng": 51.57258998647313,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Fine dining experience",
+                "lat": 25.359859115557462,
+                "lng": 51.53153670150173,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Rooftop café",
+                "lat": 25.207189224530534,
+                "lng": 51.5328256857036,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel_return",
+                "day": 2
+              }
+            ],
+            "3": [
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: Nobu Doha",
+                "lat": 25.3262,
+                "lng": 51.5369,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 25.283613483662222,
+                "lng": 51.55170763236942,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Local souq haggling",
+                "lat": 25.282666533223956,
+                "lng": 51.50156177522734,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Nobu Doha",
+                "lat": 25.324903557715,
+                "lng": 51.539890766144,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel_return",
+                "day": 3
+              }
+            ],
+            "4": [
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel",
+                "day": 4
+              },
+              {
+                "name": "🔥 TRENDING: BOHO Social",
+                "lat": 25.3601,
+                "lng": 51.5276,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Doha Corniche",
+                "lat": 25.2882,
+                "lng": 51.5357,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Museum of Islamic Art (MIA)",
+                "lat": 25.2905,
+                "lng": 51.5368,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Mall exploration",
+                "lat": 25.32909175502963,
+                "lng": 51.54076301079798,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel_return",
+                "day": 4
+              }
+            ],
+            "5": [
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel",
+                "day": 5
+              },
+              {
+                "name": "🔥 TRENDING: Flat White Specialty Coffee",
+                "lat": 25.367,
+                "lng": 51.52,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Villaggio Mall",
+                "lat": 25.26056,
+                "lng": 51.44306,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Souq Waqif",
+                "lat": 25.2874,
+                "lng": 51.5332,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Historical Diriyah tour",
+                "lat": 25.226072569320575,
+                "lng": 51.46774465782717,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel_return",
+                "day": 5
+              }
+            ],
+            "6": [
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel",
+                "day": 6
+              },
+              {
+                "name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+                "lat": 25.2917,
+                "lng": 51.5383,
+                "type": "activity",
+                "day": 6
+              },
+              {
+                "name": "Art gallery visit",
+                "lat": 25.222303293663852,
+                "lng": 51.545026101035546,
+                "type": "activity",
+                "day": 6
+              },
+              {
+                "name": "The Pearl-Qatar",
+                "lat": 25.3678,
+                "lng": 51.5509,
+                "type": "activity",
+                "day": 6
+              },
+              {
+                "name": "Historical palaces walking tour",
+                "lat": 25.243103361197775,
+                "lng": 51.46276196846433,
+                "type": "activity",
+                "day": 6
+              },
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel_return",
+                "day": 6
+              }
+            ],
+            "7": [
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel",
+                "day": 7
+              },
+              {
+                "name": "🔥 TRENDING: La Vista 55",
+                "lat": 25.3236,
+                "lng": 51.523,
+                "type": "activity",
+                "day": 7
+              },
+              {
+                "name": "National Museum of Qatar (NMoQ)",
+                "lat": 25.2879,
+                "lng": 51.5494,
+                "type": "activity",
+                "day": 7
+              },
+              {
+                "name": "Palm Inn Hotel Doha",
+                "lat": 25.236885292658584,
+                "lng": 51.50465286607955,
+                "type": "hotel_return",
+                "day": 7
+              },
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin_return",
+                "day": 7
+              }
+            ]
+          },
+          "full_trip_dataset": [
+            {
+              "from_name": "Riyadh",
+              "from_lat": 24.7136,
+              "from_lng": 46.6753,
+              "to_name": "Palm Inn Hotel Doha",
+              "to_lat": 25.236885292658584,
+              "to_lng": 51.50465286607955,
+              "mode": "✈️ Long-haul",
+              "dist": 0,
+              "time_minutes": 120,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Palm Inn Hotel Doha",
+              "from_lat": 25.236885292658584,
+              "from_lng": 51.50465286607955,
+              "to_name": "🔥 TRENDING: The Pearl-Qatar",
+              "to_lat": 25.378,
+              "to_lng": 51.526,
+              "mode": "🚌 Public Transport",
+              "dist": 15.84,
+              "time_minutes": 27,
+              "cost": 16.88
+            },
+            {
+              "from_name": "🔥 TRENDING: The Pearl-Qatar",
+              "from_lat": 25.378,
+              "from_lng": 51.526,
+              "to_name": "🔥 TRENDING: Souq Waqif",
+              "to_lat": 25.2891,
+              "to_lng": 51.5354,
+              "mode": "🚌 Public Transport",
+              "dist": 9.93,
+              "time_minutes": 17,
+              "cost": 12.45
+            },
+            {
+              "from_name": "🔥 TRENDING: Souq Waqif",
+              "from_lat": 25.2891,
+              "from_lng": 51.5354,
+              "to_name": "National museum visit",
+              "to_lat": 25.302224122926447,
+              "to_lng": 51.46859088033424,
+              "mode": "🚌 Public Transport",
+              "dist": 6.87,
+              "time_minutes": 12,
+              "cost": 10.15
+            },
+            {
+              "from_name": "National museum visit",
+              "from_lat": 25.302224122926447,
+              "from_lng": 51.46859088033424,
+              "to_name": "Katara Cultural Village",
+              "to_lat": 25.36095,
+              "to_lng": 51.52437,
+              "mode": "🚌 Public Transport",
+              "dist": 8.61,
+              "time_minutes": 15,
+              "cost": 11.45
+            },
+            {
+              "from_name": "Katara Cultural Village",
+              "from_lat": 25.36095,
+              "from_lng": 51.52437,
+              "to_name": "City center landmark walk",
+              "to_lat": 25.214832687390714,
+              "to_lng": 51.469657208920005,
+              "mode": "🚌 Public Transport",
+              "dist": 17.15,
+              "time_minutes": 29,
+              "cost": 17.87
+            },
+            {
+              "from_name": "City center landmark walk",
+              "from_lat": 25.214832687390714,
+              "from_lng": 51.469657208920005,
+              "to_name": "Palm Inn Hotel Doha",
+              "to_lat": 25.236885292658584,
+              "to_lng": 51.50465286607955,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 4.29,
+              "time_minutes": 5,
+              "cost": 20.73
+            },
+            {
+              "from_name": "Palm Inn Hotel Doha",
+              "from_lat": 25.236885292658584,
+              "from_lng": 51.50465286607955,
+              "to_name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+              "to_lat": 25.2928,
+              "to_lng": 51.5394,
+              "mode": "🚌 Public Transport",
+              "dist": 7.13,
+              "time_minutes": 12,
+              "cost": 10.35
+            },
+            {
+              "from_name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+              "from_lat": 25.2928,
+              "from_lng": 51.5394,
+              "to_name": "Boulevard Riyadh City",
+              "to_lat": 25.29869459961551,
+              "to_lng": 51.57258998647313,
+              "mode": "🚌 Public Transport",
+              "dist": 3.4,
+              "time_minutes": 6,
+              "cost": 7.55
+            },
+            {
+              "from_name": "Boulevard Riyadh City",
+              "from_lat": 25.29869459961551,
+              "from_lng": 51.57258998647313,
+              "to_name": "Fine dining experience",
+              "to_lat": 25.359859115557462,
+              "to_lng": 51.53153670150173,
+              "mode": "🚌 Public Transport",
+              "dist": 7.95,
+              "time_minutes": 14,
+              "cost": 10.97
+            },
+            {
+              "from_name": "Fine dining experience",
+              "from_lat": 25.359859115557462,
+              "from_lng": 51.53153670150173,
+              "to_name": "Rooftop café",
+              "to_lat": 25.207189224530534,
+              "to_lng": 51.5328256857036,
+              "mode": "🚌 Public Transport",
+              "dist": 16.98,
+              "time_minutes": 29,
+              "cost": 17.73
+            },
+            {
+              "from_name": "Rooftop café",
+              "from_lat": 25.207189224530534,
+              "from_lng": 51.5328256857036,
+              "to_name": "Palm Inn Hotel Doha",
+              "to_lat": 25.236885292658584,
+              "to_lng": 51.50465286607955,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 4.35,
+              "time_minutes": 5,
+              "cost": 20.88
+            },
+            {
+              "from_name": "Palm Inn Hotel Doha",
+              "from_lat": 25.236885292658584,
+              "from_lng": 51.50465286607955,
+              "to_name": "🔥 TRENDING: Nobu Doha",
+              "to_lat": 25.3262,
+              "to_lng": 51.5369,
+              "mode": "🚌 Public Transport",
+              "dist": 10.45,
+              "time_minutes": 18,
+              "cost": 12.84
+            },
+            {
+              "from_name": "🔥 TRENDING: Nobu Doha",
+              "from_lat": 25.3262,
+              "from_lng": 51.5369,
+              "to_name": "Modern architecture sightseeing",
+              "to_lat": 25.283613483662222,
+              "to_lng": 51.55170763236942,
+              "mode": "🚌 Public Transport",
+              "dist": 4.96,
+              "time_minutes": 9,
+              "cost": 8.72
+            },
+            {
+              "from_name": "Modern architecture sightseeing",
+              "from_lat": 25.283613483662222,
+              "from_lng": 51.55170763236942,
+              "to_name": "Local souq haggling",
+              "to_lat": 25.282666533223956,
+              "to_lng": 51.50156177522734,
+              "mode": "🚌 Public Transport",
+              "dist": 5.04,
+              "time_minutes": 9,
+              "cost": 8.78
+            },
+            {
+              "from_name": "Local souq haggling",
+              "from_lat": 25.282666533223956,
+              "from_lng": 51.50156177522734,
+              "to_name": "Nobu Doha",
+              "to_lat": 25.324903557715,
+              "to_lng": 51.539890766144,
+              "mode": "🚌 Public Transport",
+              "dist": 6.07,
+              "time_minutes": 10,
+              "cost": 9.56
+            },
+            {
+              "from_name": "Nobu Doha",
+              "from_lat": 25.324903557715,
+              "from_lng": 51.539890766144,
+              "to_name": "Palm Inn Hotel Doha",
+              "to_lat": 25.236885292658584,
+              "to_lng": 51.50465286607955,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 10.41,
+              "time_minutes": 11,
+              "cost": 36.02
+            },
+            {
+              "from_name": "Palm Inn Hotel Doha",
+              "from_lat": 25.236885292658584,
+              "from_lng": 51.50465286607955,
+              "to_name": "🔥 TRENDING: BOHO Social",
+              "to_lat": 25.3601,
+              "to_lng": 51.5276,
+              "mode": "🚌 Public Transport",
+              "dist": 13.89,
+              "time_minutes": 24,
+              "cost": 15.42
+            },
+            {
+              "from_name": "🔥 TRENDING: BOHO Social",
+              "from_lat": 25.3601,
+              "from_lng": 51.5276,
+              "to_name": "Doha Corniche",
+              "to_lat": 25.2882,
+              "to_lng": 51.5357,
+              "mode": "🚌 Public Transport",
+              "dist": 8.04,
+              "time_minutes": 14,
+              "cost": 11.03
+            },
+            {
+              "from_name": "Doha Corniche",
+              "from_lat": 25.2882,
+              "from_lng": 51.5357,
+              "to_name": "Museum of Islamic Art (MIA)",
+              "to_lat": 25.2905,
+              "to_lng": 51.5368,
+              "mode": "🚶 Walk",
+              "dist": 0.28,
+              "time_minutes": 3,
+              "cost": 0
+            },
+            {
+              "from_name": "Museum of Islamic Art (MIA)",
+              "from_lat": 25.2905,
+              "from_lng": 51.5368,
+              "to_name": "Mall exploration",
+              "to_lat": 25.32909175502963,
+              "to_lng": 51.54076301079798,
+              "mode": "🚌 Public Transport",
+              "dist": 4.31,
+              "time_minutes": 7,
+              "cost": 8.23
+            },
+            {
+              "from_name": "Mall exploration",
+              "from_lat": 25.32909175502963,
+              "from_lng": 51.54076301079798,
+              "to_name": "Palm Inn Hotel Doha",
+              "to_lat": 25.236885292658584,
+              "to_lng": 51.50465286607955,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 10.88,
+              "time_minutes": 12,
+              "cost": 37.19
+            },
+            {
+              "from_name": "Palm Inn Hotel Doha",
+              "from_lat": 25.236885292658584,
+              "from_lng": 51.50465286607955,
+              "to_name": "🔥 TRENDING: Flat White Specialty Coffee",
+              "to_lat": 25.367,
+              "to_lng": 51.52,
+              "mode": "🚌 Public Transport",
+              "dist": 14.55,
+              "time_minutes": 25,
+              "cost": 15.91
+            },
+            {
+              "from_name": "🔥 TRENDING: Flat White Specialty Coffee",
+              "from_lat": 25.367,
+              "from_lng": 51.52,
+              "to_name": "Villaggio Mall",
+              "to_lat": 25.26056,
+              "to_lng": 51.44306,
+              "mode": "🚌 Public Transport",
+              "dist": 14.14,
+              "time_minutes": 24,
+              "cost": 15.6
+            },
+            {
+              "from_name": "Villaggio Mall",
+              "from_lat": 25.26056,
+              "from_lng": 51.44306,
+              "to_name": "Souq Waqif",
+              "to_lat": 25.2874,
+              "to_lng": 51.5332,
+              "mode": "🚌 Public Transport",
+              "dist": 9.54,
+              "time_minutes": 16,
+              "cost": 12.16
+            },
+            {
+              "from_name": "Souq Waqif",
+              "from_lat": 25.2874,
+              "from_lng": 51.5332,
+              "to_name": "Historical Diriyah tour",
+              "to_lat": 25.226072569320575,
+              "to_lng": 51.46774465782717,
+              "mode": "🚌 Public Transport",
+              "dist": 9.48,
+              "time_minutes": 16,
+              "cost": 12.11
+            },
+            {
+              "from_name": "Historical Diriyah tour",
+              "from_lat": 25.226072569320575,
+              "from_lng": 51.46774465782717,
+              "to_name": "Palm Inn Hotel Doha",
+              "to_lat": 25.236885292658584,
+              "to_lng": 51.50465286607955,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 3.9,
+              "time_minutes": 4,
+              "cost": 19.76
+            },
+            {
+              "from_name": "Palm Inn Hotel Doha",
+              "from_lat": 25.236885292658584,
+              "from_lng": 51.50465286607955,
+              "to_name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+              "to_lat": 25.2917,
+              "to_lng": 51.5383,
+              "mode": "🚌 Public Transport",
+              "dist": 6.97,
+              "time_minutes": 12,
+              "cost": 10.23
+            },
+            {
+              "from_name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+              "from_lat": 25.2917,
+              "from_lng": 51.5383,
+              "to_name": "Art gallery visit",
+              "to_lat": 25.222303293663852,
+              "to_lng": 51.545026101035546,
+              "mode": "🚌 Public Transport",
+              "dist": 7.75,
+              "time_minutes": 13,
+              "cost": 10.81
+            },
+            {
+              "from_name": "Art gallery visit",
+              "from_lat": 25.222303293663852,
+              "from_lng": 51.545026101035546,
+              "to_name": "The Pearl-Qatar",
+              "to_lat": 25.3678,
+              "to_lng": 51.5509,
+              "mode": "🚌 Public Transport",
+              "dist": 16.19,
+              "time_minutes": 28,
+              "cost": 17.14
+            },
+            {
+              "from_name": "The Pearl-Qatar",
+              "from_lat": 25.3678,
+              "from_lng": 51.5509,
+              "to_name": "Historical palaces walking tour",
+              "to_lat": 25.243103361197775,
+              "to_lng": 51.46276196846433,
+              "mode": "🚌 Public Transport",
+              "dist": 16.45,
+              "time_minutes": 28,
+              "cost": 17.34
+            },
+            {
+              "from_name": "Historical palaces walking tour",
+              "from_lat": 25.243103361197775,
+              "from_lng": 51.46276196846433,
+              "to_name": "Palm Inn Hotel Doha",
+              "to_lat": 25.236885292658584,
+              "to_lng": 51.50465286607955,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 4.27,
+              "time_minutes": 5,
+              "cost": 20.67
+            },
+            {
+              "from_name": "Palm Inn Hotel Doha",
+              "from_lat": 25.236885292658584,
+              "from_lng": 51.50465286607955,
+              "to_name": "Riyadh",
+              "to_lat": 24.7136,
+              "to_lng": 46.6753,
+              "mode": "✈️ Return",
+              "dist": 0,
+              "time_minutes": 120,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Palm Inn Hotel Doha",
+              "from_lat": 25.236885292658584,
+              "from_lng": 51.50465286607955,
+              "to_name": "🔥 TRENDING: La Vista 55",
+              "to_lat": 25.3236,
+              "to_lng": 51.523,
+              "mode": "🚌 Public Transport",
+              "dist": 9.82,
+              "time_minutes": 17,
+              "cost": 12.36
+            },
+            {
+              "from_name": "🔥 TRENDING: La Vista 55",
+              "from_lat": 25.3236,
+              "from_lng": 51.523,
+              "to_name": "National Museum of Qatar (NMoQ)",
+              "to_lat": 25.2879,
+              "to_lng": 51.5494,
+              "mode": "🚌 Public Transport",
+              "dist": 4.78,
+              "time_minutes": 8,
+              "cost": 8.58
+            },
+            {
+              "from_name": "National Museum of Qatar (NMoQ)",
+              "from_lat": 25.2879,
+              "from_lng": 51.5494,
+              "to_name": "Palm Inn Hotel Doha",
+              "to_lat": 25.236885292658584,
+              "to_lng": 51.50465286607955,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 7.24,
+              "time_minutes": 8,
+              "cost": 28.1
+            }
+          ]
+        }
+      ],
+      "recommendation": 0
+    },
+    "cached_at": "2026-05-08T13:53:04.396284+00:00"
   }
 }
