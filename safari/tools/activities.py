@@ -178,7 +178,11 @@ def suggest_activities(
         recommended_city = cities[0] if cities else destination.title()
 
     from config import CITY_COORDS
-    city_coords = CITY_COORDS.get(recommended_city.lower(), CITY_COORDS.get(dest_lower, {"lat": 24.7, "lng": 46.7}))
+    city_coords = CITY_COORDS.get(recommended_city.lower())
+    if not city_coords:
+        # Fallback to a neutral coordinate if city not in config
+        # Ideally we'd geocode here, but for now we'll use (0,0) or a generic prompt hint
+        city_coords = {"lat": 0.0, "lng": 0.0}
 
     # Base fallback activities
     all_activities = [{"name": a, "lat": None, "lng": None} for a in dest_info["activities"]]

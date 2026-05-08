@@ -76,5 +76,33 @@
       "confidence": "medium"
     },
     "ts": 1778248425.9523313
+  },
+  "flight__riyadh__dubai": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Dubai",
+      "price_one_way": 446.25,
+      "price_round_trip": 825.56,
+      "currency": "SAR",
+      "airline": "flyadeal",
+      "duration_minutes": 120,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778250168.9390755
+  },
+  "flight__riyadh__madrid": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Madrid",
+      "price_one_way": 817.5,
+      "price_round_trip": 1512.38,
+      "currency": "SAR",
+      "airline": "Multiple Airlines",
+      "duration_minutes": 2090,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778250674.277131
   }
 }

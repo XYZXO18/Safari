@@ -48,15 +48,17 @@ class BudgetBreakdown:
     # Allocation ratios used
     ratios: Dict[str, float] = field(default_factory=lambda: dict(BUDGET_RATIOS))
 
-    # Feasibility flags
+    # Feasibility and Status
     is_feasible: bool = True
+    is_suggested: bool = False
     warnings: list = field(default_factory=list)
 
     @property
     def summary(self) -> str:
         sym = self.currency
+        title = "💰 Budget Breakdown" if not self.is_suggested else "💡 Suggested Budget (Estimated)"
         lines = [
-            f"💰 Budget Breakdown ({self.days} days)",
+            f"{title} ({self.days} days)",
             f"{'─' * 45}",
             f"  Total Budget:        {self.total_budget:>8.0f} {sym}",
             f"  Transport (round):   {self.transport_cost:>8.0f} {sym}",
@@ -140,7 +142,19 @@ def budget_allocator(
 
     # Feasibility check
     is_feasible = True
-    if remaining <= 0:
+    is_suggested = False
+    
+    if total_budget <= 0:
+        # SUGGESTED MODE: Calculate a mid-range budget
+        is_suggested = True
+        
+        # Target daily spend for non-transport categories (Lodging, Food, Activities, Buffer)
+        # 1000 SAR/day is a solid mid-range estimate for Saudi Arabia
+        TARGET_DAILY_SPEND = 1000.0
+        
+        remaining = TARGET_DAILY_SPEND * days
+        total_budget = remaining + transport_cost + car_rental_total
+    elif remaining <= 0:
         is_feasible = False
         warnings.append("Transport and rental costs exceed total budget!")
         remaining = 0
@@ -174,5 +188,6 @@ def budget_allocator(
         buffer_per_day=round(buffer_total / days, 2) if days > 0 else 0,
         ratios=ratios,
         is_feasible=is_feasible,
+        is_suggested=is_suggested,
         warnings=warnings,
     )

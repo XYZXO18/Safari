@@ -2035,3 +2035,40 @@ select {
     border-bottom: 1px solid var(--border);
 }
 
+
+.suggested-badge {
+    font-size: 10px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+    border: 1px solid var(--accent);
+    vertical-align: middle;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.suggest-toggle-btn {
+    background: rgba(96, 165, 250, 0.1);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+}
+
+.suggest-toggle-btn.active {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.budget-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}

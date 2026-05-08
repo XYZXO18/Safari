@@ -220,9 +220,9 @@ def search_hotels_live(
             rating = float(h.get("rating") or 0.0)
 
             # Save new hotel to DB — name + coords only, price is never stored
-            base = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
-            lat = base["lat"] + random.uniform(-0.05, 0.05)
-            lng = base["lng"] + random.uniform(-0.05, 0.05)
+            base = CITY_COORDS.get(city.lower(), {"lat": 24.71, "lng": 46.67}) # Riyadh default if unknown
+            lat = base["lat"] + random.uniform(-0.02, 0.02)
+            lng = base["lng"] + random.uniform(-0.02, 0.02)
             upsert_hotel_static(city, name, lat, lng, stars)
 
             stubs.append(VenueStub(

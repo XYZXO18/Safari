@@ -151,15 +151,31 @@ def _search_events_web(city: str, start_date: str, end_date: str, interests: str
     """
     interests_str = f" The user is specifically interested in: {interests}." if interests else ""
 
-    from config import CITY_COORDS
-    city_coords = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
-    lat_ex = city_coords["lat"]
-    lng_ex = city_coords["lng"]
+    from config import CITY_COORDS, CITY_TO_COUNTRY
+    
+    # Try to find country from CITY_TO_COUNTRY, but if city is actually a country, use it
+    country = CITY_TO_COUNTRY.get(city.lower())
+    if not country:
+        # Simple check: if city is in a known list of countries, use it as country
+        known_countries = ["spain", "france", "italy", "germany", "japan", "china", "usa", "uk", "austria", "egypt", "jordan", "oman", "qatar", "uae"]
+        if city.lower() in known_countries:
+            country = city.title()
+        else:
+            country = "Saudi Arabia" # Fallback
+
+    city_coords = CITY_COORDS.get(city.lower())
+    if not city_coords:
+        # If no coords, we'll try to let the AI find them, but provide a null-ish hint
+        lat_ex = 0.0
+        lng_ex = 0.0
+    else:
+        lat_ex = city_coords["lat"]
+        lng_ex = city_coords["lng"]
 
     prompt = (
         f"Search the web for live events, concerts, festivals, exhibitions, "
         f"pop-up experiences, and social media trending gatherings happening in "
-        f"{city}, Saudi Arabia between {start_date} and {end_date}.{interests_str} "
+        f"{city}, {country} between {start_date} and {end_date}.{interests_str} "
         f"Include events from sites like: eventbrite.com, ticketmaster.com, "
         f"visitSaudi.com, x.com, instagram.com. "
         f"Return ONLY a raw JSON array of up to 10 most interesting events "

@@ -74,7 +74,9 @@ def plan_trip():
     data = request.json
 
     try:
-        budget = float(data.get("budget", 3000))
+        raw_budget = data.get("budget")
+        budget = float(raw_budget) if raw_budget not in (None, "", 0, "0") else 0.0
+        suggest_budget = (budget == 0.0)
         travel_mode = data.get("travel_mode", "car")
         destination = data.get("destination", "coast").strip().lower()
         days = max(int(data.get("days", 3)), 1)
@@ -136,6 +138,11 @@ def plan_trip():
             days=days,
             currency=currency,
         )
+        
+        # If budget was suggested, update the 'budget' variable to the total suggested amount
+        if suggest_budget:
+            budget = breakdown.total_budget
+            print(f"[Budget] Suggesting mid-range budget: {budget} {currency}")
 
         # Derive the target city without a Gemini call — used for all parallel queries
         dest_info = DESTINATIONS.get(destination.lower(), DESTINATIONS.get("coast", {}))
@@ -217,7 +224,7 @@ def plan_trip():
         # ── Inject trending spots ─────────────────────────────────────────────
         if web_research.trending_spots:
             import random
-            city_coords = CITY_COORDS.get(activities.recommended_city.lower(), {"lat": 24.7, "lng": 46.7})
+            city_coords = CITY_COORDS.get(activities.recommended_city.lower(), {"lat": 0.0, "lng": 0.0})
             for i, spot in enumerate(web_research.trending_spots[:days * 2]):
                 target_day = (i % days) + 1
                 spot_activity = {
@@ -294,6 +301,7 @@ def plan_trip():
                 "activities": {"total": breakdown.activities_total, "per_day": breakdown.activities_per_day},
                 "buffer":     {"total": breakdown.buffer_total,     "per_day": breakdown.buffer_per_day},
                 "is_feasible": breakdown.is_feasible,
+                "is_suggested": breakdown.is_suggested,
                 "warnings":    breakdown.warnings,
             },
             "activities": {

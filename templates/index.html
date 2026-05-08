@@ -192,7 +192,10 @@
             <form id="trip-form" class="trip-form">
                 <!-- Budget -->
                 <div class="form-group">
-                    <label for="budget-input"><span class="label-icon">💰</span> Budget</label>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <label for="budget-input"><span class="label-icon">💰</span> Budget</label>
+                        <button type="button" id="toggle-suggest-budget" class="suggest-toggle-btn">Suggest for me</button>
+                    </div>
                     <div class="budget-input-row">
                         <input type="number" id="budget-input" min="500" max="50000" value="3000" step="100">
                         <select id="currency-select">
@@ -535,78 +538,6 @@
             });
         });
         observer.observe(document.getElementById('results-panel'), { attributes: true, attributeFilter: ['class'] });
-
-        // ── City picker logic ──────────────────────────────────────────────────
-        const CITY_VIBE_MAP = {
-            'jeddah':'coast','yanbu':'coast','umluj':'coast',
-            'abha':'mountains','taif':'mountains','al baha':'mountains',
-            'al-ula':'desert','tabuk':'desert',
-            'riyadh':'city','dammam':'city','medina':'city','makkah':'city',
-        };
-
-        document.getElementById('specific-city-select').addEventListener('change', function() {
-            const city = this.value;
-            const vibe = CITY_VIBE_MAP[city] || null;
-            if (city && vibe) {
-                // Highlight the matching vibe card without clearing the city picker
-                document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
-                const vibeBtn = document.querySelector('.vibe-card[data-vibe="' + vibe + '"]');
-                if (vibeBtn) vibeBtn.classList.add('active');
-                // Override state so the API call uses the city directly
-                if (typeof state !== 'undefined') state.destination = city;
-            } else {
-                // Reset to whatever vibe card is active
-                if (typeof state !== 'undefined') {
-                    const active = document.querySelector('.vibe-card.active');
-                    if (active) state.destination = active.dataset.vibe;
-                }
-            }
-        });
-
-        // When a vibe card is clicked manually, clear the city picker
-        document.querySelectorAll('.vibe-card').forEach(card => {
-            card.addEventListener('click', function() {
-                document.getElementById('specific-city-select').value = '';
-            });
-        });
-        // ──────────────────────────────────────────────────────────────────────
-
-        // Auto Fill Logic
-        function autoFill(type, p1, p2, p3) {
-            switchView('plan-view');
-            
-            if (type === 'mode') {
-                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-                const btn = document.querySelector(`.mode-btn[data-mode="${p1}"]`);
-                if (btn) {
-                    btn.classList.add('active');
-                    btn.click(); 
-                }
-            } else if (type === 'interest') {
-                document.getElementById('interests-input').value = p1;
-            } else if (type === 'event' || type === 'region') {
-                const select = document.getElementById('origin-select');
-                // Select origin if it matches p1
-                for (let i=0; i<select.options.length; i++) {
-                    if(select.options[i].text.toLowerCase() === p1.toLowerCase() || select.options[i].value === p1) {
-                        select.selectedIndex = i;
-                        select.dispatchEvent(new Event('change'));
-                        break;
-                    }
-                }
-                
-                document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
-                const vibeBtn = document.querySelector(`.vibe-card[data-vibe="${p2}"]`);
-                if (vibeBtn) {
-                    vibeBtn.classList.add('active');
-                    vibeBtn.click();
-                }
-                
-                if (p3) {
-                    document.getElementById('interests-input').value = p3;
-                }
-            }
-        }
 
         // Chat Logic
         function toggleChat() {

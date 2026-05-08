@@ -586,5 +586,12 @@
     "distance_km": 1050.73,
     "duration_minutes": 648,
     "source": "osrm"
+  },
+  "madrid__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "madrid",
+    "distance_km": 6496.75,
+    "duration_minutes": 4799,
+    "source": "osrm"
   }
 }

@@ -154,5 +154,109 @@
       ]
     },
     "ts": 1778247399.6072447
+  },
+  "dammam__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "Sheraton Dammam Hotel & Convention Centre",
+        "lat": 26.4344,
+        "lng": 50.1033
+      },
+      "activities": [
+        {
+          "name": "Dammam Corniche",
+          "lat": 26.4344,
+          "lng": 50.1033
+        },
+        {
+          "name": "Murjan Island",
+          "lat": 26.484167,
+          "lng": 50.105278
+        },
+        {
+          "name": "Heritage Village",
+          "lat": 26.4344,
+          "lng": 50.1033
+        },
+        {
+          "name": "King Fahd Park",
+          "lat": 26.4344,
+          "lng": 50.1033
+        },
+        {
+          "name": "Al Othaim Mall",
+          "lat": 26.39967,
+          "lng": 50.11806
+        },
+        {
+          "name": "King Abdulaziz Center for World Culture (Ithra)",
+          "lat": 26.33536,
+          "lng": 50.12078
+        },
+        {
+          "name": "Kokoro Dammam",
+          "lat": 26.4344,
+          "lng": 50.1033
+        },
+        {
+          "name": "Fayrouz Lebanese Restaurant",
+          "lat": 26.4344,
+          "lng": 50.1033
+        }
+      ]
+    },
+    "ts": 1778250379.0746827
+  },
+  "madrid__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "Hotel Riu Plaza España",
+        "lat": 40.42417,
+        "lng": -3.71194
+      },
+      "activities": [
+        {
+          "name": "Plaza Mayor",
+          "lat": 40.415524,
+          "lng": -3.707488
+        },
+        {
+          "name": "Retiro Park",
+          "lat": 40.415,
+          "lng": -3.68389
+        },
+        {
+          "name": "Royal Palace of Madrid",
+          "lat": 40.417953,
+          "lng": -3.714312
+        },
+        {
+          "name": "Gran Vía",
+          "lat": 40.420177,
+          "lng": -3.703928
+        },
+        {
+          "name": "La Latina (Tapas & Nightlife)",
+          "lat": 40.411526,
+          "lng": -3.71017
+        },
+        {
+          "name": "Chueca (Nightlife)",
+          "lat": 40.42278,
+          "lng": -3.69944
+        },
+        {
+          "name": "Salamanca District (Shopping)",
+          "lat": 40.42972,
+          "lng": -3.67975
+        },
+        {
+          "name": "Mercado de San Miguel",
+          "lat": 40.41536,
+          "lng": -3.70901
+        }
+      ]
+    },
+    "ts": 1778250688.6310248
   }
 }

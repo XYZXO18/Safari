@@ -99,8 +99,11 @@ def geocode_nominatim(venue_name: str, city: str) -> Optional[Tuple[float, float
         from geopy.geocoders import Nominatim
         from geopy.exc import GeocoderTimedOut, GeocoderServiceError
 
+        from config import CITY_TO_COUNTRY
+        country = CITY_TO_COUNTRY.get(city.lower(), "Saudi Arabia")
+
         geolocator = Nominatim(user_agent="safari_travel_planner_v1")
-        query = f"{venue_name}, {city}, Saudi Arabia"
+        query = f"{venue_name}, {city}, {country}"
         location = geolocator.geocode(query, timeout=10)
 
         if location:
@@ -109,7 +112,7 @@ def geocode_nominatim(venue_name: str, city: str) -> Optional[Tuple[float, float
             return (location.latitude, location.longitude)
 
         # Retry with just the city if full name fails
-        location = geolocator.geocode(f"{city}, Saudi Arabia", timeout=10)
+        location = geolocator.geocode(f"{city}, {country}", timeout=10)
         if location:
             logger.debug(f"[Nominatim] Fallback city coords for {venue_name}")
             return (location.latitude, location.longitude)
@@ -140,8 +143,11 @@ def geocode_gemini(venue_name: str, city: str) -> Optional[Tuple[float, float]]:
         from safari.gemini_log import log_gemini
         log_gemini("Agent 3 · Transport", f"geocoding '{venue_name}' in {city}")
         client = genai.Client(api_key=GEMINI_API_KEY)
+        from config import CITY_TO_COUNTRY
+        country = CITY_TO_COUNTRY.get(city.lower(), "Saudi Arabia")
+
         prompt = (
-            f"Search Google for the exact GPS coordinates of '{venue_name}' in {city}, Saudi Arabia. "
+            f"Search Google for the exact GPS coordinates of '{venue_name}' in {city}, {country}. "
             f"Return ONLY a JSON object with keys 'lat' and 'lng' as decimal numbers. "
             f"Example: {{\"lat\": 21.4858, \"lng\": 39.1925}}. No other text."
         )
@@ -162,14 +168,10 @@ def geocode_gemini(venue_name: str, city: str) -> Optional[Tuple[float, float]]:
         data = json.loads(raw)
         lat, lng = float(data["lat"]), float(data["lng"])
 
-        # Sanity check: Saudi Arabia bounding box
-        if 16.0 <= lat <= 32.5 and 34.5 <= lng <= 56.0:
-            logger.debug(f"[Gemini Geocode] ✅ {venue_name} → ({lat:.4f}, {lng:.4f})")
-            console.print(f"[bold blue][G] [Agent 3] Gemini Search Geocoding used for: {venue_name}[/bold blue]")
-            return (lat, lng)
-
-        logger.warning(f"[Gemini Geocode] Coordinates out of Saudi Arabia bounds for {venue_name}")
-        return None
+        # Return the coordinates (global support)
+        logger.debug(f"[Gemini Geocode] ✅ {venue_name} → ({lat:.4f}, {lng:.4f})")
+        console.print(f"[bold blue][G] [Agent 3] Gemini Search Geocoding used for: {venue_name}[/bold blue]")
+        return (lat, lng)
 
     except Exception as e:
         logger.error(f"[Gemini Geocode] Error for '{venue_name}': {e}")
@@ -421,8 +423,11 @@ def search_car_rental_prices(
         from safari.gemini_log import log_gemini
         log_gemini("Agent 3 · Transport", f"car rental prices in {city}")
         client = genai.Client(api_key=GEMINI_API_KEY)
+        from config import CITY_TO_COUNTRY
+        country = CITY_TO_COUNTRY.get(city.lower(), "Saudi Arabia")
+
         prompt = (
-            f"Search Google for the cheapest car rental per day in {city}, Saudi Arabia right now. "
+            f"Search Google for the cheapest car rental per day in {city}, {country} right now. "
             f"Return ONLY valid JSON: {{\"price_per_day\": <number in SAR>, \"vehicle_type\": <string>, \"company\": <string>}}. "
             f"No other text."
         )
@@ -501,8 +506,11 @@ def find_nearest_airport(city: str) -> dict:
         from google import genai
         from google.genai import types
         client = genai.Client(api_key=GEMINI_API_KEY)
+        from config import CITY_TO_COUNTRY
+        country = CITY_TO_COUNTRY.get(city.lower(), "Saudi Arabia")
+
         prompt = (
-            f"What is the nearest commercial airport to {city}, Saudi Arabia? "
+            f"What is the nearest commercial airport to {city}, {country}? "
             f"Return ONLY valid JSON: {{\"airport_city\": string, \"iata\": string, "
             f"\"name\": string, \"km_to_airport\": number}}. No other text."
         )

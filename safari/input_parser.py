@@ -28,8 +28,9 @@ from typing import Optional
 class TripRequest:
     """Structured representation of a user's travel request."""
 
-    budget: float
+    budget: float = 0.0
     currency: str = "SAR"
+    suggest_budget: bool = False     # True if no budget was provided in input
     travel_mode: str = "car"          # car | flight | train | bus
     destination: str = "coast"
     days: int = 3
@@ -50,8 +51,10 @@ class TripRequest:
         self.vehicle_type = self.vehicle_type.lower().strip()
         self.currency = self.currency.upper().strip()
 
-        if self.budget <= 0:
-            raise ValueError(f"Budget must be positive, got {self.budget}")
+        if self.budget < 0:
+            raise ValueError(f"Budget cannot be negative, got {self.budget}")
+        if self.budget == 0:
+            self.suggest_budget = True
         if self.days <= 0:
             raise ValueError(f"Days must be positive, got {self.days}")
         if self.travel_mode not in ("car", "flight", "train", "bus", "drive", "driving", "fly", "flying"):
@@ -389,6 +392,7 @@ def parse_user_input(text: str) -> TripRequest:
     """
 
     # ── Extract budget ──
+    suggest_budget = False
     budget_match = _BUDGET_PATTERN.search(text)
     if budget_match:
         amount_str = budget_match.group("amount").replace(",", "")
@@ -396,13 +400,10 @@ def parse_user_input(text: str) -> TripRequest:
         currency_raw = budget_match.group("currency") or budget_match.group("currency_after")
         currency = _normalize_currency(currency_raw)
     else:
-        # Fallback: find any number that looks like a budget
-        numbers = re.findall(r"[\d,]+(?:\.\d{1,2})?", text)
-        if numbers:
-            budget = float(numbers[0].replace(",", ""))
-            currency = "SAR"
-        else:
-            raise ValueError("Could not extract a budget from the input.")
+        # Set to 0 and flag for suggestion
+        budget = 0.0
+        currency = "SAR"
+        suggest_budget = True
 
     # ── Extract days ──
     days_match = _DAYS_PATTERN.search(text)
@@ -472,5 +473,6 @@ def parse_user_input(text: str) -> TripRequest:
         start_date=start_date,
         end_date=end_date,
         rent_car=rent_car,
+        suggest_budget=suggest_budget,
         raw_input=text,
     )

@@ -61,7 +61,10 @@ class OrchestratorAgent:
         except ValueError as e:
             return {"error": str(e)}
 
-        self._step_log("✅", f"Budget: {request.budget} | Mode: {request.travel_mode} | Dest: {request.destination} | Days: {request.days} | Rent Car: {request.rent_car}")
+        if request.suggest_budget:
+            self._step_log("💡", "No budget provided. Safari will suggest a mid-range budget based on live data.")
+        
+        self._step_log("✅", f"Budget: {'[Suggesting...]' if request.suggest_budget else request.budget} | Mode: {request.travel_mode} | Dest: {request.destination} | Days: {request.days} | Rent Car: {request.rent_car}")
 
         # Initial Orchestrator math
         # Use the raw city name (if captured) for more accurate transport/border checks
@@ -84,6 +87,11 @@ class OrchestratorAgent:
             request.currency,
             car_rental_daily_rate=car_rental_daily,
         )
+        
+        # If budget was suggested, update the request object so LLM prompts use the new values
+        if request.suggest_budget:
+            request.budget = breakdown.total_budget
+            self._step_log("💰", f"Calculated suggested budget: {request.budget:.0f} {request.currency}")
 
         # DELEGATE TO Worker 1: RESEARCH
         console.print("\n  [bold magenta][R] Orchestrator Agent -> Worker 1 (Research): Gather activities & events...[/bold magenta]")

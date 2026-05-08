@@ -16,6 +16,7 @@ const state = {
     tripData: null,
     hospitalityType: 'all',
     selectedHotel: null,
+    suggestBudget: false,
 };
 
 // In-memory cache for hospitality results — prevents re-searching on tab switch
@@ -61,6 +62,7 @@ const daysMinus = $('days-minus');
 const daysPlus = $('days-plus');
 const planBtn = $('plan-btn');
 const tripForm = $('trip-form');
+const suggestBudgetBtn = $('toggle-suggest-budget');
 const loadingOverlay = $('loading-overlay');
 
 // Map overlays
@@ -98,6 +100,33 @@ budgetSlider.addEventListener('input', () => {
 currencySelect.addEventListener('change', () => {
     state.currency = currencySelect.value;
 });
+
+// ─── Suggest Budget Toggle ──────────────────────────────────────────────────
+if (suggestBudgetBtn) {
+    suggestBudgetBtn.addEventListener('click', () => {
+        state.suggestBudget = !state.suggestBudget;
+        suggestBudgetBtn.classList.toggle('active', state.suggestBudget);
+        
+        const row = document.querySelector('.budget-input-row');
+        const slider = document.querySelector('.budget-slider');
+        const labels = document.querySelector('.slider-labels');
+        
+        if (state.suggestBudget) {
+            suggestBudgetBtn.textContent = 'I\'ll set budget';
+            row.classList.add('budget-disabled');
+            slider.classList.add('budget-disabled');
+            labels.classList.add('budget-disabled');
+            // If suggested, we internally treat it as 0 for the API
+            state.budget = 0;
+        } else {
+            suggestBudgetBtn.textContent = 'Suggest for me';
+            row.classList.remove('budget-disabled');
+            slider.classList.remove('budget-disabled');
+            labels.classList.remove('budget-disabled');
+            state.budget = parseInt(budgetInput.value) || 3000;
+        }
+    });
+}
 
 originSelect.addEventListener('change', () => {
     state.origin = originSelect.value;
@@ -659,7 +688,7 @@ function renderBudgetDetails(data) {
             <span class="budget-row-value">${fmt(b.buffer.total)} ${c}</span>
         </div>
         <div class="budget-row total">
-            <span class="budget-row-label">Total Budget</span>
+            <span class="budget-row-label">Total Budget ${b.is_suggested ? '<span class="suggested-badge">Suggested</span>' : ''}</span>
             <span class="budget-row-value">${fmt(b.total)} ${c}</span>
         </div>
         <div class="budget-vis-bar">
@@ -1077,14 +1106,26 @@ window.selectHospitalityHotel = function(hotelIdx) {
     };
 
     const lodgingTotal = price * days;
-    const afterTransportAndHotel = totalBudget - transportCost - lodgingTotal;
-    const remaining = Math.max(afterTransportAndHotel, 0);
-
-    const foodTotal = remaining * 0.50;
-    const activitiesTotal = remaining * 0.33;
-    const bufferTotal = remaining * 0.17;
-
     const b = state.tripData.budget;
+
+    if (b.is_suggested) {
+        // In suggested mode, total budget is dynamic. Update it based on actual hotel price.
+        const oldLodgingEst = b.lodging.max_budget || 0;
+        b.total = b.total - oldLodgingEst + lodgingTotal;
+        // Category totals for food/activities/buffer stay at their suggested mid-range rates.
+        // But we update max_budget to current choice to track it.
+        b.lodging.max_budget = lodgingTotal;
+    } else {
+        // In manual mode, total budget is fixed. Redistribute remaining among other categories.
+        const afterTransportAndHotel = b.total - transportCost - lodgingTotal;
+        const remaining = Math.max(afterTransportAndHotel, 0);
+
+        b.food.total = round2(remaining * 0.50);
+        b.activities.total = round2(remaining * 0.33);
+        b.buffer.total = round2(remaining * 0.17);
+        b.remaining = round2(remaining);
+    }
+
     b.lodging = {
         total: round2(lodgingTotal),
         per_day: round2(price),
@@ -1092,12 +1133,13 @@ window.selectHospitalityHotel = function(hotelIdx) {
         max_budget: b.lodging.max_budget || lodgingTotal,
         max_per_day: b.lodging.max_per_day || price,
     };
-    b.food = { total: round2(foodTotal), per_day: round2(foodTotal / days) };
-    b.activities = { total: round2(activitiesTotal), per_day: round2(activitiesTotal / days) };
-    b.buffer = { total: round2(bufferTotal), per_day: round2(bufferTotal / days) };
-    b.remaining = round2(remaining);
+    
+    // Update per-day values for all categories
+    b.food.per_day = round2(b.food.total / days);
+    b.activities.per_day = round2(b.activities.total / days);
+    b.buffer.per_day = round2(b.buffer.total / days);
 
-    if (remaining <= 0) {
+    if (!b.is_suggested && (b.total - transportCost - lodgingTotal < 0)) {
         b.warnings = b.warnings || [];
         if (!b.warnings.includes('Hotel cost + transport exceeds your total budget!')) {
             b.warnings.push('Hotel cost + transport exceeds your total budget!');
@@ -1130,14 +1172,14 @@ async function planTrip() {
     loadingOverlay.classList.remove('hidden');
 
     const payload = {
-        budget: state.budget,
+        budget: state.suggestBudget ? 0 : state.budget,
         currency: state.currency,
         origin: state.origin,
         destination: state.destinationOverride || state.destination,
         travel_mode: state.travelMode,
         vehicle_type: state.vehicleType,
         days: state.days,
-        interests: $('interests-input').value,
+        interests: $('interests-input') ? $('interests-input').value : '',
     };
 
     try {
@@ -1252,17 +1294,30 @@ function selectPath(idx) {
 
     // Reset hotel/transport caches for new trip/path
     state.selectedHotel = null;
-    _hospCache = { city: null, type: null, data: null };
     _transportCache = { options: null, local: null, rental: null };
+
+    // Update hospitality city select to include destination
     if (data.map && data.map.dest_name) {
-        const dest = data.map.dest_name.toLowerCase();
-        for (let opt of hotelCitySelect.options) {
-            if (opt.value === dest) {
-                hotelCitySelect.value = dest;
-                loadHospitality();
+        const dest = data.map.dest_name;
+        const select = hotelCitySelect;
+        let found = false;
+        for (let opt of select.options) {
+            if (opt.value.toLowerCase() === dest.toLowerCase()) {
+                select.value = opt.value;
+                found = true;
                 break;
             }
         }
+        if (!found) {
+            const newOpt = document.createElement('option');
+            newOpt.value = dest.toLowerCase();
+            newOpt.textContent = dest;
+            select.appendChild(newOpt);
+            select.value = newOpt.value;
+        }
+        // Force refresh hospitality for the new city
+        _hospCache = { city: null, type: null, data: null };
+        loadHospitality();
     }
 
     saveTripState();
@@ -1592,12 +1647,17 @@ window.deleteEvent = function(day, actId, cost) {
         const idx = daily[day].findIndex(a => a.id === actId);
         if (idx !== -1) {
             daily[day].splice(idx, 1);
-            state.tripData.budget.activities.total += cost;
+            // Subtract from both activities and total budget
+            state.tripData.budget.activities.total = Math.max(0, state.tripData.budget.activities.total - cost);
+            state.tripData.budget.total = Math.max(0, state.tripData.budget.total - cost);
             state.tripData.budget.activities.per_day = state.tripData.budget.activities.total / state.tripData.budget.days;
+            
             renderItinerary(state.tripData);
             renderBudgetDetails(state.tripData);
+            renderBudgetDetailsLeft(state.tripData);
             updateOverlays(state.tripData);
             drawRoute(state.tripData.map.origin, state.tripData.map.destination, state.tripData.map.origin_name, state.tripData.map.dest_name, state.tripData);
+            saveTripState();
         }
     }
 };
@@ -1796,6 +1856,122 @@ function restoreTripState() {
 function round2(n) {
     return Math.round(n * 100) / 100;
 }
+
+// ─── Delete Event Logic ──────────────────────────────────────────────────────
+window.deleteEvent = function(dayNum, eventId, eventCost) {
+    if (!state.tripData) return;
+    if (!confirm('Are you sure you want to remove this activity from your itinerary?')) return;
+
+    const b = state.tripData.budget;
+    const daily = state.tripData.activities.daily_plan;
+    const dayStr = String(dayNum);
+
+    if (daily[dayStr]) {
+        // Remove the event from the daily plan
+        daily[dayStr] = daily[dayStr].filter(act => {
+            const id = typeof act === 'object' ? act.id : null;
+            return id !== eventId;
+        });
+
+        // Update budget: Subtract event cost from activities total and grand total
+        const cost = parseFloat(eventCost) || 0;
+        b.activities.total = Math.max(0, b.activities.total - cost);
+        b.total = Math.max(0, b.total - cost);
+        
+        // Update per-day average for activities
+        b.activities.per_day = round2(b.activities.total / b.days);
+
+        // Re-render everything
+        renderItinerary(state.tripData);
+        renderBudgetDetails(state.tripData);
+        renderBudgetDetailsLeft(state.tripData);
+        updateOverlays(state.tripData);
+        saveTripState();
+        
+        // Re-draw map to remove marker
+        const data = state.tripData;
+        drawRoute(data.map.origin, data.map.destination, data.map.origin_name, data.map.dest_name, data);
+    }
+};
+
+// ─── Auto Fill Logic ─────────────────────────────────────────────────────────
+window.autoFill = function(type, p1, p2, p3) {
+    window.switchView('plan-view');
+    
+    if (type === 'mode') {
+        const btns = document.querySelectorAll('.mode-btn');
+        btns.forEach(b => {
+            if (b.dataset.mode === p1) {
+                b.click();
+            }
+        });
+    } else if (type === 'interest') {
+        const input = $('interests-input');
+        if (input) input.value = p1;
+    } else if (type === 'event' || type === 'region') {
+        const select = $('origin-select');
+        if (select) {
+            for (let i = 0; i < select.options.length; i++) {
+                if (select.options[i].text.toLowerCase() === p1.toLowerCase() || select.options[i].value === p1) {
+                    select.selectedIndex = i;
+                    select.dispatchEvent(new Event('change'));
+                    break;
+                }
+            }
+        }
+        
+        if (p2) {
+            document.querySelectorAll('.vibe-card').forEach(c => {
+                if (c.dataset.vibe === p2) {
+                    c.click();
+                }
+            });
+        }
+        
+        if (p3) {
+            const input = $('interests-input');
+            if (input) input.value = p3;
+        }
+    }
+};
+
+// ─── City / Country Picker Logic ─────────────────────────────────────────────
+const CITY_VIBE_MAP = {
+    'jeddah':'coast','yanbu':'coast','umluj':'coast',
+    'abha':'mountains','taif':'mountains','al baha':'mountains',
+    'al-ula':'desert','tabuk':'desert',
+    'riyadh':'city','dammam':'city','medina':'city','makkah':'city',
+};
+
+function setupCityPicker() {
+    const input = $('specific-city-select');
+    if (!input) return;
+
+    input.addEventListener('change', function() {
+        const city = this.value;
+        const vibe = CITY_VIBE_MAP[city.toLowerCase()] || null;
+        if (city) {
+            state.destinationOverride = city.toLowerCase();
+            if (vibe) {
+                document.querySelectorAll('.vibe-card').forEach(c => {
+                    c.classList.toggle('active', c.dataset.vibe === vibe);
+                });
+                state.destination = vibe;
+            }
+        } else {
+            delete state.destinationOverride;
+        }
+    });
+
+    // When a vibe card is clicked manually, clear the city picker
+    document.querySelectorAll('.vibe-card').forEach(card => {
+        card.addEventListener('click', function() {
+            input.value = '';
+            delete state.destinationOverride;
+        });
+    });
+}
+window.addEventListener('DOMContentLoaded', setupCityPicker);
 
 // ─── Transport Hub ────────────────────────────────────────────────────────────
 
@@ -2029,7 +2205,7 @@ function _renderTransportHub(container, trip, options, local, _) {
             </div>
             <button class="submit-btn" style="margin-top:12px; padding:10px; font-size:13px; background:linear-gradient(135deg,#34d399,#059669) !important;"
                 onclick="addCarRentalToTrip(${r.price_per_day}, ${fuelTotal}, ${days})">
-                + Add to Trip Budget
+                ${trip.budget.car_rental ? '❌ Remove Car Rental' : '+ Add to Trip Budget'}
             </button>
         </div>`;
     }
@@ -2107,29 +2283,28 @@ function _renderTransportHub(container, trip, options, local, _) {
 
 window.addCarRentalToTrip = function(pricePerDay, fuelCost, days) {
     if (!state.tripData) return;
-    const rentalTotal = pricePerDay * days;
-    const total = rentalTotal + fuelCost;
     const b = state.tripData.budget;
 
-    if (!b.car_rental) {
-        b.car_rental = { per_day: round2(pricePerDay), total: round2(rentalTotal), fuel: round2(fuelCost) };
-        // Deduct from buffer first, then activities
-        let remaining = total;
-        if (b.buffer.total >= remaining) {
-            b.buffer.total = round2(b.buffer.total - remaining);
-            b.buffer.per_day = round2(b.buffer.total / days);
-        } else {
-            remaining -= b.buffer.total;
-            b.buffer.total = 0; b.buffer.per_day = 0;
-            b.activities.total = round2(Math.max(0, b.activities.total - remaining));
-            b.activities.per_day = round2(b.activities.total / days);
-        }
-        renderBudgetDetailsLeft(state.tripData);
-        renderItinerary(state.tripData);
-        saveTripState();
-        alert(`🚗 Car rental added! ${fmt(rentalTotal)} SAR rental + ${fmt(fuelCost)} SAR fuel = ${fmt(total)} SAR deducted from buffer/activities budget.`);
+    if (b.car_rental) {
+        // Toggle off: Remove from total
+        const oldTotal = b.car_rental.total + b.car_rental.fuel;
+        b.total = round2(b.total - oldTotal);
+        delete b.car_rental;
+        alert('🚗 Car rental removed from trip budget.');
     } else {
-        alert('Car rental already added to this trip.');
+        // Toggle on: Add to total
+        const rentalTotal = pricePerDay * days;
+        const total = rentalTotal + fuelCost;
+        b.car_rental = { per_day: round2(pricePerDay), total: round2(rentalTotal), fuel: round2(fuelCost) };
+        b.total = round2(b.total + total);
+        alert(`🚗 Car rental added to trip budget! Total: +${fmt(total)} SAR.`);
     }
+
+    renderBudgetDetails(state.tripData);
+    renderBudgetDetailsLeft(state.tripData);
+    renderItinerary(state.tripData);
+    updateOverlays(state.tripData);
+    saveTripState();
+    loadTransportHub(); // Re-render to update button state
 };
 

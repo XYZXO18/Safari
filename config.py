@@ -260,6 +260,14 @@ CITY_TO_VIBE = {
     "makkah":   "city",
     "tabuk":    "desert",
     "hail":     "desert",
+    "madrid":   "city",
+    "barcelona":"coast",
+    "paris":    "city",
+    "london":   "city",
+    "rome":     "city",
+    "dubai":    "city",
+    "tokyo":    "city",
+    "new york": "city",
 }
 
 # ─── City Coordinates (lat, lng) ─────────────────────────────────────────────

@@ -187,6 +187,8 @@ def _search_social_media(city: str, interests: str = "") -> List[SocialMediaPost
         return []
 
     try:
+        from config import CITY_TO_COUNTRY
+        country = CITY_TO_COUNTRY.get(city.lower(), "Saudi Arabia")
         client = genai.Client(api_key=GEMINI_API_KEY)
 
         interests_str = f" Focus especially on posts about: {interests}." if interests else ""
@@ -194,9 +196,9 @@ def _search_social_media(city: str, interests: str = "") -> List[SocialMediaPost
         prompt = (
             f"Search the web for recent social media posts, tweets, Instagram reels, "
             f"TikTok recommendations, and Reddit discussions about traveling to "
-            f"{city}, Saudi Arabia.{interests_str} "
+            f"{city}, {country}.{interests_str} "
             f"Look for posts from platforms like x.com (Twitter), instagram.com, "
-            f"tiktok.com, reddit.com/r/saudiarabia, and travel blogs. "
+            f"tiktok.com, reddit.com, and travel blogs. "
             f"Find posts about: trending restaurants, hidden gems, must-visit spots, "
             f"local food recommendations, nightlife, unique experiences, and travel tips. "
             f"Return ONLY a raw JSON array of up to 8 most relevant posts "
@@ -265,14 +267,15 @@ def _search_trending_spots(city: str, interests: str = "") -> List[TrendingSpot]
 
         interests_str = f" The traveler is especially interested in: {interests}." if interests else ""
 
-        from config import CITY_COORDS
+        from config import CITY_COORDS, CITY_TO_COUNTRY
         city_coords = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+        country = CITY_TO_COUNTRY.get(city.lower(), "Saudi Arabia")
         lat_ex = city_coords["lat"]
         lng_ex = city_coords["lng"]
 
         prompt = (
             f"Search the web for the most trending and highly-rated restaurants, cafés, "
-            f"attractions, nightlife spots, and unique experiences in {city}, Saudi Arabia "
+            f"attractions, nightlife spots, and unique experiences in {city}, {country} "
             f"right now.{interests_str} "
             f"Check Google Maps reviews, Tripadvisor, Zomato, HungerStation, Foursquare, "
             f"local food bloggers, and social media recommendations. "
@@ -344,11 +347,13 @@ def _search_local_insights(city: str) -> tuple[List[LocalInsight], str]:
         return [], ""
 
     try:
+        from config import CITY_TO_COUNTRY
+        country = CITY_TO_COUNTRY.get(city.lower(), "Saudi Arabia")
         client = genai.Client(api_key=GEMINI_API_KEY)
 
         prompt = (
             f"Search the web for current practical travel tips and information about "
-            f"visiting {city}, Saudi Arabia. Include: "
+            f"visiting {city}, {country}. Include: "
             f"1) Current weather conditions and what to pack, "
             f"2) Money-saving tips from travelers and locals, "
             f"3) Safety tips or travel advisories, "
