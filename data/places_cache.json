@@ -102,5 +102,57 @@
       ]
     },
     "ts": 1778240762.6717257
+  },
+  "dubai__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "Atlantis, The Palm",
+        "lat": 25.1252,
+        "lng": 55.117
+      },
+      "activities": [
+        {
+          "name": "Burj Khalifa",
+          "lat": 25.197525,
+          "lng": 55.274288
+        },
+        {
+          "name": "The Dubai Mall",
+          "lat": 25.199514,
+          "lng": 55.277397
+        },
+        {
+          "name": "Al Fahidi Historical Neighbourhood",
+          "lat": 25.154943,
+          "lng": 55.18016
+        },
+        {
+          "name": "Dubai Marina Walk",
+          "lat": 25.08525,
+          "lng": 55.14646
+        },
+        {
+          "name": "Global Village",
+          "lat": 25.0528,
+          "lng": 55.3819
+        },
+        {
+          "name": "Souk Madinat Jumeirah",
+          "lat": 25.1263,
+          "lng": 55.1842
+        },
+        {
+          "name": "Pierchic",
+          "lat": 25.131696,
+          "lng": 55.184658
+        },
+        {
+          "name": "WHITE Dubai",
+          "lat": 25.1561,
+          "lng": 55.3065
+        }
+      ]
+    },
+    "ts": 1778247399.6072447
   }
 }

@@ -38,5 +38,17 @@
       "confidence": "medium"
     },
     "ts": 1778242108.1115654
+  },
+  "rental__dubai": {
+    "data": {
+      "city": "Dubai",
+      "price_per_day": 37.5,
+      "currency": "SAR",
+      "vehicle_type": "Economy/Compact car",
+      "company": "Multiple providers",
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778247623.1501062
   }
 }
