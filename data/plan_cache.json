@@ -4244,5 +4244,1660 @@
       "recommendation": 0
     },
     "cached_at": "2026-05-08T11:34:26.182976+00:00"
+  },
+  "cf1ee3a59a006c5be2d1932abef170fc": {
+    "params": {
+      "budget": 3000.0,
+      "travel_mode": "flight",
+      "destination": "egypt",
+      "days": 4,
+      "origin": "riyadh",
+      "vehicle_type": "default",
+      "currency": "SAR",
+      "start_date": "",
+      "end_date": "",
+      "interests": ""
+    },
+    "result": {
+      "paths": [
+        {
+          "transport": {
+            "mode": "flight",
+            "origin": "Riyadh",
+            "destination": "Cairo",
+            "distance_km": 2047.29,
+            "travel_time_str": "4h 0m",
+            "cost_one_way": 390.0,
+            "cost_round_trip": 780.0,
+            "breakdown": "🎫  | Exact match found in logistics database for Riyadh ↔ Cairo",
+            "vehicle_type": "default"
+          },
+          "budget": {
+            "total": 3000.0,
+            "currency": "SAR",
+            "transport": 780.0,
+            "remaining": 2220.0,
+            "days": 4,
+            "lodging": {
+              "total": 0,
+              "per_day": 0,
+              "pending": true,
+              "max_budget": 888.0,
+              "max_per_day": 222.0
+            },
+            "food": {
+              "total": 666.0,
+              "per_day": 166.5
+            },
+            "activities": {
+              "total": 444.0,
+              "per_day": 111.0
+            },
+            "buffer": {
+              "total": 222.0,
+              "per_day": 55.5
+            },
+            "is_feasible": true,
+            "warnings": []
+          },
+          "activities": {
+            "destination": "city",
+            "vibe": "Urban exploration, nightlife, shopping, dining",
+            "recommended_city": "Cairo",
+            "daily_plan": {
+              "1": [
+                {
+                  "id": "trend_4_el_fishawy",
+                  "name": "🔥 TRENDING: El Fishawy Cafe",
+                  "lat": 30.0472,
+                  "lng": 31.262,
+                  "is_trending_spot": true,
+                  "cost": 14.0,
+                  "category": "cafe",
+                  "description": "One of Cairo's oldest and most famous cafes, located in Khan el-Khalili, offering a truly authentic Egyptian coffeehouse experience with traditional decor and mint tea.",
+                  "social_buzz": "Celebrated for its rich history as a gathering spot for intellectuals and artists, it remains a bustling place to soak in local culture and enjoy shisha.",
+                  "rating": 4.3,
+                  "price_range": "$",
+                  "tags": [
+                    "historic cafe",
+                    "traditional",
+                    "shisha",
+                    "Khan el-Khalili",
+                    "local experience"
+                  ],
+                  "source": "Tripadvisor, Wanderlog, Vanilla Travels"
+                },
+                {
+                  "id": "trend_0_grand_egyp",
+                  "name": "🔥 TRENDING: Grand Egyptian Museum (GEM)",
+                  "lat": 29.9939,
+                  "lng": 31.1118,
+                  "is_trending_spot": true,
+                  "cost": 35.0,
+                  "category": "attraction",
+                  "description": "The largest museum in the world dedicated to a single civilization, showcasing over 100,000 artifacts including the complete King Tutankhamun collection. It offers a redefined experience of Egypt's ancient wonders.",
+                  "social_buzz": "Highly anticipated opening in late 2024, it's trending as a must-visit for its scale and comprehensive collection of Egyptian antiquities, especially the Tutankhamun exhibit.",
+                  "rating": 4.7,
+                  "price_range": "$",
+                  "tags": [
+                    "museum",
+                    "ancient Egypt",
+                    "Tutankhamun",
+                    "history",
+                    "Giza"
+                  ],
+                  "source": "Google Maps, Tripadvisor, Egyptra Travel"
+                },
+                {
+                  "name": "Local souq haggling",
+                  "lat": 29.99743185298187,
+                  "lng": 31.215313717274494
+                },
+                {
+                  "name": "Rooftop café",
+                  "lat": 29.995809419215146,
+                  "lng": 31.185005395230025
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 30.117051446098092,
+                  "lng": 31.231349252480328
+                }
+              ],
+              "2": [
+                {
+                  "id": "trend_5_cake_cafe_",
+                  "name": "🔥 TRENDING: Cake Cafe (Zamalek)",
+                  "lat": 30.0595,
+                  "lng": 31.2217,
+                  "is_trending_spot": true,
+                  "cost": 18.0,
+                  "category": "cafe",
+                  "description": "A beloved cafe in Zamalek known for its delectable cakes, pastries, and cozy atmosphere, making it a popular spot for desserts, coffee, and casual meetups.",
+                  "social_buzz": "A Zamalek favorite for over a decade, it's trending for its consistent quality, charming ambiance, and being a go-to for coffee and sweet treats.",
+                  "rating": 4.4,
+                  "price_range": "$",
+                  "tags": [
+                    "desserts",
+                    "coffee",
+                    "Zamalek",
+                    "cozy",
+                    "pastries"
+                  ],
+                  "source": "Cairo 360, The Local's Guide To Egypt, Trip101"
+                },
+                {
+                  "id": "trend_1_cairo_towe",
+                  "name": "🔥 TRENDING: Cairo Tower",
+                  "lat": 30.045916,
+                  "lng": 31.224291,
+                  "is_trending_spot": true,
+                  "cost": 21.0,
+                  "category": "attraction",
+                  "description": "An iconic free-standing concrete tower offering spectacular panoramic views of Cairo, the Nile River, and the Giza Pyramids from its observation deck.",
+                  "social_buzz": "Continues to be a popular spot for breathtaking cityscapes, especially at sunset, and is considered a modern monument of Cairo.",
+                  "rating": 4.5,
+                  "price_range": "$",
+                  "tags": [
+                    "landmark",
+                    "views",
+                    "Nile",
+                    "observation deck",
+                    "Zamalek"
+                  ],
+                  "source": "Google Maps, Tripadvisor, Wikipedia"
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 30.07304388501219,
+                  "lng": 31.260932514890293
+                },
+                {
+                  "name": "National museum visit",
+                  "lat": 30.008003424364915,
+                  "lng": 31.28355317059567
+                },
+                {
+                  "name": "Mall exploration",
+                  "lat": 30.037049158509348,
+                  "lng": 31.306626092924482
+                }
+              ],
+              "3": [
+                {
+                  "id": "trend_6_crimson_ba",
+                  "name": "🔥 TRENDING: Crimson Bar & Grill",
+                  "lat": 30.0595,
+                  "lng": 31.2217,
+                  "is_trending_spot": true,
+                  "cost": 84.0,
+                  "category": "restaurant",
+                  "description": "An upscale rooftop restaurant and bar in Zamalek offering international cuisine, creative cocktails, and stunning views of the Nile River.",
+                  "social_buzz": "Trending for its chic ambiance, excellent Nile views, and being a popular spot for a sophisticated night out with delicious food and drinks.",
+                  "rating": 4.5,
+                  "price_range": "$$",
+                  "tags": [
+                    "rooftop",
+                    "Nile view",
+                    "fine dining",
+                    "cocktails",
+                    "Zamalek",
+                    "nightlife"
+                  ],
+                  "source": "iLinkTurkey, Travel Triangle, WTP Travel"
+                },
+                {
+                  "id": "trend_2_khan_el-kh",
+                  "name": "🔥 TRENDING: Khan el-Khalili",
+                  "lat": 30.0472,
+                  "lng": 31.262,
+                  "is_trending_spot": true,
+                  "cost": 21.0,
+                  "category": "shopping",
+                  "description": "A historic bazaar in Islamic Cairo, famous for its labyrinthine alleyways filled with traditional crafts, spices, jewelry, and souvenirs. It's a vibrant hub of culture and commerce.",
+                  "social_buzz": "Always trending for its authentic Egyptian atmosphere, opportunities for haggling, and a chance to experience medieval Cairo.",
+                  "rating": 4.4,
+                  "price_range": "$",
+                  "tags": [
+                    "bazaar",
+                    "souk",
+                    "market",
+                    "traditional crafts",
+                    "Islamic Cairo",
+                    "shopping"
+                  ],
+                  "source": "Tripadvisor, Google Maps, Egyptra Travel"
+                },
+                {
+                  "name": "Historical palaces walking tour",
+                  "lat": 30.08119780306646,
+                  "lng": 31.31451865398392
+                },
+                {
+                  "name": "Historical Diriyah tour",
+                  "lat": 30.072058350333492,
+                  "lng": 31.238022830531442,
+                  "rating": 4.5,
+                  "review_count": 1654,
+                  "why_go": "The birthplace of Saudi Arabia and a UNESCO World Heritage Site. The restored mud-brick At-Turaif district showcases 300 years of Saudi history and Najdi architecture at its finest.",
+                  "reviews": [
+                    {
+                      "user": "Fahd K.",
+                      "rating": 5,
+                      "text": "Beautifully restored! The architecture is stunning and the museum tells the story of how Saudi Arabia was founded."
+                    },
+                    {
+                      "user": "Patricia M.",
+                      "rating": 4,
+                      "text": "A peaceful escape from Riyadh's bustle. The restaurants inside the complex are excellent."
+                    },
+                    {
+                      "user": "Saad J.",
+                      "rating": 5,
+                      "text": "Walking through the old streets at sunset is magical. The new Bujairi Terrace restaurants have amazing views."
+                    }
+                  ]
+                }
+              ],
+              "4": [
+                {
+                  "id": "trend_7_cairo_jazz",
+                  "name": "🔥 TRENDING: Cairo Jazz Club",
+                  "lat": 30.0487,
+                  "lng": 31.2057,
+                  "is_trending_spot": true,
+                  "cost": 49.0,
+                  "category": "nightlife",
+                  "description": "One of Cairo's most iconic and oldest live music venues, featuring a diverse range of genres from jazz to indie rock, attracting a lively and stylish crowd.",
+                  "social_buzz": "A long-standing favorite for music lovers and party-goers, it's consistently trending for its vibrant atmosphere, live acts, and diverse musical offerings.",
+                  "rating": 4.3,
+                  "price_range": "$",
+                  "tags": [
+                    "live music",
+                    "jazz",
+                    "nightclub",
+                    "bar",
+                    "Agouza",
+                    "party"
+                  ],
+                  "source": "iLinkTurkey, Travel Triangle, Holidify"
+                },
+                {
+                  "id": "trend_3_felucca_ri",
+                  "name": "🔥 TRENDING: Felucca Ride on the Nile",
+                  "lat": 30.0444,
+                  "lng": 31.2357,
+                  "is_trending_spot": true,
+                  "cost": 49.0,
+                  "category": "unique experience",
+                  "description": "A traditional sailboat ride on the Nile River, offering a relaxing way to see Cairo's skyline and enjoy the tranquility of the water, especially popular during sunset.",
+                  "social_buzz": "Highly recommended for a romantic outing or a peaceful escape from the city's hustle, with many tours offering private options and dinner.",
+                  "rating": 4.6,
+                  "price_range": "$",
+                  "tags": [
+                    "Nile River",
+                    "boat ride",
+                    "sunset",
+                    "relaxation",
+                    "romantic"
+                  ],
+                  "source": "Viator, Expedia, Emo Tours Egypt"
+                },
+                {
+                  "name": "Boulevard Riyadh City",
+                  "lat": 29.997151425384473,
+                  "lng": 31.263756862990423,
+                  "rating": 4.3,
+                  "review_count": 5432,
+                  "why_go": "Riyadh's premier entertainment district â€” a massive complex with world-class dining, live events, concerts, gaming zones, and themed areas. Think of it as Saudi Arabia's Times Square.",
+                  "reviews": [
+                    {
+                      "user": "Maha R.",
+                      "rating": 4,
+                      "text": "So much to do! We spent 6 hours and still didn't see everything. The Japanese zone is incredible."
+                    },
+                    {
+                      "user": "Omar F.",
+                      "rating": 5,
+                      "text": "The atmosphere at night is electric. Great food, great shows, great people. A must-visit in Riyadh."
+                    },
+                    {
+                      "user": "Jenny L.",
+                      "rating": 4,
+                      "text": "Impressive entertainment complex but can get very crowded on weekends. Go on weekdays if you can."
+                    }
+                  ]
+                }
+              ]
+            },
+            "hotel": {
+              "name": "Cairo Grand Hotel",
+              "lat": 30.041238377427252,
+              "lng": 31.24133125884526
+            }
+          },
+          "events": {
+            "city": "Cairo",
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-12",
+            "events": [],
+            "total_event_cost": 0,
+            "scan_source": "none"
+          },
+          "web_research": {
+            "city": "Cairo",
+            "research_date": "2026-05-08",
+            "social_posts": [],
+            "trending_spots": [
+              {
+                "name": "Grand Egyptian Museum (GEM)",
+                "category": "attraction",
+                "description": "The largest museum in the world dedicated to a single civilization, showcasing over 100,000 artifacts including the complete King Tutankhamun collection. It offers a redefined experience of Egypt's ancient wonders.",
+                "price_range": "$",
+                "estimated_cost_sar": 35.0,
+                "rating": 4.7,
+                "source": "Google Maps, Tripadvisor, Egyptra Travel",
+                "lat": 29.9939,
+                "lng": 31.1118,
+                "social_buzz": "Highly anticipated opening in late 2024, it's trending as a must-visit for its scale and comprehensive collection of Egyptian antiquities, especially the Tutankhamun exhibit.",
+                "tags": [
+                  "museum",
+                  "ancient Egypt",
+                  "Tutankhamun",
+                  "history",
+                  "Giza"
+                ]
+              },
+              {
+                "name": "Cairo Tower",
+                "category": "attraction",
+                "description": "An iconic free-standing concrete tower offering spectacular panoramic views of Cairo, the Nile River, and the Giza Pyramids from its observation deck.",
+                "price_range": "$",
+                "estimated_cost_sar": 21.0,
+                "rating": 4.5,
+                "source": "Google Maps, Tripadvisor, Wikipedia",
+                "lat": 30.045916,
+                "lng": 31.224291,
+                "social_buzz": "Continues to be a popular spot for breathtaking cityscapes, especially at sunset, and is considered a modern monument of Cairo.",
+                "tags": [
+                  "landmark",
+                  "views",
+                  "Nile",
+                  "observation deck",
+                  "Zamalek"
+                ]
+              },
+              {
+                "name": "Khan el-Khalili",
+                "category": "shopping",
+                "description": "A historic bazaar in Islamic Cairo, famous for its labyrinthine alleyways filled with traditional crafts, spices, jewelry, and souvenirs. It's a vibrant hub of culture and commerce.",
+                "price_range": "$",
+                "estimated_cost_sar": 21.0,
+                "rating": 4.4,
+                "source": "Tripadvisor, Google Maps, Egyptra Travel",
+                "lat": 30.0472,
+                "lng": 31.262,
+                "social_buzz": "Always trending for its authentic Egyptian atmosphere, opportunities for haggling, and a chance to experience medieval Cairo.",
+                "tags": [
+                  "bazaar",
+                  "souk",
+                  "market",
+                  "traditional crafts",
+                  "Islamic Cairo",
+                  "shopping"
+                ]
+              },
+              {
+                "name": "Felucca Ride on the Nile",
+                "category": "unique experience",
+                "description": "A traditional sailboat ride on the Nile River, offering a relaxing way to see Cairo's skyline and enjoy the tranquility of the water, especially popular during sunset.",
+                "price_range": "$",
+                "estimated_cost_sar": 49.0,
+                "rating": 4.6,
+                "source": "Viator, Expedia, Emo Tours Egypt",
+                "lat": 30.0444,
+                "lng": 31.2357,
+                "social_buzz": "Highly recommended for a romantic outing or a peaceful escape from the city's hustle, with many tours offering private options and dinner.",
+                "tags": [
+                  "Nile River",
+                  "boat ride",
+                  "sunset",
+                  "relaxation",
+                  "romantic"
+                ]
+              },
+              {
+                "name": "El Fishawy Cafe",
+                "category": "cafe",
+                "description": "One of Cairo's oldest and most famous cafes, located in Khan el-Khalili, offering a truly authentic Egyptian coffeehouse experience with traditional decor and mint tea.",
+                "price_range": "$",
+                "estimated_cost_sar": 14.0,
+                "rating": 4.3,
+                "source": "Tripadvisor, Wanderlog, Vanilla Travels",
+                "lat": 30.0472,
+                "lng": 31.262,
+                "social_buzz": "Celebrated for its rich history as a gathering spot for intellectuals and artists, it remains a bustling place to soak in local culture and enjoy shisha.",
+                "tags": [
+                  "historic cafe",
+                  "traditional",
+                  "shisha",
+                  "Khan el-Khalili",
+                  "local experience"
+                ]
+              },
+              {
+                "name": "Cake Cafe (Zamalek)",
+                "category": "cafe",
+                "description": "A beloved cafe in Zamalek known for its delectable cakes, pastries, and cozy atmosphere, making it a popular spot for desserts, coffee, and casual meetups.",
+                "price_range": "$",
+                "estimated_cost_sar": 18.0,
+                "rating": 4.4,
+                "source": "Cairo 360, The Local's Guide To Egypt, Trip101",
+                "lat": 30.0595,
+                "lng": 31.2217,
+                "social_buzz": "A Zamalek favorite for over a decade, it's trending for its consistent quality, charming ambiance, and being a go-to for coffee and sweet treats.",
+                "tags": [
+                  "desserts",
+                  "coffee",
+                  "Zamalek",
+                  "cozy",
+                  "pastries"
+                ]
+              },
+              {
+                "name": "Crimson Bar & Grill",
+                "category": "restaurant",
+                "description": "An upscale rooftop restaurant and bar in Zamalek offering international cuisine, creative cocktails, and stunning views of the Nile River.",
+                "price_range": "$$",
+                "estimated_cost_sar": 84.0,
+                "rating": 4.5,
+                "source": "iLinkTurkey, Travel Triangle, WTP Travel",
+                "lat": 30.0595,
+                "lng": 31.2217,
+                "social_buzz": "Trending for its chic ambiance, excellent Nile views, and being a popular spot for a sophisticated night out with delicious food and drinks.",
+                "tags": [
+                  "rooftop",
+                  "Nile view",
+                  "fine dining",
+                  "cocktails",
+                  "Zamalek",
+                  "nightlife"
+                ]
+              },
+              {
+                "name": "Cairo Jazz Club",
+                "category": "nightlife",
+                "description": "One of Cairo's most iconic and oldest live music venues, featuring a diverse range of genres from jazz to indie rock, attracting a lively and stylish crowd.",
+                "price_range": "$",
+                "estimated_cost_sar": 49.0,
+                "rating": 4.3,
+                "source": "iLinkTurkey, Travel Triangle, Holidify",
+                "lat": 30.0487,
+                "lng": 31.2057,
+                "social_buzz": "A long-standing favorite for music lovers and party-goers, it's consistently trending for its vibrant atmosphere, live acts, and diverse musical offerings.",
+                "tags": [
+                  "live music",
+                  "jazz",
+                  "nightclub",
+                  "bar",
+                  "Agouza",
+                  "party"
+                ]
+              }
+            ],
+            "local_insights": [
+              {
+                "tip": "It is crucial to clarify your travel destination as Cairo is the capital city of Egypt, not Saudi Arabia. For accurate travel information, please specify if you intended to visit Cairo, Egypt, or a city within Saudi Arabia.",
+                "category": "safety",
+                "source": "General Geographical Knowledge, Search Results",
+                "confidence": "high"
+              },
+              {
+                "tip": "As 'Cairo, Saudi Arabia' is not a recognized location, specific money-saving tips for this destination cannot be provided. Please confirm your intended city for relevant advice.",
+                "category": "money_saving",
+                "source": "N/A",
+                "confidence": "high"
+              },
+              {
+                "tip": "Current weather conditions and packing advice for 'Cairo, Saudi Arabia' cannot be retrieved as this location does not exist. For Cairo, Egypt, expect a hot desert climate with hot, sunny, and dry conditions year-round, though with more humidity than some other desert climates.",
+                "category": "weather",
+                "source": "N/A",
+                "confidence": "high"
+              },
+              {
+                "tip": "Cultural etiquette and local customs for 'Cairo, Saudi Arabia' cannot be provided due to the location not being recognized. Please specify your actual destination to receive appropriate cultural guidance.",
+                "category": "culture",
+                "source": "N/A",
+                "confidence": "high"
+              },
+              {
+                "tip": "Information on the best transportation options within 'Cairo, Saudi Arabia' is unavailable as this city does not exist. Please provide the correct city for transportation advice.",
+                "category": "transport",
+                "source": "N/A",
+                "confidence": "high"
+              }
+            ],
+            "weather_summary": "The location 'Cairo, Saudi Arabia' is not a recognized city; Cairo is the capital of Egypt, which typically experiences a hot desert climate.",
+            "scan_successful": true
+          },
+          "dates": {
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-12"
+          },
+          "map": {
+            "origin": {
+              "lat": 24.7136,
+              "lng": 46.6753
+            },
+            "destination": {
+              "lat": 30.0444,
+              "lng": 31.2357
+            },
+            "origin_name": "Riyadh",
+            "dest_name": "Cairo"
+          },
+          "hospitality": {
+            "hotels": [
+              {
+                "id": "Minerva Grand Boutiq",
+                "name": "Minerva Grand Boutique",
+                "city": "Cairo",
+                "stars": 4,
+                "rating": 4.5,
+                "description": "A boutique hotel in Downtown Cairo offering continental breakfast and a charming rooftop terrace.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 23.63,
+                    "final_price_sar": 23.63,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 33.08,
+                    "final_price_sar": 33.08,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 30.069043608378536,
+                "lng": 31.227550057665397,
+                "has_availability": true,
+                "live_price_sar": 23.63,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Cairo/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 23.63,
+                  "final_price_sar": 23.63,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Town View Hotel",
+                "name": "Town View Hotel",
+                "city": "Cairo",
+                "stars": 4,
+                "rating": 3.4,
+                "description": "Located near Tahrir Square, this hotel offers comfortable rooms with city views and a restaurant serving Mediterranean cuisine.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 56.25,
+                    "final_price_sar": 56.25,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 78.75,
+                    "final_price_sar": 78.75,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 30.051065379345808,
+                "lng": 31.27543585327208,
+                "has_availability": true,
+                "live_price_sar": 56.25,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Cairo/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 56.25,
+                  "final_price_sar": 56.25,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Invitation Hotel",
+                "name": "Invitation Hotel",
+                "city": "Cairo",
+                "stars": 4,
+                "rating": 3.5,
+                "description": "A hotel in the city center offering free continental breakfast and close proximity to the Egyptian Museum.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 70.38,
+                    "final_price_sar": 70.38,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 98.53,
+                    "final_price_sar": 98.53,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 30.014235283377968,
+                "lng": 31.215675874999533,
+                "has_availability": true,
+                "live_price_sar": 70.38,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Cairo/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 70.38,
+                  "final_price_sar": 70.38,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              }
+            ],
+            "restaurants": [
+              {
+                "id": "283",
+                "name": "Cafe Greco",
+                "city": "cairo",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.5,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 13,
+                "available_tables": 7,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 6.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 1.7999999999999998,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 2.4000000000000004,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 30.065271556971744,
+                "lng": 31.21395180438822
+              },
+              {
+                "id": "284",
+                "name": "Holm Cafe",
+                "city": "cairo",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.6,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 14,
+                "available_tables": 6,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 11.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 3.3,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 4.4,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 30.062148033676515,
+                "lng": 31.225282721197768
+              },
+              {
+                "id": "282",
+                "name": "The Coffee Bean & Tea Leaf",
+                "city": "cairo",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.4,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 6,
+                "available_tables": 14,
+                "discount_percent": 20.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 9.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 2.6999999999999997,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 3.6,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 30.09094781376438,
+                "lng": 31.212779798533386
+              }
+            ],
+            "travel_costs": {
+              "status": "success",
+              "flights": [
+                {
+                  "airline": "Air Cairo",
+                  "price_sar": 390.0,
+                  "duration": "180m",
+                  "source": "gemini_grounding"
+                }
+              ],
+              "origin": "riyadh",
+              "destination": "Cairo",
+              "travel_mode": "flight"
+            }
+          },
+          "timeline": {
+            "1": {
+              "legs": [
+                {
+                  "from_name": "Riyadh",
+                  "from_lat": 24.7136,
+                  "from_lng": 46.6753,
+                  "to_name": "Minerva Grand Boutique",
+                  "to_lat": 30.069043608378536,
+                  "to_lng": 31.227550057665397,
+                  "mode": "✈️ Long-haul",
+                  "dist": 0,
+                  "time_minutes": 120,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                },
+                {
+                  "from_name": "Minerva Grand Boutique",
+                  "from_lat": 30.069043608378536,
+                  "from_lng": 31.227550057665397,
+                  "to_name": "🔥 TRENDING: El Fishawy Cafe",
+                  "to_lat": 30.0472,
+                  "to_lng": 31.262,
+                  "mode": "🚌 Public Transport",
+                  "dist": 4.11,
+                  "time_minutes": 7,
+                  "cost": 8.08
+                },
+                {
+                  "from_name": "🔥 TRENDING: El Fishawy Cafe",
+                  "from_lat": 30.0472,
+                  "from_lng": 31.262,
+                  "to_name": "🔥 TRENDING: Grand Egyptian Museum (GEM)",
+                  "to_lat": 29.9939,
+                  "to_lng": 31.1118,
+                  "mode": "🚌 Public Transport",
+                  "dist": 15.63,
+                  "time_minutes": 27,
+                  "cost": 16.72
+                },
+                {
+                  "from_name": "🔥 TRENDING: Grand Egyptian Museum (GEM)",
+                  "from_lat": 29.9939,
+                  "from_lng": 31.1118,
+                  "to_name": "Local souq haggling",
+                  "to_lat": 29.99743185298187,
+                  "to_lng": 31.215313717274494,
+                  "mode": "🚌 Public Transport",
+                  "dist": 9.98,
+                  "time_minutes": 17,
+                  "cost": 12.48
+                },
+                {
+                  "from_name": "Local souq haggling",
+                  "from_lat": 29.99743185298187,
+                  "from_lng": 31.215313717274494,
+                  "to_name": "Rooftop café",
+                  "to_lat": 29.995809419215146,
+                  "to_lng": 31.185005395230025,
+                  "mode": "🚕 Taxi",
+                  "dist": 2.92,
+                  "time_minutes": 3,
+                  "cost": 17.31
+                },
+                {
+                  "from_name": "Rooftop café",
+                  "from_lat": 29.995809419215146,
+                  "from_lng": 31.185005395230025,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 30.117051446098092,
+                  "to_lng": 31.231349252480328,
+                  "mode": "🚌 Public Transport",
+                  "dist": 14.2,
+                  "time_minutes": 24,
+                  "cost": 15.65
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 30.117051446098092,
+                  "from_lng": 31.231349252480328,
+                  "to_name": "Minerva Grand Boutique",
+                  "to_lat": 30.069043608378536,
+                  "to_lng": 31.227550057665397,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 5.35,
+                  "time_minutes": 6,
+                  "cost": 23.38
+                }
+              ],
+              "day_cost": 93.62,
+              "recommendation": ""
+            },
+            "2": {
+              "legs": [
+                {
+                  "from_name": "Minerva Grand Boutique",
+                  "from_lat": 30.069043608378536,
+                  "from_lng": 31.227550057665397,
+                  "to_name": "🔥 TRENDING: Cake Cafe (Zamalek)",
+                  "to_lat": 30.0595,
+                  "to_lng": 31.2217,
+                  "mode": "🚕 Taxi",
+                  "dist": 1.2,
+                  "time_minutes": 1,
+                  "cost": 13.0
+                },
+                {
+                  "from_name": "🔥 TRENDING: Cake Cafe (Zamalek)",
+                  "from_lat": 30.0595,
+                  "from_lng": 31.2217,
+                  "to_name": "🔥 TRENDING: Cairo Tower",
+                  "to_lat": 30.045916,
+                  "to_lng": 31.224291,
+                  "mode": "🚕 Taxi",
+                  "dist": 1.53,
+                  "time_minutes": 2,
+                  "cost": 13.83
+                },
+                {
+                  "from_name": "🔥 TRENDING: Cairo Tower",
+                  "from_lat": 30.045916,
+                  "from_lng": 31.224291,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 30.07304388501219,
+                  "to_lng": 31.260932514890293,
+                  "mode": "🚌 Public Transport",
+                  "dist": 4.64,
+                  "time_minutes": 8,
+                  "cost": 8.48
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 30.07304388501219,
+                  "from_lng": 31.260932514890293,
+                  "to_name": "National museum visit",
+                  "to_lat": 30.008003424364915,
+                  "to_lng": 31.28355317059567,
+                  "mode": "🚌 Public Transport",
+                  "dist": 7.55,
+                  "time_minutes": 13,
+                  "cost": 10.66
+                },
+                {
+                  "from_name": "National museum visit",
+                  "from_lat": 30.008003424364915,
+                  "from_lng": 31.28355317059567,
+                  "to_name": "Mall exploration",
+                  "to_lat": 30.037049158509348,
+                  "to_lng": 31.306626092924482,
+                  "mode": "🚌 Public Transport",
+                  "dist": 3.92,
+                  "time_minutes": 7,
+                  "cost": 7.94
+                },
+                {
+                  "from_name": "Mall exploration",
+                  "from_lat": 30.037049158509348,
+                  "from_lng": 31.306626092924482,
+                  "to_name": "Minerva Grand Boutique",
+                  "to_lat": 30.069043608378536,
+                  "to_lng": 31.227550057665397,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 8.4,
+                  "time_minutes": 9,
+                  "cost": 31.0
+                }
+              ],
+              "day_cost": 84.92,
+              "recommendation": ""
+            },
+            "3": {
+              "legs": [
+                {
+                  "from_name": "Minerva Grand Boutique",
+                  "from_lat": 30.069043608378536,
+                  "from_lng": 31.227550057665397,
+                  "to_name": "🔥 TRENDING: Crimson Bar & Grill",
+                  "to_lat": 30.0595,
+                  "to_lng": 31.2217,
+                  "mode": "🚕 Taxi",
+                  "dist": 1.2,
+                  "time_minutes": 1,
+                  "cost": 13.0
+                },
+                {
+                  "from_name": "🔥 TRENDING: Crimson Bar & Grill",
+                  "from_lat": 30.0595,
+                  "from_lng": 31.2217,
+                  "to_name": "🔥 TRENDING: Khan el-Khalili",
+                  "to_lat": 30.0472,
+                  "to_lng": 31.262,
+                  "mode": "🚌 Public Transport",
+                  "dist": 4.11,
+                  "time_minutes": 7,
+                  "cost": 8.08
+                },
+                {
+                  "from_name": "🔥 TRENDING: Khan el-Khalili",
+                  "from_lat": 30.0472,
+                  "from_lng": 31.262,
+                  "to_name": "Historical palaces walking tour",
+                  "to_lat": 30.08119780306646,
+                  "to_lng": 31.31451865398392,
+                  "mode": "🚌 Public Transport",
+                  "dist": 6.31,
+                  "time_minutes": 11,
+                  "cost": 9.73
+                },
+                {
+                  "from_name": "Historical palaces walking tour",
+                  "from_lat": 30.08119780306646,
+                  "from_lng": 31.31451865398392,
+                  "to_name": "Historical Diriyah tour",
+                  "to_lat": 30.072058350333492,
+                  "to_lng": 31.238022830531442,
+                  "mode": "🚌 Public Transport",
+                  "dist": 7.43,
+                  "time_minutes": 13,
+                  "cost": 10.57
+                },
+                {
+                  "from_name": "Historical Diriyah tour",
+                  "from_lat": 30.072058350333492,
+                  "from_lng": 31.238022830531442,
+                  "to_name": "Minerva Grand Boutique",
+                  "to_lat": 30.069043608378536,
+                  "to_lng": 31.227550057665397,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 1.06,
+                  "time_minutes": 1,
+                  "cost": 12.66
+                }
+              ],
+              "day_cost": 54.05,
+              "recommendation": ""
+            },
+            "4": {
+              "legs": [
+                {
+                  "from_name": "Minerva Grand Boutique",
+                  "from_lat": 30.069043608378536,
+                  "from_lng": 31.227550057665397,
+                  "to_name": "🔥 TRENDING: Cairo Jazz Club",
+                  "to_lat": 30.0487,
+                  "to_lng": 31.2057,
+                  "mode": "🚌 Public Transport",
+                  "dist": 3.09,
+                  "time_minutes": 5,
+                  "cost": 7.32
+                },
+                {
+                  "from_name": "🔥 TRENDING: Cairo Jazz Club",
+                  "from_lat": 30.0487,
+                  "from_lng": 31.2057,
+                  "to_name": "🔥 TRENDING: Felucca Ride on the Nile",
+                  "to_lat": 30.0444,
+                  "to_lng": 31.2357,
+                  "mode": "🚕 Taxi",
+                  "dist": 2.93,
+                  "time_minutes": 3,
+                  "cost": 17.32
+                },
+                {
+                  "from_name": "🔥 TRENDING: Felucca Ride on the Nile",
+                  "from_lat": 30.0444,
+                  "from_lng": 31.2357,
+                  "to_name": "Boulevard Riyadh City",
+                  "to_lat": 29.997151425384473,
+                  "to_lng": 31.263756862990423,
+                  "mode": "🚌 Public Transport",
+                  "dist": 5.91,
+                  "time_minutes": 10,
+                  "cost": 9.43
+                },
+                {
+                  "from_name": "Boulevard Riyadh City",
+                  "from_lat": 29.997151425384473,
+                  "from_lng": 31.263756862990423,
+                  "to_name": "Minerva Grand Boutique",
+                  "to_lat": 30.069043608378536,
+                  "to_lng": 31.227550057665397,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 8.72,
+                  "time_minutes": 10,
+                  "cost": 31.8
+                },
+                {
+                  "from_name": "Minerva Grand Boutique",
+                  "from_lat": 30.069043608378536,
+                  "from_lng": 31.227550057665397,
+                  "to_name": "Riyadh",
+                  "to_lat": 24.7136,
+                  "to_lng": 46.6753,
+                  "mode": "✈️ Return",
+                  "dist": 0,
+                  "time_minutes": 120,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                }
+              ],
+              "day_cost": 65.87,
+              "recommendation": ""
+            }
+          },
+          "total_transit_cost": 298.46,
+          "simulation_routes": {
+            "1": [
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin",
+                "day": 1
+              },
+              {
+                "name": "Minerva Grand Boutique",
+                "lat": 30.069043608378536,
+                "lng": 31.227550057665397,
+                "type": "hotel",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: El Fishawy Cafe",
+                "lat": 30.0472,
+                "lng": 31.262,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: Grand Egyptian Museum (GEM)",
+                "lat": 29.9939,
+                "lng": 31.1118,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Local souq haggling",
+                "lat": 29.99743185298187,
+                "lng": 31.215313717274494,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Rooftop café",
+                "lat": 29.995809419215146,
+                "lng": 31.185005395230025,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 30.117051446098092,
+                "lng": 31.231349252480328,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Minerva Grand Boutique",
+                "lat": 30.069043608378536,
+                "lng": 31.227550057665397,
+                "type": "hotel_return",
+                "day": 1
+              }
+            ],
+            "2": [
+              {
+                "name": "Minerva Grand Boutique",
+                "lat": 30.069043608378536,
+                "lng": 31.227550057665397,
+                "type": "hotel",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: Cake Cafe (Zamalek)",
+                "lat": 30.0595,
+                "lng": 31.2217,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: Cairo Tower",
+                "lat": 30.045916,
+                "lng": 31.224291,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 30.07304388501219,
+                "lng": 31.260932514890293,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "National museum visit",
+                "lat": 30.008003424364915,
+                "lng": 31.28355317059567,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Mall exploration",
+                "lat": 30.037049158509348,
+                "lng": 31.306626092924482,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Minerva Grand Boutique",
+                "lat": 30.069043608378536,
+                "lng": 31.227550057665397,
+                "type": "hotel_return",
+                "day": 2
+              }
+            ],
+            "3": [
+              {
+                "name": "Minerva Grand Boutique",
+                "lat": 30.069043608378536,
+                "lng": 31.227550057665397,
+                "type": "hotel",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: Crimson Bar & Grill",
+                "lat": 30.0595,
+                "lng": 31.2217,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: Khan el-Khalili",
+                "lat": 30.0472,
+                "lng": 31.262,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Historical palaces walking tour",
+                "lat": 30.08119780306646,
+                "lng": 31.31451865398392,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Historical Diriyah tour",
+                "lat": 30.072058350333492,
+                "lng": 31.238022830531442,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Minerva Grand Boutique",
+                "lat": 30.069043608378536,
+                "lng": 31.227550057665397,
+                "type": "hotel_return",
+                "day": 3
+              }
+            ],
+            "4": [
+              {
+                "name": "Minerva Grand Boutique",
+                "lat": 30.069043608378536,
+                "lng": 31.227550057665397,
+                "type": "hotel",
+                "day": 4
+              },
+              {
+                "name": "🔥 TRENDING: Cairo Jazz Club",
+                "lat": 30.0487,
+                "lng": 31.2057,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "🔥 TRENDING: Felucca Ride on the Nile",
+                "lat": 30.0444,
+                "lng": 31.2357,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Boulevard Riyadh City",
+                "lat": 29.997151425384473,
+                "lng": 31.263756862990423,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Minerva Grand Boutique",
+                "lat": 30.069043608378536,
+                "lng": 31.227550057665397,
+                "type": "hotel_return",
+                "day": 4
+              },
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin_return",
+                "day": 4
+              }
+            ]
+          },
+          "full_trip_dataset": [
+            {
+              "from_name": "Riyadh",
+              "from_lat": 24.7136,
+              "from_lng": 46.6753,
+              "to_name": "Minerva Grand Boutique",
+              "to_lat": 30.069043608378536,
+              "to_lng": 31.227550057665397,
+              "mode": "✈️ Long-haul",
+              "dist": 0,
+              "time_minutes": 120,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Minerva Grand Boutique",
+              "from_lat": 30.069043608378536,
+              "from_lng": 31.227550057665397,
+              "to_name": "🔥 TRENDING: El Fishawy Cafe",
+              "to_lat": 30.0472,
+              "to_lng": 31.262,
+              "mode": "🚌 Public Transport",
+              "dist": 4.11,
+              "time_minutes": 7,
+              "cost": 8.08
+            },
+            {
+              "from_name": "🔥 TRENDING: El Fishawy Cafe",
+              "from_lat": 30.0472,
+              "from_lng": 31.262,
+              "to_name": "🔥 TRENDING: Grand Egyptian Museum (GEM)",
+              "to_lat": 29.9939,
+              "to_lng": 31.1118,
+              "mode": "🚌 Public Transport",
+              "dist": 15.63,
+              "time_minutes": 27,
+              "cost": 16.72
+            },
+            {
+              "from_name": "🔥 TRENDING: Grand Egyptian Museum (GEM)",
+              "from_lat": 29.9939,
+              "from_lng": 31.1118,
+              "to_name": "Local souq haggling",
+              "to_lat": 29.99743185298187,
+              "to_lng": 31.215313717274494,
+              "mode": "🚌 Public Transport",
+              "dist": 9.98,
+              "time_minutes": 17,
+              "cost": 12.48
+            },
+            {
+              "from_name": "Local souq haggling",
+              "from_lat": 29.99743185298187,
+              "from_lng": 31.215313717274494,
+              "to_name": "Rooftop café",
+              "to_lat": 29.995809419215146,
+              "to_lng": 31.185005395230025,
+              "mode": "🚕 Taxi",
+              "dist": 2.92,
+              "time_minutes": 3,
+              "cost": 17.31
+            },
+            {
+              "from_name": "Rooftop café",
+              "from_lat": 29.995809419215146,
+              "from_lng": 31.185005395230025,
+              "to_name": "Modern architecture sightseeing",
+              "to_lat": 30.117051446098092,
+              "to_lng": 31.231349252480328,
+              "mode": "🚌 Public Transport",
+              "dist": 14.2,
+              "time_minutes": 24,
+              "cost": 15.65
+            },
+            {
+              "from_name": "Modern architecture sightseeing",
+              "from_lat": 30.117051446098092,
+              "from_lng": 31.231349252480328,
+              "to_name": "Minerva Grand Boutique",
+              "to_lat": 30.069043608378536,
+              "to_lng": 31.227550057665397,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 5.35,
+              "time_minutes": 6,
+              "cost": 23.38
+            },
+            {
+              "from_name": "Minerva Grand Boutique",
+              "from_lat": 30.069043608378536,
+              "from_lng": 31.227550057665397,
+              "to_name": "🔥 TRENDING: Cake Cafe (Zamalek)",
+              "to_lat": 30.0595,
+              "to_lng": 31.2217,
+              "mode": "🚕 Taxi",
+              "dist": 1.2,
+              "time_minutes": 1,
+              "cost": 13.0
+            },
+            {
+              "from_name": "🔥 TRENDING: Cake Cafe (Zamalek)",
+              "from_lat": 30.0595,
+              "from_lng": 31.2217,
+              "to_name": "🔥 TRENDING: Cairo Tower",
+              "to_lat": 30.045916,
+              "to_lng": 31.224291,
+              "mode": "🚕 Taxi",
+              "dist": 1.53,
+              "time_minutes": 2,
+              "cost": 13.83
+            },
+            {
+              "from_name": "🔥 TRENDING: Cairo Tower",
+              "from_lat": 30.045916,
+              "from_lng": 31.224291,
+              "to_name": "City center landmark walk",
+              "to_lat": 30.07304388501219,
+              "to_lng": 31.260932514890293,
+              "mode": "🚌 Public Transport",
+              "dist": 4.64,
+              "time_minutes": 8,
+              "cost": 8.48
+            },
+            {
+              "from_name": "City center landmark walk",
+              "from_lat": 30.07304388501219,
+              "from_lng": 31.260932514890293,
+              "to_name": "National museum visit",
+              "to_lat": 30.008003424364915,
+              "to_lng": 31.28355317059567,
+              "mode": "🚌 Public Transport",
+              "dist": 7.55,
+              "time_minutes": 13,
+              "cost": 10.66
+            },
+            {
+              "from_name": "National museum visit",
+              "from_lat": 30.008003424364915,
+              "from_lng": 31.28355317059567,
+              "to_name": "Mall exploration",
+              "to_lat": 30.037049158509348,
+              "to_lng": 31.306626092924482,
+              "mode": "🚌 Public Transport",
+              "dist": 3.92,
+              "time_minutes": 7,
+              "cost": 7.94
+            },
+            {
+              "from_name": "Mall exploration",
+              "from_lat": 30.037049158509348,
+              "from_lng": 31.306626092924482,
+              "to_name": "Minerva Grand Boutique",
+              "to_lat": 30.069043608378536,
+              "to_lng": 31.227550057665397,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 8.4,
+              "time_minutes": 9,
+              "cost": 31.0
+            },
+            {
+              "from_name": "Minerva Grand Boutique",
+              "from_lat": 30.069043608378536,
+              "from_lng": 31.227550057665397,
+              "to_name": "🔥 TRENDING: Crimson Bar & Grill",
+              "to_lat": 30.0595,
+              "to_lng": 31.2217,
+              "mode": "🚕 Taxi",
+              "dist": 1.2,
+              "time_minutes": 1,
+              "cost": 13.0
+            },
+            {
+              "from_name": "🔥 TRENDING: Crimson Bar & Grill",
+              "from_lat": 30.0595,
+              "from_lng": 31.2217,
+              "to_name": "🔥 TRENDING: Khan el-Khalili",
+              "to_lat": 30.0472,
+              "to_lng": 31.262,
+              "mode": "🚌 Public Transport",
+              "dist": 4.11,
+              "time_minutes": 7,
+              "cost": 8.08
+            },
+            {
+              "from_name": "🔥 TRENDING: Khan el-Khalili",
+              "from_lat": 30.0472,
+              "from_lng": 31.262,
+              "to_name": "Historical palaces walking tour",
+              "to_lat": 30.08119780306646,
+              "to_lng": 31.31451865398392,
+              "mode": "🚌 Public Transport",
+              "dist": 6.31,
+              "time_minutes": 11,
+              "cost": 9.73
+            },
+            {
+              "from_name": "Historical palaces walking tour",
+              "from_lat": 30.08119780306646,
+              "from_lng": 31.31451865398392,
+              "to_name": "Historical Diriyah tour",
+              "to_lat": 30.072058350333492,
+              "to_lng": 31.238022830531442,
+              "mode": "🚌 Public Transport",
+              "dist": 7.43,
+              "time_minutes": 13,
+              "cost": 10.57
+            },
+            {
+              "from_name": "Historical Diriyah tour",
+              "from_lat": 30.072058350333492,
+              "from_lng": 31.238022830531442,
+              "to_name": "Minerva Grand Boutique",
+              "to_lat": 30.069043608378536,
+              "to_lng": 31.227550057665397,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 1.06,
+              "time_minutes": 1,
+              "cost": 12.66
+            },
+            {
+              "from_name": "Minerva Grand Boutique",
+              "from_lat": 30.069043608378536,
+              "from_lng": 31.227550057665397,
+              "to_name": "Riyadh",
+              "to_lat": 24.7136,
+              "to_lng": 46.6753,
+              "mode": "✈️ Return",
+              "dist": 0,
+              "time_minutes": 120,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Minerva Grand Boutique",
+              "from_lat": 30.069043608378536,
+              "from_lng": 31.227550057665397,
+              "to_name": "🔥 TRENDING: Cairo Jazz Club",
+              "to_lat": 30.0487,
+              "to_lng": 31.2057,
+              "mode": "🚌 Public Transport",
+              "dist": 3.09,
+              "time_minutes": 5,
+              "cost": 7.32
+            },
+            {
+              "from_name": "🔥 TRENDING: Cairo Jazz Club",
+              "from_lat": 30.0487,
+              "from_lng": 31.2057,
+              "to_name": "🔥 TRENDING: Felucca Ride on the Nile",
+              "to_lat": 30.0444,
+              "to_lng": 31.2357,
+              "mode": "🚕 Taxi",
+              "dist": 2.93,
+              "time_minutes": 3,
+              "cost": 17.32
+            },
+            {
+              "from_name": "🔥 TRENDING: Felucca Ride on the Nile",
+              "from_lat": 30.0444,
+              "from_lng": 31.2357,
+              "to_name": "Boulevard Riyadh City",
+              "to_lat": 29.997151425384473,
+              "to_lng": 31.263756862990423,
+              "mode": "🚌 Public Transport",
+              "dist": 5.91,
+              "time_minutes": 10,
+              "cost": 9.43
+            },
+            {
+              "from_name": "Boulevard Riyadh City",
+              "from_lat": 29.997151425384473,
+              "from_lng": 31.263756862990423,
+              "to_name": "Minerva Grand Boutique",
+              "to_lat": 30.069043608378536,
+              "to_lng": 31.227550057665397,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 8.72,
+              "time_minutes": 10,
+              "cost": 31.8
+            }
+          ]
+        }
+      ],
+      "recommendation": 0
+    },
+    "cached_at": "2026-05-08T12:11:09.488968+00:00"
   }
 }
