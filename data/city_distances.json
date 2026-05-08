@@ -1,0 +1,548 @@
+{
+  "jeddah__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "jeddah",
+    "distance_km": 947.91,
+    "duration_minutes": 628,
+    "source": "osrm"
+  },
+  "dammam__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "dammam",
+    "distance_km": 409.55,
+    "duration_minutes": 233,
+    "source": "osrm"
+  },
+  "abha__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "abha",
+    "distance_km": 945.64,
+    "duration_minutes": 684,
+    "source": "osrm"
+  },
+  "al-ula__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "al-ula",
+    "distance_km": 1034.79,
+    "duration_minutes": 656,
+    "source": "osrm"
+  },
+  "riyadh__yanbu": {
+    "city_a": "riyadh",
+    "city_b": "yanbu",
+    "distance_km": 1058.21,
+    "duration_minutes": 615,
+    "source": "osrm"
+  },
+  "riyadh__taif": {
+    "city_a": "riyadh",
+    "city_b": "taif",
+    "distance_km": 787.6,
+    "duration_minutes": 520,
+    "source": "osrm"
+  },
+  "medina__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "medina",
+    "distance_km": 826.89,
+    "duration_minutes": 459,
+    "source": "osrm"
+  },
+  "riyadh__umluj": {
+    "city_a": "riyadh",
+    "city_b": "umluj",
+    "distance_km": 1207.33,
+    "duration_minutes": 716,
+    "source": "osrm"
+  },
+  "al lith__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "al lith",
+    "distance_km": 1067.47,
+    "duration_minutes": 714,
+    "source": "osrm"
+  },
+  "al baha__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "al baha",
+    "distance_km": 910.69,
+    "duration_minutes": 659,
+    "source": "osrm"
+  },
+  "jubail__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "jubail",
+    "distance_km": 460.22,
+    "duration_minutes": 279,
+    "source": "osrm"
+  },
+  "al-ahsa__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "al-ahsa",
+    "distance_km": 325.48,
+    "duration_minutes": 223,
+    "source": "osrm"
+  },
+  "dammam__jeddah": {
+    "city_a": "jeddah",
+    "city_b": "dammam",
+    "distance_km": 1352.39,
+    "duration_minutes": 856,
+    "source": "osrm"
+  },
+  "abha__jeddah": {
+    "city_a": "jeddah",
+    "city_b": "abha",
+    "distance_km": 680.57,
+    "duration_minutes": 465,
+    "source": "osrm"
+  },
+  "al-ula__jeddah": {
+    "city_a": "jeddah",
+    "city_b": "al-ula",
+    "distance_km": 682.87,
+    "duration_minutes": 543,
+    "source": "osrm"
+  },
+  "jeddah__yanbu": {
+    "city_a": "jeddah",
+    "city_b": "yanbu",
+    "distance_km": 336.77,
+    "duration_minutes": 226,
+    "source": "osrm"
+  },
+  "jeddah__taif": {
+    "city_a": "jeddah",
+    "city_b": "taif",
+    "distance_km": 167.27,
+    "duration_minutes": 123,
+    "source": "osrm"
+  },
+  "jeddah__medina": {
+    "city_a": "jeddah",
+    "city_b": "medina",
+    "distance_km": 410.06,
+    "duration_minutes": 277,
+    "source": "osrm"
+  },
+  "jeddah__umluj": {
+    "city_a": "jeddah",
+    "city_b": "umluj",
+    "distance_km": 485.88,
+    "duration_minutes": 326,
+    "source": "osrm"
+  },
+  "al lith__jeddah": {
+    "city_a": "jeddah",
+    "city_b": "al lith",
+    "distance_km": 206.93,
+    "duration_minutes": 144,
+    "source": "osrm"
+  },
+  "al baha__jeddah": {
+    "city_a": "jeddah",
+    "city_b": "al baha",
+    "distance_km": 385.09,
+    "duration_minutes": 271,
+    "source": "osrm"
+  },
+  "jeddah__jubail": {
+    "city_a": "jeddah",
+    "city_b": "jubail",
+    "distance_km": 1403.06,
+    "duration_minutes": 903,
+    "source": "osrm"
+  },
+  "al-ahsa__jeddah": {
+    "city_a": "jeddah",
+    "city_b": "al-ahsa",
+    "distance_km": 1268.32,
+    "duration_minutes": 847,
+    "source": "osrm"
+  },
+  "abha__dammam": {
+    "city_a": "dammam",
+    "city_b": "abha",
+    "distance_km": 1352.45,
+    "duration_minutes": 915,
+    "source": "osrm"
+  },
+  "al-ula__dammam": {
+    "city_a": "dammam",
+    "city_b": "al-ula",
+    "distance_km": 1433.12,
+    "duration_minutes": 881,
+    "source": "osrm"
+  },
+  "dammam__yanbu": {
+    "city_a": "dammam",
+    "city_b": "yanbu",
+    "distance_km": 1456.54,
+    "duration_minutes": 840,
+    "source": "osrm"
+  },
+  "dammam__taif": {
+    "city_a": "dammam",
+    "city_b": "taif",
+    "distance_km": 1194.42,
+    "duration_minutes": 751,
+    "source": "osrm"
+  },
+  "dammam__medina": {
+    "city_a": "dammam",
+    "city_b": "medina",
+    "distance_km": 1225.22,
+    "duration_minutes": 684,
+    "source": "osrm"
+  },
+  "dammam__umluj": {
+    "city_a": "dammam",
+    "city_b": "umluj",
+    "distance_km": 1605.65,
+    "duration_minutes": 940,
+    "source": "osrm"
+  },
+  "al lith__dammam": {
+    "city_a": "dammam",
+    "city_b": "al lith",
+    "distance_km": 1474.29,
+    "duration_minutes": 945,
+    "source": "osrm"
+  },
+  "al baha__dammam": {
+    "city_a": "dammam",
+    "city_b": "al baha",
+    "distance_km": 1317.51,
+    "duration_minutes": 890,
+    "source": "osrm"
+  },
+  "dammam__jubail": {
+    "city_a": "dammam",
+    "city_b": "jubail",
+    "distance_km": 89.39,
+    "duration_minutes": 63,
+    "source": "osrm"
+  },
+  "al-ahsa__dammam": {
+    "city_a": "dammam",
+    "city_b": "al-ahsa",
+    "distance_km": 151.53,
+    "duration_minutes": 105,
+    "source": "osrm"
+  },
+  "abha__al-ula": {
+    "city_a": "abha",
+    "city_b": "al-ula",
+    "distance_km": 1356.22,
+    "duration_minutes": 1000,
+    "source": "osrm"
+  },
+  "abha__yanbu": {
+    "city_a": "abha",
+    "city_b": "yanbu",
+    "distance_km": 1010.12,
+    "duration_minutes": 682,
+    "source": "osrm"
+  },
+  "abha__taif": {
+    "city_a": "abha",
+    "city_b": "taif",
+    "distance_km": 545.56,
+    "duration_minutes": 391,
+    "source": "osrm"
+  },
+  "abha__medina": {
+    "city_a": "abha",
+    "city_b": "medina",
+    "distance_km": 1083.42,
+    "duration_minutes": 733,
+    "source": "osrm"
+  },
+  "abha__umluj": {
+    "city_a": "abha",
+    "city_b": "umluj",
+    "distance_km": 1159.23,
+    "duration_minutes": 782,
+    "source": "osrm"
+  },
+  "abha__al lith": {
+    "city_a": "abha",
+    "city_b": "al lith",
+    "distance_km": 479.69,
+    "duration_minutes": 332,
+    "source": "osrm"
+  },
+  "abha__al baha": {
+    "city_a": "abha",
+    "city_b": "al baha",
+    "distance_km": 330.89,
+    "duration_minutes": 247,
+    "source": "osrm"
+  },
+  "abha__jubail": {
+    "city_a": "abha",
+    "city_b": "jubail",
+    "distance_km": 1401.2,
+    "duration_minutes": 966,
+    "source": "osrm"
+  },
+  "abha__al-ahsa": {
+    "city_a": "abha",
+    "city_b": "al-ahsa",
+    "distance_km": 1266.46,
+    "duration_minutes": 910,
+    "source": "osrm"
+  },
+  "al-ula__yanbu": {
+    "city_a": "al-ula",
+    "city_b": "yanbu",
+    "distance_km": 371.66,
+    "duration_minutes": 348,
+    "source": "osrm"
+  },
+  "al-ula__taif": {
+    "city_a": "al-ula",
+    "city_b": "taif",
+    "distance_km": 849.0,
+    "duration_minutes": 646,
+    "source": "osrm"
+  },
+  "al-ula__medina": {
+    "city_a": "al-ula",
+    "city_b": "medina",
+    "distance_km": 335.62,
+    "duration_minutes": 298,
+    "source": "osrm"
+  },
+  "al-ula__umluj": {
+    "city_a": "al-ula",
+    "city_b": "umluj",
+    "distance_km": 310.67,
+    "duration_minutes": 288,
+    "source": "osrm"
+  },
+  "al lith__al-ula": {
+    "city_a": "al-ula",
+    "city_b": "al lith",
+    "distance_km": 897.16,
+    "duration_minutes": 695,
+    "source": "osrm"
+  },
+  "al baha__al-ula": {
+    "city_a": "al-ula",
+    "city_b": "al baha",
+    "distance_km": 1066.82,
+    "duration_minutes": 794,
+    "source": "osrm"
+  },
+  "al-ula__jubail": {
+    "city_a": "al-ula",
+    "city_b": "jubail",
+    "distance_km": 1480.86,
+    "duration_minutes": 925,
+    "source": "osrm"
+  },
+  "al-ahsa__al-ula": {
+    "city_a": "al-ula",
+    "city_b": "al-ahsa",
+    "distance_km": 1346.12,
+    "duration_minutes": 869,
+    "source": "osrm"
+  },
+  "taif__yanbu": {
+    "city_a": "yanbu",
+    "city_b": "taif",
+    "distance_km": 472.06,
+    "duration_minutes": 318,
+    "source": "osrm"
+  },
+  "medina__yanbu": {
+    "city_a": "yanbu",
+    "city_b": "medina",
+    "distance_km": 235.41,
+    "duration_minutes": 171,
+    "source": "osrm"
+  },
+  "umluj__yanbu": {
+    "city_a": "yanbu",
+    "city_b": "umluj",
+    "distance_km": 150.5,
+    "duration_minutes": 107,
+    "source": "osrm"
+  },
+  "al lith__yanbu": {
+    "city_a": "yanbu",
+    "city_b": "al lith",
+    "distance_km": 536.66,
+    "duration_minutes": 362,
+    "source": "osrm"
+  },
+  "al baha__yanbu": {
+    "city_a": "yanbu",
+    "city_b": "al baha",
+    "distance_km": 689.88,
+    "duration_minutes": 466,
+    "source": "osrm"
+  },
+  "jubail__yanbu": {
+    "city_a": "yanbu",
+    "city_b": "jubail",
+    "distance_km": 1503.26,
+    "duration_minutes": 890,
+    "source": "osrm"
+  },
+  "al-ahsa__yanbu": {
+    "city_a": "yanbu",
+    "city_b": "al-ahsa",
+    "distance_km": 1368.53,
+    "duration_minutes": 834,
+    "source": "osrm"
+  },
+  "medina__taif": {
+    "city_a": "taif",
+    "city_b": "medina",
+    "distance_km": 521.46,
+    "duration_minutes": 351,
+    "source": "osrm"
+  },
+  "taif__umluj": {
+    "city_a": "taif",
+    "city_b": "umluj",
+    "distance_km": 617.27,
+    "duration_minutes": 414,
+    "source": "osrm"
+  },
+  "al lith__taif": {
+    "city_a": "taif",
+    "city_b": "al lith",
+    "distance_km": 278.98,
+    "duration_minutes": 204,
+    "source": "osrm"
+  },
+  "al baha__taif": {
+    "city_a": "taif",
+    "city_b": "al baha",
+    "distance_km": 218.56,
+    "duration_minutes": 151,
+    "source": "osrm"
+  },
+  "jubail__taif": {
+    "city_a": "taif",
+    "city_b": "jubail",
+    "distance_km": 1244.49,
+    "duration_minutes": 796,
+    "source": "osrm"
+  },
+  "al-ahsa__taif": {
+    "city_a": "taif",
+    "city_b": "al-ahsa",
+    "distance_km": 1109.76,
+    "duration_minutes": 740,
+    "source": "osrm"
+  },
+  "medina__umluj": {
+    "city_a": "medina",
+    "city_b": "umluj",
+    "distance_km": 388.32,
+    "duration_minutes": 267,
+    "source": "osrm"
+  },
+  "al lith__medina": {
+    "city_a": "medina",
+    "city_b": "al lith",
+    "distance_km": 610.44,
+    "duration_minutes": 414,
+    "source": "osrm"
+  },
+  "al baha__medina": {
+    "city_a": "medina",
+    "city_b": "al baha",
+    "distance_km": 741.0,
+    "duration_minutes": 504,
+    "source": "osrm"
+  },
+  "jubail__medina": {
+    "city_a": "medina",
+    "city_b": "jubail",
+    "distance_km": 1276.48,
+    "duration_minutes": 728,
+    "source": "osrm"
+  },
+  "al-ahsa__medina": {
+    "city_a": "medina",
+    "city_b": "al-ahsa",
+    "distance_km": 1141.75,
+    "duration_minutes": 672,
+    "source": "osrm"
+  },
+  "al lith__umluj": {
+    "city_a": "umluj",
+    "city_b": "al lith",
+    "distance_km": 695.17,
+    "duration_minutes": 470,
+    "source": "osrm"
+  },
+  "al baha__umluj": {
+    "city_a": "umluj",
+    "city_b": "al baha",
+    "distance_km": 848.39,
+    "duration_minutes": 575,
+    "source": "osrm"
+  },
+  "jubail__umluj": {
+    "city_a": "umluj",
+    "city_b": "jubail",
+    "distance_km": 1661.77,
+    "duration_minutes": 998,
+    "source": "osrm"
+  },
+  "al-ahsa__umluj": {
+    "city_a": "umluj",
+    "city_b": "al-ahsa",
+    "distance_km": 1527.03,
+    "duration_minutes": 942,
+    "source": "osrm"
+  },
+  "al baha__al lith": {
+    "city_a": "al lith",
+    "city_b": "al baha",
+    "distance_km": 214.52,
+    "duration_minutes": 171,
+    "source": "osrm"
+  },
+  "al lith__jubail": {
+    "city_a": "al lith",
+    "city_b": "jubail",
+    "distance_km": 1524.87,
+    "duration_minutes": 992,
+    "source": "osrm"
+  },
+  "al lith__al-ahsa": {
+    "city_a": "al lith",
+    "city_b": "al-ahsa",
+    "distance_km": 1390.14,
+    "duration_minutes": 936,
+    "source": "osrm"
+  },
+  "al baha__jubail": {
+    "city_a": "al baha",
+    "city_b": "jubail",
+    "distance_km": 1364.63,
+    "duration_minutes": 936,
+    "source": "osrm"
+  },
+  "al baha__al-ahsa": {
+    "city_a": "al baha",
+    "city_b": "al-ahsa",
+    "distance_km": 1229.89,
+    "duration_minutes": 880,
+    "source": "osrm"
+  },
+  "al-ahsa__jubail": {
+    "city_a": "jubail",
+    "city_b": "al-ahsa",
+    "distance_km": 224.29,
+    "duration_minutes": 157,
+    "source": "osrm"
+  }
+}

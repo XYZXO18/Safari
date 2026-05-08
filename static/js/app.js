@@ -1145,9 +1145,7 @@ async function planTrip() {
         const data = await response.json();
         state.paths = data.paths;
         state.recommendation = data.recommendation;
-        
-        // Show path selection
-        renderPathSelection(data.paths, data.recommendation);
+        selectPath(0);
 
     } catch (err) {
         alert('Safari encountered an error: ' + err.message);

@@ -30,6 +30,7 @@ import json
 import math
 import logging
 import time
+from pathlib import Path
 from typing import List, Optional, Tuple
 from rich.console import Console
 
@@ -40,6 +41,51 @@ from safari.agent.schemas import (
 
 logger = logging.getLogger(__name__)
 console = Console()
+
+# ─── Flight / car-rental price cache (1-hour TTL) ────────────────────────────
+_PRICE_CACHE_FILE = Path(__file__).parent.parent.parent / "data" / "flight_cache.json"
+_PRICE_CACHE: Optional[dict] = None
+_PRICE_TTL = 3600
+
+
+def _load_price_cache() -> dict:
+    global _PRICE_CACHE
+    if _PRICE_CACHE is None:
+        if _PRICE_CACHE_FILE.exists():
+            try:
+                with open(_PRICE_CACHE_FILE, encoding="utf-8") as f:
+                    _PRICE_CACHE = json.load(f)
+            except Exception:
+                _PRICE_CACHE = {}
+        else:
+            _PRICE_CACHE = {}
+    return _PRICE_CACHE
+
+
+def _save_price_cache(cache: dict) -> None:
+    try:
+        _PRICE_CACHE_FILE.parent.mkdir(exist_ok=True)
+        with open(_PRICE_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(cache, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.warning(f"[PriceCache] Could not save: {e}")
+
+
+def _price_get(key: str) -> Optional[dict]:
+    cache = _load_price_cache()
+    entry = cache.get(key)
+    if entry and time.time() - entry["ts"] <= _PRICE_TTL:
+        return entry["data"]
+    if entry:
+        del cache[key]
+    return None
+
+
+def _price_put(key: str, data: dict) -> None:
+    cache = _load_price_cache()
+    cache[key] = {"data": data, "ts": time.time()}
+    _save_price_cache(cache)
+
 
 # ─── Geocoding ────────────────────────────────────────────────────────────────
 
@@ -266,8 +312,29 @@ def search_flight_prices(
 ) -> Optional[FlightPricing]:
     """
     Use Gemini Search Grounding to find real-time flight prices.
-    Returns FlightPricing or None if search fails.
+    Results are cached for 1 hour — Gemini is only called on cache miss.
     """
+    from config import AIRPORTS
+    orig_key = origin.lower().strip()
+    dest_key = destination.lower().strip()
+
+    orig_info = AIRPORTS.get(orig_key, {})
+    dest_info = AIRPORTS.get(dest_key, {})
+
+    # Skip immediately if either city has no airport of its own
+    if orig_info and orig_info.get("airport_city", orig_key) != orig_key:
+        print(f"[FlightSearch] {origin} has no airport — skipping flight search.")
+        return None
+    if dest_info and dest_info.get("airport_city", dest_key) != dest_key:
+        print(f"[FlightSearch] {destination} has no airport — skipping flight search.")
+        return None
+
+    cache_key = f"flight__{orig_key}__{dest_key}"
+    cached = _price_get(cache_key)
+    if cached:
+        console.print(f"[bold green][F] [Agent 3] Flight price cache HIT: {origin} -> {destination}[/bold green]")
+        return FlightPricing(**cached)
+
     try:
         from config import GEMINI_API_KEY, GEMINI_MODEL
         if not GEMINI_API_KEY:
@@ -308,17 +375,19 @@ def search_flight_prices(
             return None
 
         console.print(f"[bold green][F] [Agent 3] Gemini Flight Search used: {origin} to {destination}[/bold green]")
-        return FlightPricing(
+        result = FlightPricing(
             origin=origin,
             destination=destination,
             price_one_way=one_way,
-            price_round_trip=round(one_way * 1.85, 2),  # typical round-trip multiplier
+            price_round_trip=round(one_way * 1.85, 2),
             currency="SAR",
             airline=data.get("airline"),
             duration_minutes=data.get("duration_minutes"),
             source="gemini_grounding",
             confidence="medium",
         )
+        _price_put(cache_key, result.model_dump())
+        return result
 
     except Exception as e:
         logger.error(f"[Flight Search] Failed ({origin}→{destination}): {e}")
@@ -333,7 +402,14 @@ def search_car_rental_prices(
 ) -> Optional[CarRentalPricing]:
     """
     Use Gemini Search Grounding to find real car rental prices in the destination city.
+    Results are cached for 1 hour.
     """
+    cache_key = f"rental__{city.lower()}"
+    cached = _price_get(cache_key)
+    if cached:
+        console.print(f"[bold green][C] [Agent 3] Car rental cache HIT for {city}[/bold green]")
+        return CarRentalPricing(**cached)
+
     try:
         from config import GEMINI_API_KEY, GEMINI_MODEL
         if not GEMINI_API_KEY:
@@ -370,7 +446,7 @@ def search_car_rental_prices(
             return None
 
         console.print(f"[bold green][C] [Agent 3] Gemini Car Rental Search used for {city}[/bold green]")
-        return CarRentalPricing(
+        result = CarRentalPricing(
             city=city,
             price_per_day=price,
             currency="SAR",
@@ -379,6 +455,8 @@ def search_car_rental_prices(
             source="gemini_grounding",
             confidence="medium",
         )
+        _price_put(cache_key, result.model_dump())
+        return result
 
     except Exception as e:
         logger.error(f"[Car Rental Search] Failed for {city}: {e}")

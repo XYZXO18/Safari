@@ -17,13 +17,48 @@ Returns 2-3 highly relevant events with names, dates, and estimated costs.
 from __future__ import annotations
 
 import json
+import time
 from dataclasses import dataclass, field
 from datetime import date
+from pathlib import Path
 from typing import List, Optional
 
 from google import genai
 from google.genai import types
 from safari.database import get_cached_events, save_event, get_any_events_for_city
+
+# ─── File-based event cache (8-hour TTL, city + date keyed) ──────────────────
+
+_EVENTS_CACHE_FILE = Path(__file__).parent.parent.parent / "data" / "events_cache.json"
+_EVENTS_CACHE: Optional[dict] = None
+_EVENTS_TTL = 8 * 3600  # 8 hours
+
+
+def _load_events_cache() -> dict:
+    global _EVENTS_CACHE
+    if _EVENTS_CACHE is None:
+        if _EVENTS_CACHE_FILE.exists():
+            try:
+                with open(_EVENTS_CACHE_FILE, encoding="utf-8") as f:
+                    _EVENTS_CACHE = json.load(f)
+            except Exception:
+                _EVENTS_CACHE = {}
+        else:
+            _EVENTS_CACHE = {}
+    return _EVENTS_CACHE
+
+
+def _save_events_cache(cache: dict) -> None:
+    try:
+        _EVENTS_CACHE_FILE.parent.mkdir(exist_ok=True)
+        with open(_EVENTS_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(cache, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+
+
+def _events_cache_key(city: str, start_date: str, end_date: str) -> str:
+    return f"{city.lower().strip()}__{start_date}__{end_date}"
 
 # ─── Data Structures ─────────────────────────────────────────────────────────
 
@@ -188,20 +223,38 @@ def find_live_events(
     max_events: int = 10,
 ) -> EventScanResult:
     """
-    Discover live, time-sensitive events. Always hits the web first, saves to DB,
-    falls back to DB cache only if web search yields nothing.
+    Discover live events for a city + date range.
+    Results are cached in data/events_cache.json for 8 hours.
+    Budget, travel mode, and other trip params do NOT affect this cache —
+    the same events are reused for any plan to the same city within the TTL.
     """
     from config import CITY_COORDS
 
     city_coords = CITY_COORDS.get(location.lower(), {"lat": 24.7136, "lng": 46.6753})
+    cache_key = _events_cache_key(location, start_date, end_date)
+    cache = _load_events_cache()
 
-    # ── Step 1: Fresh web search (always) ──────────────────────────────────
+    # ── Step 1: Return file cache if still fresh (< 8 hours old) ───────────
+    entry = cache.get(cache_key)
+    if entry and time.time() - entry["fetched_at"] <= _EVENTS_TTL:
+        age_mins = int((time.time() - entry["fetched_at"]) / 60)
+        print(f"[EventCache] HIT — {location} ({age_mins}m old), {len(entry['events'])} events")
+        events = [LiveEvent(**e) for e in entry["events"]]
+        return EventScanResult(
+            city=location,
+            start_date=start_date,
+            end_date=end_date,
+            events=events[:max_events],
+            total_event_cost=round(sum(e.estimated_cost_sar for e in events), 2),
+            scan_source="file_cache",
+        )
+
+    # ── Step 2: Cache miss or expired — fetch fresh from web ───────────────
     web_events = _search_events_web(location, start_date, end_date, interests)
     scan_source = "web_search" if web_events else "none"
 
-    # ── Step 2: Save / refresh events in DB ────────────────────────────────
+    # Fill missing coordinates before saving
     for ev in web_events:
-        # Ensure coordinates before saving
         if ev.lat is None or ev.lng is None:
             ev.lat = city_coords["lat"]
             ev.lng = city_coords["lng"]
@@ -209,28 +262,24 @@ def find_live_events(
 
     events = list(web_events)
 
-    # ── Step 3: Fall back to DB cache only if web returned nothing ──────────
+    # ── Step 3: Fall back to SQLite DB if web returned nothing ─────────────
     if not events:
-        cached_data = get_cached_events(location, start_date, end_date)
-        if not cached_data:
-            # Try any saved events for this city regardless of date
-            cached_data = get_any_events_for_city(location)
-        if cached_data:
-            for item in cached_data:
-                events.append(LiveEvent(
-                    name=item['name'],
-                    date=item['event_date'],
-                    time=item.get('time', 'TBD'),
-                    estimated_cost_sar=item.get('estimated_cost_sar', 0),
-                    category=item.get('category', 'event'),
-                    source="db_cache",
-                    description=item.get('description', ''),
-                    venue=item.get('venue', ''),
-                    lat=item.get('lat') or city_coords["lat"],
-                    lng=item.get('lng') or city_coords["lng"],
-                ))
+        cached_data = get_cached_events(location, start_date, end_date) or get_any_events_for_city(location)
+        for item in cached_data:
+            events.append(LiveEvent(
+                name=item['name'],
+                date=item['event_date'],
+                time=item.get('time', 'TBD'),
+                estimated_cost_sar=item.get('estimated_cost_sar', 0),
+                category=item.get('category', 'event'),
+                source="db_cache",
+                description=item.get('description', ''),
+                venue=item.get('venue', ''),
+                lat=item.get('lat') or city_coords["lat"],
+                lng=item.get('lng') or city_coords["lng"],
+            ))
+        if events:
             scan_source = "db_cache"
-            print(f"   [DB Cache] Using {len(events)} cached events for {location}")
 
     # ── Step 4: Apply interest filter ──────────────────────────────────────
     if interests and events:
@@ -252,6 +301,13 @@ def find_live_events(
                 ev.lng = city_coords["lng"]
             unique.append(ev)
     events = unique[:max_events]
+
+    # ── Step 6: Persist to file cache ──────────────────────────────────────
+    cache[cache_key] = {
+        "fetched_at": time.time(),
+        "events": [e.to_dict() for e in events],
+    }
+    _save_events_cache(cache)
 
     total_cost = sum(ev.estimated_cost_sar for ev in events)
 

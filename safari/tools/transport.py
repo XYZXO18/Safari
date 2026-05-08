@@ -13,7 +13,9 @@ All monetary values default to SAR unless otherwise specified.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Optional
 
 from config import (
@@ -22,6 +24,39 @@ from config import (
     CITY_COORDS,
 )
 from safari.tools.fuel import calculate_driving_cost
+
+# ─── Persistent distance cache ────────────────────────────────────────────────
+# Loaded once from data/city_distances.json; new OSRM results are appended.
+_DIST_CACHE_FILE = Path(__file__).parent.parent.parent / "data" / "city_distances.json"
+_DIST_CACHE: Optional[dict] = None
+
+
+def _dist_key(city_a: str, city_b: str) -> str:
+    a, b = sorted([city_a.lower().strip(), city_b.lower().strip()])
+    return f"{a}__{b}"
+
+
+def _load_dist_cache() -> dict:
+    global _DIST_CACHE
+    if _DIST_CACHE is None:
+        if _DIST_CACHE_FILE.exists():
+            try:
+                with open(_DIST_CACHE_FILE, encoding="utf-8") as f:
+                    _DIST_CACHE = json.load(f)
+            except Exception:
+                _DIST_CACHE = {}
+        else:
+            _DIST_CACHE = {}
+    return _DIST_CACHE
+
+
+def _save_dist_cache(cache: dict) -> None:
+    try:
+        _DIST_CACHE_FILE.parent.mkdir(exist_ok=True)
+        with open(_DIST_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(cache, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"[Transport] Could not write distance cache: {e}")
 
 
 @dataclass
@@ -62,15 +97,27 @@ class TransportEstimate:
 def _lookup_distance(origin: str, destination: str) -> float:
     """
     Get real road distance between two cities.
-    Tries OSRM live routing first; falls back to ROUTES table.
+
+    Order of preference:
+      1. data/city_distances.json  (pre-fetched OSRM data, loaded once in memory)
+      2. OSRM live API             (result saved to file for future calls)
+      3. config.ROUTES table       (static fallback)
+      4. 500 km default            (last resort)
     """
-    from config import CITY_COORDS, ROUTES
     from safari.tools.almosafer import CITY_ALMOSAFER_SLUG
 
     # Resolve vibe names to real cities for coordinate lookup
     origin_city = CITY_ALMOSAFER_SLUG.get(origin.lower(), origin).lower()
     dest_city = CITY_ALMOSAFER_SLUG.get(destination.lower(), destination).lower()
 
+    key = _dist_key(origin_city, dest_city)
+    cache = _load_dist_cache()
+
+    # 1. Cached result
+    if key in cache:
+        return cache[key]["distance_km"]
+
+    # 2. Live OSRM — only called when pair is absent from the cache
     orig_coords = CITY_COORDS.get(origin_city) or CITY_COORDS.get(origin.lower())
     dest_coords = CITY_COORDS.get(dest_city) or CITY_COORDS.get(destination.lower())
 
@@ -82,11 +129,19 @@ def _lookup_distance(origin: str, destination: str) -> float:
                 dest_coords["lat"], dest_coords["lng"],
             )
             if result and result.get("distance_km", 0) > 0:
+                cache[key] = {
+                    "city_a": origin_city,
+                    "city_b": dest_city,
+                    "distance_km": result["distance_km"],
+                    "duration_minutes": result["duration_minutes"],
+                    "source": "osrm",
+                }
+                _save_dist_cache(cache)
                 return result["distance_km"]
         except Exception as e:
             print(f"[Transport] OSRM distance failed ({origin}→{destination}): {e}")
 
-    # Fallback: ROUTES table
+    # 3. Static ROUTES table fallback
     origin_l = origin.lower().strip()
     dest_l = destination.lower().strip()
     if (origin_l, dest_l) in ROUTES:
@@ -222,11 +277,20 @@ def calculate_transport_costs(
             # Almosafer flight pages are JS-rendered and cannot be scraped statically.
             # Use Gemini Search Grounding for live prices instead.
             from safari.tools.almosafer import CITY_ALMOSAFER_SLUG
+            from config import AIRPORTS
             resolved_origin = CITY_ALMOSAFER_SLUG.get(origin.lower(), origin.title())
             resolved_dest = CITY_ALMOSAFER_SLUG.get(destination.lower(), destination.title())
+            orig_airport = AIRPORTS.get(origin.lower(), {})
+            dest_airport  = AIRPORTS.get(destination.lower(), {})
+            orig_has_airport = not orig_airport or orig_airport.get("airport_city", origin.lower()) == origin.lower()
+            dest_has_airport = not dest_airport or dest_airport.get("airport_city", destination.lower()) == destination.lower()
             try:
                 from safari.tools.live_distance import search_flight_prices
-                flight_pricing = search_flight_prices(resolved_origin, resolved_dest)
+                if not orig_has_airport or not dest_has_airport:
+                    print(f"[Transport] Skipping flight search — no airport at {'origin' if not orig_has_airport else 'destination'}.")
+                    flight_pricing = None
+                else:
+                    flight_pricing = search_flight_prices(resolved_origin, resolved_dest)
                 if flight_pricing and flight_pricing.price_one_way > 0:
                     cost_one_way = flight_pricing.price_one_way
                     cost_rt = flight_pricing.price_round_trip if round_trip else cost_one_way

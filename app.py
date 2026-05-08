@@ -28,6 +28,7 @@ from safari.tools.budget import budget_allocator
 from safari.tools.activities import suggest_activities
 from safari.tools.event_scanner import find_live_events
 from safari.tools.web_research import research_destination
+from safari.plan_cache import get_cached_plan, save_plan
 from safari.agent.orchestrator_agent import OrchestratorAgent
 from safari.agent.worker_research import ResearchWorker
 from safari.agent.worker_hospitality import HospitalityWorker
@@ -86,16 +87,22 @@ def plan_trip():
     except (ValueError, TypeError) as e:
         return jsonify({"error": f"Invalid input: {e}"}), 400
 
+    # ── Plan cache: return existing result if same params within last 5 hours ──
+    cached = get_cached_plan(data)
+    if cached is not None:
+        print(f"[PlanCache] HIT — returning cached plan for {origin} -> {destination}")
+        return jsonify(cached)
+
     # Resolve a specific city name to its vibe + remember the city
     from config import CITY_TO_VIBE
     specific_city = None
     if destination not in DESTINATIONS:
         resolved_vibe = CITY_TO_VIBE.get(destination)
         if resolved_vibe:
-            specific_city = destination          # e.g. "jeddah"
-            destination = resolved_vibe          # e.g. "coast"
+            specific_city = destination
+            destination = resolved_vibe
         else:
-            destination = "coast"               # unknown input → safe fallback
+            destination = "coast"
 
     # If dates not provided, compute from today
     if not start_date or not end_date:
@@ -106,313 +113,210 @@ def plan_trip():
         start_date = start.isoformat()
         end_date = end.isoformat()
 
-    # Step 1: Transport calculation (shared for all paths)
     try:
+        # ── Fast local operations (no I/O) ────────────────────────────────────
         transport = calculate_transport_costs(
             mode=travel_mode,
             origin=origin,
             destination=destination,
             vehicle_type=vehicle_type,
         )
+        breakdown = budget_allocator(
+            total_budget=budget,
+            transport_cost=transport.cost_round_trip,
+            days=days,
+            currency=currency,
+        )
 
-        def build_trip_path(path_type, target_budget, activities_limit=None):
-            # Budget allocation
-            breakdown = budget_allocator(
-                total_budget=target_budget,
-                transport_cost=transport.cost_round_trip,
+        # Derive the target city without a Gemini call — used for all parallel queries
+        dest_info = DESTINATIONS.get(destination.lower(), DESTINATIONS.get("coast", {}))
+        cities = dest_info.get("cities", [])
+        scan_city = specific_city.title() if specific_city else (cities[0] if cities else destination.title())
+
+        # ── All slow I/O tasks fire at the same time ──────────────────────────
+        from concurrent.futures import ThreadPoolExecutor
+        worker_2 = HospitalityWorker()
+        worker_3 = TransportWorker()
+
+        with ThreadPoolExecutor(max_workers=6) as executor:
+            f_activities = executor.submit(
+                suggest_activities,
+                destination=destination,
                 days=days,
+                daily_activities_budget=breakdown.activities_per_day,
                 currency=currency,
+                city_override=specific_city,
             )
-
-            # Scan for live events — use the specific city if the user picked one
-            dest_info = DESTINATIONS.get(destination.lower(), DESTINATIONS.get("coast", {}))
-            cities = dest_info.get("cities", [])
-            scan_city = specific_city.title() if specific_city else (cities[0] if cities else destination.title())
-
-            event_scan = find_live_events(
+            f_events = executor.submit(
+                find_live_events,
                 location=scan_city,
                 start_date=start_date,
                 end_date=end_date,
                 interests=interests,
                 max_events=10,
             )
-
-            # Adjust activities budget
-            event_cost_per_day = event_scan.total_event_cost / days if days > 0 else 0
-            adjusted_activities_budget = max(breakdown.activities_per_day - event_cost_per_day, 0)
-            if activities_limit is not None:
-                adjusted_activities_budget = min(adjusted_activities_budget, activities_limit)
-
-            # Activity suggestions
-            activities = suggest_activities(
-                destination=destination,
-                days=days,
-                daily_activities_budget=adjusted_activities_budget,
-                currency=currency,
-            )
-
-            # Pin to the specific city the user chose (overrides region default)
-            if specific_city:
-                activities.recommended_city = specific_city.title()
-
-            # Inject live events
-            if event_scan.has_events:
-                for i, event in enumerate(event_scan.events):
-                    target_day = (i % days) + 1
-                    event_activity = {
-                        "id": f"evt_{i}_{event.name.replace(' ', '_').lower()[:10]}",
-                        "name": f"🎪 LIVE: {event.name}",
-                        "lat": event.lat,
-                        "lng": event.lng,
-                        "is_live_event": True,
-                        "cost": event.estimated_cost_sar,
-                        "venue": event.venue,
-                        "time": event.time,
-                        "description": event.description,
-                    }
-                    day_key = target_day
-                    if day_key in activities.daily_activities:
-                        activities.daily_activities[day_key].insert(0, event_activity)
-                    else:
-                        activities.daily_activities[day_key] = [event_activity]
-
-            # Web + Social Media Research
-            web_research = research_destination(
+            f_research = executor.submit(
+                research_destination,
                 city=scan_city,
                 interests=interests,
             )
+            f_hotels = executor.submit(worker_2.process_request, {
+                "action": "search_hotels",
+                "city": scan_city,
+                "budget_per_night": breakdown.lodging_per_day,
+                "guests": 2,
+            })
+            f_restaurants = executor.submit(worker_2.process_request, {
+                "action": "search_restaurants",
+                "city": scan_city,
+            })
+            f_travel_costs = executor.submit(
+                worker_3.phase2_travel_costs,
+                origin=origin,
+                destination=scan_city,
+                travel_mode=travel_mode,
+                days=days,
+            )
 
-            # Inject trending spots
-            if web_research.trending_spots:
-                import random
-                city_coords = CITY_COORDS.get(activities.recommended_city.lower(), {"lat": 24.7, "lng": 46.7})
+        activities    = f_activities.result()
+        event_scan    = f_events.result()
+        web_research  = f_research.result()
+        hotels        = f_hotels.result().get("hotels", [])
+        restaurants   = f_restaurants.result().get("restaurants", [])
+        travel_costs  = f_travel_costs.result()
 
-                for i, spot in enumerate(web_research.trending_spots[:days * 2]):
-                    target_day = (i % days) + 1
-                    spot_activity = {
-                        "id": f"trend_{i}_{spot.name.replace(' ', '_').lower()[:10]}",
-                        "name": f"🔥 TRENDING: {spot.name}",
-                        "lat": spot.lat or (city_coords["lat"] + random.uniform(-0.05, 0.05)),
-                        "lng": spot.lng or (city_coords["lng"] + random.uniform(-0.05, 0.05)),
-                        "is_trending_spot": True,
-                        "cost": spot.estimated_cost_sar,
-                        "category": spot.category,
-                        "description": spot.description,
-                        "social_buzz": spot.social_buzz,
-                        "rating": spot.rating,
-                        "price_range": spot.price_range,
-                        "tags": spot.tags,
-                        "source": spot.source,
-                    }
-                    day_key = target_day
-                    if day_key in activities.daily_activities:
-                        insert_pos = 0
-                        for idx, act in enumerate(activities.daily_activities[day_key]):
-                            if isinstance(act, dict) and act.get("is_live_event"):
-                                insert_pos = idx + 1
-                            else:
-                                break
-                        activities.daily_activities[day_key].insert(insert_pos, spot_activity)
-                    else:
-                        activities.daily_activities[day_key] = [spot_activity]
-
-            # Get coordinates for map
-            origin_coords = CITY_COORDS.get(origin.lower(), CITY_COORDS.get("riyadh"))
-            dest_coords = CITY_COORDS.get(destination.lower(), CITY_COORDS.get("coast"))
-            rec_city = activities.recommended_city.lower()
-            rec_coords = CITY_COORDS.get(rec_city, dest_coords)
-
-            # Hospitality Data
-            # Delegate to Orchestrator Agent and its 3 Workers
-            print(f"\\n[Orchestrator Agent] Delegating {path_type} path to Workers...")
-            
-            # Worker 1: Research
-            print("  -> [Worker 1: Research] Finding activities and events.")
-            # (Activities and events were computed above by tools, but conceptually Worker 1 owns this data)
-            
-            # Worker 2: Hospitality
-            print("  -> [Worker 2: Hospitality] Fetching hotels and restaurants.")
-            worker_2 = HospitalityWorker()
-            
-            # Initialize defaults in case of failure before these are set
-            hotel_data = activities.hotel
-            timeline_req = {
-                "action": "plan_timeline",
-                "daily_activities": activities.daily_activities,
-                "hotel": hotel_data,
-                "travel_mode": travel_mode,
-                "vehicle_type": vehicle_type,
-                "origin": origin,
-                "destination": destination,
-            }
-            
-            try:
-                hosp_res = worker_2.process_request({
-                    "action": "search_hotels",
-                    "city": activities.recommended_city,
-                    "budget_per_night": breakdown.lodging_per_day,
-                    "guests": 2
-                })
-                hotels = hosp_res.get("hotels", [])
-                
-                rest_res = worker_2.process_request({
-                    "action": "search_restaurants",
-                    "city": activities.recommended_city
-                })
-                restaurants = rest_res.get("restaurants", [])
-                hospitality_data = {"hotels": hotels, "restaurants": restaurants}
-                
-                # Worker 3: Transport (Phase 1: Geocoding)
-                print("  -> [Worker 3: Transport] Resolving live coordinates for venues.")
-                worker_3 = TransportWorker()
-                
-                # Geolocate all venues found by Agent 2
-                geo_res = worker_3.process_request({
-                    "action": "geolocate_venues",
-                    "venues": hotels + restaurants,
-                    "city": activities.recommended_city
-                })
-                
-                geolocated = geo_res.get("venues", [])
-                hotels = [v for v in geolocated if v.get("type") == "hotel"]
-                restaurants = [v for v in geolocated if v.get("type") == "restaurant"]
-                
-                # Worker 3: Transport (Phase 2: Travel Costs)
-                print("  -> [Worker 3: Transport] Fetching live flight and car rental prices.")
-                travel_costs = worker_3.phase2_travel_costs(
-                    origin=origin,
-                    destination=activities.recommended_city,
-                    travel_mode=travel_mode,
-                    days=days
-                )
-                
-                hospitality_data = {
-                    "hotels": hotels, 
-                    "restaurants": restaurants,
-                    "travel_costs": travel_costs.model_dump()
+        # ── Inject live events ────────────────────────────────────────────────
+        if event_scan.has_events:
+            for i, event in enumerate(event_scan.events):
+                target_day = (i % days) + 1
+                event_activity = {
+                    "id": f"evt_{i}_{event.name.replace(' ', '_').lower()[:10]}",
+                    "name": f"🎪 LIVE: {event.name}",
+                    "lat": event.lat,
+                    "lng": event.lng,
+                    "is_live_event": True,
+                    "cost": event.estimated_cost_sar,
+                    "venue": event.venue,
+                    "time": event.time,
+                    "description": event.description,
                 }
+                if target_day in activities.daily_activities:
+                    activities.daily_activities[target_day].insert(0, event_activity)
+                else:
+                    activities.daily_activities[target_day] = [event_activity]
 
-                hotel_data = activities.hotel
-                if hotels:
-                    best_hotel = hotels[0]
-                    hotel_data = {"name": best_hotel.get("name"), "lat": best_hotel.get("lat"), "lng": best_hotel.get("lng")}
+        # ── Inject trending spots ─────────────────────────────────────────────
+        if web_research.trending_spots:
+            import random
+            city_coords = CITY_COORDS.get(activities.recommended_city.lower(), {"lat": 24.7, "lng": 46.7})
+            for i, spot in enumerate(web_research.trending_spots[:days * 2]):
+                target_day = (i % days) + 1
+                spot_activity = {
+                    "id": f"trend_{i}_{spot.name.replace(' ', '_').lower()[:10]}",
+                    "name": f"🔥 TRENDING: {spot.name}",
+                    "lat": spot.lat or (city_coords["lat"] + random.uniform(-0.05, 0.05)),
+                    "lng": spot.lng or (city_coords["lng"] + random.uniform(-0.05, 0.05)),
+                    "is_trending_spot": True,
+                    "cost": spot.estimated_cost_sar,
+                    "category": spot.category,
+                    "description": spot.description,
+                    "social_buzz": spot.social_buzz,
+                    "rating": spot.rating,
+                    "price_range": spot.price_range,
+                    "tags": spot.tags,
+                    "source": spot.source,
+                }
+                if target_day in activities.daily_activities:
+                    insert_pos = 0
+                    for idx, act in enumerate(activities.daily_activities[target_day]):
+                        if isinstance(act, dict) and act.get("is_live_event"):
+                            insert_pos = idx + 1
+                        else:
+                            break
+                    activities.daily_activities[target_day].insert(insert_pos, spot_activity)
+                else:
+                    activities.daily_activities[target_day] = [spot_activity]
 
-                # Worker 3: Transport (Phase 3: Timeline)
-                print("  -> [Worker 3: Transport] Calculating routing and timeline.")
-                timeline_req["hotel"] = hotel_data # Update with possibly geolocated hotel
-                timeline_res = worker_3.process_request(timeline_req)
-                timeline = timeline_res.get("timeline", {})
-                total_transit_cost = timeline_res.get("total_transit_cost", 0)
-                simulation_routes = timeline_res.get("simulation_routes", {})
-                full_trip_dataset = timeline_res.get("full_trip_dataset", [])
-                travel_time_str = timeline_res.get("inter_city_travel_time_str", "")
-            except Exception as e:
-                import traceback
-                traceback.print_exc()
-                error_msg = str(e)
-                print(f"⚠️ [Orchestrator] Workers failed: {error_msg}. Calling Fixer Agent...")
-                
-                fixer = FixerWorker()
-                # Attempt to fix hospitality
-                hospitality_data = fixer.process_request(
-                    {"city": activities.recommended_city, "vibe": path_type}, 
-                    error_msg, "Hospitality"
-                )
-                
-                # Attempt to fix transport/timeline
-                timeline_res = fixer.process_request(
-                    timeline_req, error_msg, "Transport"
-                )
-                
-                timeline = timeline_res.get("timeline", {})
-                total_transit_cost = timeline_res.get("total_transit_cost", 0)
-                simulation_routes = timeline_res.get("simulation_routes", {})
-                full_trip_dataset = timeline_res.get("full_trip_dataset", [])
-                travel_time_str = timeline_res.get("inter_city_travel_time_str", "4h (Est)")
+        # ── Map coordinates ───────────────────────────────────────────────────
+        origin_coords = CITY_COORDS.get(origin.lower(), CITY_COORDS.get("riyadh"))
+        dest_coords   = CITY_COORDS.get(destination.lower(), CITY_COORDS.get("coast"))
+        rec_coords    = CITY_COORDS.get(activities.recommended_city.lower(), dest_coords)
 
-            # Lodging is PENDING until user selects a hotel
-            # We keep the allocated lodging budget as max_lodging_budget for reference,
-            # but set actual lodging to 0 until hotel is chosen.
-            return {
-                "path_type": path_type,
-                "transport": {
-                    "mode": transport.mode,
-                    "origin": origin.title(),
-                    "destination": activities.recommended_city,
-                    "distance_km": transport.distance_km,
-                    "travel_time_str": transport.travel_time_str,
-                    "cost_one_way": transport.cost_one_way,
-                    "cost_round_trip": transport.cost_round_trip,
-                    "breakdown": transport.breakdown,
-                    "vehicle_type": vehicle_type,
-                },
-                "budget": {
-                    "total": target_budget,
-                    "currency": currency,
-                    "transport": transport.cost_round_trip,
-                    "remaining": breakdown.remaining_budget,
-                    "days": days,
-                    "lodging": {"total": 0, "per_day": 0, "pending": True, "max_budget": breakdown.lodging_total, "max_per_day": breakdown.lodging_per_day},
-                    "food": {"total": breakdown.food_total, "per_day": breakdown.food_per_day},
-                    "activities": {"total": breakdown.activities_total, "per_day": breakdown.activities_per_day},
-                    "buffer": {"total": breakdown.buffer_total, "per_day": breakdown.buffer_per_day},
-                    "is_feasible": breakdown.is_feasible,
-                    "warnings": breakdown.warnings,
-                },
-                "activities": {
-                    "destination": activities.destination,
-                    "vibe": activities.vibe,
-                    "recommended_city": activities.recommended_city,
-                    "daily_plan": {str(k): v for k, v in activities.daily_activities.items()},
-                    "hotel": activities.hotel,
-                },
-                "events": event_scan.to_dict(),
-                "web_research": web_research.to_dict() if web_research.has_data else None,
-                "dates": {
-                    "start_date": start_date,
-                    "end_date": end_date,
-                },
-                "map": {
-                    "origin": origin_coords,
-                    "destination": rec_coords,
-                    "origin_name": origin.title(),
-                    "dest_name": activities.recommended_city,
-                },
-                "hospitality": hospitality_data,
-                "timeline": timeline,
-                "total_transit_cost": total_transit_cost,
-                "simulation_routes": simulation_routes,
-                "full_trip_dataset": full_trip_dataset,
-            }
+        # ── Timeline (pure math, fast) ────────────────────────────────────────
+        hotel_data = activities.hotel
+        if hotels:
+            best = hotels[0]
+            hotel_data = {"name": best.get("name"), "lat": best.get("lat"), "lng": best.get("lng")}
 
-        paths = []
-        # Generate 3 alternative paths IN PARALLEL (massive speed boost)
-        from concurrent.futures import ThreadPoolExecutor, as_completed
-        path_configs = [
-            ("budget",   budget * 0.7, 30),
-            ("balanced", budget,       None),
-            ("premium",  budget * 1.5, None),
-        ]
-
-        with ThreadPoolExecutor(max_workers=3) as executor:
-            futures = {
-                executor.submit(build_trip_path, ptype, pbudget, plimit): idx
-                for idx, (ptype, pbudget, plimit) in enumerate(path_configs)
-            }
-            results = [None, None, None]
-            for future in as_completed(futures):
-                idx = futures[future]
-                try:
-                    results[idx] = future.result()
-                except Exception as e:
-                    print(f"Path {path_configs[idx][0]} failed: {e}")
-                    results[idx] = {"path_type": path_configs[idx][0], "error": str(e)}
-            paths = results
-
-        return jsonify({
-            "paths": paths,
-            "recommendation": 1 # Balanced is default
+        timeline_res = worker_3.process_request({
+            "action": "plan_timeline",
+            "daily_activities": activities.daily_activities,
+            "hotel": hotel_data,
+            "travel_mode": travel_mode,
+            "vehicle_type": vehicle_type,
+            "origin": origin,
+            "destination": destination,
         })
+
+        plan = {
+            "transport": {
+                "mode": transport.mode,
+                "origin": origin.title(),
+                "destination": activities.recommended_city,
+                "distance_km": transport.distance_km,
+                "travel_time_str": transport.travel_time_str,
+                "cost_one_way": transport.cost_one_way,
+                "cost_round_trip": transport.cost_round_trip,
+                "breakdown": transport.breakdown,
+                "vehicle_type": vehicle_type,
+            },
+            "budget": {
+                "total": budget,
+                "currency": currency,
+                "transport": transport.cost_round_trip,
+                "remaining": breakdown.remaining_budget,
+                "days": days,
+                "lodging": {
+                    "total": 0, "per_day": 0, "pending": True,
+                    "max_budget": breakdown.lodging_total,
+                    "max_per_day": breakdown.lodging_per_day,
+                },
+                "food":       {"total": breakdown.food_total,       "per_day": breakdown.food_per_day},
+                "activities": {"total": breakdown.activities_total, "per_day": breakdown.activities_per_day},
+                "buffer":     {"total": breakdown.buffer_total,     "per_day": breakdown.buffer_per_day},
+                "is_feasible": breakdown.is_feasible,
+                "warnings":    breakdown.warnings,
+            },
+            "activities": {
+                "destination":      activities.destination,
+                "vibe":             activities.vibe,
+                "recommended_city": activities.recommended_city,
+                "daily_plan":       {str(k): v for k, v in activities.daily_activities.items()},
+                "hotel":            activities.hotel,
+            },
+            "events":       event_scan.to_dict(),
+            "web_research": web_research.to_dict() if web_research.has_data else None,
+            "dates":        {"start_date": start_date, "end_date": end_date},
+            "map": {
+                "origin":      origin_coords,
+                "destination": rec_coords,
+                "origin_name": origin.title(),
+                "dest_name":   activities.recommended_city,
+            },
+            "hospitality": {
+                "hotels":       hotels,
+                "restaurants":  restaurants,
+                "travel_costs": travel_costs.model_dump(),
+            },
+            "timeline":          timeline_res.get("timeline", {}),
+            "total_transit_cost": timeline_res.get("total_transit_cost", 0),
+            "simulation_routes": timeline_res.get("simulation_routes", {}),
+            "full_trip_dataset": timeline_res.get("full_trip_dataset", []),
+        }
+
+        plan_result = {"paths": [plan], "recommendation": 0}
+        save_plan(data, plan_result)
+        return jsonify(plan_result)
 
     except Exception as e:
         import traceback
@@ -717,7 +621,11 @@ def api_transport_options():
     result = {"origin": origin, "destination": destination, "mode": mode, "cached": False}
 
     if mode == "flight":
-        # Check whether the origin city has its own airport
+        from config import AIRPORTS as _AIRPORTS
+        dest_ap = _AIRPORTS.get(destination.lower(), {})
+        dest_has_airport = (not dest_ap or
+            dest_ap.get("airport_city", destination.lower()) == destination.lower())
+
         airport_info = find_nearest_airport(origin)
         if not airport_info["has_own_airport"]:
             # Origin has no airport → build a via-airport two-leg journey
@@ -732,6 +640,9 @@ def api_transport_options():
             else:
                 result["flights"] = []
                 result["note"] = f"No airport in {origin.title()} and flight search failed."
+        elif not dest_has_airport:
+            result["flights"] = []
+            result["note"] = f"No airport in {destination.title()}. Consider flying to nearest city."
         else:
             pricing = search_flight_prices(origin, destination)
             if pricing:

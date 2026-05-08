@@ -126,6 +126,10 @@ class TransportWorker:
                 from safari.tools.live_distance import (
                     search_flight_prices, find_nearest_airport, build_via_airport_journey,
                 )
+                from config import AIRPORTS
+                dest_airport_info = AIRPORTS.get(destination.lower(), {})
+                dest_has_airport = (not dest_airport_info or
+                    dest_airport_info.get("airport_city", destination.lower()) == destination.lower())
                 airport_info = find_nearest_airport(origin.lower())
                 if not airport_info["has_own_airport"]:
                     # Origin has no airport — build via-airport combined journey
@@ -138,6 +142,8 @@ class TransportWorker:
                             "source": "via_airport",
                             "via_airport": via,
                         }]
+                elif not dest_has_airport:
+                    print(f"[WorkerTransport] Skipping flight search — {destination} has no airport.")
                 else:
                     flight_pricing = search_flight_prices(resolved_origin, resolved_dest)
                     if flight_pricing and flight_pricing.price_one_way > 0:

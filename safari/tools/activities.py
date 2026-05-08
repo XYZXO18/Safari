@@ -6,16 +6,17 @@ Suggests budget-appropriate activities for a given destination vibe.
 
 from __future__ import annotations
 
-import random
-from dataclasses import dataclass, field
-from typing import List, Dict
-
-from config import DESTINATIONS
-
-from google import genai
-from google.genai import types
 import json
 import os
+import random
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import List, Dict, Optional
+
+from config import DESTINATIONS
+from google import genai
+from google.genai import types
 
 def load_reviews():
     try:
@@ -25,6 +26,34 @@ def load_reviews():
         return {"activities": {}, "destinations": {}}
 
 _REVIEWS_DB = load_reviews()
+
+# ─── Web-places cache (1-hour TTL) ───────────────────────────────────────────
+_PLACES_CACHE_FILE = Path(__file__).parent.parent.parent / "data" / "places_cache.json"
+_PLACES_CACHE: Optional[dict] = None
+_PLACES_TTL = 3600
+
+
+def _load_places_cache() -> dict:
+    global _PLACES_CACHE
+    if _PLACES_CACHE is None:
+        if _PLACES_CACHE_FILE.exists():
+            try:
+                with open(_PLACES_CACHE_FILE, encoding="utf-8") as f:
+                    _PLACES_CACHE = json.load(f)
+            except Exception:
+                _PLACES_CACHE = {}
+        else:
+            _PLACES_CACHE = {}
+    return _PLACES_CACHE
+
+
+def _save_places_cache(cache: dict) -> None:
+    try:
+        _PLACES_CACHE_FILE.parent.mkdir(exist_ok=True)
+        with open(_PLACES_CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(cache, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
 
 @dataclass
 class ActivityPlan:
@@ -79,7 +108,14 @@ _ACTIVITY_COSTS: Dict[str, float] = {
 
 
 def get_web_places(city: str, vibe: str, city_coords: dict = None) -> dict:
-    """Search the web dynamically using Gemini or Ollama to find places with coords."""
+    """Search the web dynamically using Gemini to find places with coords.
+    Results are cached for 1 hour so Gemini is only called on cache miss."""
+    cache_key = f"{city.lower()}__{vibe.lower()}"
+    cache = _load_places_cache()
+    entry = cache.get(cache_key)
+    if entry and time.time() - entry["ts"] <= _PLACES_TTL:
+        return entry["data"]
+
     from config import GEMINI_API_KEY, GEMINI_MODEL
 
     if not GEMINI_API_KEY:
@@ -115,14 +151,17 @@ def get_web_places(city: str, vibe: str, city_coords: dict = None) -> dict:
         if start_idx != -1 and end_idx != -1:
             text = text[start_idx:end_idx+1]
         data = json.loads(text)
+        cache[cache_key] = {"data": data, "ts": time.time()}
+        _save_places_cache(cache)
         return data
     except Exception as e:
         print(f"Web search failed: {e}")
-        
+
     return {"hotel": {}, "activities": []}
 
 def suggest_activities(
     destination: str, days: int, daily_activities_budget: float, currency: str = "SAR",
+    city_override: Optional[str] = None,
 ) -> ActivityPlan:
     """Suggest activities that fit within the daily activities budget."""
     dest_lower = destination.lower().strip()
@@ -131,8 +170,13 @@ def suggest_activities(
         dest_lower = "coast"
 
     cities = dest_info["cities"]
-    recommended_city = cities[0] if cities else destination.title()
-    
+    # Use the specific city chosen by the user (e.g. "Makkah") rather than
+    # defaulting to the first city in the vibe group (e.g. "Riyadh" for "city" vibe).
+    if city_override:
+        recommended_city = city_override.strip().title()
+    else:
+        recommended_city = cities[0] if cities else destination.title()
+
     from config import CITY_COORDS
     city_coords = CITY_COORDS.get(recommended_city.lower(), CITY_COORDS.get(dest_lower, {"lat": 24.7, "lng": 46.7}))
 

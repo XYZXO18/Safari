@@ -5,6 +5,7 @@ Central configuration for the Safari travel agent.
 Loads environment variables and defines system-wide constants.
 """
 
+import json
 import os
 from dotenv import load_dotenv
 
@@ -241,7 +242,70 @@ AIRPORTS = {
     "city":      {"airport_city": "riyadh",  "iata": "RUH", "name": "King Khalid Intl",           "km_to_airport": 0},
 }
 
-CITY_COORDS = {
+# ─── Auto-geocoding for unknown cities ───────────────────────────────────────
+
+_EXTRA_COORDS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "city_coords.json")
+
+
+def _fetch_coords_nominatim(city: str) -> dict:
+    """Look up city coordinates from Nominatim (OpenStreetMap). Free, no key."""
+    try:
+        import requests as _req
+        resp = _req.get(
+            "https://nominatim.openstreetmap.org/search",
+            params={"q": f"{city}, Saudi Arabia", "format": "json", "limit": 1},
+            headers={"User-Agent": "SafariTravelApp/1.0"},
+            timeout=10,
+        )
+        data = resp.json()
+        if data:
+            return {"lat": round(float(data[0]["lat"]), 4), "lng": round(float(data[0]["lon"]), 4)}
+    except Exception as e:
+        print(f"[GeoCache] Nominatim lookup failed for '{city}': {e}")
+    return {}
+
+
+class _AutoCoordDict(dict):
+    """
+    Dict that auto-fetches coordinates for unknown cities via Nominatim
+    and persists them to data/city_coords.json so they are never re-fetched.
+    All existing CITY_COORDS.get() / CITY_COORDS[city] calls work transparently.
+    """
+
+    def get(self, key, default=None):
+        key = key.lower().strip() if isinstance(key, str) else key
+        if super().__contains__(key):
+            return super().__getitem__(key)
+        fetched = self._resolve(key)
+        if fetched:
+            return fetched
+        return default if default is not None else {"lat": 24.7136, "lng": 46.6753}
+
+    def __missing__(self, key):
+        key = key.lower().strip() if isinstance(key, str) else key
+        fetched = self._resolve(key)
+        return fetched if fetched else {"lat": 24.7136, "lng": 46.6753}
+
+    def _resolve(self, key: str) -> dict:
+        coords = _fetch_coords_nominatim(key)
+        if coords:
+            self[key] = coords
+            try:
+                extra = {}
+                if os.path.exists(_EXTRA_COORDS_FILE):
+                    with open(_EXTRA_COORDS_FILE, encoding="utf-8") as f:
+                        extra = json.load(f)
+                extra[key] = coords
+                os.makedirs(os.path.dirname(_EXTRA_COORDS_FILE), exist_ok=True)
+                with open(_EXTRA_COORDS_FILE, "w", encoding="utf-8") as f:
+                    json.dump(extra, f, indent=2, ensure_ascii=False)
+                print(f"[GeoCache] Auto-fetched and saved coords for '{key}': {coords}")
+            except Exception as e:
+                print(f"[GeoCache] Failed to persist coords for '{key}': {e}")
+        return coords
+
+
+CITY_COORDS = _AutoCoordDict({
     "riyadh":   {"lat": 24.7136, "lng": 46.6753},
     "jeddah":   {"lat": 21.4858, "lng": 39.1925},
     "dammam":   {"lat": 26.4207, "lng": 50.0888},
@@ -250,6 +314,10 @@ CITY_COORDS = {
     "yanbu":    {"lat": 24.0895, "lng": 38.0618},
     "taif":     {"lat": 21.2703, "lng": 40.4158},
     "medina":   {"lat": 24.4672, "lng": 39.6024},
+    "madinah":  {"lat": 24.4672, "lng": 39.6024},
+    "makkah":   {"lat": 21.3891, "lng": 39.8579},
+    "tabuk":    {"lat": 28.3835, "lng": 36.5662},
+    "hail":     {"lat": 27.5114, "lng": 41.7208},
     "umluj":    {"lat": 25.0542, "lng": 37.2639},
     "al lith":  {"lat": 20.1500, "lng": 40.2700},
     "al baha":  {"lat": 20.0000, "lng": 41.4667},
@@ -260,4 +328,14 @@ CITY_COORDS = {
     "mountains": {"lat": 18.2164, "lng": 42.5053},
     "desert":    {"lat": 26.6086, "lng": 37.9211},
     "city":      {"lat": 24.7136, "lng": 46.6753},
-}
+})
+
+# Merge any previously auto-fetched cities from persistent cache
+try:
+    if os.path.exists(_EXTRA_COORDS_FILE):
+        with open(_EXTRA_COORDS_FILE, encoding="utf-8") as _f:
+            for _k, _v in json.load(_f).items():
+                if _k not in CITY_COORDS:
+                    CITY_COORDS[_k] = _v
+except Exception:
+    pass

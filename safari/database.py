@@ -253,6 +253,39 @@ def get_known_hotels(city: str, limit: int = 20) -> list:
 
 # ─── General hospitality helpers ─────────────────────────────────────────────
 
+def upsert_restaurant_static(
+    city: str, name: str, venue_type: str,
+    price: float = 80.0, rating: float = 4.0,
+    lat: float = 24.7, lng: float = 46.7,
+) -> None:
+    """Persist a live-fetched restaurant/cafe stub to the DB (INSERT OR IGNORE)."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('''
+            INSERT OR IGNORE INTO hospitality (city, type, name, price, rating, lat, lng)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (city.lower(), venue_type, name, price, rating, lat, lng))
+        conn.commit()
+    except Exception as e:
+        print(f"Error upserting venue: {e}")
+    finally:
+        conn.close()
+
+
+def get_restaurant_count(city: str) -> int:
+    """Return number of restaurants + cafes stored for a city."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        'SELECT COUNT(*) as cnt FROM hospitality WHERE city=? AND type IN ("restaurant","cafe")',
+        (city.lower(),)
+    )
+    row = cursor.fetchone()
+    conn.close()
+    return row['cnt'] if row else 0
+
+
 def get_hospitality(city, type=None):
     """Retrieve hospitality items for a city."""
     conn = get_db_connection()

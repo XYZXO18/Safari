@@ -24,6 +24,7 @@ from config import CITY_COORDS
 from safari.database import (
     get_hospitality, book_hotel,
     upsert_hotel_static, get_hotel_count, get_known_hotels,
+    upsert_restaurant_static, get_restaurant_count,
 )
 from safari.tools.almosafer import AlmosaferScraper  # kept for hotel_search_url only
 from safari.tools.live_hospitality import search_hotels_live
@@ -308,15 +309,39 @@ def _load_restaurants(city: str) -> list:
     return rests + cafes
 
 
+def _populate_restaurants_from_live(city: str) -> None:
+    """Fetch restaurants + cafes from Gemini once and persist to DB."""
+    try:
+        from safari.tools.live_hospitality import search_restaurants_live, search_cafes_live
+        stubs = search_restaurants_live(city=city, max_results=5)
+        stubs += search_cafes_live(city=city, max_results=3)
+        base = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+        for stub in stubs:
+            lat = base["lat"] + random.uniform(-0.05, 0.05)
+            lng = base["lng"] + random.uniform(-0.05, 0.05)
+            upsert_restaurant_static(
+                city, stub.name, stub.type,
+                price=stub.price or 80.0,
+                rating=float(stub.rating or 4.0),
+                lat=lat, lng=lng,
+            )
+        print(f"[Hospitality] Populated {len(stubs)} venues for {city} from live search.")
+    except Exception as e:
+        print(f"[Hospitality] Live populate failed for {city}: {e}")
+
+
 def search_restaurants(
     city: Optional[str] = None,
     vibe: Optional[str] = None,
     cuisine: Optional[str] = None,
     allergens_to_avoid: Optional[List[str]] = None,
 ) -> List[RestaurantResult]:
-    """Search restaurants by city. Data from local DB."""
+    """Search restaurants by city. Fetches from Gemini once on first call, then serves from DB."""
     if not city:
         return []
+
+    if get_restaurant_count(city) == 0:
+        _populate_restaurants_from_live(city)
 
     db_rests = _load_restaurants(city)
     results: List[RestaurantResult] = []
