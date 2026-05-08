@@ -91,6 +91,9 @@ def budget_allocator(
     currency: str = "SAR",
     custom_ratios: Dict[str, float] | None = None,
     car_rental_daily_rate: float = 0.0,
+    adults: int = 1,
+    children: int = 0,
+    has_own_lodging: bool = False,
 ) -> BudgetBreakdown:
     """
     Allocate budget across categories after subtracting transport and car rental.
@@ -166,9 +169,22 @@ def budget_allocator(
 
     # Allocate
     lodging_total = remaining * ratios.get("lodging", 0.40)
-    food_total = remaining * ratios.get("food", 0.30)
+    food_base = remaining * ratios.get("food", 0.30)
     activities_total = remaining * ratios.get("activities", 0.20)
     buffer_total = remaining * ratios.get("buffer", 0.10)
+
+    # Per-person food scaling: baseline allocation assumed 1 adult.
+    # Each additional adult costs 1×, each child costs 0.75×.
+    adults = max(int(adults), 1)
+    children = max(int(children), 0)
+    people_factor = adults + 0.75 * children
+    food_total = food_base * people_factor
+
+    # User already has lodging arranged → zero it out and redistribute
+    # the freed allocation back into the buffer so the budget summary stays consistent.
+    if has_own_lodging:
+        buffer_total += lodging_total
+        lodging_total = 0.0
 
     return BudgetBreakdown(
         total_budget=total_budget,

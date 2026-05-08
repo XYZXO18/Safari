@@ -86,6 +86,14 @@ def plan_trip():
         start_date = data.get("start_date", "")
         end_date = data.get("end_date", "")
         interests = data.get("interests", "")
+        adults = max(int(data.get("adults", 1) or 1), 1)
+        children = max(int(data.get("children", 0) or 0), 0)
+        rooms = max(int(data.get("rooms", 1) or 1), 1)
+        has_own_lodging = bool(data.get("has_own_lodging", False))
+        min_hotel_stars = max(int(data.get("min_hotel_stars", 0) or 0), 0)
+        min_restaurant_rating = float(data.get("min_restaurant_rating", 0) or 0)
+        flight_class = str(data.get("flight_class", "coach") or "coach").lower()
+        flight_stops = str(data.get("flight_stops", "any") or "any").lower()
     except (ValueError, TypeError) as e:
         return jsonify({"error": f"Invalid input: {e}"}), 400
 
@@ -132,11 +140,47 @@ def plan_trip():
             destination=specific_city if specific_city else destination,
             vehicle_type=vehicle_type,
         )
+
+        # Ticket-based modes scale per traveler (children at 0.75×).
+        # Car/driving is per-vehicle, so the fuel bill doesn't multiply.
+        ticket_factor = 1.0
+        class_factor = 1.0
+        class_label = ""
+        if travel_mode.lower() in ("flight", "train", "bus"):
+            ticket_factor = adults + 0.75 * children
+
+            # Cabin/ticket class multiplier (only meaningful for flights, but applied
+            # to train/bus too — most carriers also have a premium tier).
+            if travel_mode.lower() == "flight":
+                class_multipliers = {
+                    "coach": 1.0, "economy": 1.0,
+                    "premium": 1.6, "premium_economy": 1.6,
+                    "business": 3.0,
+                    "first": 5.0,
+                }
+                class_factor = class_multipliers.get(flight_class, 1.0)
+                if class_factor != 1.0:
+                    class_label = f" · {flight_class.replace('_', ' ').title()} class"
+
+            total_factor = ticket_factor * class_factor
+            transport.cost_one_way = round(transport.cost_one_way * total_factor, 2)
+            transport.cost_round_trip = round(transport.cost_round_trip * total_factor, 2)
+            stops_label = "" if flight_stops in ("any", "") else f" · {flight_stops.replace('_', ' ')}"
+            transport.breakdown = (
+                f"{transport.breakdown} × {ticket_factor:g} pax "
+                f"({adults} adult{'s' if adults != 1 else ''}"
+                f"{f' + {children} child(0.75×)' if children else ''})"
+                f"{class_label}{stops_label}"
+            )
+
         breakdown = budget_allocator(
             total_budget=budget,
             transport_cost=transport.cost_round_trip,
             days=days,
             currency=currency,
+            adults=adults,
+            children=children,
+            has_own_lodging=has_own_lodging,
         )
         
         # If budget was suggested, update the 'budget' variable to the total suggested amount
@@ -176,11 +220,12 @@ def plan_trip():
                 city=scan_city,
                 interests=interests,
             )
-            f_hotels = executor.submit(worker_2.process_request, {
+            f_hotels = None if has_own_lodging else executor.submit(worker_2.process_request, {
                 "action": "search_hotels",
                 "city": scan_city,
                 "budget_per_night": breakdown.lodging_per_day,
-                "guests": 2,
+                "guests": adults + children,
+                "rooms": rooms,
             })
             f_restaurants = executor.submit(worker_2.process_request, {
                 "action": "search_restaurants",
@@ -197,14 +242,82 @@ def plan_trip():
         activities    = f_activities.result()
         event_scan    = f_events.result()
         web_research  = f_research.result()
-        hotels        = f_hotels.result().get("hotels", [])
+        hotels        = f_hotels.result().get("hotels", []) if f_hotels else []
         restaurants   = f_restaurants.result().get("restaurants", [])
+
+        # Apply user filters: minimum hotel stars, minimum restaurant rating.
+        # Higher than the minimum is allowed; lower is removed.
+        if min_hotel_stars > 0:
+            hotels = [h for h in hotels if (h.get("stars") or 0) >= min_hotel_stars]
+        if min_restaurant_rating > 0:
+            restaurants = [r for r in restaurants if (r.get("rating") or 0) >= min_restaurant_rating]
+
+        # ── Booking-link enrichment ───────────────────────────────────────────
+        # Make sure every payable item carries a URL the user can click to book.
+        from urllib.parse import quote_plus
+        from safari.tools.almosafer import AlmosaferScraper as _Scraper
+
+        for h in hotels:
+            if not h.get("almosafer_url"):
+                try:
+                    h["almosafer_url"] = _Scraper.hotel_search_url(
+                        scan_city, start_date, end_date, adults=adults,
+                    )
+                except Exception:
+                    h["almosafer_url"] = (
+                        f"https://www.almosafer.com/en/hotels?city={quote_plus(scan_city)}"
+                    )
+            # Per-hotel deep link via Booking.com — goes straight to the
+            # property page (and its checkout) instead of a generic results list.
+            h_name = h.get("name") or ""
+            h["booking_url"] = (
+                "https://www.booking.com/searchresults.html?"
+                + f"ss={quote_plus(h_name + ' ' + scan_city)}"
+                + f"&checkin={start_date}&checkout={end_date}"
+                + f"&group_adults={adults}&group_children={children}"
+                + f"&no_rooms={rooms}"
+            )
+
+        for r in restaurants:
+            r_name = r.get("name") or ""
+            r_city = r.get("city") or scan_city
+            r["almosafer_url"] = (
+                f"https://www.google.com/search?q={quote_plus(r_name + ' ' + r_city + ' reservation')}"
+            )
+            r["booking_url"] = r["almosafer_url"]
+
+        # Flight booking deep-link (only meaningful for flight mode)
+        flight_booking_url = ""
+        if travel_mode.lower() == "flight":
+            cabin_map = {
+                "coach": "Economy", "economy": "Economy",
+                "premium": "PremiumEconomy", "premium_economy": "PremiumEconomy",
+                "business": "Business",
+                "first": "First",
+            }
+            try:
+                flight_booking_url = _Scraper.flight_search_url(
+                    origin=origin,
+                    destination=specific_city if specific_city else destination,
+                    dep_date=start_date,
+                    cabin=cabin_map.get(flight_class, "Economy"),
+                    adults=adults,
+                )
+            except Exception:
+                flight_booking_url = (
+                    f"https://www.almosafer.com/en/flights?origin={quote_plus(origin)}"
+                    f"&destination={quote_plus(specific_city or destination)}"
+                )
         travel_costs  = f_travel_costs.result()
 
         # ── Inject live events ────────────────────────────────────────────────
         if event_scan.has_events:
             for i, event in enumerate(event_scan.events):
                 target_day = (i % days) + 1
+                evt_booking = (
+                    f"https://www.google.com/search?q="
+                    f"{quote_plus(event.name + ' ' + scan_city + ' tickets')}"
+                )
                 event_activity = {
                     "id": f"evt_{i}_{event.name.replace(' ', '_').lower()[:10]}",
                     "name": f"🎪 LIVE: {event.name}",
@@ -215,6 +328,7 @@ def plan_trip():
                     "venue": event.venue,
                     "time": event.time,
                     "description": event.description,
+                    "booking_url": evt_booking,
                 }
                 if target_day in activities.daily_activities:
                     activities.daily_activities[target_day].insert(0, event_activity)
@@ -241,6 +355,10 @@ def plan_trip():
                     "price_range": spot.price_range,
                     "tags": spot.tags,
                     "source": spot.source,
+                    "booking_url": (
+                        f"https://www.google.com/search?q="
+                        f"{quote_plus(spot.name + ' ' + scan_city + ' tickets booking')}"
+                    ),
                 }
                 if target_day in activities.daily_activities:
                     insert_pos = 0
@@ -285,6 +403,7 @@ def plan_trip():
                 "cost_round_trip": transport.cost_round_trip,
                 "breakdown": transport.breakdown,
                 "vehicle_type": vehicle_type,
+                "booking_url": flight_booking_url,
             },
             "budget": {
                 "total": budget,
@@ -293,9 +412,24 @@ def plan_trip():
                 "remaining": breakdown.remaining_budget,
                 "days": days,
                 "lodging": {
-                    "total": 0, "per_day": 0, "pending": True,
+                    "total": 0,
+                    "per_day": 0,
+                    "pending": not has_own_lodging,
                     "max_budget": breakdown.lodging_total,
                     "max_per_day": breakdown.lodging_per_day,
+                    "user_provided": has_own_lodging,
+                },
+                "party": {
+                    "adults": adults,
+                    "children": children,
+                    "rooms": rooms,
+                    "food_people_factor": adults + 0.75 * children,
+                },
+                "filters": {
+                    "min_hotel_stars": min_hotel_stars,
+                    "min_restaurant_rating": min_restaurant_rating,
+                    "flight_class": flight_class,
+                    "flight_stops": flight_stops,
                 },
                 "food":       {"total": breakdown.food_total,       "per_day": breakdown.food_per_day},
                 "activities": {"total": breakdown.activities_total, "per_day": breakdown.activities_per_day},
@@ -311,7 +445,12 @@ def plan_trip():
                 "daily_plan":       {str(k): v for k, v in activities.daily_activities.items()},
                 "hotel":            activities.hotel,
             },
-            "events":       event_scan.to_dict(),
+            "events":       (lambda d: (d.update({"events": [
+                                dict(e, booking_url=(
+                                    f"https://www.google.com/search?q="
+                                    f"{quote_plus((e.get('name') or '') + ' ' + scan_city + ' tickets')}"
+                                )) for e in d.get("events", [])
+                            ]}) or d))(event_scan.to_dict()),
             "web_research": web_research.to_dict() if web_research.has_data else None,
             "dates":        {"start_date": start_date, "end_date": end_date},
             "map": {
@@ -796,6 +935,42 @@ def api_car_rental():
         } if fuel_data else None,
         "total_estimate": round(rental.price_per_day * days + (fuel_data["cost_round_trip"] if fuel_data else 0), 2),
     })
+
+
+@app.route('/api/mint-link', methods=['POST'])
+def api_mint_link():
+    """
+    Drive a headless browser to mint a deep checkout URL.
+    Body: { type: 'flight'|'hotel', ... }
+    """
+    from safari.tools.link_minter import (
+        mint_flight_traveller_url, mint_hotel_checkout_url,
+    )
+    data = request.json or {}
+    kind = (data.get("type") or "").lower()
+
+    if kind == "flight":
+        result = mint_flight_traveller_url(
+            origin_iata=str(data.get("origin", "")).strip(),
+            dest_iata=str(data.get("destination", "")).strip(),
+            dep_date=str(data.get("dep_date", "")).strip(),
+            cabin=str(data.get("cabin", "Economy")).strip() or "Economy",
+            adults=max(int(data.get("adults", 1) or 1), 1),
+            fare_index=max(int(data.get("fare_index", 0) or 0), 0),
+        )
+        return jsonify(result)
+
+    if kind == "hotel":
+        result = mint_hotel_checkout_url(
+            city=str(data.get("city", "")).strip(),
+            checkin=str(data.get("checkin", "")).strip(),
+            checkout=str(data.get("checkout", "")).strip(),
+            adults=max(int(data.get("adults", 1) or 1), 1),
+            hotel_name=(data.get("hotel_name") or None),
+        )
+        return jsonify(result)
+
+    return jsonify({"error": "type must be 'flight' or 'hotel'"}), 400
 
 
 if __name__ == "__main__":

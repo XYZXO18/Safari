@@ -26,5 +26,58 @@
   "madrid__2026-05-09__2026-05-12": {
     "fetched_at": 1778250681.2380013,
     "events": []
+  },
+  "vienna__2026-05-09__2026-05-12": {
+    "fetched_at": 1778253076.3000884,
+    "events": []
+  },
+  "beijing__2026-05-09__2026-05-12": {
+    "fetched_at": 1778254702.6424484,
+    "events": []
+  },
+  "paris__2026-05-09__2026-05-12": {
+    "fetched_at": 1778255352.0648887,
+    "events": []
+  },
+  "jeddah__2026-05-09__2026-05-12": {
+    "fetched_at": 1778257052.0292318,
+    "events": [
+      {
+        "name": "Jeddah Marathon",
+        "date": "2026-05-10",
+        "estimated_cost_sar": 100.0,
+        "category": "sport",
+        "source": "db_cache",
+        "description": "A challenging marathon course through the city.",
+        "venue": "King Abdullah Sports City",
+        "time": "08:00",
+        "lat": 21.4861,
+        "lng": 39.1933
+      },
+      {
+        "name": "RSL 25/26 Al Ittihad vs Damac",
+        "date": "2026-05-10",
+        "estimated_cost_sar": 15.0,
+        "category": "sport",
+        "source": "db_cache",
+        "description": "A high-stakes Saudi Pro League football match featuring Al Ittihad at home.",
+        "venue": "King Abdullah Sports City",
+        "time": "TBD",
+        "lat": 21.7475,
+        "lng": 39.1529
+      },
+      {
+        "name": "Street Art Exhibition",
+        "date": "2026-05-09",
+        "estimated_cost_sar": 30.0,
+        "category": "exhibition",
+        "source": "db_cache",
+        "description": "Featuring works by local and international street artists.",
+        "venue": "Red Sea Mall",
+        "time": "10:00",
+        "lat": 21.4861,
+        "lng": 39.1933
+      }
+    ]
   }
 }

@@ -236,27 +236,235 @@
           "lng": -3.703928
         },
         {
-          "name": "La Latina (Tapas & Nightlife)",
-          "lat": 40.411526,
-          "lng": -3.71017
-        },
-        {
-          "name": "Chueca (Nightlife)",
-          "lat": 40.42278,
-          "lng": -3.69944
-        },
-        {
-          "name": "Salamanca District (Shopping)",
-          "lat": 40.42972,
-          "lng": -3.67975
-        },
-        {
           "name": "Mercado de San Miguel",
           "lat": 40.41536,
           "lng": -3.70901
+        },
+        {
+          "name": "La Latina (neighborhood)",
+          "lat": 40.411279,
+          "lng": -3.7081611
+        },
+        {
+          "name": "Salamanca District (Calle Serrano)",
+          "lat": 40.476517,
+          "lng": -3.728626
+        },
+        {
+          "name": "Prado Museum",
+          "lat": 40.41378,
+          "lng": -3.692127
         }
       ]
     },
-    "ts": 1778250688.6310248
+    "ts": 1778256656.5973063
+  },
+  "vienna__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "Hotel Sacher Wien",
+        "lat": 48.2023,
+        "lng": 16.3683
+      },
+      "activities": [
+        {
+          "name": "Schönbrunn Palace",
+          "lat": 48.1845,
+          "lng": 16.3119
+        },
+        {
+          "name": "St. Stephen's Cathedral",
+          "lat": 48.208492,
+          "lng": 16.373755
+        },
+        {
+          "name": "Hofburg Palace",
+          "lat": 48.2058,
+          "lng": 16.3648
+        },
+        {
+          "name": "Prater (Wurstelprater amusement park)",
+          "lat": 48.2161,
+          "lng": 16.3956
+        },
+        {
+          "name": "MuseumsQuartier",
+          "lat": 48.202,
+          "lng": 16.3553
+        },
+        {
+          "name": "Naschmarkt",
+          "lat": 48.1983,
+          "lng": 16.3631
+        },
+        {
+          "name": "Graben",
+          "lat": 48.20909,
+          "lng": 16.36956
+        },
+        {
+          "name": "Grelle Forelle",
+          "lat": 48.2342754,
+          "lng": 16.3608934
+        }
+      ]
+    },
+    "ts": 1778253074.843969
+  },
+  "beijing__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "Legendale Hotel Beijing",
+        "lat": 39.915,
+        "lng": 116.419167
+      },
+      "activities": [
+        {
+          "name": "Forbidden City",
+          "lat": 39.9159942,
+          "lng": 116.3906921
+        },
+        {
+          "name": "Great Wall of China (Mutianyu section)",
+          "lat": 40.4361,
+          "lng": 116.5571
+        },
+        {
+          "name": "Temple of Heaven",
+          "lat": 39.876,
+          "lng": 116.4039
+        },
+        {
+          "name": "798 Art Zone",
+          "lat": 39.98294,
+          "lng": 116.48978
+        },
+        {
+          "name": "Sanlitun",
+          "lat": 39.9342,
+          "lng": 116.4432
+        },
+        {
+          "name": "Houhai Lake (Shichahai area)",
+          "lat": 39.94111,
+          "lng": 116.37889
+        },
+        {
+          "name": "Wangfujing Street",
+          "lat": 39.9067,
+          "lng": 116.4032
+        },
+        {
+          "name": "Nanluoguxiang",
+          "lat": 39.9425,
+          "lng": 116.39639
+        }
+      ]
+    },
+    "ts": 1778254698.2632785
+  },
+  "paris__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "Hôtel Plaza Athénée",
+        "lat": 48.8662,
+        "lng": 2.3042
+      },
+      "activities": [
+        {
+          "name": "Eiffel Tower",
+          "lat": 48.8583,
+          "lng": 2.2945
+        },
+        {
+          "name": "Louvre Museum",
+          "lat": 48.8606,
+          "lng": 2.3376
+        },
+        {
+          "name": "Montmartre",
+          "lat": 48.8861,
+          "lng": 2.3431
+        },
+        {
+          "name": "Champs-Élysées",
+          "lat": 48.8685,
+          "lng": 2.3045
+        },
+        {
+          "name": "Moulin Rouge",
+          "lat": 48.8841,
+          "lng": 2.3325
+        },
+        {
+          "name": "Le Perchoir Marais (Rooftop Bar)",
+          "lat": 48.8546,
+          "lng": 2.3569
+        },
+        {
+          "name": "Marché des Enfants Rouges",
+          "lat": 48.8628,
+          "lng": 2.3619
+        },
+        {
+          "name": "Seine River Dinner Cruise (near Pont Neuf)",
+          "lat": 48.8578,
+          "lng": 2.3459
+        }
+      ]
+    },
+    "ts": 1778255356.3372324
+  },
+  "jeddah__beach, diving, seafood, red sea sunsets": {
+    "data": {
+      "hotel": {
+        "name": "Radisson Blu Hotel, Jeddah Corniche",
+        "lat": 21.6108,
+        "lng": 39.1093
+      },
+      "activities": [
+        {
+          "name": "Jeddah Corniche / Jeddah Waterfront",
+          "lat": 21.54333,
+          "lng": 39.17278
+        },
+        {
+          "name": "Obhur Beach",
+          "lat": 21.741872,
+          "lng": 39.121799
+        },
+        {
+          "name": "Al-Saif Beach",
+          "lat": 21.1896,
+          "lng": 39.2458
+        },
+        {
+          "name": "Durrat Al Arous",
+          "lat": 21.75733,
+          "lng": 39.08239
+        },
+        {
+          "name": "Cable Wreck (near Abu Tair Island)",
+          "lat": 21.69102,
+          "lng": 39.01321
+        },
+        {
+          "name": "Bayada Island",
+          "lat": 21.7828,
+          "lng": 39.0667
+        },
+        {
+          "name": "Twina Seafood Restaurant",
+          "lat": 21.6096,
+          "lng": 39.1293
+        },
+        {
+          "name": "Central Fish Market",
+          "lat": 21.4889,
+          "lng": 39.1678
+        }
+      ]
+    },
+    "ts": 1778257067.0974724
   }
 }

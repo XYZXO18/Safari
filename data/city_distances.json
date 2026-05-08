@@ -593,5 +593,26 @@
     "distance_km": 6496.75,
     "duration_minutes": 4799,
     "source": "osrm"
+  },
+  "riyadh__vienna": {
+    "city_a": "riyadh",
+    "city_b": "vienna",
+    "distance_km": 4530.61,
+    "duration_minutes": 3561,
+    "source": "osrm"
+  },
+  "beijing__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "beijing",
+    "distance_km": 8093.74,
+    "duration_minutes": 6562,
+    "source": "osrm"
+  },
+  "paris__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "paris",
+    "distance_km": 5701.17,
+    "duration_minutes": 4273,
+    "source": "osrm"
   }
 }

@@ -91,6 +91,98 @@
     },
     "ts": 1778250168.9390755
   },
+  "flight__riyadh__vienna": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Vienna",
+      "price_one_way": 596.25,
+      "price_round_trip": 1103.06,
+      "currency": "SAR",
+      "airline": "Pegasus Airlines",
+      "duration_minutes": 510,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778253194.1123297
+  },
+  "rental__vienna": {
+    "data": {
+      "city": "Vienna",
+      "price_per_day": 19.54,
+      "currency": "SAR",
+      "vehicle_type": "Economy/Small car",
+      "company": "U-Save",
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778253487.7265823
+  },
+  "flight__riyadh__beijing": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Beijing",
+      "price_one_way": 1230.0,
+      "price_round_trip": 2275.5,
+      "currency": "SAR",
+      "airline": "Saudia",
+      "duration_minutes": 535,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778254676.8153534
+  },
+  "rental__beijing": {
+    "data": {
+      "city": "Beijing",
+      "price_per_day": 97.56,
+      "currency": "SAR",
+      "vehicle_type": "Ford Fiesta (Economy car)",
+      "company": "AVIS",
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778254862.9313078
+  },
+  "flight__riyadh__paris": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Paris",
+      "price_one_way": 941.25,
+      "price_round_trip": 1741.31,
+      "currency": "SAR",
+      "airline": "Etihad Airways",
+      "duration_minutes": 990,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778255514.9555836
+  },
+  "rental__madrid": {
+    "data": {
+      "city": "Madrid",
+      "price_per_day": 7.6,
+      "currency": "SAR",
+      "vehicle_type": "Economy",
+      "company": "Record Go",
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778256739.3163466
+  },
+  "flight__riyadh__jeddah": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Jeddah",
+      "price_one_way": 180.0,
+      "price_round_trip": 333.0,
+      "currency": "SAR",
+      "airline": "Saudia",
+      "duration_minutes": 105,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778257053.4904554
+  },
   "flight__riyadh__madrid": {
     "data": {
       "origin": "Riyadh",
@@ -103,6 +195,6 @@
       "source": "gemini_grounding",
       "confidence": "medium"
     },
-    "ts": 1778250674.277131
+    "ts": 1778257826.823685
   }
 }

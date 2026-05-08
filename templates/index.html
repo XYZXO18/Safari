@@ -340,6 +340,92 @@
                     </div>
                 </div>
 
+                <!-- Party size + rooms -->
+                <div class="form-group">
+                    <label><span class="label-icon">👥</span> Party</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+                        <div>
+                            <label for="adults-input" style="font-size:12px; opacity:0.75;">Adults</label>
+                            <input type="number" id="adults-input" min="1" max="20" value="1" step="1"
+                                style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit;">
+                        </div>
+                        <div>
+                            <label for="children-input" style="font-size:12px; opacity:0.75;">Children</label>
+                            <input type="number" id="children-input" min="0" max="20" value="0" step="1"
+                                style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit;">
+                        </div>
+                        <div>
+                            <label for="rooms-input" style="font-size:12px; opacity:0.75;">Rooms</label>
+                            <input type="number" id="rooms-input" min="1" max="10" value="1" step="1"
+                                style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Already have a hotel -->
+                <div class="form-group">
+                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
+                        <input type="checkbox" id="has-own-lodging-input" style="width:18px; height:18px; cursor:pointer;">
+                        <span><span class="label-icon">🏠</span> I already have a hotel / lodging</span>
+                    </label>
+                    <div id="has-own-lodging-hint" style="font-size:12px; opacity:0.65; margin-top:6px; margin-left:28px;">
+                        Lodging cost will be set to 0 in the budget.
+                    </div>
+                </div>
+
+                <!-- Filters: hotel stars, restaurant rating, flight class & stops -->
+                <div class="form-group">
+                    <label><span class="label-icon">⭐</span> Minimum Hotel Stars</label>
+                    <div id="hotel-stars-row" style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <button type="button" class="stars-btn active" data-stars="0"
+                            style="flex:1; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit; cursor:pointer;">Any</button>
+                        <button type="button" class="stars-btn" data-stars="3"
+                            style="flex:1; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit; cursor:pointer;">3★+</button>
+                        <button type="button" class="stars-btn" data-stars="4"
+                            style="flex:1; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit; cursor:pointer;">4★+</button>
+                        <button type="button" class="stars-btn" data-stars="5"
+                            style="flex:1; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit; cursor:pointer;">5★</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="restaurant-rating-input"><span class="label-icon">🍽️</span> Minimum Restaurant Rating</label>
+                    <select id="restaurant-rating-input"
+                        style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit;">
+                        <option value="0">Any</option>
+                        <option value="3">3.0+</option>
+                        <option value="3.5">3.5+</option>
+                        <option value="4">4.0+</option>
+                        <option value="4.5">4.5+</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="flight-filters-group">
+                    <label><span class="label-icon">✈️</span> Flight Preferences</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <div>
+                            <label for="flight-class-input" style="font-size:12px; opacity:0.75;">Class</label>
+                            <select id="flight-class-input"
+                                style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit;">
+                                <option value="coach">Coach / Economy</option>
+                                <option value="premium">Premium Economy</option>
+                                <option value="business">Business</option>
+                                <option value="first">First</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="flight-stops-input" style="font-size:12px; opacity:0.75;">Stops</label>
+                            <select id="flight-stops-input"
+                                style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit;">
+                                <option value="any">Any</option>
+                                <option value="nonstop">Non-stop only</option>
+                                <option value="1stop">1 stop</option>
+                                <option value="multi">Multiple stops OK</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Submit + Clear -->
                 <div style="display:flex; gap:10px; margin-top:4px;">
                     <button type="submit" class="submit-btn" id="plan-btn" style="flex:1;">
@@ -650,6 +736,451 @@
             document.getElementById('chat-messages').appendChild(msg);
             document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
         }
+    </script>
+
+    <!-- Booking Hub modal (additive). Opened by the Confirm Trip button injected
+         into the budget breakdown — lists every booking URL from /api/plan. -->
+    <div id="booking-hub-overlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9998; display:none;"></div>
+    <div id="booking-hub" style="position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:9999; width:min(440px, 92vw); background:rgba(15,17,28,0.98); border:1px solid rgba(99,102,241,0.5); border-radius:16px; padding:18px 20px; box-shadow:0 16px 48px rgba(0,0,0,0.6); color:#fff; font-size:13px; display:none;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+            <strong style="font-size:15px;">🎫 Confirm &amp; Book Your Trip</strong>
+            <button type="button" id="booking-hub-close" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer; opacity:0.6;">×</button>
+        </div>
+        <div style="font-size:12px; opacity:0.65; margin-bottom:10px;">
+            Click any link to open the partner site and complete payment.
+        </div>
+        <div id="booking-hub-list" style="max-height:60vh; overflow-y:auto;"></div>
+    </div>
+
+    <!-- Party-size / own-lodging fetch shim: injects new fields into /api/plan
+         without modifying app.js. Purely additive. -->
+    <script>
+        (function () {
+            const origFetch = window.fetch.bind(window);
+            window.fetch = function (input, init) {
+                try {
+                    const url = typeof input === 'string' ? input : (input && input.url) || '';
+                    if (init && init.method === 'POST' && url.indexOf('/api/plan') !== -1 && init.body) {
+                        const body = JSON.parse(init.body);
+                        const adultsEl   = document.getElementById('adults-input');
+                        const childrenEl = document.getElementById('children-input');
+                        const roomsEl    = document.getElementById('rooms-input');
+                        const ownEl      = document.getElementById('has-own-lodging-input');
+                        if (adultsEl)   body.adults   = parseInt(adultsEl.value, 10)   || 1;
+                        if (childrenEl) body.children = parseInt(childrenEl.value, 10) || 0;
+                        if (roomsEl)    body.rooms    = parseInt(roomsEl.value, 10)    || 1;
+                        if (ownEl)      body.has_own_lodging = !!ownEl.checked;
+
+                        const starsActive = document.querySelector('#hotel-stars-row .stars-btn.active');
+                        if (starsActive) body.min_hotel_stars = parseInt(starsActive.dataset.stars, 10) || 0;
+                        const ratingEl = document.getElementById('restaurant-rating-input');
+                        if (ratingEl) body.min_restaurant_rating = parseFloat(ratingEl.value) || 0;
+                        const classEl = document.getElementById('flight-class-input');
+                        if (classEl) body.flight_class = classEl.value || 'coach';
+                        const stopsEl = document.getElementById('flight-stops-input');
+                        if (stopsEl) body.flight_stops = stopsEl.value || 'any';
+                        init = Object.assign({}, init, { body: JSON.stringify(body) });
+                    }
+                } catch (e) {
+                    console.warn('party-size shim:', e);
+                }
+                const promise = origFetch(input, init);
+                const url = typeof input === 'string' ? input : (input && input.url) || '';
+                if (init && init.method === 'POST' && url.indexOf('/api/plan') !== -1) {
+                    promise.then(function (res) {
+                        if (!res || !res.ok) return;
+                        res.clone().json().then(function (data) {
+                            try { populateBookingHub(data); } catch (e) { console.warn(e); }
+                        }).catch(function () {});
+                    }).catch(function () {});
+                }
+                return promise;
+            };
+
+            function escapeHtml(s) {
+                return String(s == null ? '' : s)
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
+            function row(icon, title, sub, url) {
+                if (!url) return '';
+                return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener" '
+                    + 'style="display:flex; align-items:center; gap:10px; padding:8px 10px; '
+                    + 'border-radius:10px; background:rgba(255,255,255,0.04); '
+                    + 'margin-bottom:6px; text-decoration:none; color:#fff;">'
+                    + '<span style="font-size:18px;">' + icon + '</span>'
+                    + '<div style="flex:1; min-width:0;">'
+                    +   '<div style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'
+                    +     escapeHtml(title) + '</div>'
+                    +   (sub ? '<div style="opacity:0.65; font-size:11px;">' + escapeHtml(sub) + '</div>' : '')
+                    + '</div>'
+                    + '<span style="opacity:0.6;">↗</span>'
+                    + '</a>';
+            }
+
+            // Items being booked, gathered in render order. Used by the checkout form.
+            window.__bookingItems = [];
+
+            function itemRow(idx, icon, title, sub, url, mint) {
+                const mintAttr = mint ? ' data-mint="' + escapeHtml(JSON.stringify(mint)) + '"' : '';
+                return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener" '
+                    + 'class="bh-item" data-idx="' + idx + '"' + mintAttr + ' '
+                    + 'style="display:flex; align-items:center; gap:10px; padding:10px 12px; '
+                    + 'border-radius:10px; background:rgba(255,255,255,0.04); margin-bottom:6px; '
+                    + 'text-decoration:none; color:#fff;">'
+                    + '<span style="font-size:18px;">' + icon + '</span>'
+                    + '<div style="flex:1; min-width:0;">'
+                    +   '<div class="bh-title" style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">'
+                    +     escapeHtml(title) + '</div>'
+                    +   (sub ? '<div class="bh-sub" style="opacity:0.65; font-size:11px;">' + escapeHtml(sub) + '</div>' : '')
+                    + '</div>'
+                    + '<span class="bh-cta" style="opacity:0.55; font-size:12px;">'
+                    + (mint ? 'Get checkout link ↗' : 'Go to checkout ↗') + '</span>'
+                    + '</a>';
+            }
+
+            function inputField(label, id, type, placeholder, extraStyle) {
+                return '<div style="margin-bottom:8px;">'
+                    + '<label for="' + id + '" style="display:block; font-size:11px; opacity:0.7; margin-bottom:4px;">'
+                    + escapeHtml(label) + '</label>'
+                    + '<input id="' + id + '" type="' + type + '" placeholder="' + escapeHtml(placeholder) + '" '
+                    + 'style="width:100%; padding:10px 12px; border-radius:10px; '
+                    + 'border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); '
+                    + 'color:#fff; font-size:13px; ' + (extraStyle || '') + '">'
+                    + '</div>';
+            }
+
+            window.populateBookingHub = function (data) {
+                const hub = document.getElementById('booking-hub');
+                const list = document.getElementById('booking-hub-list');
+                if (!hub || !list) return;
+
+                const path = data && data.paths && data.paths[data.recommendation || 0];
+                if (!path) return;
+
+                const items = [];
+                const tx = path.transport || {};
+                let txUrl = tx.booking_url || '';
+                if (!txUrl) {
+                    // Frontend fallback so the user always gets a transport link.
+                    const o = (tx.origin || '').toString();
+                    const d = (tx.destination || '').toString();
+                    const dep = (path.dates && path.dates.start_date) || '';
+                    const m = (tx.mode || '').toLowerCase();
+                    if (m === 'flight' || m === 'train' || m === 'bus') {
+                        txUrl = 'https://www.google.com/travel/flights?q='
+                            + encodeURIComponent('Flights from ' + o + ' to ' + d
+                                + (dep ? ' on ' + dep : ''));
+                    } else if (m === 'car' || m === 'driving') {
+                        txUrl = 'https://www.google.com/maps/dir/'
+                            + encodeURIComponent(o) + '/' + encodeURIComponent(d);
+                    }
+                }
+                if (txUrl) {
+                    const modeLabel = (tx.mode || 'transport');
+                    const icon = (modeLabel === 'flight') ? '✈️'
+                        : (modeLabel === 'train') ? '🚂'
+                        : (modeLabel === 'bus') ? '🚌'
+                        : (modeLabel === 'car' || modeLabel === 'driving') ? '🚗'
+                        : '🧭';
+                    const cabinMap = {
+                        coach:'Economy', economy:'Economy',
+                        premium:'PremiumEconomy', premium_economy:'PremiumEconomy',
+                        business:'Business', first:'First'
+                    };
+                    const filters = (path.budget && path.budget.filters) || {};
+                    const party = (path.budget && path.budget.party) || {};
+                    const mint = (modeLabel === 'flight') ? {
+                        type: 'flight',
+                        origin: tx.origin || '',
+                        destination: tx.destination || '',
+                        dep_date: (path.dates && path.dates.start_date) || '',
+                        cabin: cabinMap[(filters.flight_class || 'coach').toLowerCase()] || 'Economy',
+                        adults: party.adults || 1
+                    } : null;
+                    items.push({ icon: icon, title: 'Book ' + modeLabel,
+                        sub: (tx.origin || '') + ' → ' + (tx.destination || ''),
+                        url: txUrl, mint: mint });
+                }
+
+                // Hotels — if the user has selected one, ONLY that one appears.
+                const allHotels = (path.hospitality && path.hospitality.hotels) || [];
+                // app.js declares `const state` at top level, which does NOT attach
+                // to window. Reach the bare identifier via try/catch.
+                let sel = null;
+                try { sel = (typeof state !== 'undefined' && state) ? state.selectedHotel : null; }
+                catch (e) { sel = (window.state && window.state.selectedHotel) || null; }
+
+                // Build a Booking.com checkout URL for any hotel name, using the
+                // current trip's dates and party. Used as a guaranteed-good fallback
+                // so the picked hotel ALWAYS gets a working link.
+                function buildHotelUrl(hotelName, cityName) {
+                    const dates = path.dates || {};
+                    const party = (path.budget && path.budget.party) || {};
+                    const ci = dates.start_date || '';
+                    const co = dates.end_date || '';
+                    const a  = party.adults || 1;
+                    const c  = party.children || 0;
+                    const r  = party.rooms || 1;
+                    const q  = encodeURIComponent((hotelName || '') + ' ' + (cityName || ''));
+                    return 'https://www.booking.com/searchresults.html?ss=' + q
+                        + '&checkin=' + ci + '&checkout=' + co
+                        + '&group_adults=' + a + '&group_children=' + c
+                        + '&no_rooms=' + r;
+                }
+
+                // Pick exactly ONE hotel: user selection if present, else the top result.
+                let pickedHotel = null;
+                if (sel && sel.name) {
+                    const match = allHotels.find(function (h) { return h.name === sel.name; });
+                    pickedHotel = match
+                        ? Object.assign({}, match, {
+                            booking_url: buildHotelUrl(match.name, match.city ||
+                                (path.activities && path.activities.recommended_city) || '')
+                          })
+                        : {
+                            name: sel.name,
+                            stars: sel.stars,
+                            city: (path.activities && path.activities.recommended_city) || '',
+                            booking_url: buildHotelUrl(sel.name,
+                                (path.activities && path.activities.recommended_city) || '')
+                          };
+                } else if (allHotels.length) {
+                    const top = allHotels[0];
+                    pickedHotel = Object.assign({}, top, {
+                        booking_url: buildHotelUrl(top.name, top.city ||
+                            (path.activities && path.activities.recommended_city) || '')
+                    });
+                }
+                if (pickedHotel) {
+                    const url = pickedHotel.booking_url || pickedHotel.almosafer_url;
+                    const dates = path.dates || {};
+                    const party = (path.budget && path.budget.party) || {};
+                    const cityName = pickedHotel.city
+                        || (path.activities && path.activities.recommended_city) || '';
+                    const hotelMint = {
+                        type: 'hotel',
+                        city: cityName,
+                        checkin: dates.start_date || '',
+                        checkout: dates.end_date || '',
+                        adults: party.adults || 1,
+                        hotel_name: pickedHotel.name || ''
+                    };
+                    if (url) items.push({
+                        icon: '🏨',
+                        title: pickedHotel.name || 'Hotel',
+                        sub: (pickedHotel.stars ? pickedHotel.stars + '★' : '')
+                            + (pickedHotel.city ? ' · ' + pickedHotel.city : '')
+                            + (sel ? ' · your pick' : ' · top pick'),
+                        url: url,
+                        mint: hotelMint
+                    });
+                } else {
+                    // No hotels in this plan and no user selection — fall back to a
+                    // city-level Booking.com search so the user still gets a hotel
+                    // row to act on. Skip if user already has lodging arranged.
+                    const ownLodging = !!(path.budget && path.budget.lodging
+                        && path.budget.lodging.user_provided);
+                    const city = (path.activities && path.activities.recommended_city)
+                        || (path.transport && path.transport.destination) || '';
+                    if (!ownLodging && city) {
+                        items.push({
+                            icon: '🏨',
+                            title: 'Find a hotel in ' + city,
+                            sub: 'Booking.com · pre-filled with your dates &amp; party',
+                            url: buildHotelUrl('', city)
+                        });
+                    }
+                }
+
+                ((path.hospitality && path.hospitality.restaurants) || []).slice(0, 5).forEach(function (r) {
+                    const url = r.booking_url || r.almosafer_url;
+                    if (url) items.push({ icon:'🍽️', title: r.name || 'Restaurant',
+                        sub:(r.cuisine || '') + (r.rating ? ' · ' + r.rating + '★' : ''), url:url });
+                });
+
+                ((path.events && path.events.events) || []).slice(0, 8).forEach(function (e) {
+                    if (e.booking_url) items.push({ icon:'🎪', title:e.name || 'Event',
+                        sub:(e.venue || '') + (e.date ? ' · ' + e.date : ''), url:e.booking_url });
+                });
+
+                const daily = (path.activities && path.activities.daily_plan) || {};
+                Object.keys(daily).forEach(function (day) {
+                    (daily[day] || []).forEach(function (act) {
+                        if (act && act.booking_url && (act.is_live_event || act.is_trending_spot)) {
+                            items.push({ icon: act.is_live_event ? '🎟️' : '🔥',
+                                title:(act.name || '').replace(/^[🎪🔥]\s*(LIVE|TRENDING):\s*/, ''),
+                                sub:'Day ' + day, url: act.booking_url });
+                        }
+                    });
+                });
+
+                window.__bookingItems = items;
+                window.__bookingHubHasLinks = items.length > 0;
+
+                let html = '';
+                if (!items.length) {
+                    html = '<div style="opacity:0.6; padding:8px;">No bookable items for this plan.</div>';
+                } else {
+                    html += '<div style="font-size:12px; opacity:0.75; margin-bottom:10px; line-height:1.45;">'
+                        + 'Each link goes straight to the partner&#39;s checkout page, pre-filled with your '
+                        + 'hotel choice, dates, party size, room count, and ticket class. '
+                        + 'You only enter your name &amp; payment on that page.'
+                        + '</div>';
+                    items.forEach(function (it, i) {
+                        html += itemRow(i, it.icon, it.title, it.sub, it.url, it.mint);
+                    });
+
+                    html += '<button type="button" id="bh-pay-btn" '
+                        + 'style="width:100%; margin-top:14px; padding:13px; border:none; border-radius:12px; '
+                        + 'background:linear-gradient(135deg,#22c55e,#16a34a); color:#fff; '
+                        + 'font-size:14px; font-weight:700; cursor:pointer;">'
+                        + '🔒 Open All Checkout Pages</button>';
+                    html += '<div id="bh-pay-msg" style="font-size:11px; opacity:0.65; margin-top:8px; text-align:center;"></div>';
+                }
+
+                list.innerHTML = html;
+
+                const payBtn = document.getElementById('bh-pay-btn');
+                if (payBtn) payBtn.addEventListener('click', handlePay);
+
+                injectConfirmTripButton();
+            };
+
+            function handlePay() {
+                const msg = document.getElementById('bh-pay-msg');
+                const items = window.__bookingItems || [];
+                if (!items.length) {
+                    if (msg) {
+                        msg.style.color = '#fca5a5';
+                        msg.textContent = 'Nothing to book.';
+                    }
+                    return;
+                }
+                let opened = 0;
+                items.forEach(function (item) {
+                    if (item && item.url) {
+                        window.open(item.url, '_blank', 'noopener');
+                        opened++;
+                    }
+                });
+                if (msg) {
+                    msg.style.color = '#86efac';
+                    msg.textContent = '✓ Opened ' + opened + ' partner checkout page(s) in new tabs.';
+                }
+            }
+
+            function showBookingHub() {
+                document.getElementById('booking-hub').style.display = 'block';
+                document.getElementById('booking-hub-overlay').style.display = 'block';
+            }
+            function hideBookingHub() {
+                document.getElementById('booking-hub').style.display = 'none';
+                document.getElementById('booking-hub-overlay').style.display = 'none';
+            }
+
+            const closeBtn = document.getElementById('booking-hub-close');
+            if (closeBtn) closeBtn.addEventListener('click', hideBookingHub);
+            const overlay = document.getElementById('booking-hub-overlay');
+            if (overlay) overlay.addEventListener('click', hideBookingHub);
+
+            // Intercept clicks on rows that carry data-mint — drive the headless
+            // browser via /api/mint-link to get the deep checkout URL, then open it.
+            const bhList = document.getElementById('booking-hub-list');
+            if (bhList) {
+                bhList.addEventListener('click', function (e) {
+                    const row = e.target.closest('a.bh-item[data-mint]');
+                    if (!row) return;
+                    e.preventDefault();
+                    if (row.dataset.mintBusy === '1') return;
+
+                    let mint;
+                    try { mint = JSON.parse(row.dataset.mint); }
+                    catch (err) { window.open(row.href, '_blank', 'noopener'); return; }
+
+                    const cta = row.querySelector('.bh-cta');
+                    const oldCta = cta ? cta.textContent : '';
+                    if (cta) cta.textContent = 'Minting link…';
+                    row.dataset.mintBusy = '1';
+                    row.style.opacity = '0.7';
+
+                    fetch('/api/mint-link', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(mint)
+                    }).then(function (res) { return res.json(); })
+                      .then(function (data) {
+                          row.dataset.mintBusy = '0';
+                          row.style.opacity = '1';
+                          if (cta) cta.textContent = oldCta;
+                          const url = (data && data.url) || row.href;
+                          if (data && data.fallback) {
+                              if (cta) cta.textContent = 'Opened search page (mint failed)';
+                          }
+                          window.open(url, '_blank', 'noopener');
+                      })
+                      .catch(function () {
+                          row.dataset.mintBusy = '0';
+                          row.style.opacity = '1';
+                          if (cta) cta.textContent = oldCta;
+                          window.open(row.href, '_blank', 'noopener');
+                      });
+                });
+            }
+
+            // Inject a "Confirm Trip" button into the explore tab's budget breakdown.
+            // Watches #left-budget for re-renders so the button reappears after each plan.
+            function injectConfirmTripButton() {
+                const container = document.getElementById('left-budget');
+                if (!container) return;
+                if (container.querySelector('#confirm-trip-btn')) return;
+
+                const wrap = document.createElement('div');
+                wrap.style.marginTop = '14px';
+                wrap.innerHTML =
+                    '<button type="button" id="confirm-trip-btn" '
+                    + 'style="width:100%; padding:14px 18px; border:none; border-radius:12px; '
+                    + 'background:linear-gradient(135deg,#6366f1,#22d3ee); color:#fff; '
+                    + 'font-size:15px; font-weight:700; cursor:pointer; '
+                    + 'box-shadow:0 8px 22px rgba(99,102,241,0.35);">'
+                    + '✅ Confirm Trip &amp; Get Booking Links</button>';
+                container.appendChild(wrap);
+                wrap.querySelector('#confirm-trip-btn').addEventListener('click', showBookingHub);
+            }
+
+            const leftBudget = document.getElementById('left-budget');
+            if (leftBudget) {
+                const obs = new MutationObserver(function () {
+                    if (window.__bookingHubHasLinks !== undefined) injectConfirmTripButton();
+                });
+                obs.observe(leftBudget, { childList: true, subtree: true });
+            }
+        })();
+
+        // Stars filter: toggle .active among the buttons in #hotel-stars-row.
+        (function () {
+            const row = document.getElementById('hotel-stars-row');
+            if (!row) return;
+            row.addEventListener('click', function (e) {
+                const btn = e.target.closest('.stars-btn');
+                if (!btn) return;
+                row.querySelectorAll('.stars-btn').forEach(function (b) {
+                    b.classList.remove('active');
+                    b.style.background = 'rgba(255,255,255,0.06)';
+                    b.style.borderColor = 'rgba(255,255,255,0.18)';
+                });
+                btn.classList.add('active');
+                btn.style.background = 'rgba(99,102,241,0.25)';
+                btn.style.borderColor = 'rgba(99,102,241,0.6)';
+            });
+            // Set initial highlight for default-active button
+            const init = row.querySelector('.stars-btn.active');
+            if (init) {
+                init.style.background = 'rgba(99,102,241,0.25)';
+                init.style.borderColor = 'rgba(99,102,241,0.6)';
+            }
+        })();
     </script>
 </body>
 </html>
