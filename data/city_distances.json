@@ -614,5 +614,12 @@
     "distance_km": 5701.17,
     "duration_minutes": 4273,
     "source": "osrm"
+  },
+  "doha__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "doha",
+    "distance_km": 582.19,
+    "duration_minutes": 391,
+    "source": "osrm"
   }
 }

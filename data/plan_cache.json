@@ -2213,5 +2213,2182 @@
       "recommendation": 0
     },
     "cached_at": "2026-05-08T17:01:14.474662+00:00"
+  },
+  "ad7d75c0cd2675d5c069857a9e823275": {
+    "params": {
+      "budget": 0.0,
+      "travel_mode": "car",
+      "destination": "qatar",
+      "days": 5,
+      "origin": "riyadh",
+      "vehicle_type": "default",
+      "currency": "SAR",
+      "start_date": "",
+      "end_date": "",
+      "interests": ""
+    },
+    "result": {
+      "paths": [
+        {
+          "transport": {
+            "mode": "car",
+            "origin": "Riyadh",
+            "destination": "Doha",
+            "distance_km": 582.19,
+            "travel_time_str": "0m",
+            "cost_one_way": 0.0,
+            "cost_round_trip": 0.0,
+            "breakdown": "🚫 Car travel is not possible: Saudi Arabia and Qatar do not share a land border. Please choose flight, train, or bus instead.",
+            "vehicle_type": "default",
+            "booking_url": ""
+          },
+          "budget": {
+            "total": 5000.0,
+            "currency": "SAR",
+            "transport": 0.0,
+            "remaining": 5000.0,
+            "days": 5,
+            "lodging": {
+              "total": 0,
+              "per_day": 0,
+              "pending": true,
+              "max_budget": 2000.0,
+              "max_per_day": 400.0,
+              "user_provided": false
+            },
+            "party": {
+              "adults": 2,
+              "children": 0,
+              "rooms": 1,
+              "food_people_factor": 2.0
+            },
+            "filters": {
+              "min_hotel_stars": 4,
+              "min_restaurant_rating": 4.5,
+              "flight_class": "coach",
+              "flight_stops": "any"
+            },
+            "food": {
+              "total": 3000.0,
+              "per_day": 600.0
+            },
+            "activities": {
+              "total": 1000.0,
+              "per_day": 200.0
+            },
+            "buffer": {
+              "total": 500.0,
+              "per_day": 100.0
+            },
+            "is_feasible": true,
+            "is_suggested": true,
+            "warnings": []
+          },
+          "activities": {
+            "destination": "city",
+            "vibe": "Urban exploration, nightlife, shopping, dining",
+            "recommended_city": "Doha",
+            "daily_plan": {
+              "1": [
+                {
+                  "id": "trend_5_dhow_cruis",
+                  "name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+                  "lat": 25.2917,
+                  "lng": 51.5383,
+                  "is_trending_spot": true,
+                  "cost": 155.0,
+                  "category": "unique experience",
+                  "description": "A relaxing traditional wooden boat cruise along the Doha Corniche, offering breathtaking sunset views of the city skyline, often including dinner and Arabic hospitality.",
+                  "social_buzz": "A quintessential Doha experience, frequently shared for its picturesque views, romantic atmosphere, and cultural charm, especially at sunset.",
+                  "rating": 4.8,
+                  "price_range": "$$",
+                  "tags": [
+                    "cultural",
+                    "scenic",
+                    "sunset",
+                    "romantic",
+                    "boat trip"
+                  ],
+                  "source": "GetYourGuide, Hotels.com, TravelPulse",
+                  "booking_url": "https://www.google.com/search?q=Dhow+Cruise+%28Sunset%2FDinner%29+Doha+tickets+booking"
+                },
+                {
+                  "id": "trend_0_souq_waqif",
+                  "name": "🔥 TRENDING: Souq Waqif",
+                  "lat": 25.2891,
+                  "lng": 51.5354,
+                  "is_trending_spot": true,
+                  "cost": 80.0,
+                  "category": "attraction|shopping",
+                  "description": "A historic marketplace offering a labyrinth of alleyways filled with spices, textiles, handicrafts, traditional restaurants, and shisha lounges, providing a deep dive into Qatari culture.",
+                  "social_buzz": "Constantly buzzing, especially in the evenings, with locals and tourists enjoying the vibrant atmosphere, traditional performances, and diverse culinary options.",
+                  "rating": 4.7,
+                  "price_range": "$",
+                  "tags": [
+                    "traditional market",
+                    "culture",
+                    "shopping",
+                    "dining",
+                    "historic"
+                  ],
+                  "source": "Tripadvisor, Google Maps, local blogs",
+                  "booking_url": "https://www.google.com/search?q=Souq+Waqif+Doha+tickets+booking"
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 25.337464730791744,
+                  "lng": 51.45257970439869
+                },
+                {
+                  "name": "Boulevard Riyadh City",
+                  "lat": 25.30748756058668,
+                  "lng": 51.57240618556876,
+                  "rating": 4.3,
+                  "review_count": 5432,
+                  "why_go": "Riyadh's premier entertainment district â€” a massive complex with world-class dining, live events, concerts, gaming zones, and themed areas. Think of it as Saudi Arabia's Times Square.",
+                  "reviews": [
+                    {
+                      "user": "Maha R.",
+                      "rating": 4,
+                      "text": "So much to do! We spent 6 hours and still didn't see everything. The Japanese zone is incredible."
+                    },
+                    {
+                      "user": "Omar F.",
+                      "rating": 5,
+                      "text": "The atmosphere at night is electric. Great food, great shows, great people. A must-visit in Riyadh."
+                    },
+                    {
+                      "user": "Jenny L.",
+                      "rating": 4,
+                      "text": "Impressive entertainment complex but can get very crowded on weekends. Go on weekdays if you can."
+                    }
+                  ]
+                },
+                {
+                  "name": "Historical palaces walking tour",
+                  "lat": 25.275010528992834,
+                  "lng": 51.5869132636795
+                }
+              ],
+              "2": [
+                {
+                  "id": "trend_6_la_vista_5",
+                  "name": "🔥 TRENDING: La Vista 55",
+                  "lat": 25.3236,
+                  "lng": 51.523,
+                  "is_trending_spot": true,
+                  "cost": 206.0,
+                  "category": "nightlife",
+                  "description": "A high-energy bar located on the 55th floor of the InterContinental Doha The City, offering stunning panoramic views of the West Bay skyline, Cuban tunes, and tasty tacos.",
+                  "social_buzz": "Popular for its impressive views, vibrant atmosphere, and Latin music, making it a go-to spot for a sophisticated night out.",
+                  "rating": 4.3,
+                  "price_range": "$$$",
+                  "tags": [
+                    "rooftop bar",
+                    "nightlife",
+                    "views",
+                    "cocktails",
+                    "trendy"
+                  ],
+                  "source": "Travel Guides, Time Out Doha",
+                  "booking_url": "https://www.google.com/search?q=La+Vista+55+Doha+tickets+booking"
+                },
+                {
+                  "id": "trend_1_museum_of_",
+                  "name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+                  "lat": 25.2928,
+                  "lng": 51.5394,
+                  "is_trending_spot": true,
+                  "cost": 52.0,
+                  "category": "attraction",
+                  "description": "An architectural masterpiece designed by I.M. Pei, housing an an extensive collection of Islamic art and artifacts spanning 14 centuries, set on the Doha waterfront.",
+                  "social_buzz": "Praised for its stunning architecture, serene atmosphere, and world-class collections, often featured in travel photography.",
+                  "rating": 4.6,
+                  "price_range": "$",
+                  "tags": [
+                    "museum",
+                    "art",
+                    "architecture",
+                    "culture",
+                    "history"
+                  ],
+                  "source": "Tripadvisor, Google Maps, GetYourGuide",
+                  "booking_url": "https://www.google.com/search?q=Museum+of+Islamic+Art+%28MIA%29+Doha+tickets+booking"
+                },
+                {
+                  "name": "Msheireb Downtown Doha",
+                  "lat": 25.286,
+                  "lng": 51.5268
+                },
+                {
+                  "name": "Souq Waqif",
+                  "lat": 25.28775,
+                  "lng": 51.53259
+                },
+                {
+                  "name": "Museum of Islamic Art (MIA)",
+                  "lat": 25.29546,
+                  "lng": 51.53898
+                }
+              ],
+              "3": [
+                {
+                  "id": "trend_7_the_pearl-",
+                  "name": "🔥 TRENDING: The Pearl-Qatar",
+                  "lat": 25.378,
+                  "lng": 51.526,
+                  "is_trending_spot": true,
+                  "cost": 309.0,
+                  "category": "attraction|shopping",
+                  "description": "An opulent man-made island featuring luxury residences, high-end boutiques, international restaurants, and picturesque marinas, often referred to as the 'Arabian Riviera.'",
+                  "social_buzz": "A symbol of luxury and modern Doha, frequently showcased on social media for its stunning architecture, upscale lifestyle, and diverse entertainment options.",
+                  "rating": 4.7,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "luxury",
+                    "shopping",
+                    "dining",
+                    "marina",
+                    "modern architecture"
+                  ],
+                  "source": "Tripadvisor, Hotels.com, Viator",
+                  "booking_url": "https://www.google.com/search?q=The+Pearl-Qatar+Doha+tickets+booking"
+                },
+                {
+                  "id": "trend_2_nobu_doha",
+                  "name": "🔥 TRENDING: Nobu Doha",
+                  "lat": 25.3262,
+                  "lng": 51.5369,
+                  "is_trending_spot": true,
+                  "cost": 515.0,
+                  "category": "restaurant",
+                  "description": "The world's largest Nobu restaurant, offering Japanese-Peruvian fusion cuisine in an iconic setting on its own private pier with 360-degree views of the city.",
+                  "social_buzz": "Celebrated for its exquisite food, unique overwater location, and stunning sunset views, making it a popular spot for luxury dining and special occasions.",
+                  "rating": 4.7,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "fine dining",
+                    "Japanese-Peruvian",
+                    "luxury",
+                    "views",
+                    "iconic"
+                  ],
+                  "source": "Wanderlog, Le Petit Chef, Google Maps",
+                  "booking_url": "https://www.google.com/search?q=Nobu+Doha+Doha+tickets+booking"
+                },
+                {
+                  "name": "National Museum of Qatar",
+                  "lat": 25.28794,
+                  "lng": 51.54922
+                },
+                {
+                  "name": "Historical Diriyah tour",
+                  "lat": 25.343779251384213,
+                  "lng": 51.548088187350565,
+                  "rating": 4.5,
+                  "review_count": 1654,
+                  "why_go": "The birthplace of Saudi Arabia and a UNESCO World Heritage Site. The restored mud-brick At-Turaif district showcases 300 years of Saudi history and Najdi architecture at its finest.",
+                  "reviews": [
+                    {
+                      "user": "Fahd K.",
+                      "rating": 5,
+                      "text": "Beautifully restored! The architecture is stunning and the museum tells the story of how Saudi Arabia was founded."
+                    },
+                    {
+                      "user": "Patricia M.",
+                      "rating": 4,
+                      "text": "A peaceful escape from Riyadh's bustle. The restaurants inside the complex are excellent."
+                    },
+                    {
+                      "user": "Saad J.",
+                      "rating": 5,
+                      "text": "Walking through the old streets at sunset is magical. The new Bujairi Terrace restaurants have amazing views."
+                    }
+                  ]
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 25.309091533532477,
+                  "lng": 51.47921488060294
+                }
+              ],
+              "4": [
+                {
+                  "id": "trend_3_boho_socia",
+                  "name": "🔥 TRENDING: BOHO Social",
+                  "lat": 25.3601,
+                  "lng": 51.5276,
+                  "is_trending_spot": true,
+                  "cost": 258.0,
+                  "category": "restaurant|cafe",
+                  "description": "An Instagram-worthy spot known for its bohemian-chic interiors, diverse menu of nutrient-packed salad bowls and grills, and stunning panoramic views of Katara.",
+                  "social_buzz": "Highly popular on social media for its aesthetic decor, beautiful plating, and scenic outdoor terrace, attracting those looking for a stylish dining experience.",
+                  "rating": 4.5,
+                  "price_range": "$$$",
+                  "tags": [
+                    "instagrammable",
+                    "bohemian",
+                    "brunch",
+                    "views",
+                    "trendy"
+                  ],
+                  "source": "Wanderlog, Time Out Doha, Google reviews",
+                  "booking_url": "https://www.google.com/search?q=BOHO+Social+Doha+tickets+booking"
+                },
+                {
+                  "name": "National museum visit",
+                  "lat": 25.301634622976692,
+                  "lng": 51.486627584225815
+                },
+                {
+                  "name": "Rooftop café",
+                  "lat": 25.23617422264194,
+                  "lng": 51.55586935164406
+                },
+                {
+                  "name": "Local souq haggling",
+                  "lat": 25.2795970948459,
+                  "lng": 51.606026885476865
+                }
+              ],
+              "5": [
+                {
+                  "id": "trend_4_flat_white",
+                  "name": "🔥 TRENDING: Flat White Specialty Coffee",
+                  "lat": 25.367,
+                  "lng": 51.52,
+                  "is_trending_spot": true,
+                  "cost": 41.0,
+                  "category": "cafe",
+                  "description": "A pioneer in Doha's craft coffee scene, known for introducing the Australian flat white and offering exceptional coffee knowledge in industrial-chic interiors.",
+                  "social_buzz": "A favorite among coffee enthusiasts and locals for its quality brews, cozy ambiance, and contribution to Doha's evolving coffee culture.",
+                  "rating": 4.6,
+                  "price_range": "$",
+                  "tags": [
+                    "specialty coffee",
+                    "cafe",
+                    "trendy",
+                    "local favorite",
+                    "brunch"
+                  ],
+                  "source": "Forbes Travel Guide, Enjoy Travel, local blogs",
+                  "booking_url": "https://www.google.com/search?q=Flat+White+Specialty+Coffee+Doha+tickets+booking"
+                },
+                {
+                  "name": "Doha Corniche",
+                  "lat": 25.2882,
+                  "lng": 51.5357
+                },
+                {
+                  "name": "Mall exploration",
+                  "lat": 25.26615352555645,
+                  "lng": 51.5971691627236
+                },
+                {
+                  "name": "The Pearl-Qatar",
+                  "lat": 25.36807,
+                  "lng": 51.55012
+                }
+              ]
+            },
+            "hotel": {
+              "name": "Mandarin Oriental Doha",
+              "lat": 25.286,
+              "lng": 51.5268
+            }
+          },
+          "events": {
+            "city": "Doha",
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-13",
+            "events": [],
+            "total_event_cost": 0,
+            "scan_source": "none"
+          },
+          "web_research": {
+            "city": "Doha",
+            "research_date": "2026-05-08",
+            "social_posts": [
+              {
+                "platform": "blog",
+                "author": "Anoushka Probyn",
+                "content": "The Mina District, located in the Old Port of Doha, is highlighted as one of the most Instagrammable spots with its unique pastel-colored buildings, shops, cafes, and a beautiful fish market. It offers a unique experience away from the city's skyscrapers.",
+                "category": "hidden_gem",
+                "relevance_score": 0.95,
+                "url": "https://anoushkas.blog/doha-travel-guide/",
+                "likes": 0,
+                "posted_date": "January 11, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Seasoned Traveller",
+                "content": "Turkey Central Restaurant is a bustling, multi-storey establishment known for its grilled meats and skewers, particularly the 'tepsi kebabı'. It's a favorite among locals for its good value and big flavors.",
+                "category": "restaurant",
+                "relevance_score": 0.92,
+                "url": "https://seasonedtraveller.com/where-to-eat-in-doha/",
+                "likes": 0,
+                "posted_date": "July 17, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Silly Suitcase",
+                "content": "The Museum of Illusions Doha is recommended as a unique and offbeat experience, offering interactive exhibits that challenge perception and provide 'Instagrammable moments'. It's highly rated for all ages.",
+                "category": "hidden_gem",
+                "relevance_score": 0.9,
+                "url": "https://sillysuitcase.com/doha-hidden-gems/",
+                "likes": 0,
+                "posted_date": "March 17, 2026"
+              },
+              {
+                "platform": "blog",
+                "author": "Being Christina Jane",
+                "content": "A desert safari tour, including thrilling dune bashing, is a highly recommended unique experience in Doha. It's an unforgettable adventure for thrill-seekers.",
+                "category": "unique_experience",
+                "relevance_score": 0.93,
+                "url": "https://beingchristinajane.com/doha-travel-guide/",
+                "likes": 0,
+                "posted_date": "November 19, 2025"
+              },
+              {
+                "platform": "reddit",
+                "author": "Reddit user",
+                "content": "For nightlife, Sora Sky Lounge is recommended for the best view of the Doha skyline, offering a less busy alternative to other spots. Nightlife in Doha is generally quiet and concentrated in West Bay and The Pearl.",
+                "category": "nightlife",
+                "relevance_score": 0.88,
+                "url": "https://www.reddit.com/r/qatar/comments/142279i/night_life_downtown_doha/",
+                "likes": 0,
+                "posted_date": "June 06, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Great Value Vacations",
+                "content": "Visitors to Qatar are advised to dress modestly, ensuring shoulders and knees are covered in public places, out of respect for the local Muslim culture. Alcohol consumption is restricted to licensed hotel restaurants and bars.",
+                "category": "tip",
+                "relevance_score": 0.9,
+                "url": "https://www.greatvaluevacations.com/travel-guide/middle-east/qatar/doha/travel-tips",
+                "likes": 0,
+                "posted_date": "Undated (reviewed by travel expert)"
+              },
+              {
+                "platform": "blog",
+                "author": "Karlie Place",
+                "content": "Parisa Restaurant in West Bay is described as an opulent Persian restaurant with intricate mirror work and sparkling chandeliers, offering a magical atmosphere and must-try signature kebabs and saffron rice.",
+                "category": "restaurant",
+                "relevance_score": 0.91,
+                "url": "https://karlieplace.com/ultimate-guide-to-qatar-15-must-visit-destinations-for-luxury-and-culture/",
+                "likes": 0,
+                "posted_date": "November 29, 2024"
+              },
+              {
+                "platform": "government_advisory",
+                "author": "U.S. Department of State",
+                "content": "A travel advisory issued on March 2, 2026, recommends reconsidering travel to Qatar due to the risk of armed conflict. The U.S. Embassy in Doha has suspended routine consular services and encourages Americans to depart.",
+                "category": "warning",
+                "relevance_score": 1.0,
+                "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/qatar-travel-advisory.html",
+                "likes": 0,
+                "posted_date": "March 02, 2026"
+              }
+            ],
+            "trending_spots": [
+              {
+                "name": "Souq Waqif",
+                "category": "attraction|shopping",
+                "description": "A historic marketplace offering a labyrinth of alleyways filled with spices, textiles, handicrafts, traditional restaurants, and shisha lounges, providing a deep dive into Qatari culture.",
+                "price_range": "$",
+                "estimated_cost_sar": 80.0,
+                "rating": 4.7,
+                "source": "Tripadvisor, Google Maps, local blogs",
+                "lat": 25.2891,
+                "lng": 51.5354,
+                "social_buzz": "Constantly buzzing, especially in the evenings, with locals and tourists enjoying the vibrant atmosphere, traditional performances, and diverse culinary options.",
+                "tags": [
+                  "traditional market",
+                  "culture",
+                  "shopping",
+                  "dining",
+                  "historic"
+                ]
+              },
+              {
+                "name": "Museum of Islamic Art (MIA)",
+                "category": "attraction",
+                "description": "An architectural masterpiece designed by I.M. Pei, housing an an extensive collection of Islamic art and artifacts spanning 14 centuries, set on the Doha waterfront.",
+                "price_range": "$",
+                "estimated_cost_sar": 52.0,
+                "rating": 4.6,
+                "source": "Tripadvisor, Google Maps, GetYourGuide",
+                "lat": 25.2928,
+                "lng": 51.5394,
+                "social_buzz": "Praised for its stunning architecture, serene atmosphere, and world-class collections, often featured in travel photography.",
+                "tags": [
+                  "museum",
+                  "art",
+                  "architecture",
+                  "culture",
+                  "history"
+                ]
+              },
+              {
+                "name": "Nobu Doha",
+                "category": "restaurant",
+                "description": "The world's largest Nobu restaurant, offering Japanese-Peruvian fusion cuisine in an iconic setting on its own private pier with 360-degree views of the city.",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 515.0,
+                "rating": 4.7,
+                "source": "Wanderlog, Le Petit Chef, Google Maps",
+                "lat": 25.3262,
+                "lng": 51.5369,
+                "social_buzz": "Celebrated for its exquisite food, unique overwater location, and stunning sunset views, making it a popular spot for luxury dining and special occasions.",
+                "tags": [
+                  "fine dining",
+                  "Japanese-Peruvian",
+                  "luxury",
+                  "views",
+                  "iconic"
+                ]
+              },
+              {
+                "name": "BOHO Social",
+                "category": "restaurant|cafe",
+                "description": "An Instagram-worthy spot known for its bohemian-chic interiors, diverse menu of nutrient-packed salad bowls and grills, and stunning panoramic views of Katara.",
+                "price_range": "$$$",
+                "estimated_cost_sar": 258.0,
+                "rating": 4.5,
+                "source": "Wanderlog, Time Out Doha, Google reviews",
+                "lat": 25.3601,
+                "lng": 51.5276,
+                "social_buzz": "Highly popular on social media for its aesthetic decor, beautiful plating, and scenic outdoor terrace, attracting those looking for a stylish dining experience.",
+                "tags": [
+                  "instagrammable",
+                  "bohemian",
+                  "brunch",
+                  "views",
+                  "trendy"
+                ]
+              },
+              {
+                "name": "Flat White Specialty Coffee",
+                "category": "cafe",
+                "description": "A pioneer in Doha's craft coffee scene, known for introducing the Australian flat white and offering exceptional coffee knowledge in industrial-chic interiors.",
+                "price_range": "$",
+                "estimated_cost_sar": 41.0,
+                "rating": 4.6,
+                "source": "Forbes Travel Guide, Enjoy Travel, local blogs",
+                "lat": 25.367,
+                "lng": 51.52,
+                "social_buzz": "A favorite among coffee enthusiasts and locals for its quality brews, cozy ambiance, and contribution to Doha's evolving coffee culture.",
+                "tags": [
+                  "specialty coffee",
+                  "cafe",
+                  "trendy",
+                  "local favorite",
+                  "brunch"
+                ]
+              },
+              {
+                "name": "Dhow Cruise (Sunset/Dinner)",
+                "category": "unique experience",
+                "description": "A relaxing traditional wooden boat cruise along the Doha Corniche, offering breathtaking sunset views of the city skyline, often including dinner and Arabic hospitality.",
+                "price_range": "$$",
+                "estimated_cost_sar": 155.0,
+                "rating": 4.8,
+                "source": "GetYourGuide, Hotels.com, TravelPulse",
+                "lat": 25.2917,
+                "lng": 51.5383,
+                "social_buzz": "A quintessential Doha experience, frequently shared for its picturesque views, romantic atmosphere, and cultural charm, especially at sunset.",
+                "tags": [
+                  "cultural",
+                  "scenic",
+                  "sunset",
+                  "romantic",
+                  "boat trip"
+                ]
+              },
+              {
+                "name": "La Vista 55",
+                "category": "nightlife",
+                "description": "A high-energy bar located on the 55th floor of the InterContinental Doha The City, offering stunning panoramic views of the West Bay skyline, Cuban tunes, and tasty tacos.",
+                "price_range": "$$$",
+                "estimated_cost_sar": 206.0,
+                "rating": 4.3,
+                "source": "Travel Guides, Time Out Doha",
+                "lat": 25.3236,
+                "lng": 51.523,
+                "social_buzz": "Popular for its impressive views, vibrant atmosphere, and Latin music, making it a go-to spot for a sophisticated night out.",
+                "tags": [
+                  "rooftop bar",
+                  "nightlife",
+                  "views",
+                  "cocktails",
+                  "trendy"
+                ]
+              },
+              {
+                "name": "The Pearl-Qatar",
+                "category": "attraction|shopping",
+                "description": "An opulent man-made island featuring luxury residences, high-end boutiques, international restaurants, and picturesque marinas, often referred to as the 'Arabian Riviera.'",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 309.0,
+                "rating": 4.7,
+                "source": "Tripadvisor, Hotels.com, Viator",
+                "lat": 25.378,
+                "lng": 51.526,
+                "social_buzz": "A symbol of luxury and modern Doha, frequently showcased on social media for its stunning architecture, upscale lifestyle, and diverse entertainment options.",
+                "tags": [
+                  "luxury",
+                  "shopping",
+                  "dining",
+                  "marina",
+                  "modern architecture"
+                ]
+              }
+            ],
+            "local_insights": [
+              {
+                "tip": "Pack breathable fabrics like linen or cotton, long sleeves, and wide-leg trousers to stay cool and adhere to modesty requirements.",
+                "category": "weather",
+                "source": "Packfits, Wandering Weather, Asher & Lyric, Qatar Dresscode Explained, Sidxt",
+                "confidence": "high"
+              },
+              {
+                "tip": "Bring a light jacket or cardigan for air-conditioned indoor spaces, which can be quite cold.",
+                "category": "weather",
+                "source": "Packfits, Wandering Weather, Asher & Lyric",
+                "confidence": "high"
+              },
+              {
+                "tip": "Essential sun protection includes high-SPF sunscreen, UV-protective sunglasses, and a wide-brim hat.",
+                "category": "weather",
+                "source": "Packfits, Wandering Weather, Qatar Dresscode Explained, Sidxt",
+                "confidence": "high"
+              },
+              {
+                "tip": "Wear comfortable walking shoes or sneakers for city exploration and closed, grippy shoes for desert excursions.",
+                "category": "weather",
+                "source": "Packfits, Wandering Weather, Qatar Dresscode Explained",
+                "confidence": "high"
+              },
+              {
+                "tip": "Schedule outdoor activities for early morning or late afternoon to avoid the scorching midday heat.",
+                "category": "weather",
+                "source": "Packfits",
+                "confidence": "high"
+              },
+              {
+                "tip": "Utilize the cheap and efficient Doha Metro, with rides costing QR2 per trip and capped at QR6 per day.",
+                "category": "money_saving",
+                "source": "Lonely Planet, Reddit, Travel with Niyo",
+                "confidence": "high"
+              },
+              {
+                "tip": "Consider Qatar Airways stopover deals, which can include accommodation for a very low price.",
+                "category": "money_saving",
+                "source": "Lonely Planet",
+                "confidence": "high"
+              },
+              {
+                "tip": "Drink tap water, which is safe to consume, and carry a reusable bottle to save money on bottled water.",
+                "category": "money_saving",
+                "source": "Lonely Planet",
+                "confidence": "high"
+              }
+            ],
+            "weather_summary": "Doha, Qatar is currently experiencing hot and sunny conditions with temperatures around 38-39°C (100-102°F) and a RealFeel of 37°C (98°F).",
+            "scan_successful": true
+          },
+          "dates": {
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-13"
+          },
+          "map": {
+            "origin": {
+              "lat": 24.7136,
+              "lng": 46.6753
+            },
+            "destination": {
+              "lat": 25.2854,
+              "lng": 51.531
+            },
+            "origin_name": "Riyadh",
+            "dest_name": "Doha"
+          },
+          "hospitality": {
+            "hotels": [
+              {
+                "id": "Safir Hotel Doha",
+                "name": "Safir Hotel Doha",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 4.0,
+                "description": "A luxury hotel featuring an outdoor pool, a children's pool, and a gym.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 51.15,
+                    "final_price_sar": 51.15,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 71.6,
+                    "final_price_sar": 71.6,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "has_availability": true,
+                "live_price_sar": 51.145,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 51.145,
+                  "final_price_sar": 51.145,
+                  "discount_percent": 0
+                },
+                "vibe": "",
+                "booking_url": "https://www.booking.com/searchresults.html?ss=Safir+Hotel+Doha+Doha&checkin=2026-05-09&checkout=2026-05-13&group_adults=2&group_children=0&no_rooms=1"
+              },
+              {
+                "id": "Best Western Plus Do",
+                "name": "Best Western Plus Doha Hotel",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 3.6,
+                "description": "A hotel offering breakfast and located near Doha International Airport.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 59.3,
+                    "final_price_sar": 59.3,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 83.01,
+                    "final_price_sar": 83.01,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.260449037339065,
+                "lng": 51.52064622008713,
+                "has_availability": true,
+                "live_price_sar": 59.296,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 59.296,
+                  "final_price_sar": 59.296,
+                  "discount_percent": 0
+                },
+                "vibe": "",
+                "booking_url": "https://www.booking.com/searchresults.html?ss=Best+Western+Plus+Doha+Hotel+Doha&checkin=2026-05-09&checkout=2026-05-13&group_adults=2&group_children=0&no_rooms=1"
+              },
+              {
+                "id": "Central Inn Souq Waq",
+                "name": "Central Inn Souq Waqif",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "A centrally located hotel with an amazing ambiance.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 73.23,
+                    "final_price_sar": 73.23,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 102.52,
+                    "final_price_sar": 102.52,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.26577435962348,
+                "lng": 51.57109271416387,
+                "has_availability": true,
+                "live_price_sar": 73.231,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 73.231,
+                  "final_price_sar": 73.231,
+                  "discount_percent": 0
+                },
+                "vibe": "",
+                "booking_url": "https://www.booking.com/searchresults.html?ss=Central+Inn+Souq+Waqif+Doha&checkin=2026-05-09&checkout=2026-05-13&group_adults=2&group_children=0&no_rooms=1"
+              },
+              {
+                "id": "The Curve Hotel",
+                "name": "The Curve Hotel",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 4.0,
+                "description": "A hotel located in West Bay, offering various amenities.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 116.48,
+                    "final_price_sar": 116.48,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 163.07,
+                    "final_price_sar": 163.07,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.238758333056598,
+                "lng": 51.52888711995699,
+                "has_availability": true,
+                "live_price_sar": 116.479,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 116.479,
+                  "final_price_sar": 116.479,
+                  "discount_percent": 0
+                },
+                "vibe": "",
+                "booking_url": "https://www.booking.com/searchresults.html?ss=The+Curve+Hotel+Doha&checkin=2026-05-09&checkout=2026-05-13&group_adults=2&group_children=0&no_rooms=1"
+              },
+              {
+                "id": "Doha Dynasty Hotel",
+                "name": "Doha Dynasty Hotel",
+                "city": "Doha",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "An affordable hotel located in Old Doha City.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 131.0,
+                    "final_price_sar": 131.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 183.4,
+                    "final_price_sar": 183.4,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 25.306861138609882,
+                "lng": 51.53054235021474,
+                "has_availability": true,
+                "live_price_sar": 131.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Doha/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 131.0,
+                  "final_price_sar": 131.0,
+                  "discount_percent": 0
+                },
+                "vibe": "",
+                "booking_url": "https://www.booking.com/searchresults.html?ss=Doha+Dynasty+Hotel+Doha&checkin=2026-05-09&checkout=2026-05-13&group_adults=2&group_children=0&no_rooms=1"
+              }
+            ],
+            "restaurants": [
+              {
+                "id": "619",
+                "name": "Jiwan Restaurant",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.7,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 8,
+                "available_tables": 12,
+                "discount_percent": 12.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 180.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 54.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 72.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.26929978843381,
+                "lng": 51.51404963636091,
+                "almosafer_url": "https://www.google.com/search?q=Jiwan+Restaurant+doha+reservation",
+                "booking_url": "https://www.google.com/search?q=Jiwan+Restaurant+doha+reservation"
+              },
+              {
+                "id": "616",
+                "name": "Shay Al Shoomos",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.5,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 18,
+                "available_tables": 2,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 30.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 9.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 12.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.257672309762853,
+                "lng": 51.48132799345036,
+                "almosafer_url": "https://www.google.com/search?q=Shay+Al+Shoomos+doha+reservation",
+                "booking_url": "https://www.google.com/search?q=Shay+Al+Shoomos+doha+reservation"
+              },
+              {
+                "id": "617",
+                "name": "Walima",
+                "city": "doha",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.5,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 17,
+                "available_tables": 3,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 150.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 45.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 60.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 25.273886414911747,
+                "lng": 51.550436504106294,
+                "almosafer_url": "https://www.google.com/search?q=Walima+doha+reservation",
+                "booking_url": "https://www.google.com/search?q=Walima+doha+reservation"
+              }
+            ],
+            "travel_costs": {
+              "status": "success",
+              "flights": [],
+              "origin": "riyadh",
+              "destination": "Doha",
+              "travel_mode": "car"
+            }
+          },
+          "timeline": {
+            "1": {
+              "legs": [
+                {
+                  "from_name": "Riyadh",
+                  "from_lat": 24.7136,
+                  "from_lng": 46.6753,
+                  "to_name": "Safir Hotel Doha",
+                  "to_lat": 25.326896183729577,
+                  "to_lng": 51.54775268957496,
+                  "mode": "🚗 Long-haul",
+                  "dist": 0,
+                  "time_minutes": 0,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                },
+                {
+                  "from_name": "Safir Hotel Doha",
+                  "from_lat": 25.326896183729577,
+                  "from_lng": 51.54775268957496,
+                  "to_name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+                  "to_lat": 25.2917,
+                  "to_lng": 51.5383,
+                  "mode": "🚗 Drive",
+                  "dist": 4.03,
+                  "time_minutes": 5,
+                  "cost": 0.73
+                },
+                {
+                  "from_name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+                  "from_lat": 25.2917,
+                  "from_lng": 51.5383,
+                  "to_name": "🔥 TRENDING: Souq Waqif",
+                  "to_lat": 25.2891,
+                  "to_lng": 51.5354,
+                  "mode": "🚶 Walk",
+                  "dist": 0.41,
+                  "time_minutes": 5,
+                  "cost": 0
+                },
+                {
+                  "from_name": "🔥 TRENDING: Souq Waqif",
+                  "from_lat": 25.2891,
+                  "from_lng": 51.5354,
+                  "to_name": "Parked Car",
+                  "to_lat": 25.2917,
+                  "to_lng": 51.5383,
+                  "mode": "🚶 Walk to car",
+                  "dist": 0.41,
+                  "time_minutes": 5,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Parked Car",
+                  "from_lat": 25.2917,
+                  "from_lng": 51.5383,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 25.337464730791744,
+                  "to_lng": 51.45257970439869,
+                  "mode": "🚗 Drive",
+                  "dist": 10.01,
+                  "time_minutes": 12,
+                  "cost": 1.82
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 25.337464730791744,
+                  "from_lng": 51.45257970439869,
+                  "to_name": "Boulevard Riyadh City",
+                  "to_lat": 25.30748756058668,
+                  "to_lng": 51.57240618556876,
+                  "mode": "🚗 Drive",
+                  "dist": 12.5,
+                  "time_minutes": 15,
+                  "cost": 2.27
+                },
+                {
+                  "from_name": "Boulevard Riyadh City",
+                  "from_lat": 25.30748756058668,
+                  "from_lng": 51.57240618556876,
+                  "to_name": "Historical palaces walking tour",
+                  "to_lat": 25.275010528992834,
+                  "to_lng": 51.5869132636795,
+                  "mode": "🚗 Drive",
+                  "dist": 3.89,
+                  "time_minutes": 5,
+                  "cost": 0.71
+                },
+                {
+                  "from_name": "Historical palaces walking tour",
+                  "from_lat": 25.275010528992834,
+                  "from_lng": 51.5869132636795,
+                  "to_name": "Safir Hotel Doha",
+                  "to_lat": 25.326896183729577,
+                  "to_lng": 51.54775268957496,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 6.98,
+                  "time_minutes": 8,
+                  "cost": 1.27
+                }
+              ],
+              "day_cost": 6.8,
+              "recommendation": ""
+            },
+            "2": {
+              "legs": [
+                {
+                  "from_name": "Safir Hotel Doha",
+                  "from_lat": 25.326896183729577,
+                  "from_lng": 51.54775268957496,
+                  "to_name": "🔥 TRENDING: La Vista 55",
+                  "to_lat": 25.3236,
+                  "to_lng": 51.523,
+                  "mode": "🚗 Drive",
+                  "dist": 2.51,
+                  "time_minutes": 3,
+                  "cost": 0.46
+                },
+                {
+                  "from_name": "🔥 TRENDING: La Vista 55",
+                  "from_lat": 25.3236,
+                  "from_lng": 51.523,
+                  "to_name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+                  "to_lat": 25.2928,
+                  "to_lng": 51.5394,
+                  "mode": "🚗 Drive",
+                  "dist": 3.8,
+                  "time_minutes": 5,
+                  "cost": 0.69
+                },
+                {
+                  "from_name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+                  "from_lat": 25.2928,
+                  "from_lng": 51.5394,
+                  "to_name": "Msheireb Downtown Doha",
+                  "to_lat": 25.286,
+                  "to_lng": 51.5268,
+                  "mode": "🚗 Drive",
+                  "dist": 1.48,
+                  "time_minutes": 2,
+                  "cost": 0.27
+                },
+                {
+                  "from_name": "Msheireb Downtown Doha",
+                  "from_lat": 25.286,
+                  "from_lng": 51.5268,
+                  "to_name": "Souq Waqif",
+                  "to_lat": 25.28775,
+                  "to_lng": 51.53259,
+                  "mode": "🚶 Walk",
+                  "dist": 0.61,
+                  "time_minutes": 7,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Souq Waqif",
+                  "from_lat": 25.28775,
+                  "from_lng": 51.53259,
+                  "to_name": "Parked Car",
+                  "to_lat": 25.286,
+                  "to_lng": 51.5268,
+                  "mode": "🚶 Walk to car",
+                  "dist": 0.61,
+                  "time_minutes": 7,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Parked Car",
+                  "from_lat": 25.286,
+                  "from_lng": 51.5268,
+                  "to_name": "Museum of Islamic Art (MIA)",
+                  "to_lat": 25.29546,
+                  "to_lng": 51.53898,
+                  "mode": "🚗 Drive",
+                  "dist": 1.61,
+                  "time_minutes": 2,
+                  "cost": 0.29
+                },
+                {
+                  "from_name": "Museum of Islamic Art (MIA)",
+                  "from_lat": 25.29546,
+                  "from_lng": 51.53898,
+                  "to_name": "Safir Hotel Doha",
+                  "to_lat": 25.326896183729577,
+                  "to_lng": 51.54775268957496,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 3.61,
+                  "time_minutes": 4,
+                  "cost": 0.65
+                }
+              ],
+              "day_cost": 2.36,
+              "recommendation": ""
+            },
+            "3": {
+              "legs": [
+                {
+                  "from_name": "Safir Hotel Doha",
+                  "from_lat": 25.326896183729577,
+                  "from_lng": 51.54775268957496,
+                  "to_name": "🔥 TRENDING: The Pearl-Qatar",
+                  "to_lat": 25.378,
+                  "to_lng": 51.526,
+                  "mode": "🚗 Drive",
+                  "dist": 6.09,
+                  "time_minutes": 7,
+                  "cost": 1.11
+                },
+                {
+                  "from_name": "🔥 TRENDING: The Pearl-Qatar",
+                  "from_lat": 25.378,
+                  "from_lng": 51.526,
+                  "to_name": "🔥 TRENDING: Nobu Doha",
+                  "to_lat": 25.3262,
+                  "to_lng": 51.5369,
+                  "mode": "🚗 Drive",
+                  "dist": 5.86,
+                  "time_minutes": 7,
+                  "cost": 1.07
+                },
+                {
+                  "from_name": "🔥 TRENDING: Nobu Doha",
+                  "from_lat": 25.3262,
+                  "from_lng": 51.5369,
+                  "to_name": "National Museum of Qatar",
+                  "to_lat": 25.28794,
+                  "to_lng": 51.54922,
+                  "mode": "🚗 Drive",
+                  "dist": 4.43,
+                  "time_minutes": 5,
+                  "cost": 0.8
+                },
+                {
+                  "from_name": "National Museum of Qatar",
+                  "from_lat": 25.28794,
+                  "from_lng": 51.54922,
+                  "to_name": "Historical Diriyah tour",
+                  "to_lat": 25.343779251384213,
+                  "to_lng": 51.548088187350565,
+                  "mode": "🚗 Drive",
+                  "dist": 6.21,
+                  "time_minutes": 7,
+                  "cost": 1.13
+                },
+                {
+                  "from_name": "Historical Diriyah tour",
+                  "from_lat": 25.343779251384213,
+                  "from_lng": 51.548088187350565,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 25.309091533532477,
+                  "to_lng": 51.47921488060294,
+                  "mode": "🚗 Drive",
+                  "dist": 7.92,
+                  "time_minutes": 10,
+                  "cost": 1.44
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 25.309091533532477,
+                  "from_lng": 51.47921488060294,
+                  "to_name": "Safir Hotel Doha",
+                  "to_lat": 25.326896183729577,
+                  "to_lng": 51.54775268957496,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 7.17,
+                  "time_minutes": 9,
+                  "cost": 1.3
+                }
+              ],
+              "day_cost": 6.85,
+              "recommendation": ""
+            },
+            "4": {
+              "legs": [
+                {
+                  "from_name": "Safir Hotel Doha",
+                  "from_lat": 25.326896183729577,
+                  "from_lng": 51.54775268957496,
+                  "to_name": "🔥 TRENDING: BOHO Social",
+                  "to_lat": 25.3601,
+                  "to_lng": 51.5276,
+                  "mode": "🚗 Drive",
+                  "dist": 4.21,
+                  "time_minutes": 5,
+                  "cost": 0.77
+                },
+                {
+                  "from_name": "🔥 TRENDING: BOHO Social",
+                  "from_lat": 25.3601,
+                  "from_lng": 51.5276,
+                  "to_name": "National museum visit",
+                  "to_lat": 25.301634622976692,
+                  "to_lng": 51.486627584225815,
+                  "mode": "🚗 Drive",
+                  "dist": 7.7,
+                  "time_minutes": 9,
+                  "cost": 1.4
+                },
+                {
+                  "from_name": "National museum visit",
+                  "from_lat": 25.301634622976692,
+                  "from_lng": 51.486627584225815,
+                  "to_name": "Rooftop café",
+                  "to_lat": 25.23617422264194,
+                  "to_lng": 51.55586935164406,
+                  "mode": "🚗 Drive",
+                  "dist": 10.07,
+                  "time_minutes": 12,
+                  "cost": 1.83
+                },
+                {
+                  "from_name": "Rooftop café",
+                  "from_lat": 25.23617422264194,
+                  "from_lng": 51.55586935164406,
+                  "to_name": "Local souq haggling",
+                  "to_lat": 25.2795970948459,
+                  "to_lng": 51.606026885476865,
+                  "mode": "🚗 Drive",
+                  "dist": 6.98,
+                  "time_minutes": 8,
+                  "cost": 1.27
+                },
+                {
+                  "from_name": "Local souq haggling",
+                  "from_lat": 25.2795970948459,
+                  "from_lng": 51.606026885476865,
+                  "to_name": "Safir Hotel Doha",
+                  "to_lat": 25.326896183729577,
+                  "to_lng": 51.54775268957496,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 7.87,
+                  "time_minutes": 9,
+                  "cost": 1.43
+                }
+              ],
+              "day_cost": 6.7,
+              "recommendation": ""
+            },
+            "5": {
+              "legs": [
+                {
+                  "from_name": "Safir Hotel Doha",
+                  "from_lat": 25.326896183729577,
+                  "from_lng": 51.54775268957496,
+                  "to_name": "🔥 TRENDING: Flat White Specialty Coffee",
+                  "to_lat": 25.367,
+                  "to_lng": 51.52,
+                  "mode": "🚗 Drive",
+                  "dist": 5.26,
+                  "time_minutes": 6,
+                  "cost": 0.96
+                },
+                {
+                  "from_name": "🔥 TRENDING: Flat White Specialty Coffee",
+                  "from_lat": 25.367,
+                  "from_lng": 51.52,
+                  "to_name": "Doha Corniche",
+                  "to_lat": 25.2882,
+                  "to_lng": 51.5357,
+                  "mode": "🚗 Drive",
+                  "dist": 8.9,
+                  "time_minutes": 11,
+                  "cost": 1.62
+                },
+                {
+                  "from_name": "Doha Corniche",
+                  "from_lat": 25.2882,
+                  "from_lng": 51.5357,
+                  "to_name": "Mall exploration",
+                  "to_lat": 25.26615352555645,
+                  "to_lng": 51.5971691627236,
+                  "mode": "🚗 Drive",
+                  "dist": 6.65,
+                  "time_minutes": 8,
+                  "cost": 1.21
+                },
+                {
+                  "from_name": "Mall exploration",
+                  "from_lat": 25.26615352555645,
+                  "from_lng": 51.5971691627236,
+                  "to_name": "The Pearl-Qatar",
+                  "to_lat": 25.36807,
+                  "to_lng": 51.55012,
+                  "mode": "🚗 Drive",
+                  "dist": 12.28,
+                  "time_minutes": 15,
+                  "cost": 2.23
+                },
+                {
+                  "from_name": "The Pearl-Qatar",
+                  "from_lat": 25.36807,
+                  "from_lng": 51.55012,
+                  "to_name": "Safir Hotel Doha",
+                  "to_lat": 25.326896183729577,
+                  "to_lng": 51.54775268957496,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 4.58,
+                  "time_minutes": 6,
+                  "cost": 0.83
+                },
+                {
+                  "from_name": "Safir Hotel Doha",
+                  "from_lat": 25.326896183729577,
+                  "from_lng": 51.54775268957496,
+                  "to_name": "Riyadh",
+                  "to_lat": 24.7136,
+                  "to_lng": 46.6753,
+                  "mode": "🚗 Return",
+                  "dist": 0,
+                  "time_minutes": 0,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                }
+              ],
+              "day_cost": 6.85,
+              "recommendation": ""
+            }
+          },
+          "total_transit_cost": 29.56,
+          "simulation_routes": {
+            "1": [
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin",
+                "day": 1
+              },
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+                "lat": 25.2917,
+                "lng": 51.5383,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: Souq Waqif",
+                "lat": 25.2891,
+                "lng": 51.5354,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 25.337464730791744,
+                "lng": 51.45257970439869,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Boulevard Riyadh City",
+                "lat": 25.30748756058668,
+                "lng": 51.57240618556876,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Historical palaces walking tour",
+                "lat": 25.275010528992834,
+                "lng": 51.5869132636795,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel_return",
+                "day": 1
+              }
+            ],
+            "2": [
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: La Vista 55",
+                "lat": 25.3236,
+                "lng": 51.523,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+                "lat": 25.2928,
+                "lng": 51.5394,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Msheireb Downtown Doha",
+                "lat": 25.286,
+                "lng": 51.5268,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Souq Waqif",
+                "lat": 25.28775,
+                "lng": 51.53259,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Museum of Islamic Art (MIA)",
+                "lat": 25.29546,
+                "lng": 51.53898,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel_return",
+                "day": 2
+              }
+            ],
+            "3": [
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: The Pearl-Qatar",
+                "lat": 25.378,
+                "lng": 51.526,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: Nobu Doha",
+                "lat": 25.3262,
+                "lng": 51.5369,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "National Museum of Qatar",
+                "lat": 25.28794,
+                "lng": 51.54922,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Historical Diriyah tour",
+                "lat": 25.343779251384213,
+                "lng": 51.548088187350565,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 25.309091533532477,
+                "lng": 51.47921488060294,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel_return",
+                "day": 3
+              }
+            ],
+            "4": [
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel",
+                "day": 4
+              },
+              {
+                "name": "🔥 TRENDING: BOHO Social",
+                "lat": 25.3601,
+                "lng": 51.5276,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "National museum visit",
+                "lat": 25.301634622976692,
+                "lng": 51.486627584225815,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Rooftop café",
+                "lat": 25.23617422264194,
+                "lng": 51.55586935164406,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Local souq haggling",
+                "lat": 25.2795970948459,
+                "lng": 51.606026885476865,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel_return",
+                "day": 4
+              }
+            ],
+            "5": [
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel",
+                "day": 5
+              },
+              {
+                "name": "🔥 TRENDING: Flat White Specialty Coffee",
+                "lat": 25.367,
+                "lng": 51.52,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Doha Corniche",
+                "lat": 25.2882,
+                "lng": 51.5357,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Mall exploration",
+                "lat": 25.26615352555645,
+                "lng": 51.5971691627236,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "The Pearl-Qatar",
+                "lat": 25.36807,
+                "lng": 51.55012,
+                "type": "activity",
+                "day": 5
+              },
+              {
+                "name": "Safir Hotel Doha",
+                "lat": 25.326896183729577,
+                "lng": 51.54775268957496,
+                "type": "hotel_return",
+                "day": 5
+              },
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin_return",
+                "day": 5
+              }
+            ]
+          },
+          "full_trip_dataset": [
+            {
+              "from_name": "Riyadh",
+              "from_lat": 24.7136,
+              "from_lng": 46.6753,
+              "to_name": "Safir Hotel Doha",
+              "to_lat": 25.326896183729577,
+              "to_lng": 51.54775268957496,
+              "mode": "🚗 Long-haul",
+              "dist": 0,
+              "time_minutes": 0,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Safir Hotel Doha",
+              "from_lat": 25.326896183729577,
+              "from_lng": 51.54775268957496,
+              "to_name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+              "to_lat": 25.2917,
+              "to_lng": 51.5383,
+              "mode": "🚗 Drive",
+              "dist": 4.03,
+              "time_minutes": 5,
+              "cost": 0.73
+            },
+            {
+              "from_name": "🔥 TRENDING: Dhow Cruise (Sunset/Dinner)",
+              "from_lat": 25.2917,
+              "from_lng": 51.5383,
+              "to_name": "🔥 TRENDING: Souq Waqif",
+              "to_lat": 25.2891,
+              "to_lng": 51.5354,
+              "mode": "🚶 Walk",
+              "dist": 0.41,
+              "time_minutes": 5,
+              "cost": 0
+            },
+            {
+              "from_name": "🔥 TRENDING: Souq Waqif",
+              "from_lat": 25.2891,
+              "from_lng": 51.5354,
+              "to_name": "Parked Car",
+              "to_lat": 25.2917,
+              "to_lng": 51.5383,
+              "mode": "🚶 Walk to car",
+              "dist": 0.41,
+              "time_minutes": 5,
+              "cost": 0
+            },
+            {
+              "from_name": "Parked Car",
+              "from_lat": 25.2917,
+              "from_lng": 51.5383,
+              "to_name": "Modern architecture sightseeing",
+              "to_lat": 25.337464730791744,
+              "to_lng": 51.45257970439869,
+              "mode": "🚗 Drive",
+              "dist": 10.01,
+              "time_minutes": 12,
+              "cost": 1.82
+            },
+            {
+              "from_name": "Modern architecture sightseeing",
+              "from_lat": 25.337464730791744,
+              "from_lng": 51.45257970439869,
+              "to_name": "Boulevard Riyadh City",
+              "to_lat": 25.30748756058668,
+              "to_lng": 51.57240618556876,
+              "mode": "🚗 Drive",
+              "dist": 12.5,
+              "time_minutes": 15,
+              "cost": 2.27
+            },
+            {
+              "from_name": "Boulevard Riyadh City",
+              "from_lat": 25.30748756058668,
+              "from_lng": 51.57240618556876,
+              "to_name": "Historical palaces walking tour",
+              "to_lat": 25.275010528992834,
+              "to_lng": 51.5869132636795,
+              "mode": "🚗 Drive",
+              "dist": 3.89,
+              "time_minutes": 5,
+              "cost": 0.71
+            },
+            {
+              "from_name": "Historical palaces walking tour",
+              "from_lat": 25.275010528992834,
+              "from_lng": 51.5869132636795,
+              "to_name": "Safir Hotel Doha",
+              "to_lat": 25.326896183729577,
+              "to_lng": 51.54775268957496,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 6.98,
+              "time_minutes": 8,
+              "cost": 1.27
+            },
+            {
+              "from_name": "Safir Hotel Doha",
+              "from_lat": 25.326896183729577,
+              "from_lng": 51.54775268957496,
+              "to_name": "🔥 TRENDING: La Vista 55",
+              "to_lat": 25.3236,
+              "to_lng": 51.523,
+              "mode": "🚗 Drive",
+              "dist": 2.51,
+              "time_minutes": 3,
+              "cost": 0.46
+            },
+            {
+              "from_name": "🔥 TRENDING: La Vista 55",
+              "from_lat": 25.3236,
+              "from_lng": 51.523,
+              "to_name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+              "to_lat": 25.2928,
+              "to_lng": 51.5394,
+              "mode": "🚗 Drive",
+              "dist": 3.8,
+              "time_minutes": 5,
+              "cost": 0.69
+            },
+            {
+              "from_name": "🔥 TRENDING: Museum of Islamic Art (MIA)",
+              "from_lat": 25.2928,
+              "from_lng": 51.5394,
+              "to_name": "Msheireb Downtown Doha",
+              "to_lat": 25.286,
+              "to_lng": 51.5268,
+              "mode": "🚗 Drive",
+              "dist": 1.48,
+              "time_minutes": 2,
+              "cost": 0.27
+            },
+            {
+              "from_name": "Msheireb Downtown Doha",
+              "from_lat": 25.286,
+              "from_lng": 51.5268,
+              "to_name": "Souq Waqif",
+              "to_lat": 25.28775,
+              "to_lng": 51.53259,
+              "mode": "🚶 Walk",
+              "dist": 0.61,
+              "time_minutes": 7,
+              "cost": 0
+            },
+            {
+              "from_name": "Souq Waqif",
+              "from_lat": 25.28775,
+              "from_lng": 51.53259,
+              "to_name": "Parked Car",
+              "to_lat": 25.286,
+              "to_lng": 51.5268,
+              "mode": "🚶 Walk to car",
+              "dist": 0.61,
+              "time_minutes": 7,
+              "cost": 0
+            },
+            {
+              "from_name": "Parked Car",
+              "from_lat": 25.286,
+              "from_lng": 51.5268,
+              "to_name": "Museum of Islamic Art (MIA)",
+              "to_lat": 25.29546,
+              "to_lng": 51.53898,
+              "mode": "🚗 Drive",
+              "dist": 1.61,
+              "time_minutes": 2,
+              "cost": 0.29
+            },
+            {
+              "from_name": "Museum of Islamic Art (MIA)",
+              "from_lat": 25.29546,
+              "from_lng": 51.53898,
+              "to_name": "Safir Hotel Doha",
+              "to_lat": 25.326896183729577,
+              "to_lng": 51.54775268957496,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 3.61,
+              "time_minutes": 4,
+              "cost": 0.65
+            },
+            {
+              "from_name": "Safir Hotel Doha",
+              "from_lat": 25.326896183729577,
+              "from_lng": 51.54775268957496,
+              "to_name": "🔥 TRENDING: The Pearl-Qatar",
+              "to_lat": 25.378,
+              "to_lng": 51.526,
+              "mode": "🚗 Drive",
+              "dist": 6.09,
+              "time_minutes": 7,
+              "cost": 1.11
+            },
+            {
+              "from_name": "🔥 TRENDING: The Pearl-Qatar",
+              "from_lat": 25.378,
+              "from_lng": 51.526,
+              "to_name": "🔥 TRENDING: Nobu Doha",
+              "to_lat": 25.3262,
+              "to_lng": 51.5369,
+              "mode": "🚗 Drive",
+              "dist": 5.86,
+              "time_minutes": 7,
+              "cost": 1.07
+            },
+            {
+              "from_name": "🔥 TRENDING: Nobu Doha",
+              "from_lat": 25.3262,
+              "from_lng": 51.5369,
+              "to_name": "National Museum of Qatar",
+              "to_lat": 25.28794,
+              "to_lng": 51.54922,
+              "mode": "🚗 Drive",
+              "dist": 4.43,
+              "time_minutes": 5,
+              "cost": 0.8
+            },
+            {
+              "from_name": "National Museum of Qatar",
+              "from_lat": 25.28794,
+              "from_lng": 51.54922,
+              "to_name": "Historical Diriyah tour",
+              "to_lat": 25.343779251384213,
+              "to_lng": 51.548088187350565,
+              "mode": "🚗 Drive",
+              "dist": 6.21,
+              "time_minutes": 7,
+              "cost": 1.13
+            },
+            {
+              "from_name": "Historical Diriyah tour",
+              "from_lat": 25.343779251384213,
+              "from_lng": 51.548088187350565,
+              "to_name": "City center landmark walk",
+              "to_lat": 25.309091533532477,
+              "to_lng": 51.47921488060294,
+              "mode": "🚗 Drive",
+              "dist": 7.92,
+              "time_minutes": 10,
+              "cost": 1.44
+            },
+            {
+              "from_name": "City center landmark walk",
+              "from_lat": 25.309091533532477,
+              "from_lng": 51.47921488060294,
+              "to_name": "Safir Hotel Doha",
+              "to_lat": 25.326896183729577,
+              "to_lng": 51.54775268957496,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 7.17,
+              "time_minutes": 9,
+              "cost": 1.3
+            },
+            {
+              "from_name": "Safir Hotel Doha",
+              "from_lat": 25.326896183729577,
+              "from_lng": 51.54775268957496,
+              "to_name": "🔥 TRENDING: BOHO Social",
+              "to_lat": 25.3601,
+              "to_lng": 51.5276,
+              "mode": "🚗 Drive",
+              "dist": 4.21,
+              "time_minutes": 5,
+              "cost": 0.77
+            },
+            {
+              "from_name": "🔥 TRENDING: BOHO Social",
+              "from_lat": 25.3601,
+              "from_lng": 51.5276,
+              "to_name": "National museum visit",
+              "to_lat": 25.301634622976692,
+              "to_lng": 51.486627584225815,
+              "mode": "🚗 Drive",
+              "dist": 7.7,
+              "time_minutes": 9,
+              "cost": 1.4
+            },
+            {
+              "from_name": "National museum visit",
+              "from_lat": 25.301634622976692,
+              "from_lng": 51.486627584225815,
+              "to_name": "Rooftop café",
+              "to_lat": 25.23617422264194,
+              "to_lng": 51.55586935164406,
+              "mode": "🚗 Drive",
+              "dist": 10.07,
+              "time_minutes": 12,
+              "cost": 1.83
+            },
+            {
+              "from_name": "Rooftop café",
+              "from_lat": 25.23617422264194,
+              "from_lng": 51.55586935164406,
+              "to_name": "Local souq haggling",
+              "to_lat": 25.2795970948459,
+              "to_lng": 51.606026885476865,
+              "mode": "🚗 Drive",
+              "dist": 6.98,
+              "time_minutes": 8,
+              "cost": 1.27
+            },
+            {
+              "from_name": "Local souq haggling",
+              "from_lat": 25.2795970948459,
+              "from_lng": 51.606026885476865,
+              "to_name": "Safir Hotel Doha",
+              "to_lat": 25.326896183729577,
+              "to_lng": 51.54775268957496,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 7.87,
+              "time_minutes": 9,
+              "cost": 1.43
+            },
+            {
+              "from_name": "Safir Hotel Doha",
+              "from_lat": 25.326896183729577,
+              "from_lng": 51.54775268957496,
+              "to_name": "Riyadh",
+              "to_lat": 24.7136,
+              "to_lng": 46.6753,
+              "mode": "🚗 Return",
+              "dist": 0,
+              "time_minutes": 0,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Safir Hotel Doha",
+              "from_lat": 25.326896183729577,
+              "from_lng": 51.54775268957496,
+              "to_name": "🔥 TRENDING: Flat White Specialty Coffee",
+              "to_lat": 25.367,
+              "to_lng": 51.52,
+              "mode": "🚗 Drive",
+              "dist": 5.26,
+              "time_minutes": 6,
+              "cost": 0.96
+            },
+            {
+              "from_name": "🔥 TRENDING: Flat White Specialty Coffee",
+              "from_lat": 25.367,
+              "from_lng": 51.52,
+              "to_name": "Doha Corniche",
+              "to_lat": 25.2882,
+              "to_lng": 51.5357,
+              "mode": "🚗 Drive",
+              "dist": 8.9,
+              "time_minutes": 11,
+              "cost": 1.62
+            },
+            {
+              "from_name": "Doha Corniche",
+              "from_lat": 25.2882,
+              "from_lng": 51.5357,
+              "to_name": "Mall exploration",
+              "to_lat": 25.26615352555645,
+              "to_lng": 51.5971691627236,
+              "mode": "🚗 Drive",
+              "dist": 6.65,
+              "time_minutes": 8,
+              "cost": 1.21
+            },
+            {
+              "from_name": "Mall exploration",
+              "from_lat": 25.26615352555645,
+              "from_lng": 51.5971691627236,
+              "to_name": "The Pearl-Qatar",
+              "to_lat": 25.36807,
+              "to_lng": 51.55012,
+              "mode": "🚗 Drive",
+              "dist": 12.28,
+              "time_minutes": 15,
+              "cost": 2.23
+            },
+            {
+              "from_name": "The Pearl-Qatar",
+              "from_lat": 25.36807,
+              "from_lng": 51.55012,
+              "to_name": "Safir Hotel Doha",
+              "to_lat": 25.326896183729577,
+              "to_lng": 51.54775268957496,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 4.58,
+              "time_minutes": 6,
+              "cost": 0.83
+            }
+          ]
+        }
+      ],
+      "recommendation": 0
+    },
+    "cached_at": "2026-05-08T18:00:21.786331+00:00"
   }
 }

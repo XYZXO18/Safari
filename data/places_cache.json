@@ -466,5 +466,57 @@
       ]
     },
     "ts": 1778257067.0974724
+  },
+  "doha__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "Mandarin Oriental Doha",
+        "lat": 25.286,
+        "lng": 51.5268
+      },
+      "activities": [
+        {
+          "name": "Souq Waqif",
+          "lat": 25.28775,
+          "lng": 51.53259
+        },
+        {
+          "name": "Museum of Islamic Art (MIA)",
+          "lat": 25.29546,
+          "lng": 51.53898
+        },
+        {
+          "name": "The Pearl-Qatar",
+          "lat": 25.36807,
+          "lng": 51.55012
+        },
+        {
+          "name": "Katara Cultural Village",
+          "lat": 25.36095,
+          "lng": 51.52437
+        },
+        {
+          "name": "Doha Corniche",
+          "lat": 25.2882,
+          "lng": 51.5357
+        },
+        {
+          "name": "National Museum of Qatar",
+          "lat": 25.28794,
+          "lng": 51.54922
+        },
+        {
+          "name": "Villaggio Mall",
+          "lat": 25.2563,
+          "lng": 51.4392
+        },
+        {
+          "name": "Msheireb Downtown Doha",
+          "lat": 25.286,
+          "lng": 51.5268
+        }
+      ]
+    },
+    "ts": 1778263193.4680786
   }
 }

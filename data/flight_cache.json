@@ -65,18 +65,6 @@
     },
     "ts": 1778248290.2055871
   },
-  "rental__doha": {
-    "data": {
-      "city": "Doha",
-      "price_per_day": 32.1,
-      "currency": "SAR",
-      "vehicle_type": "Compact",
-      "company": "GREEN MOTION",
-      "source": "gemini_grounding",
-      "confidence": "medium"
-    },
-    "ts": 1778248425.9523313
-  },
   "flight__riyadh__dubai": {
     "data": {
       "origin": "Riyadh",
@@ -196,5 +184,17 @@
       "confidence": "medium"
     },
     "ts": 1778257826.823685
+  },
+  "rental__doha": {
+    "data": {
+      "city": "Doha",
+      "price_per_day": 37.63,
+      "currency": "SAR",
+      "vehicle_type": "Mini car",
+      "company": "Alamo",
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778263260.0857074
   }
 }
