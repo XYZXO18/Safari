@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\user\\\\Safari\\\\.claude\\\\worktrees\\\\gracious-shirley-03c5f0\" -Force)",
+      "Bash(python build_city_distances.py)",
+      "Bash(python -c \"import json; d = json.load\\(open\\('data/city_distances.json'\\)\\); print\\(f'{len\\(d\\)} pairs cached'\\); print\\('Sample - riyadh<->jeddah:', d.get\\('jeddah__riyadh', d.get\\('riyadh__jeddah'\\)\\)\\)\")",
+      "Bash(python -c \"from safari.plan_cache import get_cached_plan, save_plan; print\\('Import OK'\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\GitHub CLI\" -ErrorAction SilentlyContinue; Get-ChildItem \"$env:LOCALAPPDATA\\\\Programs\\\\GitHub CLI\" -ErrorAction SilentlyContinue; Get-ChildItem \"C:\\\\Program Files \\(x86\\)\\\\GitHub CLI\" -ErrorAction SilentlyContinue)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" diff 479556c 58f4fea -- static/css/ --stat)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" diff 58f4fea 479556c -- static/css/ --stat)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" log --oneline --all -- static/css/style.css)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" diff 58f4fea 479556c -- static/css/style.css)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" diff a68df3d b8c119a -- static/css/style.css)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" show b8c119a -- static/css/style.css)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" diff d285946 b8c119a -- static/css/style.css)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" log --oneline --all -- static/css/mobile.css)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" show a68df3d -- static/css/mobile.css)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" show a68df3d -- templates/index.html)",
+      "Bash(Select-String -Path \"C:\\\\Users\\\\user\\\\Safari\\\\templates\\\\*.html\",\"C:\\\\Users\\\\user\\\\Safari\\\\static\\\\css\\\\*.css\",\"C:\\\\Users\\\\user\\\\Safari\\\\static\\\\js\\\\*.js\" -Pattern \"customize|Customize\")",
+      "Bash(Select-Object -First 20)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" log --oneline -- templates/index.html)",
+      "Bash(git -C \"C:\\\\Users\\\\user\\\\Safari\" show 85adff4:templates/index.html)"
+    ]
+  }
+}
