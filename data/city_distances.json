@@ -621,5 +621,19 @@
     "distance_km": 582.19,
     "duration_minutes": 391,
     "source": "osrm"
+  },
+  "dublin__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "dublin",
+    "distance_km": 6536.66,
+    "duration_minutes": 4969,
+    "source": "osrm"
+  },
+  "berlin__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "berlin",
+    "distance_km": 5159.37,
+    "duration_minutes": 3948,
+    "source": "osrm"
   }
 }

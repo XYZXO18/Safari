@@ -171,20 +171,6 @@
     },
     "ts": 1778257053.4904554
   },
-  "flight__riyadh__madrid": {
-    "data": {
-      "origin": "Riyadh",
-      "destination": "Madrid",
-      "price_one_way": 817.5,
-      "price_round_trip": 1512.38,
-      "currency": "SAR",
-      "airline": "Multiple Airlines",
-      "duration_minutes": 2090,
-      "source": "gemini_grounding",
-      "confidence": "medium"
-    },
-    "ts": 1778257826.823685
-  },
   "rental__doha": {
     "data": {
       "city": "Doha",
@@ -196,5 +182,71 @@
       "confidence": "medium"
     },
     "ts": 1778263260.0857074
+  },
+  "flight__riyadh__madrid": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Madrid",
+      "price_one_way": 757.5,
+      "price_round_trip": 1401.38,
+      "currency": "SAR",
+      "airline": "Aegean Airlines",
+      "duration_minutes": 660,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778268013.1680477
+  },
+  "flight__riyadh__dublin": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Dublin",
+      "price_one_way": 1057.5,
+      "price_round_trip": 1956.38,
+      "currency": "SAR",
+      "airline": "Aegean",
+      "duration_minutes": 1380,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778276437.139828
+  },
+  "rental__dublin": {
+    "data": {
+      "city": "Dublin",
+      "price_per_day": 15.0,
+      "currency": "SAR",
+      "vehicle_type": "Small car",
+      "company": "Thrifty",
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778276772.3808765
+  },
+  "flight__riyadh__berlin": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Berlin",
+      "price_one_way": 438.75,
+      "price_round_trip": 811.69,
+      "currency": "SAR",
+      "airline": "AJet",
+      "duration_minutes": 1215,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778280455.9575994
+  },
+  "rental__berlin": {
+    "data": {
+      "city": "Berlin",
+      "price_per_day": 73.88,
+      "currency": "SAR",
+      "vehicle_type": "Economy/Compact",
+      "company": "Sixt",
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778280613.0908957
   }
 }

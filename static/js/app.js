@@ -202,30 +202,107 @@ document.querySelectorAll('.mode-btn').forEach(btn => {
 });
 
 // ─── Days ────────────────────────────────────────────────────────────────────
-daysMinus.addEventListener('click', () => {
-    if (state.days > 1) {
-        state.days--;
-        daysValue.textContent = state.days;
-    }
-});
+// Legacy +/- buttons were replaced by date-range inputs; guard for absence.
+if (daysMinus) {
+    daysMinus.addEventListener('click', () => {
+        if (state.days > 1) {
+            state.days--;
+            daysValue.textContent = state.days;
+        }
+    });
+}
+if (daysPlus) {
+    daysPlus.addEventListener('click', () => {
+        if (state.days < 30) {
+            state.days++;
+            daysValue.textContent = state.days;
+        }
+    });
+}
 
-daysPlus.addEventListener('click', () => {
-    if (state.days < 30) {
-        state.days++;
-        daysValue.textContent = state.days;
+// ─── Travel-date range ──────────────────────────────────────────────────────
+const startDateInput = $('start-date-input');
+const endDateInput   = $('end-date-input');
+
+function _isoDate(d) {
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+function _initDateRangeDefaults() {
+    if (!startDateInput || !endDateInput) return;
+    const today = new Date();
+    const start = new Date(today); start.setDate(today.getDate() + 1);
+    const end   = new Date(start); end.setDate(start.getDate() + (state.days - 1));
+    if (!startDateInput.value) startDateInput.value = _isoDate(start);
+    if (!endDateInput.value)   endDateInput.value   = _isoDate(end);
+    startDateInput.min = _isoDate(today);
+    endDateInput.min   = startDateInput.value;
+    _syncDaysFromRange();
+}
+
+function _syncDaysFromRange() {
+    if (!startDateInput || !endDateInput) return;
+    const s = startDateInput.value;
+    const e = endDateInput.value;
+    if (!s || !e) return;
+    const sd = new Date(s);
+    const ed = new Date(e);
+    if (isNaN(sd) || isNaN(ed) || ed < sd) return;
+    const diff = Math.round((ed - sd) / 86400000) + 1;
+    state.days = Math.max(diff, 1);
+    state.startDate = s;
+    state.endDate   = e;
+    if (daysValue) daysValue.textContent = state.days;
+    // Live-refresh the mini calendar to reflect the picked range.
+    if (typeof renderCalendar === 'function') {
+        try { renderCalendar({ startISO: s, endISO: e }); } catch (_) {}
     }
-});
+}
+
+if (startDateInput && endDateInput) {
+    startDateInput.addEventListener('change', () => {
+        if (endDateInput.value && endDateInput.value < startDateInput.value) {
+            endDateInput.value = startDateInput.value;
+        }
+        endDateInput.min = startDateInput.value;
+        _syncDaysFromRange();
+    });
+    endDateInput.addEventListener('change', _syncDaysFromRange);
+    _initDateRangeDefaults();
+}
 
 // ─── Calendar ────────────────────────────────────────────────────────────────
-function renderCalendar(tripStartDay, tripDays) {
+// Accepts either:
+//   renderCalendar(tripStartDay, tripDays)              ← legacy day-of-month
+//   renderCalendar({ startISO, endISO })                ← new date-range form
+// When a range is supplied, the calendar is anchored on the start month so
+// users see the trip in context even if it's months ahead.
+function renderCalendar(arg1, tripDays) {
+    let tripStartDay = arg1;
+    let rangeStart = null;
+    let rangeEnd = null;
+
+    if (arg1 && typeof arg1 === 'object' && arg1.startISO) {
+        rangeStart = new Date(arg1.startISO);
+        rangeEnd = arg1.endISO ? new Date(arg1.endISO) : new Date(arg1.startISO);
+        tripStartDay = null;
+        tripDays = Math.max(Math.round((rangeEnd - rangeStart) / 86400000) + 1, 1);
+    }
+
     const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth();
     const today = now.getDate();
+    // Pick the month/year to display: range start when given, else current month.
+    const anchor = rangeStart || now;
+    const year  = anchor.getFullYear();
+    const month = anchor.getMonth();
+    const isCurrentMonth = (year === now.getFullYear() && month === now.getMonth());
 
-    const startDay = tripStartDay || today + 1;
+    const startDay = tripStartDay || (rangeStart ? rangeStart.getDate() : today + 1);
 
-    $('cal-month').textContent = now.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    $('cal-month').textContent = anchor.toLocaleString('en-US', { month: 'long', year: 'numeric' });
 
     const firstDayOfMonth = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -254,12 +331,35 @@ function renderCalendar(tripStartDay, tripDays) {
         cell.className = 'cal-cell';
         cell.textContent = d;
 
-        if (d === today) cell.classList.add('today');
+        if (isCurrentMonth && d === today) cell.classList.add('today');
 
         if (tripDays > 0) {
-            const tripEnd = startDay + tripDays - 1;
-            if (d >= startDay && d <= tripEnd) {
-                const relativeDay = d - startDay + 1;
+            // Determine if this cell falls within the trip range. When a real
+            // date range is given, compare full dates (handles month-spanning).
+            let isInTrip = false;
+            let relativeDay = 0;
+            let isStart = false;
+            let isEnd = false;
+
+            if (rangeStart && rangeEnd) {
+                const cellDate = new Date(year, month, d);
+                if (cellDate >= rangeStart && cellDate <= rangeEnd) {
+                    isInTrip = true;
+                    relativeDay = Math.round((cellDate - rangeStart) / 86400000) + 1;
+                    isStart = cellDate.getTime() === rangeStart.getTime();
+                    isEnd   = cellDate.getTime() === rangeEnd.getTime();
+                }
+            } else {
+                const tripEnd = startDay + tripDays - 1;
+                if (d >= startDay && d <= tripEnd) {
+                    isInTrip = true;
+                    relativeDay = d - startDay + 1;
+                    isStart = (d === startDay);
+                    isEnd   = (d === tripEnd);
+                }
+            }
+
+            if (isInTrip) {
                 cell.classList.add('trip-day');
                 cell.style.cursor = 'pointer';
                 cell.title = `Scroll to Day ${relativeDay}`;
@@ -267,13 +367,12 @@ function renderCalendar(tripStartDay, tripDays) {
                     const targetCard = document.getElementById(`day-card-${relativeDay}`);
                     if (targetCard) {
                         targetCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        // Add temporary highlight effect
                         targetCard.style.boxShadow = '0 0 20px var(--accent)';
                         setTimeout(() => targetCard.style.boxShadow = '', 1000);
                     }
                 };
-                if (d === startDay) cell.classList.add('trip-start');
-                if (d === tripEnd) cell.classList.add('trip-end');
+                if (isStart) cell.classList.add('trip-start');
+                if (isEnd)   cell.classList.add('trip-end');
             }
         }
 
@@ -708,7 +807,11 @@ function updateOverlays(data) {
     $('info-origin').textContent = data.map.origin_name;
     $('info-dest').textContent = data.map.dest_name;
     $('info-distance').textContent = fmt(data.transport.distance_km);
-    $('info-time').textContent = data.transport.travel_time_str || '--';
+    // Show '--' when the mode is non-viable (e.g. car blocked across borders → 0 min)
+    {
+        const mins = data.transport.travel_time_minutes || 0;
+        $('info-time').textContent = mins > 0 ? (data.transport.travel_time_str || '--') : '--';
+    }
     $('info-days').textContent = data.budget.days;
     $('info-cost').textContent = fmt(data.budget.total);
     $('info-currency').textContent = data.budget.currency;
@@ -1179,6 +1282,8 @@ async function planTrip() {
         travel_mode: state.travelMode,
         vehicle_type: state.vehicleType,
         days: state.days,
+        start_date: state.startDate || (startDateInput ? startDateInput.value : ''),
+        end_date:   state.endDate   || (endDateInput   ? endDateInput.value   : ''),
         interests: $('interests-input') ? $('interests-input').value : '',
     };
 
@@ -1285,9 +1390,16 @@ function selectPath(idx) {
     // Render travel log
     renderTravelLog(data);
 
-    // Update calendar
-    const today = new Date().getDate();
-    renderCalendar(today + 1, state.days);
+    // Update calendar — prefer the actual trip dates from the API response.
+    const _dates = (data && data.dates) || {};
+    const _s = _dates.start_date || state.startDate;
+    const _e = _dates.end_date   || state.endDate;
+    if (_s && _e) {
+        renderCalendar({ startISO: _s, endISO: _e });
+    } else {
+        const today = new Date().getDate();
+        renderCalendar(today + 1, state.days);
+    }
 
     // Setup simulation
     setupSimulation(data);
@@ -1339,6 +1451,8 @@ window.clearTripForm = function() {
     state.travelMode = 'car';
     state.vehicleType = 'default';
     state.days = 4;
+    state.startDate = '';
+    state.endDate = '';
     state.tripData = null;
     state.selectedHotel = null;
     state.paths = null;
@@ -1350,6 +1464,11 @@ window.clearTripForm = function() {
     currencySelect.value = 'SAR';
     originSelect.value = 'riyadh';
     daysValue.textContent = '4';
+    if (typeof _initDateRangeDefaults === 'function') {
+        if (startDateInput) startDateInput.value = '';
+        if (endDateInput)   endDateInput.value   = '';
+        _initDateRangeDefaults();
+    }
 
     // Reset vibe cards
     document.querySelectorAll('.vibe-card').forEach(c => c.classList.remove('active'));
@@ -1838,8 +1957,15 @@ function restoreTripState() {
         renderBudgetDetailsLeft(data);
         renderWarnings(data);
         renderTravelLog(data);
-        const today = new Date().getDate();
-        renderCalendar(today + 1, data.budget.days);
+        const _d2 = (data && data.dates) || {};
+        const _s2 = _d2.start_date || state.startDate;
+        const _e2 = _d2.end_date   || state.endDate;
+        if (_s2 && _e2) {
+            renderCalendar({ startISO: _s2, endISO: _e2 });
+        } else {
+            const today = new Date().getDate();
+            renderCalendar(today + 1, data.budget.days);
+        }
         setupSimulation(data);
 
         if (saved.destCity) {

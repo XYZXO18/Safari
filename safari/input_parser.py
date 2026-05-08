@@ -184,6 +184,79 @@ _DATE_MONTH_DAY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 
+_MONTH_NAME = (
+    r"jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|"
+    r"jul(?:y)?|aug(?:ust)?|sep(?:tember)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?"
+)
+
+# "from May 5 to May 10", "from 5th of may to 10th of may",
+# "between June 1 and June 7", "May 5 - May 10", "5 may to 10 may"
+_DATE_RANGE_PATTERNS = [
+    # from <month> <day> to <month> <day>   (end month optional → reuse start)
+    re.compile(
+        rf"(?:from\s+|between\s+)?"
+        rf"(?P<m1>{_MONTH_NAME})\s+(?P<d1>\d{{1,2}})(?:st|nd|rd|th)?"
+        rf"\s*(?:to|-|–|until|through|and)\s*"
+        rf"(?:(?P<m2>{_MONTH_NAME})\s+)?(?P<d2>\d{{1,2}})(?:st|nd|rd|th)?",
+        re.IGNORECASE,
+    ),
+    # from <day>(st/nd/rd/th)? of <month> to <day>(st/nd/rd/th)? of <month>
+    re.compile(
+        rf"(?:from\s+|between\s+)?"
+        rf"(?P<d1>\d{{1,2}})(?:st|nd|rd|th)?\s+of\s+(?P<m1>{_MONTH_NAME})"
+        rf"\s*(?:to|-|–|until|through|and)\s*"
+        rf"(?P<d2>\d{{1,2}})(?:st|nd|rd|th)?\s+of\s+(?P<m2>{_MONTH_NAME})",
+        re.IGNORECASE,
+    ),
+    # from <day> <month> to <day> <month>  ("5 may to 10 may")
+    re.compile(
+        rf"(?:from\s+|between\s+)?"
+        rf"(?P<d1>\d{{1,2}})(?:st|nd|rd|th)?\s+(?P<m1>{_MONTH_NAME})"
+        rf"\s*(?:to|-|–|until|through|and)\s*"
+        rf"(?P<d2>\d{{1,2}})(?:st|nd|rd|th)?\s+(?P<m2>{_MONTH_NAME})",
+        re.IGNORECASE,
+    ),
+    # ISO range:  from 2026-05-05 to 2026-05-10
+    re.compile(
+        r"(?:from\s+|between\s+)?(?P<iso1>\d{4}-\d{2}-\d{2})"
+        r"\s*(?:to|-|–|until|through|and)\s*(?P<iso2>\d{4}-\d{2}-\d{2})",
+        re.IGNORECASE,
+    ),
+]
+
+
+def _parse_date_range(text: str) -> Optional[tuple[date, date]]:
+    """Try to extract an explicit (start, end) date range from text."""
+    today = date.today()
+    for pat in _DATE_RANGE_PATTERNS:
+        m = pat.search(text)
+        if not m:
+            continue
+        gd = m.groupdict()
+        try:
+            if "iso1" in gd and gd.get("iso1"):
+                start = date.fromisoformat(gd["iso1"])
+                end = date.fromisoformat(gd["iso2"])
+            else:
+                m1 = _MONTH_MAP[gd["m1"].lower()]
+                m2 = _MONTH_MAP[(gd.get("m2") or gd["m1"]).lower()]
+                d1 = int(gd["d1"])
+                d2 = int(gd["d2"])
+                year = today.year
+                start = date(year, m1, min(d1, 28))
+                end = date(year, m2, min(d2, 28))
+                # Roll forward if the range is fully in the past
+                if end < today:
+                    start = date(year + 1, m1, min(d1, 28))
+                    end = date(year + 1, m2, min(d2, 28))
+                # If end is before start (e.g. wraps year), bump end's year
+                if end < start:
+                    end = date(end.year + 1, end.month, end.day)
+            return start, end
+        except (ValueError, KeyError):
+            continue
+    return None
+
 _MONTH_MAP = {
     "jan": 1, "january": 1, "feb": 2, "february": 2,
     "mar": 3, "march": 3, "apr": 4, "april": 4,
@@ -208,6 +281,12 @@ def _parse_travel_dates(text: str, days: int) -> tuple[str, str]:
     """
     today = date.today()
     start = None
+
+    # Try explicit date range first ("from May 5 to May 10")
+    rng = _parse_date_range(text)
+    if rng:
+        s, e = rng
+        return s.isoformat(), e.isoformat()
 
     # Try relative dates first
     rel_match = _DATE_RELATIVE_PATTERN.search(text)
@@ -408,6 +487,13 @@ def parse_user_input(text: str) -> TripRequest:
     # ── Extract days ──
     days_match = _DAYS_PATTERN.search(text)
     days = int(days_match.group("days")) if days_match else 3
+
+    # If user supplied an explicit date range, derive `days` from it
+    # (overrides the default and any "for N days" phrase).
+    _explicit_range = _parse_date_range(text)
+    if _explicit_range:
+        _s, _e = _explicit_range
+        days = max((_e - _s).days + 1, 1)
 
     # ── Extract travel mode ──
     mode_match = _MODE_PATTERN.search(text)

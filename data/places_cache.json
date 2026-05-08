@@ -216,14 +216,14 @@
       },
       "activities": [
         {
-          "name": "Plaza Mayor",
-          "lat": 40.415524,
-          "lng": -3.707488
+          "name": "Prado Museum",
+          "lat": 40.41378,
+          "lng": -3.692127
         },
         {
           "name": "Retiro Park",
-          "lat": 40.415,
-          "lng": -3.68389
+          "lat": 40.41526,
+          "lng": -3.6845
         },
         {
           "name": "Royal Palace of Madrid",
@@ -231,33 +231,33 @@
           "lng": -3.714312
         },
         {
+          "name": "Plaza Mayor",
+          "lat": 40.415524,
+          "lng": -3.707488
+        },
+        {
+          "name": "Teatro Kapital",
+          "lat": 40.40977,
+          "lng": -3.69322
+        },
+        {
           "name": "Gran Vía",
           "lat": 40.420177,
           "lng": -3.703928
         },
         {
+          "name": "El Rastro Market",
+          "lat": 40.408623,
+          "lng": -3.707338
+        },
+        {
           "name": "Mercado de San Miguel",
           "lat": 40.41536,
           "lng": -3.70901
-        },
-        {
-          "name": "La Latina (neighborhood)",
-          "lat": 40.411279,
-          "lng": -3.7081611
-        },
-        {
-          "name": "Salamanca District (Calle Serrano)",
-          "lat": 40.476517,
-          "lng": -3.728626
-        },
-        {
-          "name": "Prado Museum",
-          "lat": 40.41378,
-          "lng": -3.692127
         }
       ]
     },
-    "ts": 1778256656.5973063
+    "ts": 1778268017.5534492
   },
   "vienna__urban exploration, nightlife, shopping, dining": {
     "data": {
@@ -418,54 +418,54 @@
   "jeddah__beach, diving, seafood, red sea sunsets": {
     "data": {
       "hotel": {
-        "name": "Radisson Blu Hotel, Jeddah Corniche",
-        "lat": 21.6108,
-        "lng": 39.1093
+        "name": "Shangri-La Jeddah",
+        "lat": 21.599,
+        "lng": 39.105
       },
       "activities": [
         {
-          "name": "Jeddah Corniche / Jeddah Waterfront",
-          "lat": 21.54333,
-          "lng": 39.17278
+          "name": "Jeddah Corniche",
+          "lat": 21.5354,
+          "lng": 39.135
         },
         {
-          "name": "Obhur Beach",
-          "lat": 21.741872,
-          "lng": 39.121799
+          "name": "Obhur Creek (Obhur Beach)",
+          "lat": 21.724,
+          "lng": 39.09
         },
         {
-          "name": "Al-Saif Beach",
-          "lat": 21.1896,
-          "lng": 39.2458
-        },
-        {
-          "name": "Durrat Al Arous",
-          "lat": 21.75733,
-          "lng": 39.08239
-        },
-        {
-          "name": "Cable Wreck (near Abu Tair Island)",
-          "lat": 21.69102,
-          "lng": 39.01321
-        },
-        {
-          "name": "Bayada Island",
-          "lat": 21.7828,
-          "lng": 39.0667
+          "name": "Fakieh Aquarium",
+          "lat": 21.609,
+          "lng": 39.106
         },
         {
           "name": "Twina Seafood Restaurant",
-          "lat": 21.6096,
-          "lng": 39.1293
+          "lat": 21.5055,
+          "lng": 39.141
         },
         {
-          "name": "Central Fish Market",
-          "lat": 21.4889,
-          "lng": 39.1678
+          "name": "Al-Saif Beach",
+          "lat": 21.24,
+          "lng": 39.04
+        },
+        {
+          "name": "Jeddah Yacht Club & Marina",
+          "lat": 21.6,
+          "lng": 39.1
+        },
+        {
+          "name": "Cable Wreck Dive Site (Red Sea)",
+          "lat": 21.35,
+          "lng": 38.95
+        },
+        {
+          "name": "Al-Balad (Historic Jeddah)",
+          "lat": 21.4858,
+          "lng": 39.1925
         }
       ]
     },
-    "ts": 1778257067.0974724
+    "ts": 1778280061.3797295
   },
   "doha__urban exploration, nightlife, shopping, dining": {
     "data": {
@@ -518,5 +518,109 @@
       ]
     },
     "ts": 1778263193.4680786
+  },
+  "dublin__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "The Shelbourne, Autograph Collection",
+        "lat": 53.33893,
+        "lng": -6.256092
+      },
+      "activities": [
+        {
+          "name": "Guinness Storehouse",
+          "lat": 53.3418088,
+          "lng": -6.2867155
+        },
+        {
+          "name": "Trinity College Dublin",
+          "lat": 53.3437935,
+          "lng": -6.2545716
+        },
+        {
+          "name": "Dublin Castle",
+          "lat": 53.342686,
+          "lng": -6.267118
+        },
+        {
+          "name": "St. Stephen's Green",
+          "lat": 53.338741,
+          "lng": -6.261563
+        },
+        {
+          "name": "Temple Bar",
+          "lat": 53.34509,
+          "lng": -6.263803
+        },
+        {
+          "name": "The Brazen Head",
+          "lat": 53.34494,
+          "lng": -6.27631
+        },
+        {
+          "name": "Grafton Street",
+          "lat": 53.341389,
+          "lng": -6.260278
+        },
+        {
+          "name": "Chapter One Restaurant",
+          "lat": 53.353165,
+          "lng": -6.263286
+        }
+      ]
+    },
+    "ts": 1778276473.35111
+  },
+  "berlin__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "Michelberger Hotel",
+        "lat": 52.50462,
+        "lng": 13.44796
+      },
+      "activities": [
+        {
+          "name": "Teufelsberg",
+          "lat": 52.4975,
+          "lng": 13.24111
+        },
+        {
+          "name": "East Side Gallery",
+          "lat": 52.504997,
+          "lng": 13.439605
+        },
+        {
+          "name": "Berghain",
+          "lat": 52.5067,
+          "lng": 13.4392
+        },
+        {
+          "name": "Klunkerkranich",
+          "lat": 52.4745,
+          "lng": 13.4395
+        },
+        {
+          "name": "KaDeWe",
+          "lat": 52.50159,
+          "lng": 13.34095
+        },
+        {
+          "name": "Hackescher Markt",
+          "lat": 52.5233,
+          "lng": 13.4028
+        },
+        {
+          "name": "Markthalle Neun",
+          "lat": 52.501987,
+          "lng": 13.43183
+        },
+        {
+          "name": "Burgermeister (Schlesisches Tor)",
+          "lat": 52.5008,
+          "lng": 13.4445
+        }
+      ]
+    },
+    "ts": 1778280481.301086
   }
 }

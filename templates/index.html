@@ -328,15 +328,23 @@
                     </select>
                 </div>
 
-                <!-- Duration -->
+                <!-- Travel dates -->
                 <div class="form-group">
-                    <label for="days-input"><span class="label-icon">📅</span> Duration</label>
-                    <div class="days-selector">
-                        <button type="button" class="days-btn" id="days-minus">−</button>
-                        <div class="days-display">
-                            <span id="days-value">4</span> <span class="days-label">days</span>
+                    <label><span class="label-icon">📅</span> Travel dates</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                        <div>
+                            <label for="start-date-input" style="font-size:12px; opacity:0.75;">Start</label>
+                            <input type="date" id="start-date-input"
+                                style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit; color-scheme:dark;">
                         </div>
-                        <button type="button" class="days-btn" id="days-plus">+</button>
+                        <div>
+                            <label for="end-date-input" style="font-size:12px; opacity:0.75;">End</label>
+                            <input type="date" id="end-date-input"
+                                style="width:100%; padding:10px; border-radius:10px; border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.06); color:inherit; color-scheme:dark;">
+                        </div>
+                    </div>
+                    <div id="date-range-summary" style="font-size:12px; opacity:0.75; margin-top:6px;">
+                        <span id="days-value" data-legacy="true">4</span> days
                     </div>
                 </div>
 

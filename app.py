@@ -123,9 +123,21 @@ def plan_trip():
                 specific_city = destination if destination else None
                 destination = "city"
 
-    # If dates not provided, compute from today
-    if not start_date or not end_date:
-        from datetime import date, timedelta
+    # Reconcile dates and days.
+    # If the user picked an explicit start/end (e.g. May 5 → May 10), trust the
+    # range and recompute `days` from it so budget math stays consistent.
+    # If dates weren't provided, derive them from `days` starting tomorrow.
+    from datetime import date, timedelta
+    if start_date and end_date:
+        try:
+            _s = date.fromisoformat(start_date)
+            _e = date.fromisoformat(end_date)
+            if _e < _s:
+                return jsonify({"error": "end_date must be on or after start_date"}), 400
+            days = max((_e - _s).days + 1, 1)
+        except ValueError:
+            return jsonify({"error": "start_date/end_date must be YYYY-MM-DD"}), 400
+    else:
         today = date.today()
         start = today + timedelta(days=1)
         end = start + timedelta(days=max(days - 1, 0))
@@ -399,6 +411,7 @@ def plan_trip():
                 "destination": activities.recommended_city,
                 "distance_km": transport.distance_km,
                 "travel_time_str": transport.travel_time_str,
+                "travel_time_minutes": transport.travel_time_minutes,
                 "cost_one_way": transport.cost_one_way,
                 "cost_round_trip": transport.cost_round_trip,
                 "breakdown": transport.breakdown,

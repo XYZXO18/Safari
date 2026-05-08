@@ -60,6 +60,36 @@ def _save_dist_cache(cache: dict) -> None:
         print(f"[Transport] Could not write distance cache: {e}")
 
 
+def _haversine_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
+    """Great-circle distance in km — what an aircraft actually flies."""
+    from math import radians, sin, cos, asin, sqrt
+    r = 6371.0
+    p1, p2 = radians(lat1), radians(lat2)
+    dp = radians(lat2 - lat1)
+    dl = radians(lng2 - lng1)
+    a = sin(dp / 2) ** 2 + cos(p1) * cos(p2) * sin(dl / 2) ** 2
+    return 2 * r * asin(sqrt(a))
+
+
+def _flight_distance_km(origin: str, destination: str, fallback_km: float) -> float:
+    """Great-circle km between origin and destination, falling back to road km."""
+    from safari.tools.almosafer import CITY_ALMOSAFER_SLUG
+    o = CITY_ALMOSAFER_SLUG.get(origin.lower(), origin).lower()
+    d = CITY_ALMOSAFER_SLUG.get(destination.lower(), destination).lower()
+    oc = CITY_COORDS.get(o) or CITY_COORDS.get(origin.lower())
+    dc = CITY_COORDS.get(d) or CITY_COORDS.get(destination.lower())
+    if oc and dc:
+        return _haversine_km(oc["lat"], oc["lng"], dc["lat"], dc["lng"])
+    return fallback_km
+
+
+def _estimate_flight_minutes(great_circle_km: float) -> int:
+    """Realistic block time: ~800 km/h cruise + 30 min taxi/climb/descent."""
+    if great_circle_km <= 0:
+        return 0
+    return round((great_circle_km / 800.0) * 60) + 30
+
+
 @dataclass
 class TransportEstimate:
     """Result of a transport cost calculation."""
@@ -311,7 +341,16 @@ def calculate_transport_costs(
                 if flight_pricing and flight_pricing.price_one_way > 0:
                     cost_one_way = flight_pricing.price_one_way
                     cost_rt = flight_pricing.price_round_trip if round_trip else cost_one_way
-                    time_mins = (flight_pricing.duration_minutes or 90) + 60
+                    # Sanity-check the returned duration against great-circle time:
+                    # if Gemini returned a layover-inclusive figure that's >2× the
+                    # nonstop estimate, prefer the computed estimate.
+                    gc_km = _flight_distance_km(origin, destination, dist)
+                    nonstop_est = _estimate_flight_minutes(gc_km)
+                    raw_dur = flight_pricing.duration_minutes or 0
+                    if raw_dur > 0 and (nonstop_est == 0 or raw_dur <= 2 * nonstop_est):
+                        time_mins = raw_dur + 60   # +60 for airport buffer
+                    else:
+                        time_mins = (nonstop_est or 90) + 60
                     airline = flight_pricing.airline or "Flight"
                     breakdown = f"✈️ {airline}: {cost_one_way:.0f} SAR one-way [{flight_pricing.source}]"
                     route_found = {"from": resolved_origin, "to": resolved_dest}
@@ -354,9 +393,12 @@ def calculate_transport_costs(
         else:
             # Fallback estimation if route not in JSON
             if mode_lower == "flight":
-                # Final fallback ONLY if Almosafer is totally unreachable
+                # Final fallback ONLY if Almosafer is totally unreachable.
+                # Time uses great-circle distance (planes don't follow roads),
+                # cost still uses road km as a rough proxy for a fare estimate.
+                gc_km = _flight_distance_km(origin, destination, dist)
                 cost_one_way = dist * 0.45
-                time_mins = round((dist / 800) * 60) + 120
+                time_mins = _estimate_flight_minutes(gc_km) + 90  # +90 airport buffer
                 breakdown = "⚠️ Almosafer unreachable. Using distance-based estimate."
             elif mode_lower == "train":
                 cost_one_way = dist * 0.25

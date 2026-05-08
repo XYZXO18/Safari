@@ -83,5 +83,50 @@
   "doha__2026-05-09__2026-05-13": {
     "fetched_at": 1778263203.9844246,
     "events": []
+  },
+  "madrid__2026-05-09__2026-05-13": {
+    "fetched_at": 1778268024.9096975,
+    "events": []
+  },
+  "dublin__2026-05-10__2026-05-15": {
+    "fetched_at": 1778276461.370515,
+    "events": []
+  },
+  "jeddah__2026-05-10__2026-05-15": {
+    "fetched_at": 1778280061.9276283,
+    "events": [
+      {
+        "name": "Jeddah Marathon",
+        "date": "2026-05-10",
+        "estimated_cost_sar": 100.0,
+        "category": "sport",
+        "source": "db_cache",
+        "description": "A challenging marathon course through the city.",
+        "venue": "King Abdullah Sports City",
+        "time": "08:00",
+        "lat": 21.4861,
+        "lng": 39.1933
+      },
+      {
+        "name": "RSL 25/26 Al Ittihad vs Damac",
+        "date": "2026-05-10",
+        "estimated_cost_sar": 15.0,
+        "category": "sport",
+        "source": "db_cache",
+        "description": "A high-stakes Saudi Pro League football match featuring Al Ittihad at home.",
+        "venue": "King Abdullah Sports City",
+        "time": "TBD",
+        "lat": 21.7475,
+        "lng": 39.1529
+      }
+    ]
+  },
+  "berlin__2026-05-21__2026-05-29": {
+    "fetched_at": 1778280463.541316,
+    "events": []
+  },
+  "berlin__2026-05-21__2026-05-26": {
+    "fetched_at": 1778280481.6639044,
+    "events": []
   }
 }
