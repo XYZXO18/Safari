@@ -17,204 +17,6 @@
     <!-- Premium Mobile Overrides -->
     <link rel="stylesheet" href="/static/css/mobile.css">
 
-    <!-- ══════════════════════════════════════════════
-         RESPONSIVE MEDIA QUERIES
-         xs  < 360px   — very small phones
-         sm  360–480px — base design (no overrides)
-         md  481–768px — large phones / small tablets
-         lg  769–1024px — tablets / small laptops
-         xl  1025–1439px — laptops / desktops
-         2xl 1440px+  — large monitors
-         ══════════════════════════════════════════════ -->
-    <style>
-
-      /* ── xs: very small phones (< 360px) ──────────────────────────────── */
-      @media (max-width: 359px) {
-        #home-view { padding: 16px 14px 110px 14px; }
-        .horizontal-scroll { margin: 0 -14px; padding: 0 14px 20px 14px; }
-        .regions-scroll    { margin: 0 -14px; padding: 4px 14px 28px 14px; }
-        .header-text h1    { font-size: 17px; }
-        .header-text p     { font-size: 11px; }
-        .search-container  { padding: 11px 14px; border-radius: 16px; }
-        .search-container input { font-size: 13px; }
-        .section-header h2 { font-size: 15px; }
-        .trend-card        { min-width: 138px; height: 200px; border-radius: 14px; }
-        .card-content h3   { font-size: 14px; }
-        .discount-badge    { font-size: 10px; padding: 3px 6px; }
-        .region-icon-box   { width: 54px; height: 54px; border-radius: 11px; }
-        .region-icon       { width: 46px; height: 46px; }
-        .region-name       { font-size: 9px; width: 58px; }
-        .categories-panel  { padding: 12px 4px; border-radius: 16px; }
-        .cat-icon svg      { width: 24px; height: 24px; }
-        .cat-name          { font-size: 9px; }
-        .cat-sub           { font-size: 8px; }
-        .bottom-nav        { padding: 11px 14px 22px 14px; border-radius: 20px 20px 0 0; }
-        .nav-item          { font-size: 9px; gap: 4px; }
-        .chat-window       { width: calc(100vw - 24px); right: 12px; bottom: 86px; height: 360px; }
-        .chat-fab          { right: 14px; bottom: 84px; width: 46px; height: 46px; border-radius: 23px; }
-        .trip-form         { padding: 14px; }
-        .vibe-card, .mode-btn { padding: 9px 4px; font-size: 10px; }
-        .submit-btn        { padding: 12px !important; font-size: 13px !important; }
-      }
-
-      /* ── md: large phones / small tablets (481px – 768px) ─────────────── */
-      @media (min-width: 481px) {
-        .mobile-app        { max-width: 640px; }
-        #home-view         { padding: 28px 28px 130px 28px; }
-        .horizontal-scroll { margin: 0 -28px; padding: 0 28px 24px 28px; }
-        .regions-scroll    { margin: 0 -28px; padding: 4px 28px 32px 28px; }
-        .header-text h1    { font-size: 22px; }
-        .header-text p     { font-size: 14px; }
-        .profile-pic-container { width: 52px; height: 52px; }
-        .search-container  { padding: 15px 20px; border-radius: 22px; }
-        .search-container input { font-size: 15px; }
-        .section-header h2 { font-size: 20px; }
-        .trend-card        { min-width: 188px; height: 268px; border-radius: 20px; padding: 16px; }
-        .card-content h3   { font-size: 17px; }
-        .card-content .location { font-size: 12px; }
-        .price-row         { font-size: 13px; }
-        .discount-badge    { font-size: 11px; }
-        .region-icon-box   { width: 74px; height: 74px; border-radius: 15px; }
-        .region-icon       { width: 62px; height: 62px; }
-        .region-name       { font-size: 11px; width: 78px; }
-        .categories-panel  { padding: 18px 10px; border-radius: 22px; margin-bottom: 28px; }
-        .cat-icon svg      { width: 30px; height: 30px; }
-        .cat-name          { font-size: 11px; }
-        .cat-sub           { font-size: 9px; }
-        .bottom-nav        { padding: 17px 40px 30px 40px; border-radius: 26px 26px 0 0; }
-        .nav-item          { font-size: 11px; gap: 6px; }
-        .chat-window       { width: 350px; height: 430px; right: 20px; bottom: 98px; }
-        .chat-fab          { right: 20px; bottom: 96px; width: 52px; height: 52px; border-radius: 26px; }
-        .trip-form         { padding: 22px 28px; }
-        .vibe-card, .mode-btn { padding: 12px 6px; font-size: 12px; }
-        .submit-btn        { padding: 15px !important; font-size: 15px !important; }
-        input[type="number"],
-        input[type="text"],
-        select             { padding: 13px 16px !important; font-size: 14px !important; }
-        .days-btn          { width: 42px; height: 42px; font-size: 20px; }
-      }
-
-      /* ── lg: tablets / small laptops (769px – 1024px) ─────────────────── */
-      @media (min-width: 769px) {
-        .mobile-app        { max-width: 860px; }
-        #home-view         { padding: 36px 44px 140px 44px; }
-        .horizontal-scroll { margin: 0 -44px; padding: 0 44px 28px 44px; }
-        .regions-scroll    { margin: 0 -44px; padding: 4px 44px 36px 44px; }
-        .header-text h1    { font-size: 26px; }
-        .header-text p     { font-size: 15px; }
-        .profile-pic-container { width: 56px; height: 56px; }
-        .search-container  { padding: 17px 24px; border-radius: 26px; }
-        .search-container input { font-size: 16px; }
-        .section-header h2 { font-size: 22px; }
-        .trend-card        { min-width: 218px; height: 298px; border-radius: 24px; padding: 18px; }
-        .card-content h3   { font-size: 20px; }
-        .card-content .location { font-size: 13px; }
-        .price-row         { font-size: 14px; }
-        .discount-badge    { font-size: 12px; padding: 5px 10px; border-radius: 14px; }
-        .region-icon-box   { width: 84px; height: 84px; border-radius: 18px; }
-        .region-icon       { width: 72px; height: 72px; }
-        .region-name       { font-size: 12px; width: 90px; }
-        .categories-panel  { padding: 20px 12px; border-radius: 24px; margin-bottom: 32px; }
-        .cat-icon svg      { width: 32px; height: 32px; }
-        .cat-name          { font-size: 13px; }
-        .cat-sub           { font-size: 10px; }
-        .bottom-nav        { padding: 20px 64px 34px 64px; border-radius: 30px 30px 0 0; }
-        .nav-item          { font-size: 12px; gap: 7px; }
-        .chat-window       { width: 390px; height: 470px; border-radius: 20px; right: 24px; bottom: 104px; }
-        .chat-fab          { width: 56px; height: 56px; border-radius: 28px; right: 24px; bottom: 102px; }
-        .trip-form         { padding: 28px 36px; }
-        .vibe-grid,
-        .mode-grid         { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .vibe-card,
-        .mode-btn          { padding: 14px 8px; font-size: 14px; }
-        .submit-btn        { padding: 17px !important; font-size: 16px !important; border-radius: 18px !important; }
-        input[type="number"],
-        input[type="text"],
-        select             { padding: 14px 18px !important; font-size: 15px !important; }
-        .days-btn          { width: 46px; height: 46px; font-size: 22px; }
-        .day-card          { padding: 18px !important; margin-bottom: 14px; }
-        .mini-calendar     { padding: 18px !important; }
-        .map-container     { height: calc(100vh - 90px) !important; }
-      }
-
-      /* ── xl: desktops / laptops (1025px – 1439px) ─────────────────────── */
-      @media (min-width: 1025px) {
-        .mobile-app        { max-width: 1100px; }
-        #home-view         { padding: 44px 64px 140px 64px; }
-        .horizontal-scroll { margin: 0 -64px; padding: 0 64px 32px 64px; }
-        .regions-scroll    { margin: 0 -64px; padding: 4px 64px 40px 64px; }
-        .header-text h1    { font-size: 30px; }
-        .header-text p     { font-size: 16px; }
-        .profile-pic-container { width: 60px; height: 60px; }
-        .search-container  { padding: 19px 28px; border-radius: 28px; }
-        .search-container input { font-size: 17px; }
-        .section-header h2 { font-size: 24px; }
-        .trend-card        { min-width: 248px; height: 328px; border-radius: 26px; padding: 20px; }
-        .card-content h3   { font-size: 22px; }
-        .card-content .location { font-size: 14px; }
-        .price-row         { font-size: 15px; }
-        .discount-badge    { font-size: 13px; padding: 5px 12px; border-radius: 16px; }
-        .region-icon-box   { width: 92px; height: 92px; border-radius: 20px; }
-        .region-icon       { width: 80px; height: 80px; }
-        .region-name       { font-size: 13px; width: 100px; }
-        .categories-panel  { padding: 24px 16px; border-radius: 28px; margin-bottom: 36px; }
-        .cat-icon svg      { width: 34px; height: 34px; }
-        .cat-name          { font-size: 14px; }
-        .cat-sub           { font-size: 11px; }
-        .bottom-nav        { padding: 22px 96px 38px 96px; border-radius: 32px 32px 0 0; }
-        .nav-item          { font-size: 13px; gap: 8px; }
-        .chat-window       { width: 430px; height: 510px; border-radius: 22px; right: 28px; bottom: 108px; }
-        .chat-fab          { width: 60px; height: 60px; border-radius: 30px; right: 28px; bottom: 106px; }
-        .trip-form         { padding: 32px 44px; }
-        .vibe-grid,
-        .mode-grid         { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .vibe-card,
-        .mode-btn          { padding: 16px 8px; font-size: 15px; }
-        .submit-btn        { padding: 19px !important; font-size: 17px !important; border-radius: 20px !important; }
-        input[type="number"],
-        input[type="text"],
-        select             { padding: 16px 20px !important; font-size: 16px !important; }
-        .days-btn          { width: 50px; height: 50px; font-size: 24px; }
-        .day-card          { padding: 20px !important; margin-bottom: 16px; }
-        .mini-calendar     { padding: 22px !important; }
-        .map-container     { height: calc(100vh - 100px) !important; }
-        .budget-bar        { bottom: 100px !important; }
-      }
-
-      /* ── 2xl: large monitors (1440px+) ────────────────────────────────── */
-      @media (min-width: 1440px) {
-        .mobile-app        { max-width: 1280px; }
-        #home-view         { padding: 52px 80px 140px 80px; }
-        .horizontal-scroll { margin: 0 -80px; padding: 0 80px 36px 80px; }
-        .regions-scroll    { margin: 0 -80px; padding: 4px 80px 44px 80px; }
-        .header-text h1    { font-size: 34px; }
-        .header-text p     { font-size: 17px; }
-        .profile-pic-container { width: 64px; height: 64px; }
-        .search-container  { padding: 21px 32px; border-radius: 32px; }
-        .search-container input { font-size: 18px; }
-        .section-header h2 { font-size: 26px; }
-        .trend-card        { min-width: 278px; height: 358px; border-radius: 28px; padding: 22px; }
-        .card-content h3   { font-size: 24px; }
-        .card-content .location { font-size: 15px; }
-        .price-row         { font-size: 16px; }
-        .region-icon-box   { width: 100px; height: 100px; border-radius: 22px; }
-        .region-icon       { width: 88px; height: 88px; }
-        .region-name       { font-size: 14px; width: 108px; }
-        .categories-panel  { padding: 26px 20px; border-radius: 32px; }
-        .cat-icon svg      { width: 36px; height: 36px; }
-        .cat-name          { font-size: 15px; }
-        .bottom-nav        { padding: 24px 120px 42px 120px; }
-        .nav-item          { font-size: 14px; }
-        .chat-window       { width: 470px; height: 550px; right: 32px; bottom: 112px; }
-        .chat-fab          { width: 64px; height: 64px; border-radius: 32px; right: 32px; bottom: 110px; }
-        .trip-form         { padding: 36px 52px; }
-        .days-btn          { width: 54px; height: 54px; font-size: 26px; }
-        .day-card          { padding: 24px !important; }
-        .mini-calendar     { padding: 26px !important; }
-        .map-container     { height: calc(100vh - 110px) !important; }
-      }
-
-    </style>
 </head>
 <body class="mobile-body">
     <!-- Loading Overlay -->
@@ -425,32 +227,76 @@
                     </div>
                 </div>
 
-                <!-- Specific City (optional) -->
+                <!-- Destination Search (country or city) -->
                 <div class="form-group">
-                    <label for="specific-city-select"><span class="label-icon">📍</span> Specific City <span style="font-size:0.78em;opacity:0.55;font-weight:400;">(optional)</span></label>
-                    <select id="specific-city-select" style="width:100%;padding:12px 16px;border-radius:12px;background:var(--glass,rgba(255,255,255,0.07));border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:1rem;outline:none;">
-                        <option value="">— Any city in region —</option>
-                        <optgroup label="🏖️ Coast">
-                            <option value="jeddah">Jeddah</option>
-                            <option value="yanbu">Yanbu</option>
-                            <option value="umluj">Umluj</option>
-                        </optgroup>
-                        <optgroup label="⛰️ Mountains">
-                            <option value="abha">Abha</option>
-                            <option value="taif">Taif</option>
-                            <option value="al baha">Al Baha</option>
-                        </optgroup>
-                        <optgroup label="🏜️ Desert">
-                            <option value="al-ula">AlUla</option>
-                            <option value="tabuk">Tabuk</option>
-                        </optgroup>
-                        <optgroup label="🏙️ City">
-                            <option value="riyadh">Riyadh</option>
-                            <option value="dammam">Dammam</option>
-                            <option value="medina">Medina</option>
-                            <option value="makkah">Makkah</option>
-                        </optgroup>
-                    </select>
+                    <label for="specific-city-select"><span class="label-icon">🔍</span> Search Country or City <span style="font-size:0.78em;opacity:0.55;font-weight:400;">(optional — overrides vibe)</span></label>
+                    <input
+                        type="text"
+                        id="specific-city-select"
+                        list="dest-datalist"
+                        placeholder="e.g. France, Tokyo, Barcelona…"
+                        autocomplete="off"
+                        style="width:100%;padding:12px 16px;border-radius:12px;background:var(--glass,rgba(255,255,255,0.07));border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:1rem;outline:none;box-sizing:border-box;"
+                    >
+                    <datalist id="dest-datalist">
+                        <!-- Countries -->
+                        <option value="Austria"><option value="Belgium"><option value="Croatia">
+                        <option value="Czechia"><option value="Denmark"><option value="France">
+                        <option value="Germany"><option value="Greece"><option value="Iceland">
+                        <option value="Ireland"><option value="Italy"><option value="Netherlands">
+                        <option value="Norway"><option value="Portugal"><option value="Spain">
+                        <option value="Sweden"><option value="Switzerland"><option value="United Kingdom">
+                        <option value="China"><option value="India"><option value="Indonesia">
+                        <option value="Japan"><option value="Malaysia"><option value="Maldives">
+                        <option value="Philippines"><option value="Singapore"><option value="South Korea">
+                        <option value="Sri Lanka"><option value="Thailand"><option value="Vietnam">
+                        <option value="Egypt"><option value="Jordan"><option value="Kenya">
+                        <option value="Mauritius"><option value="Morocco"><option value="Oman">
+                        <option value="Qatar"><option value="Saudi Arabia"><option value="Seychelles">
+                        <option value="South Africa"><option value="Tanzania"><option value="United Arab Emirates">
+                        <option value="Canada"><option value="Costa Rica"><option value="Cuba">
+                        <option value="Dominican Republic"><option value="Jamaica"><option value="Mexico">
+                        <option value="Panama"><option value="United States">
+                        <option value="Argentina"><option value="Brazil"><option value="Chile">
+                        <option value="Colombia"><option value="Ecuador"><option value="Peru">
+                        <option value="Australia"><option value="Fiji"><option value="New Zealand">
+                        <!-- Saudi Arabia cities -->
+                        <option value="Riyadh"><option value="Jeddah"><option value="Dammam">
+                        <option value="Abha"><option value="AlUla"><option value="Yanbu">
+                        <option value="Taif"><option value="Medina"><option value="Tabuk">
+                        <!-- Europe cities -->
+                        <option value="Vienna"><option value="Paris"><option value="Berlin">
+                        <option value="Munich"><option value="Rome"><option value="Milan">
+                        <option value="Barcelona"><option value="Madrid"><option value="Amsterdam">
+                        <option value="London"><option value="Edinburgh"><option value="Zurich">
+                        <option value="Geneva"><option value="Prague"><option value="Dubrovnik">
+                        <option value="Lisbon"><option value="Porto"><option value="Athens">
+                        <option value="Santorini"><option value="Oslo"><option value="Stockholm">
+                        <option value="Copenhagen"><option value="Brussels"><option value="Budapest">
+                        <!-- Asia cities -->
+                        <option value="Tokyo"><option value="Kyoto"><option value="Osaka">
+                        <option value="Seoul"><option value="Bangkok"><option value="Phuket">
+                        <option value="Bali"><option value="Singapore"><option value="Kuala Lumpur">
+                        <option value="Ho Chi Minh City"><option value="Hanoi"><option value="Da Nang">
+                        <option value="Beijing"><option value="Shanghai"><option value="Mumbai">
+                        <option value="New Delhi"><option value="Goa"><option value="Colombo">
+                        <option value="Chiang Mai"><option value="Manila"><option value="Cebu">
+                        <!-- Middle East & Africa -->
+                        <option value="Dubai"><option value="Abu Dhabi"><option value="Doha">
+                        <option value="Muscat"><option value="Amman"><option value="Cairo">
+                        <option value="Marrakech"><option value="Casablanca"><option value="Nairobi">
+                        <option value="Cape Town"><option value="Johannesburg"><option value="Zanzibar">
+                        <!-- Americas -->
+                        <option value="New York"><option value="Los Angeles"><option value="Miami">
+                        <option value="Las Vegas"><option value="Chicago"><option value="Toronto">
+                        <option value="Vancouver"><option value="Mexico City"><option value="Cancun">
+                        <option value="Havana"><option value="Buenos Aires"><option value="Rio de Janeiro">
+                        <option value="São Paulo"><option value="Bogotá"><option value="Lima">
+                        <option value="Santiago"><option value="Cartagena"><option value="Cusco">
+                        <!-- Oceania -->
+                        <option value="Sydney"><option value="Melbourne"><option value="Auckland">
+                        <option value="Queenstown">
+                    </datalist>
                 </div>
 
                 <!-- Event Interests -->
@@ -544,10 +390,6 @@
                 <div id="sim-status" class="sim-status"></div>
             </div>
 
-            <div id="transport-insight" class="transport-insight hidden">
-                <div class="insight-header"><span class="label-icon">🤖</span> Transport Agent Insight</div>
-                <div id="transport-insight-content" class="insight-content"></div>
-            </div>
         </div>
 
         <!-- ========================================== -->

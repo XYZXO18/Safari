@@ -1,1 +1,42 @@
-{}
+{
+  "rental__makkah": {
+    "data": {
+      "city": "Makkah",
+      "price_per_day": 90.9,
+      "currency": "SAR",
+      "vehicle_type": "Economy",
+      "company": "VIP Cars",
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778240158.221222
+  },
+  "flight__riyadh__barcelona": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Barcelona",
+      "price_one_way": 900.0,
+      "price_round_trip": 1665.0,
+      "currency": "SAR",
+      "airline": "Etihad",
+      "duration_minutes": 960,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778241550.7413137
+  },
+  "flight__riyadh__cairo": {
+    "data": {
+      "origin": "Riyadh",
+      "destination": "Cairo",
+      "price_one_way": 390.0,
+      "price_round_trip": 721.5,
+      "currency": "SAR",
+      "airline": "Air Cairo",
+      "duration_minutes": 180,
+      "source": "gemini_grounding",
+      "confidence": "medium"
+    },
+    "ts": 1778242108.1115654
+  }
+}

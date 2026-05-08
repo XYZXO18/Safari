@@ -38,6 +38,8 @@ class TripRequest:
     start_date: str = ""             # ISO format: YYYY-MM-DD
     end_date: str = ""               # ISO format: YYYY-MM-DD
     interests: str = ""              # User specified event interests
+    rent_car: bool = False           # True when user requests a rental car
+    destination_city: str = ""      # Specific city name before vibe normalization (for border checks)
     raw_input: str = ""
 
     def __post_init__(self):
@@ -92,19 +94,72 @@ _MODE_PATTERN = re.compile(
 )
 
 _DESTINATION_PATTERN = re.compile(
-    r"(?:to\s+(?:the\s+)?)?(?P<dest>coast|beach|mountains?|desert|city|"
-    r"jeddah|riyadh|dammam|abha|al[- ]?ula|yanbu|taif|medina|al[- ]?ahsa|jubail|umluj|al[- ]?lith|"
-    r"al[- ]?baha|edge\s+of\s+the\s+world|empty\s+quarter)",
+    r"(?:to\s+(?:the\s+)?)?(?P<dest>"
+    # Vibes
+    r"coast|beach|mountains?|desert|city|"
+    # Saudi Arabia
+    r"jeddah|riyadh|dammam|abha|al[- ]?ula|alula|yanbu|taif|medina|al[- ]?ahsa|jubail|umluj|al[- ]?lith|"
+    r"al[- ]?baha|edge\s+of\s+the\s+world|empty\s+quarter|"
+    # Europe
+    r"vienna|salzburg|innsbruck|brussels|bruges|antwerp|dubrovnik|split|zagreb|"
+    r"prague|brno|copenhagen|paris|nice|lyon|bordeaux|berlin|munich|frankfurt|hamburg|"
+    r"athens|santorini|mykonos|crete|reykjavik|dublin|galway|cork|"
+    r"rome|florence|venice|milan|naples|amsterdam|rotterdam|oslo|bergen|"
+    r"lisbon|porto|faro|madrid|barcelona|seville|valencia|stockholm|gothenburg|"
+    r"zurich|geneva|lucerne|bern|london|edinburgh|manchester|bath|"
+    # Asia
+    r"beijing|shanghai|new\s+delhi|mumbai|jaipur|goa|bali|jakarta|yogyakarta|"
+    r"tokyo|kyoto|osaka|sapporo|kuala\s+lumpur|penang|langkawi|"
+    r"manila|cebu|palawan|singapore|seoul|busan|jeju|colombo|kandy|galle|"
+    r"bangkok|phuket|chiang\s+mai|hanoi|ho\s+chi\s+minh|da\s+nang|"
+    # Middle East & Africa
+    r"cairo|luxor|sharm\s+el\s+sheikh|amman|petra|aqaba|nairobi|mombasa|"
+    r"marrakech|casablanca|fes|chefchaouen|muscat|salalah|doha|"
+    r"cape\s+town|johannesburg|durban|dar\s+es\s+salaam|zanzibar|arusha|"
+    r"dubai|abu\s+dhabi|victoria|"
+    # Americas
+    r"toronto|vancouver|montreal|banff|havana|varadero|"
+    r"punta\s+cana|santo\s+domingo|montego\s+bay|kingston|"
+    r"mexico\s+city|canc[uú]n|tulum|oaxaca|panama\s+city|"
+    r"new\s+york|los\s+angeles|miami|chicago|las\s+vegas|"
+    r"buenos\s+aires|mendoza|rio\s+de\s+janeiro|s[aã]o\s+paulo|salvador|"
+    r"santiago|valpara[ií]so|bogot[aá]|medell[ií]n|cartagena|quito|guayaquil|"
+    r"lima|cusco|arequipa|"
+    # Oceania
+    r"sydney|melbourne|brisbane|perth|nadi|suva|auckland|wellington|queenstown"
+    r")",
     re.IGNORECASE,
 )
 
 _ORIGIN_PATTERN = re.compile(
-    r"(?:from\s+)(?P<origin>riyadh|jeddah|dammam|medina|abha|taif|yanbu|jubail)",
+    r"(?:from\s+)(?P<origin>"
+    # Saudi Arabia
+    r"riyadh|jeddah|dammam|medina|abha|taif|yanbu|jubail|"
+    # Europe
+    r"vienna|brussels|prague|copenhagen|paris|berlin|munich|frankfurt|amsterdam|"
+    r"oslo|lisbon|madrid|barcelona|stockholm|zurich|geneva|london|edinburgh|"
+    # Asia
+    r"beijing|shanghai|new\s+delhi|mumbai|bali|jakarta|tokyo|osaka|"
+    r"kuala\s+lumpur|singapore|seoul|bangkok|phuket|hanoi|ho\s+chi\s+minh|"
+    # Middle East & Africa
+    r"cairo|amman|doha|dubai|abu\s+dhabi|nairobi|cape\s+town|johannesburg|"
+    # Americas
+    r"toronto|vancouver|new\s+york|los\s+angeles|miami|chicago|"
+    r"mexico\s+city|canc[uú]n|buenos\s+aires|rio\s+de\s+janeiro|s[aã]o\s+paulo|"
+    r"bogot[aá]|lima|santiago|"
+    # Oceania
+    r"sydney|melbourne|auckland"
+    r")",
     re.IGNORECASE,
 )
 
 _VEHICLE_PATTERN = re.compile(
     r"(?:my\s+)?(?P<vehicle>sedan|suv|truck|pickup|4x4)",
+    re.IGNORECASE,
+)
+
+_RENT_CAR_PATTERN = re.compile(
+    r"rent(?:\s+a)?\s+car|car\s+rental|hire\s+(?:a\s+)?car|rental\s+car|renting\s+(?:a\s+)?car",
     re.IGNORECASE,
 )
 
@@ -231,22 +286,84 @@ def _normalize_currency(raw: Optional[str]) -> str:
 _DEST_VIBE_MAP = {
     "beach": "coast",
     "mountain": "mountains",
-    "jeddah": "coast",
-    "yanbu": "coast",
-    "umluj": "coast",
-    "al lith": "coast",
-    "al-lith": "coast",
-    "abha": "mountains",
-    "al baha": "mountains",
-    "al-baha": "mountains",
-    "taif": "mountains",
-    "al ula": "desert",
-    "al-ula": "desert",
-    "alula": "desert",
-    "edge of the world": "desert",
-    "empty quarter": "desert",
-    "riyadh": "city",
-    "dammam": "city",
+    # Saudi Arabia
+    "jeddah": "coast", "yanbu": "coast", "umluj": "coast",
+    "al lith": "coast", "al-lith": "coast",
+    "abha": "mountains", "al baha": "mountains", "al-baha": "mountains", "taif": "mountains",
+    "al ula": "desert", "al-ula": "desert", "alula": "desert",
+    "edge of the world": "desert", "empty quarter": "desert",
+    "riyadh": "city", "dammam": "city",
+    # Europe — coast
+    "dubrovnik": "coast", "split": "coast", "nice": "coast",
+    "barcelona": "coast", "faro": "coast", "athens": "coast",
+    "santorini": "coast", "mykonos": "coast", "crete": "coast",
+    "bergen": "coast", "porto": "coast",
+    # Europe — mountains
+    "innsbruck": "mountains", "salzburg": "mountains",
+    "lucerne": "mountains", "bern": "mountains", "zurich": "mountains",
+    "geneva": "mountains",
+    # Europe — city
+    "vienna": "city", "brussels": "city", "bruges": "city", "antwerp": "city",
+    "zagreb": "city", "prague": "city", "brno": "city",
+    "copenhagen": "city", "paris": "city", "lyon": "city", "bordeaux": "city",
+    "berlin": "city", "munich": "city", "frankfurt": "city", "hamburg": "city",
+    "reykjavik": "city", "dublin": "city", "galway": "city", "cork": "city",
+    "rome": "city", "florence": "city", "venice": "city", "milan": "city", "naples": "city",
+    "amsterdam": "city", "rotterdam": "city", "oslo": "city",
+    "lisbon": "city", "madrid": "city", "seville": "city", "valencia": "city",
+    "stockholm": "city", "gothenburg": "city",
+    "london": "city", "edinburgh": "city", "manchester": "city", "bath": "city",
+    # Asia — coast/beach
+    "bali": "coast", "phuket": "coast", "palawan": "coast",
+    "langkawi": "coast", "penang": "coast", "goa": "coast",
+    "da nang": "coast", "cebu": "coast", "galle": "coast",
+    "zanzibar": "coast",
+    # Asia — desert/cultural
+    "dubai": "desert", "abu dhabi": "desert",
+    "marrakech": "desert", "fes": "desert", "chefchaouen": "desert",
+    "cairo": "desert", "luxor": "desert", "petra": "desert",
+    "doha": "desert", "muscat": "desert", "salalah": "coast",
+    # Asia — mountains
+    "chiang mai": "mountains", "kandy": "mountains",
+    "queenstown": "mountains", "banff": "mountains",
+    "innsbruck": "mountains",
+    # Asia — city
+    "beijing": "city", "shanghai": "city",
+    "new delhi": "city", "mumbai": "city", "jaipur": "city",
+    "jakarta": "city", "yogyakarta": "city",
+    "tokyo": "city", "kyoto": "city", "osaka": "city", "sapporo": "city",
+    "kuala lumpur": "city",
+    "manila": "city",
+    "singapore": "city",
+    "seoul": "city", "busan": "city", "jeju island": "coast",
+    "colombo": "city",
+    "bangkok": "city",
+    "hanoi": "city", "ho chi minh city": "city",
+    "nairobi": "city", "mombasa": "coast",
+    "cape town": "coast", "johannesburg": "city", "durban": "coast",
+    "dar es salaam": "city", "arusha": "city",
+    "sharm el sheikh": "coast", "aqaba": "coast",
+    "amman": "city", "casablanca": "city",
+    # Americas
+    "toronto": "city", "vancouver": "city", "montreal": "city",
+    "havana": "city", "varadero": "coast",
+    "punta cana": "coast", "santo domingo": "city",
+    "montego bay": "coast", "kingston": "city",
+    "mexico city": "city", "cancún": "coast", "cancun": "coast",
+    "tulum": "coast", "oaxaca": "city",
+    "panama city": "city",
+    "new york": "city", "los angeles": "city", "miami": "coast",
+    "chicago": "city", "las vegas": "city",
+    "buenos aires": "city", "mendoza": "mountains",
+    "rio de janeiro": "coast", "são paulo": "city", "salvador": "coast",
+    "santiago": "city", "valparaíso": "coast",
+    "bogotá": "city", "medellín": "city", "cartagena": "coast",
+    "quito": "city", "guayaquil": "coast",
+    "lima": "city", "cusco": "mountains", "arequipa": "city",
+    # Oceania
+    "sydney": "coast", "melbourne": "city", "brisbane": "city", "perth": "coast",
+    "nadi": "coast", "suva": "city",
+    "auckland": "city", "wellington": "city",
 }
 
 
@@ -296,9 +413,32 @@ def parse_user_input(text: str) -> TripRequest:
     travel_mode = mode_match.group("mode").lower() if mode_match else "car"
 
     # ── Extract destination ──
-    dest_match = _DESTINATION_PATTERN.search(text)
+    # Prefer matches where the regex consumed the optional "to …" prefix,
+    # so we don't accidentally grab the origin city.  Fall back to the first
+    # match if no "to …" flavoured match exists (e.g. "I want to visit Paris").
+    dest_match = None
+    all_dest_matches = list(_DESTINATION_PATTERN.finditer(text))
+    for m in all_dest_matches:
+        # The optional (?:to\s+…)? prefix is consumed when the match starts
+        # before the named group — i.e. m.group(0) starts with "to"
+        if m.group(0).lower().startswith("to"):
+            dest_match = m
+            break
+        # Also accept "in <city>", "visit <city>" via preceding word check
+        preceding = text[max(0, m.start() - 12):m.start()].lower().rstrip()
+        if preceding.endswith(("in", "visit", "visiting", "to")):
+            dest_match = m
+            break
+    if not dest_match and all_dest_matches:
+        # Pick the LAST match — it's usually the destination (after origin)
+        dest_match = all_dest_matches[-1] if len(all_dest_matches) > 1 else all_dest_matches[0]
+
     raw_dest = dest_match.group("dest") if dest_match else "coast"
-    destination = _normalize_destination(raw_dest)
+    raw_dest_clean = re.sub(r"\s+", " ", raw_dest).strip().lower()
+    destination = _normalize_destination(raw_dest_clean)
+    # Keep the raw city name for transport border checks (when not a vibe keyword)
+    _vibe_keywords = {"coast", "beach", "mountains", "mountain", "desert", "city"}
+    destination_city = raw_dest_clean if raw_dest_clean not in _vibe_keywords else ""
 
     # ── Extract origin ──
     origin_match = _ORIGIN_PATTERN.search(text)
@@ -314,6 +454,9 @@ def parse_user_input(text: str) -> TripRequest:
         else:
             vehicle_type = v
 
+    # ── Detect rent-a-car request ──
+    rent_car = bool(_RENT_CAR_PATTERN.search(text))
+
     # ── Extract travel dates ──
     start_date, end_date = _parse_travel_dates(text, days)
 
@@ -322,10 +465,12 @@ def parse_user_input(text: str) -> TripRequest:
         currency=currency,
         travel_mode=travel_mode,
         destination=destination,
+        destination_city=destination_city,
         days=days,
         origin=origin,
         vehicle_type=vehicle_type,
         start_date=start_date,
         end_date=end_date,
+        rent_car=rent_car,
         raw_input=text,
     )

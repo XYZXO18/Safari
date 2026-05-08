@@ -29,6 +29,10 @@ class BudgetBreakdown:
     days: int
     currency: str = "SAR"
 
+    # Car rental (separate from inter-city transport)
+    car_rental_total: float = 0.0
+    car_rental_per_day: float = 0.0
+
     # Category totals (for the entire trip)
     lodging_total: float = 0.0
     food_total: float = 0.0
@@ -56,6 +60,10 @@ class BudgetBreakdown:
             f"{'─' * 45}",
             f"  Total Budget:        {self.total_budget:>8.0f} {sym}",
             f"  Transport (round):   {self.transport_cost:>8.0f} {sym}",
+        ]
+        if self.car_rental_total > 0:
+            lines.append(f"  🚗 Car Rental:       {self.car_rental_total:>8.0f} {sym}  ({self.car_rental_per_day:.0f}/day)")
+        lines += [
             f"  ────────────────────────────────────",
             f"  Remaining:           {self.remaining_budget:>8.0f} {sym}",
             f"",
@@ -80,22 +88,26 @@ def budget_allocator(
     days: int,
     currency: str = "SAR",
     custom_ratios: Dict[str, float] | None = None,
+    car_rental_daily_rate: float = 0.0,
 ) -> BudgetBreakdown:
     """
-    Allocate budget across categories after subtracting transport.
+    Allocate budget across categories after subtracting transport and car rental.
 
     Parameters
     ----------
     total_budget : float
         The user's total trip budget.
     transport_cost : float
-        Round-trip transport cost (already calculated).
+        Round-trip inter-city transport cost (already calculated).
     days : int
         Number of trip days.
     currency : str
         Currency code for display.
     custom_ratios : dict, optional
         Override default ratios. Keys: 'lodging', 'food', 'activities', 'buffer'.
+    car_rental_daily_rate : float
+        Daily car rental cost. If > 0, total rental (days × rate) is deducted
+        from the budget before category allocation.
 
     Returns
     -------
@@ -107,8 +119,9 @@ def budget_allocator(
     >>> result = budget_allocator(3000, 400, 4)
     >>> result.remaining_budget
     2600.0
-    >>> result.lodging_per_day
-    260.0
+    >>> result = budget_allocator(3000, 400, 4, car_rental_daily_rate=120)
+    >>> result.remaining_budget  # 3000 - 400 transport - 480 rental
+    2120.0
     """
 
     ratios = custom_ratios if custom_ratios else dict(BUDGET_RATIOS)
@@ -118,17 +131,19 @@ def budget_allocator(
     if abs(ratio_sum - 1.0) > 0.01:
         raise ValueError(f"Budget ratios must sum to 1.0, got {ratio_sum:.2f}")
 
-    remaining = total_budget - transport_cost
+    days = max(days, 1)  # guard against zero
+
+    car_rental_total = round(car_rental_daily_rate * days, 2) if car_rental_daily_rate > 0 else 0.0
+    total_deducted = transport_cost + car_rental_total
+    remaining = total_budget - total_deducted
     warnings = []
 
     # Feasibility check
     is_feasible = True
     if remaining <= 0:
         is_feasible = False
-        warnings.append("Transport alone exceeds total budget!")
+        warnings.append("Transport and rental costs exceed total budget!")
         remaining = 0
-
-    days = max(days, 1)  # guard against zero
 
     if remaining > 0 and (remaining / days) < 100:
         warnings.append(
@@ -147,6 +162,8 @@ def budget_allocator(
         remaining_budget=remaining,
         days=days,
         currency=currency,
+        car_rental_total=car_rental_total,
+        car_rental_per_day=round(car_rental_daily_rate, 2),
         lodging_total=round(lodging_total, 2),
         food_total=round(food_total, 2),
         activities_total=round(activities_total, 2),

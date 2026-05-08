@@ -1,1 +1,106 @@
-{}
+{
+  "makkah__urban exploration, nightlife, shopping, dining": {
+    "data": {
+      "hotel": {
+        "name": "Fairmont Makkah Clock Royal Tower",
+        "lat": 21.418751,
+        "lng": 39.825558
+      },
+      "activities": [
+        {
+          "name": "Masjid al-Haram & Kaaba",
+          "lat": 21.4224779,
+          "lng": 39.8251832
+        },
+        {
+          "name": "Abraj Al Bait Clock Tower Museum",
+          "lat": 21.418751,
+          "lng": 39.825558
+        },
+        {
+          "name": "Jabal al-Nour & Cave of Hira",
+          "lat": 21.45806,
+          "lng": 39.86139
+        },
+        {
+          "name": "Jannat al-Mu'alla",
+          "lat": 21.436944,
+          "lng": 39.829167
+        },
+        {
+          "name": "Hira Cultural District",
+          "lat": 21.45806,
+          "lng": 39.86139
+        },
+        {
+          "name": "Abraj Al Bait Mall",
+          "lat": 21.418751,
+          "lng": 39.825558
+        },
+        {
+          "name": "Makkah Mall",
+          "lat": 21.391108,
+          "lng": 39.884555
+        },
+        {
+          "name": "Al Baik Restaurant (Clock Tower)",
+          "lat": 21.418751,
+          "lng": 39.825558
+        }
+      ]
+    },
+    "ts": 1778239769.873499
+  },
+  "umluj__beach, diving, seafood, red sea sunsets": {
+    "data": {
+      "hotel": {
+        "name": "Nujuma, A Ritz-Carlton Reserve",
+        "lat": 25.529444,
+        "lng": 36.761944
+      },
+      "activities": [
+        {
+          "name": "Ras Al Shaaban Beach",
+          "lat": 24.758443,
+          "lng": 37.2254495
+        },
+        {
+          "name": "White Beach",
+          "lat": 25.02126,
+          "lng": 37.2685
+        },
+        {
+          "name": "Fwaida Islands (Boat trip for swimming & snorkeling from Umluj Marina)",
+          "lat": 25.2009,
+          "lng": 37.22356
+        },
+        {
+          "name": "Jabal Hassan Island (Beach & Coral Reefs)",
+          "lat": 24.966111,
+          "lng": 37.089722
+        },
+        {
+          "name": "Diving/Snorkeling the Red Sea Coral Reefs (from Umluj Marina)",
+          "lat": 25.2009,
+          "lng": 37.22356
+        },
+        {
+          "name": "Umluj Fish Market / Seafood Experience",
+          "lat": 25.02126,
+          "lng": 37.2685
+        },
+        {
+          "name": "Al Duqum Beach (Sunset Spot)",
+          "lat": 25.02126,
+          "lng": 37.2685
+        },
+        {
+          "name": "Umluj Corniche",
+          "lat": 25.02126,
+          "lng": 37.2685
+        }
+      ]
+    },
+    "ts": 1778240762.6717257
+  }
+}

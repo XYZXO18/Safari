@@ -93,16 +93,25 @@ def plan_trip():
         print(f"[PlanCache] HIT — returning cached plan for {origin} -> {destination}")
         return jsonify(cached)
 
-    # Resolve a specific city name to its vibe + remember the city
-    from config import CITY_TO_VIBE
+    # Resolve country name → default city, then city → vibe
+    from config import CITY_TO_VIBE, COUNTRY_TO_DEFAULT_CITY
     specific_city = None
     if destination not in DESTINATIONS:
-        resolved_vibe = CITY_TO_VIBE.get(destination)
-        if resolved_vibe:
-            specific_city = destination
-            destination = resolved_vibe
+        # 1. Country name? Map to the country's flagship tourist city first
+        country_city = COUNTRY_TO_DEFAULT_CITY.get(destination)
+        if country_city:
+            specific_city = country_city
+            destination = CITY_TO_VIBE.get(country_city, "city")
         else:
-            destination = "coast"
+            # 2. Specific city name? Resolve to its vibe
+            resolved_vibe = CITY_TO_VIBE.get(destination)
+            if resolved_vibe:
+                specific_city = destination
+                destination = resolved_vibe
+            else:
+                # 3. Unknown — treat as a city and default vibe to city
+                specific_city = destination if destination else None
+                destination = "city"
 
     # If dates not provided, compute from today
     if not start_date or not end_date:
@@ -118,7 +127,7 @@ def plan_trip():
         transport = calculate_transport_costs(
             mode=travel_mode,
             origin=origin,
-            destination=destination,
+            destination=specific_city if specific_city else destination,
             vehicle_type=vehicle_type,
         )
         breakdown = budget_allocator(

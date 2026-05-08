@@ -103,6 +103,16 @@ originSelect.addEventListener('change', () => {
     state.origin = originSelect.value;
 });
 
+// ─── Country / City Search ────────────────────────────────────────────────────
+const destSearchInput = $('specific-city-select');
+if (destSearchInput) {
+    destSearchInput.addEventListener('input', () => {
+        const v = destSearchInput.value.trim().toLowerCase();
+        if (v) state.destinationOverride = v;
+        else delete state.destinationOverride;
+    });
+}
+
 // ─── View Switching ─────────────────────────────────────────────────────────
 window.switchView = function(viewId) {
     // Hide all views
@@ -1123,7 +1133,7 @@ async function planTrip() {
         budget: state.budget,
         currency: state.currency,
         origin: state.origin,
-        destination: state.destination,
+        destination: state.destinationOverride || state.destination,
         travel_mode: state.travelMode,
         vehicle_type: state.vehicleType,
         days: state.days,
@@ -1304,9 +1314,10 @@ window.clearTripForm = function() {
     const interestsInput = $('interests-input');
     if (interestsInput) interestsInput.value = '';
 
-    // Reset specific city
+    // Reset destination search
     const specificCity = $('specific-city-select');
     if (specificCity) specificCity.value = '';
+    delete state.destinationOverride;
 
     // Hide results, show form
     $('results-panel').classList.add('hidden');

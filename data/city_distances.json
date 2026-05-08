@@ -544,5 +544,47 @@
     "distance_km": 224.29,
     "duration_minutes": 157,
     "source": "osrm"
+  },
+  "makkah__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "makkah",
+    "distance_km": 869.14,
+    "duration_minutes": 577,
+    "source": "osrm"
+  },
+  "dubai__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "dubai",
+    "distance_km": 1054.43,
+    "duration_minutes": 625,
+    "source": "osrm"
+  },
+  "london__tokyo": {
+    "city_a": "london",
+    "city_b": "tokyo",
+    "distance_km": 11965.78,
+    "duration_minutes": 9145,
+    "source": "osrm"
+  },
+  "cairo__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "cairo",
+    "distance_km": 2047.29,
+    "duration_minutes": 1389,
+    "source": "osrm"
+  },
+  "barcelona__riyadh": {
+    "city_a": "riyadh",
+    "city_b": "barcelona",
+    "distance_km": 5909.24,
+    "duration_minutes": 4424,
+    "source": "osrm"
+  },
+  "berlin__paris": {
+    "city_a": "paris",
+    "city_b": "berlin",
+    "distance_km": 1050.73,
+    "duration_minutes": 648,
+    "source": "osrm"
   }
 }

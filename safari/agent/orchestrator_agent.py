@@ -61,11 +61,29 @@ class OrchestratorAgent:
         except ValueError as e:
             return {"error": str(e)}
 
-        self._step_log("✅", f"Budget: {request.budget} | Mode: {request.travel_mode} | Dest: {request.destination} | Days: {request.days}")
+        self._step_log("✅", f"Budget: {request.budget} | Mode: {request.travel_mode} | Dest: {request.destination} | Days: {request.days} | Rent Car: {request.rent_car}")
 
         # Initial Orchestrator math
-        transport_est = calculate_transport_costs(request.travel_mode, request.origin, request.destination, request.vehicle_type)
-        breakdown = budget_allocator(request.budget, transport_est.cost_round_trip, request.days, request.currency)
+        # Use the raw city name (if captured) for more accurate transport/border checks
+        transport_dest = request.destination_city if request.destination_city else request.destination
+        transport_est = calculate_transport_costs(request.travel_mode, request.origin, transport_dest, request.vehicle_type)
+
+        # Determine car rental daily rate if requested
+        car_rental_daily = 0.0
+        if request.rent_car:
+            from config import CAR_RENTAL_DAILY_RATE_SAR, CITY_TO_COUNTRY
+            dest_lookup = request.destination_city if request.destination_city else request.destination
+            dest_country = CITY_TO_COUNTRY.get(dest_lookup.lower(), "")
+            car_rental_daily = CAR_RENTAL_DAILY_RATE_SAR.get(dest_country, CAR_RENTAL_DAILY_RATE_SAR["default"])
+            self._step_log("🚗", f"Car rental included: ~{car_rental_daily:.0f} SAR/day x {request.days} days = {car_rental_daily * request.days:.0f} SAR")
+
+        breakdown = budget_allocator(
+            request.budget,
+            transport_est.cost_round_trip,
+            request.days,
+            request.currency,
+            car_rental_daily_rate=car_rental_daily,
+        )
 
         # DELEGATE TO Worker 1: RESEARCH
         console.print("\n  [bold magenta][R] Orchestrator Agent -> Worker 1 (Research): Gather activities & events...[/bold magenta]")

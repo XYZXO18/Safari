@@ -1,1 +1,4248 @@
-{}
+{
+  "a8232b687a2ec7093c81d24354b2d123": {
+    "params": {
+      "budget": 3000.0,
+      "travel_mode": "car",
+      "destination": "makkah",
+      "days": 4,
+      "origin": "riyadh",
+      "vehicle_type": "default",
+      "currency": "SAR",
+      "start_date": "",
+      "end_date": "",
+      "interests": ""
+    },
+    "result": {
+      "paths": [
+        {
+          "transport": {
+            "mode": "car",
+            "origin": "Riyadh",
+            "destination": "Makkah",
+            "distance_km": 0,
+            "travel_time_str": "0m",
+            "cost_one_way": 0.0,
+            "cost_round_trip": 0.0,
+            "breakdown": "📊 Car | Fuel (RON 91): 0 km ÷ 12.0 km/L = 0.0 L @ 2.18 SAR/L",
+            "vehicle_type": "default"
+          },
+          "budget": {
+            "total": 3000.0,
+            "currency": "SAR",
+            "transport": 0.0,
+            "remaining": 3000.0,
+            "days": 4,
+            "lodging": {
+              "total": 0,
+              "per_day": 0,
+              "pending": true,
+              "max_budget": 1200.0,
+              "max_per_day": 300.0
+            },
+            "food": {
+              "total": 900.0,
+              "per_day": 225.0
+            },
+            "activities": {
+              "total": 600.0,
+              "per_day": 150.0
+            },
+            "buffer": {
+              "total": 300.0,
+              "per_day": 75.0
+            },
+            "is_feasible": true,
+            "warnings": []
+          },
+          "activities": {
+            "destination": "city",
+            "vibe": "Urban exploration, nightlife, shopping, dining",
+            "recommended_city": "Makkah",
+            "daily_plan": {
+              "1": [
+                {
+                  "id": "trend_4_al_baik",
+                  "name": "🔥 TRENDING: Al Baik",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 25.0,
+                  "category": "restaurant",
+                  "description": "Saudi Arabia's legendary fast-food chain, famous for its crispy broasted chicken and spicy garlic sauce. A must-try for locals and pilgrims alike, often with long lines.",
+                  "social_buzz": "Consistently described as a 'legendary fried chicken chain' and a 'favorite among pilgrims and locals', with many stating 'no trip to Makkah is complete without trying Al Baik'.",
+                  "rating": 4.5,
+                  "price_range": "$",
+                  "tags": [
+                    "fast food",
+                    "broasted chicken",
+                    "local favorite",
+                    "iconic",
+                    "affordable"
+                  ],
+                  "source": "Islamic Landmarks, UmrahTransit Team, YouTube, Quora, Reddit"
+                },
+                {
+                  "id": "trend_0_masjid_al-",
+                  "name": "🔥 TRENDING: Masjid al-Haram & Kaaba",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 0.0,
+                  "category": "attraction",
+                  "description": "The holiest site in Islam, housing the Kaaba, the focal point of Muslim prayers worldwide. Millions of pilgrims visit annually for Hajj and Umrah.",
+                  "social_buzz": "The spiritual heart of Makkah, where pilgrims from around the world converge, offering an overwhelming sense of connection and history.",
+                  "rating": 4.9,
+                  "price_range": "$",
+                  "tags": [
+                    "religious",
+                    "pilgrimage",
+                    "historical",
+                    "spiritual",
+                    "iconic"
+                  ],
+                  "source": "MakeMyTrip, Expedia, GetYourGuide, Trip Moments, Wasalt Blog, Islamic Landmarks"
+                },
+                {
+                  "name": "Abraj Al Bait Clock Tower Museum",
+                  "lat": 21.418751,
+                  "lng": 39.825558
+                },
+                {
+                  "name": "Jannat al-Mu'alla",
+                  "lat": 21.436944,
+                  "lng": 39.829167
+                },
+                {
+                  "name": "City center landmark walk",
+                  "lat": 21.400803626456625,
+                  "lng": 39.782904565645815
+                }
+              ],
+              "2": [
+                {
+                  "id": "trend_5_hira_cultu",
+                  "name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                  "lat": 21.4633,
+                  "lng": 39.8708,
+                  "is_trending_spot": true,
+                  "cost": 0.0,
+                  "category": "attraction",
+                  "description": "Explore the 'Mountain of Light' and the historic Cave of Hira, where Prophet Muhammad (PBUH) received his first revelation. Offers stunning views of Makkah after a hike.",
+                  "social_buzz": "A 'mesmerising Mountain of Light' offering a 'rich Islamic heritage' and an 'unforgettable way to experience' Makkah's spiritual history.",
+                  "rating": 4.8,
+                  "price_range": "$",
+                  "tags": [
+                    "historical",
+                    "spiritual",
+                    "hiking",
+                    "views",
+                    "cultural",
+                    "pilgrimage"
+                  ],
+                  "source": "MakeMyTrip, GetYourGuide, Trip Moments, Wasalt Blog, Islamic Landmarks, Reddit"
+                },
+                {
+                  "id": "trend_1_makkah_clo",
+                  "name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+                  "lat": 21.4187,
+                  "lng": 39.8261,
+                  "is_trending_spot": true,
+                  "cost": 150.0,
+                  "category": "attraction",
+                  "description": "Located within the iconic Abraj Al Bait complex, this museum showcases the history and technology of clockmaking, offering breathtaking panoramic views of the Holy Kaaba.",
+                  "social_buzz": "A magnificent structure decorating the city's skyline, offering an interactive journey through astronomy and timekeeping with breathtaking panoramic views.",
+                  "rating": 4.9,
+                  "price_range": "$$",
+                  "tags": [
+                    "museum",
+                    "views",
+                    "architecture",
+                    "modern",
+                    "educational",
+                    "iconic"
+                  ],
+                  "source": "MakeMyTrip, Expedia, GetYourGuide, Wasalt Blog, Islamic Landmarks"
+                },
+                {
+                  "name": "Local souq haggling",
+                  "lat": 21.327408693745962,
+                  "lng": 39.850712379471574
+                },
+                {
+                  "name": "Historical palaces walking tour",
+                  "lat": 21.37377909383303,
+                  "lng": 39.81851545982877
+                },
+                {
+                  "name": "Rooftop café",
+                  "lat": 21.335749826942152,
+                  "lng": 39.87732277114239
+                }
+              ],
+              "3": [
+                {
+                  "id": "trend_6_the_oasis_",
+                  "name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 300.0,
+                  "category": "restaurant",
+                  "description": "Offers a luxurious Mediterranean dining experience with stunning views of the Haram. Recognized with prestigious awards for culinary excellence and diverse buffet options.",
+                  "social_buzz": "Praised for its 'stunning views of the Haram' and 'culinary excellence', having received 'prestigious accolades'.",
+                  "rating": 4.5,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "fine dining",
+                    "Mediterranean cuisine",
+                    "luxury",
+                    "views",
+                    "hotel dining"
+                  ],
+                  "source": "Islamic Landmarks, Wanderlog, UmrahTransit Team"
+                },
+                {
+                  "id": "trend_2_cafe_momen",
+                  "name": "🔥 TRENDING: Cafe Moment",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 80.0,
+                  "category": "cafe",
+                  "description": "A highly-rated cafe known for offering arguably the most stunning views of Masjid Al Haram, popular for its specialty coffees and desserts like Special French Toast and Chocolate Bomb.",
+                  "social_buzz": "The café everyone finds through TikTok, praised as having the 'most stunning café view in Makkah' and even 'the best cafe view in the world for Muslims'.",
+                  "rating": 4.9,
+                  "price_range": "$$",
+                  "tags": [
+                    "specialty coffee",
+                    "desserts",
+                    "views",
+                    "trending",
+                    "Instagrammable",
+                    "cozy"
+                  ],
+                  "source": "Halal Xplorer, Yandex Maps, Wasalt Blog, Adil Musa"
+                },
+                {
+                  "name": "Boulevard Riyadh City",
+                  "lat": 21.434457703217614,
+                  "lng": 39.86368164949926,
+                  "rating": 4.3,
+                  "review_count": 5432,
+                  "why_go": "Riyadh's premier entertainment district â€” a massive complex with world-class dining, live events, concerts, gaming zones, and themed areas. Think of it as Saudi Arabia's Times Square.",
+                  "reviews": [
+                    {
+                      "user": "Maha R.",
+                      "rating": 4,
+                      "text": "So much to do! We spent 6 hours and still didn't see everything. The Japanese zone is incredible."
+                    },
+                    {
+                      "user": "Omar F.",
+                      "rating": 5,
+                      "text": "The atmosphere at night is electric. Great food, great shows, great people. A must-visit in Riyadh."
+                    },
+                    {
+                      "user": "Jenny L.",
+                      "rating": 4,
+                      "text": "Impressive entertainment complex but can get very crowded on weekends. Go on weekdays if you can."
+                    }
+                  ]
+                },
+                {
+                  "name": "Al Baik Restaurant (Clock Tower)",
+                  "lat": 21.418751,
+                  "lng": 39.825558
+                },
+                {
+                  "name": "Masjid al-Haram & Kaaba",
+                  "lat": 21.4224779,
+                  "lng": 39.8251832
+                }
+              ],
+              "4": [
+                {
+                  "id": "trend_7_camel_step",
+                  "name": "🔥 TRENDING: Camel Step Coffee",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 60.0,
+                  "category": "cafe",
+                  "description": "A trendy specialty coffee spot known for its excellent brews, minimalist vibe, and artful latte art, making it a local favorite for a relaxed break.",
+                  "social_buzz": "Known for 'artful coffee and light bites with social media-worthy presentation', with 'coffee lovers especially raving about its latte art' and considered by some as the 'best specialty cafe in Saudi Arabia'.",
+                  "rating": 4.6,
+                  "price_range": "$$",
+                  "tags": [
+                    "specialty coffee",
+                    "trendy",
+                    "minimalist",
+                    "latte art",
+                    "local favorite"
+                  ],
+                  "source": "Best Cafés in Makkah, YouTube, HalalZilla, Reddit"
+                },
+                {
+                  "id": "trend_3_gurkan_sef",
+                  "name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+                  "lat": 21.3891,
+                  "lng": 39.8579,
+                  "is_trending_spot": true,
+                  "cost": 300.0,
+                  "category": "restaurant",
+                  "description": "A cherished favorite among food enthusiasts, offering delectable Turkish cuisine and succulent steaks in a beautiful, lavish ambiance. Known for exceptional service.",
+                  "social_buzz": "Offers the 'ultimate steak indulgence' where 'culinary excellence meets luxury dining', with guests raving about the exceptional service.",
+                  "rating": 4.5,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "steakhouse",
+                    "Turkish cuisine",
+                    "luxury dining",
+                    "fine dining",
+                    "ambiance"
+                  ],
+                  "source": "Wanderlog, Yandex Maps, Evendo, Islamic Landmarks"
+                },
+                {
+                  "name": "Jabal al-Nour & Cave of Hira",
+                  "lat": 21.45806,
+                  "lng": 39.86139
+                },
+                {
+                  "name": "Modern architecture sightseeing",
+                  "lat": 21.320773031621403,
+                  "lng": 39.82574477103809
+                },
+                {
+                  "name": "Mall exploration",
+                  "lat": 21.32949241377018,
+                  "lng": 39.89840828816186
+                }
+              ]
+            },
+            "hotel": {
+              "name": "Fairmont Makkah Clock Royal Tower",
+              "lat": 21.418751,
+              "lng": 39.825558
+            }
+          },
+          "events": {
+            "city": "Makkah",
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-12",
+            "events": [],
+            "total_event_cost": 0,
+            "scan_source": "none"
+          },
+          "web_research": {
+            "city": "Makkah",
+            "research_date": "2026-05-08",
+            "social_posts": [
+              {
+                "platform": "reddit",
+                "author": "GreenAngelFish",
+                "content": "Reddit users discuss food spots in Makkah and Madinah, recommending Al Romansiah, Lamma Burger in the Clock Tower, and a Pakistani restaurant near Gate 367 in Madinah for chai and parathas.",
+                "category": "restaurant",
+                "relevance_score": 0.95,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHq2q32Otr7wMQbEsRDvMG-C4cwCGn4q66pPf7jdKv_FHmYq6hSqzum0pW9QtL3qY9Xnh7xc0Qb7n-XDukgkOyNE8ultw9EG3whASosF34aK6hm90NJeWVJmh7sEmg26EcX7oTiu875KF0_UvwfiPPJeKIL5ziLHXA7LtoOG3Lj6XRRDlT_pMat-kDrj7V7aEHlfmqQ==",
+                "likes": 7,
+                "posted_date": "March 28, 2026"
+              },
+              {
+                "platform": "reddit",
+                "author": "faisalrs",
+                "content": "A Reddit discussion on affordable food in Makkah suggests Pakistani hotels, shawarma shops near the Clock Tower, and Al Farooj, noting Al Baik is cheap but often crowded.",
+                "category": "restaurant",
+                "relevance_score": 0.9,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGWqQhvqWxO7EIKVPnjcm3HOQhOwYLv9Wy3Pn5XjGV4JjrNpUWSm1Sk0_8mab5tRUVMC5N6cnqCaMeXTKVLrkk62jB8MgJ2NQBiYj8aAjlbIq7nc3JIKRCvT1hDlehqeF4dpUsb-I3JAc0NgnPTZntw_w4WuPRD3_9R4wpTzyGLuoLsg9YTksdZ132UUrXyoQ==",
+                "likes": 0,
+                "posted_date": "November 30, 2024"
+              },
+              {
+                "platform": "blog",
+                "author": "Ihram Travel",
+                "content": "A travel blog post identifies hidden gems in Mecca, such as Jabal al-Noor (Mountain of Light) with the Cave of Hira, Jannat al-Mu'alla cemetery, and the old souq, for a richer spiritual and cultural experience.",
+                "category": "hidden_gem",
+                "relevance_score": 0.92,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELbx10M7665r21MoDSf-M2Ti2HZ7gH4w7DV9RjTvQrQvNjK2bZliAp2c0ctb_bBJ3KjkMqTyzhUhFHWLWMtXo_VE469yxpqI295iLwIlBKKoaZ9cbB27937SHcjgpvBZf6ZcLuv38DuGk1vrdnhOOXhhCupJ25p3AlVAj2wjQNc1gX85F0_90bdw==",
+                "likes": 0,
+                "posted_date": "August 30, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Ubigi eSIM",
+                "content": "A blog post outlines 10 must-try experiences in Mecca, such as visiting Masjid al-Haram, seeing the Black Stone, exploring Mount Arafat, trying traditional Saudi food, and shopping at Abraj Al Bait Mall, along with practical travel tips.",
+                "category": "unique_experience",
+                "relevance_score": 0.9,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHgN0Pe3iDrb9HTk1rXP4kSuBhYr_l7sq3lJ-_0Q4QcZlqK1tcGF2Dl1GMxpzkpyLD7gJyYCKNmw2NKUmBzVbdd-_p-fhVWLbBxREHOzmBQ5cW7cRI0-UVviBb11wVmWWgEgl6whYO99hj0TViOR33IO5WhvBgmUOL1XODRccs2nRahZnVVH-YQ3Hq_XeTK_zqbOw09",
+                "likes": 0,
+                "posted_date": "July 25, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "AI Trip Maker",
+                "content": "A travel guide for Mecca highlights unique food experiences like street food and traditional coffee at Al Khalil Courtyard Cafes, and hidden gems including Mount Thawr and the Makkah Museum.",
+                "category": "restaurant",
+                "relevance_score": 0.88,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGMn6h_pWsqseqDJbgOr3l-VEB-hvzALO5lelvWi7yDmt6oLYKyiSgJgQAmh7aNWpaEGrdah6v66Gb817Cq3j1OqKLZ94B7gSVs7czkdSAKXOcFCAQM-Y-iwFQQsSA5xDA=",
+                "likes": 0,
+                "posted_date": "June 27, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Hujjaj Travels",
+                "content": "A travel tips blog emphasizes securing the right visa, booking hotels near Masjid al-Haram in advance, dressing modestly, staying hydrated, and carrying medications for a comfortable Makkah Ziyarat.",
+                "category": "tip",
+                "relevance_score": 0.9,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHD9BMYPuZceJKqrm-sbkVttqb65HI9qHUoY9LPa_gqPEcMqRDIWwIafU6XQh9MRVCWmroelMKzrgZQs5zjnFPNUT8PbrV_a54KIdj7DEuPtbbRz7SV6aRhpnz4-CTpfzxEFop5cJBXwRiamWvIuUiL1Uq3dEs6Fa9LdOzwYoY5wh0=",
+                "likes": 0,
+                "posted_date": "November 29, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Wego.com",
+                "content": "A recent blog post warns that Makkah entry is restricted to Hajj permit holders, residents, and authorized workers until late May 2026, with Umrah season closed. It advises travelers to follow official instructions and keep documents handy.",
+                "category": "warning",
+                "relevance_score": 0.98,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHW_7kiPNuiqlWEoOMgHZhHZRWaX3N8j9d2f2crE1qG82Va3ltcuEWPKJzaM1iDAa9anPv5JdLvYhsgaRcR3lSXhIjNFz1T4JMvy1KDsXGYJ3xTablqbdVpY-TXUAWXRI8YecF8y8VQxamP6UPrM36i9jBa",
+                "likes": 0,
+                "posted_date": "April 28, 2026"
+              },
+              {
+                "platform": "youtube",
+                "author": "Moiz Abbas MA",
+                "content": "A YouTube video offers a walking tour of Makkah's Ibrahim Khalil Road, showcasing traditional shops with souvenirs, dates, and spices, alongside modern malls and cafes, capturing the city's vibrant atmosphere.",
+                "category": "unique_experience",
+                "relevance_score": 0.85,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFoun6iMLstljFaJpvXxxlDQghhpJ95G_JL3Tmnj5Rh3SkUUR-KSlp6sUgPeuO3LAEFWc0k9YN6fdGmRvRnYX8Pq8jDNpAF9s5osPlp8W-NcwR5-r3v8kVRwf_O5u3Ji4Be0yMAmQ==",
+                "likes": 0,
+                "posted_date": "December 01, 2025"
+              }
+            ],
+            "trending_spots": [
+              {
+                "name": "Masjid al-Haram & Kaaba",
+                "category": "attraction",
+                "description": "The holiest site in Islam, housing the Kaaba, the focal point of Muslim prayers worldwide. Millions of pilgrims visit annually for Hajj and Umrah.",
+                "price_range": "$",
+                "estimated_cost_sar": 0.0,
+                "rating": 4.9,
+                "source": "MakeMyTrip, Expedia, GetYourGuide, Trip Moments, Wasalt Blog, Islamic Landmarks",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "The spiritual heart of Makkah, where pilgrims from around the world converge, offering an overwhelming sense of connection and history.",
+                "tags": [
+                  "religious",
+                  "pilgrimage",
+                  "historical",
+                  "spiritual",
+                  "iconic"
+                ]
+              },
+              {
+                "name": "Makkah Clock Royal Tower Museum",
+                "category": "attraction",
+                "description": "Located within the iconic Abraj Al Bait complex, this museum showcases the history and technology of clockmaking, offering breathtaking panoramic views of the Holy Kaaba.",
+                "price_range": "$$",
+                "estimated_cost_sar": 150.0,
+                "rating": 4.9,
+                "source": "MakeMyTrip, Expedia, GetYourGuide, Wasalt Blog, Islamic Landmarks",
+                "lat": 21.4187,
+                "lng": 39.8261,
+                "social_buzz": "A magnificent structure decorating the city's skyline, offering an interactive journey through astronomy and timekeeping with breathtaking panoramic views.",
+                "tags": [
+                  "museum",
+                  "views",
+                  "architecture",
+                  "modern",
+                  "educational",
+                  "iconic"
+                ]
+              },
+              {
+                "name": "Cafe Moment",
+                "category": "cafe",
+                "description": "A highly-rated cafe known for offering arguably the most stunning views of Masjid Al Haram, popular for its specialty coffees and desserts like Special French Toast and Chocolate Bomb.",
+                "price_range": "$$",
+                "estimated_cost_sar": 80.0,
+                "rating": 4.9,
+                "source": "Halal Xplorer, Yandex Maps, Wasalt Blog, Adil Musa",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "The café everyone finds through TikTok, praised as having the 'most stunning café view in Makkah' and even 'the best cafe view in the world for Muslims'.",
+                "tags": [
+                  "specialty coffee",
+                  "desserts",
+                  "views",
+                  "trending",
+                  "Instagrammable",
+                  "cozy"
+                ]
+              },
+              {
+                "name": "Gurkan Sef Steakhouse",
+                "category": "restaurant",
+                "description": "A cherished favorite among food enthusiasts, offering delectable Turkish cuisine and succulent steaks in a beautiful, lavish ambiance. Known for exceptional service.",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 300.0,
+                "rating": 4.5,
+                "source": "Wanderlog, Yandex Maps, Evendo, Islamic Landmarks",
+                "lat": 21.3891,
+                "lng": 39.8579,
+                "social_buzz": "Offers the 'ultimate steak indulgence' where 'culinary excellence meets luxury dining', with guests raving about the exceptional service.",
+                "tags": [
+                  "steakhouse",
+                  "Turkish cuisine",
+                  "luxury dining",
+                  "fine dining",
+                  "ambiance"
+                ]
+              },
+              {
+                "name": "Al Baik",
+                "category": "restaurant",
+                "description": "Saudi Arabia's legendary fast-food chain, famous for its crispy broasted chicken and spicy garlic sauce. A must-try for locals and pilgrims alike, often with long lines.",
+                "price_range": "$",
+                "estimated_cost_sar": 25.0,
+                "rating": 4.5,
+                "source": "Islamic Landmarks, UmrahTransit Team, YouTube, Quora, Reddit",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "Consistently described as a 'legendary fried chicken chain' and a 'favorite among pilgrims and locals', with many stating 'no trip to Makkah is complete without trying Al Baik'.",
+                "tags": [
+                  "fast food",
+                  "broasted chicken",
+                  "local favorite",
+                  "iconic",
+                  "affordable"
+                ]
+              },
+              {
+                "name": "Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                "category": "attraction",
+                "description": "Explore the 'Mountain of Light' and the historic Cave of Hira, where Prophet Muhammad (PBUH) received his first revelation. Offers stunning views of Makkah after a hike.",
+                "price_range": "$",
+                "estimated_cost_sar": 0.0,
+                "rating": 4.8,
+                "source": "MakeMyTrip, GetYourGuide, Trip Moments, Wasalt Blog, Islamic Landmarks, Reddit",
+                "lat": 21.4633,
+                "lng": 39.8708,
+                "social_buzz": "A 'mesmerising Mountain of Light' offering a 'rich Islamic heritage' and an 'unforgettable way to experience' Makkah's spiritual history.",
+                "tags": [
+                  "historical",
+                  "spiritual",
+                  "hiking",
+                  "views",
+                  "cultural",
+                  "pilgrimage"
+                ]
+              },
+              {
+                "name": "The Oasis (Raffles Makkah Palace)",
+                "category": "restaurant",
+                "description": "Offers a luxurious Mediterranean dining experience with stunning views of the Haram. Recognized with prestigious awards for culinary excellence and diverse buffet options.",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 300.0,
+                "rating": 4.5,
+                "source": "Islamic Landmarks, Wanderlog, UmrahTransit Team",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "Praised for its 'stunning views of the Haram' and 'culinary excellence', having received 'prestigious accolades'.",
+                "tags": [
+                  "fine dining",
+                  "Mediterranean cuisine",
+                  "luxury",
+                  "views",
+                  "hotel dining"
+                ]
+              },
+              {
+                "name": "Camel Step Coffee",
+                "category": "cafe",
+                "description": "A trendy specialty coffee spot known for its excellent brews, minimalist vibe, and artful latte art, making it a local favorite for a relaxed break.",
+                "price_range": "$$",
+                "estimated_cost_sar": 60.0,
+                "rating": 4.6,
+                "source": "Best Cafés in Makkah, YouTube, HalalZilla, Reddit",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "Known for 'artful coffee and light bites with social media-worthy presentation', with 'coffee lovers especially raving about its latte art' and considered by some as the 'best specialty cafe in Saudi Arabia'.",
+                "tags": [
+                  "specialty coffee",
+                  "trendy",
+                  "minimalist",
+                  "latte art",
+                  "local favorite"
+                ]
+              }
+            ],
+            "local_insights": [
+              {
+                "tip": "Pack light, loose-fitting, breathable cotton or linen clothing, comfortable walking shoes, a sun hat, UV umbrella, sunglasses, and unscented hygiene products due to the intense heat.",
+                "category": "weather",
+                "source": "Travel blogs, Reddit",
+                "confidence": "high"
+              },
+              {
+                "tip": "Women should wear long, loose-fitting clothing covering shoulders, arms, legs, and chest, and cover their hair with a hijab or light scarf, while men should wear airy thobes or long-sleeve shirts with loose trousers, avoiding shorts that expose knees.",
+                "category": "weather",
+                "source": "Travel blogs, Makkah & Madinah Guide",
+                "confidence": "high"
+              },
+              {
+                "tip": "Book accommodation and flights early, and consider hotels further from Haram that offer shuttle services, as those closer are significantly more expensive.",
+                "category": "money_saving",
+                "source": "Reddit, Travel blogs",
+                "confidence": "high"
+              },
+              {
+                "tip": "Save money on food by opting for street food or local fast-food chains like Al-Baik.",
+                "category": "money_saving",
+                "source": "Reddit, Travel blogs",
+                "confidence": "high"
+              },
+              {
+                "tip": "Utilize public buses for affordable transportation within the city and consider sharing taxis or using ride-hailing apps like Uber, which often offers fixed fares.",
+                "category": "money_saving",
+                "source": "Reddit, Umrah Companions, Makkah Travel",
+                "confidence": "high"
+              },
+              {
+                "tip": "Travel during off-peak seasons or weekdays to potentially find lower flight and hotel costs.",
+                "category": "money_saving",
+                "source": "Makkah & Madinah Blog, Makkah Travel",
+                "confidence": "high"
+              },
+              {
+                "tip": "Reconsider travel to Saudi Arabia due to the volatile security situation in the Middle East, including risks of attacks, escalation, and falling military debris.",
+                "category": "safety",
+                "source": "Smartraveller, Travel.gc.ca, U.S. Department of State",
+                "confidence": "high"
+              },
+              {
+                "tip": "Stay alert in crowded places, keep personal belongings secure, avoid walking alone in remote areas at night, and use registered cabs or ride-hailing apps.",
+                "category": "safety",
+                "source": "Umrah Companions, Travelner Insurance, Mashaer Fleet",
+                "confidence": "high"
+              }
+            ],
+            "weather_summary": "Makkah in May 2026 is expected to be extremely hot with daily high temperatures ranging from 102°F (39°C) to 116°F (47°C), very high heat and humidity, and a low chance of rain.",
+            "scan_successful": true
+          },
+          "dates": {
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-12"
+          },
+          "map": {
+            "origin": {
+              "lat": 24.7136,
+              "lng": 46.6753
+            },
+            "destination": {
+              "lat": 21.3891,
+              "lng": 39.8579
+            },
+            "origin_name": "Riyadh",
+            "dest_name": "Makkah"
+          },
+          "hospitality": {
+            "hotels": [
+              {
+                "id": "Emaar Al Khlil",
+                "name": "Emaar Al Khlil",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "This hotel exceeded expectations in every way possible, offering good value for money.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 232.0,
+                    "final_price_sar": 232.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 324.8,
+                    "final_price_sar": 324.8,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.38587056130946,
+                "lng": 39.849538486411866,
+                "has_availability": true,
+                "live_price_sar": 232.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 232.0,
+                  "final_price_sar": 232.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Batoul Ajyad Hotel",
+                "name": "Batoul Ajyad Hotel",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "This hotel offers good free parking, courteous staff, and clean rooms.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 247.0,
+                    "final_price_sar": 247.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 345.8,
+                    "final_price_sar": 345.8,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.425088761441927,
+                "lng": 39.847967576649765,
+                "has_availability": true,
+                "live_price_sar": 247.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 247.0,
+                  "final_price_sar": 247.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Al Ebaa Hotel",
+                "name": "Al Ebaa Hotel",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "A cheap hotel offering clean, air-conditioned rooms with a simple yet relaxing atmosphere.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 280.0,
+                    "final_price_sar": 280.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 392.0,
+                    "final_price_sar": 392.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.36693890867918,
+                "lng": 39.82964838365337,
+                "has_availability": true,
+                "live_price_sar": 280.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 280.0,
+                  "final_price_sar": 280.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Elaf Bakkah Hotel",
+                "name": "Elaf Bakkah Hotel",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "A 3-star hotel offering great value for money and located close to popular landmarks.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 290.0,
+                    "final_price_sar": 290.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 406.0,
+                    "final_price_sar": 406.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.355085968384152,
+                "lng": 39.878729107320346,
+                "has_availability": true,
+                "live_price_sar": 290.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 290.0,
+                  "final_price_sar": 290.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Three Pearls Musalli",
+                "name": "Three Pearls Musalli Hotel",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "A budget-friendly hotel in Mecca with good guest ratings.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 295.0,
+                    "final_price_sar": 295.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 413.0,
+                    "final_price_sar": 413.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.341968540889653,
+                "lng": 39.89530424776299,
+                "has_availability": true,
+                "live_price_sar": 295.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 295.0,
+                  "final_price_sar": 295.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              }
+            ],
+            "restaurants": [
+              {
+                "id": "233",
+                "name": "Al Romansiah",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 16,
+                "available_tables": 4,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 30.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 9.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 12.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.43156480005264,
+                "lng": 39.875364678208875
+              },
+              {
+                "id": "234",
+                "name": "Al Ruwad",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 7,
+                "available_tables": 13,
+                "discount_percent": 12.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 70.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 21.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 28.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.399803845918395,
+                "lng": 39.849407685703916
+              },
+              {
+                "id": "231",
+                "name": "Al Tazaj",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.1,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 12,
+                "available_tables": 8,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 35.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 10.5,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 14.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.384544743437626,
+                "lng": 39.86170179431753
+              },
+              {
+                "id": "230",
+                "name": "Albaik",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.5,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 15,
+                "available_tables": 5,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 25.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 7.5,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 10.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.35294816820029,
+                "lng": 39.89201295743423
+              },
+              {
+                "id": "232",
+                "name": "Arabic Foul and Tamees",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.3,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 11,
+                "available_tables": 9,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 15.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 4.5,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 6.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.435505226850523,
+                "lng": 39.8264912723049
+              },
+              {
+                "id": "236",
+                "name": "Camel Step Coffee",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 8,
+                "available_tables": 12,
+                "discount_percent": 12.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 13.5,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 4.05,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 5.4,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.362946064218068,
+                "lng": 39.90784963228669
+              },
+              {
+                "id": "235",
+                "name": "RATIO Speciality Coffee",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 18,
+                "available_tables": 2,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 16.5,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 4.95,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 6.6000000000000005,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.3952625744156,
+                "lng": 39.82827156647212
+              }
+            ],
+            "travel_costs": {
+              "status": "success",
+              "flights": [],
+              "origin": "riyadh",
+              "destination": "Makkah",
+              "travel_mode": "car"
+            }
+          },
+          "timeline": {
+            "1": {
+              "legs": [
+                {
+                  "from_name": "Riyadh",
+                  "from_lat": 24.7136,
+                  "from_lng": 46.6753,
+                  "to_name": "Emaar Al Khlil",
+                  "to_lat": 21.38587056130946,
+                  "to_lng": 39.849538486411866,
+                  "mode": "🚗 Long-haul",
+                  "dist": 0,
+                  "time_minutes": 0,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                },
+                {
+                  "from_name": "Emaar Al Khlil",
+                  "from_lat": 21.38587056130946,
+                  "from_lng": 39.849538486411866,
+                  "to_name": "🔥 TRENDING: Al Baik",
+                  "to_lat": 21.4225,
+                  "to_lng": 39.8262,
+                  "mode": "🚗 Drive",
+                  "dist": 4.74,
+                  "time_minutes": 6,
+                  "cost": 0.86
+                },
+                {
+                  "from_name": "🔥 TRENDING: Al Baik",
+                  "from_lat": 21.4225,
+                  "from_lng": 39.8262,
+                  "to_name": "Abraj Al Bait Clock Tower Museum",
+                  "to_lat": 21.418751,
+                  "to_lng": 39.825558,
+                  "mode": "🚶 Walk",
+                  "dist": 0.42,
+                  "time_minutes": 5,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Abraj Al Bait Clock Tower Museum",
+                  "from_lat": 21.418751,
+                  "from_lng": 39.825558,
+                  "to_name": "Parked Car",
+                  "to_lat": 21.4225,
+                  "to_lng": 39.8262,
+                  "mode": "🚶 Walk to car",
+                  "dist": 0.42,
+                  "time_minutes": 5,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Parked Car",
+                  "from_lat": 21.4225,
+                  "from_lng": 39.8262,
+                  "to_name": "Jannat al-Mu'alla",
+                  "to_lat": 21.436944,
+                  "to_lng": 39.829167,
+                  "mode": "🚗 Drive",
+                  "dist": 1.64,
+                  "time_minutes": 2,
+                  "cost": 0.3
+                },
+                {
+                  "from_name": "Jannat al-Mu'alla",
+                  "from_lat": 21.436944,
+                  "from_lng": 39.829167,
+                  "to_name": "City center landmark walk",
+                  "to_lat": 21.400803626456625,
+                  "to_lng": 39.782904565645815,
+                  "mode": "🚗 Drive",
+                  "dist": 6.25,
+                  "time_minutes": 8,
+                  "cost": 1.14
+                },
+                {
+                  "from_name": "City center landmark walk",
+                  "from_lat": 21.400803626456625,
+                  "from_lng": 39.782904565645815,
+                  "to_name": "Emaar Al Khlil",
+                  "to_lat": 21.38587056130946,
+                  "to_lng": 39.849538486411866,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 7.1,
+                  "time_minutes": 9,
+                  "cost": 1.29
+                }
+              ],
+              "day_cost": 3.59,
+              "recommendation": ""
+            },
+            "2": {
+              "legs": [
+                {
+                  "from_name": "Emaar Al Khlil",
+                  "from_lat": 21.38587056130946,
+                  "from_lng": 39.849538486411866,
+                  "to_name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                  "to_lat": 21.4633,
+                  "to_lng": 39.8708,
+                  "mode": "🚗 Drive",
+                  "dist": 8.89,
+                  "time_minutes": 11,
+                  "cost": 1.61
+                },
+                {
+                  "from_name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                  "from_lat": 21.4633,
+                  "from_lng": 39.8708,
+                  "to_name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+                  "to_lat": 21.4187,
+                  "to_lng": 39.8261,
+                  "mode": "🚗 Drive",
+                  "dist": 6.78,
+                  "time_minutes": 8,
+                  "cost": 1.23
+                },
+                {
+                  "from_name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+                  "from_lat": 21.4187,
+                  "from_lng": 39.8261,
+                  "to_name": "Local souq haggling",
+                  "to_lat": 21.327408693745962,
+                  "to_lng": 39.850712379471574,
+                  "mode": "🚗 Drive",
+                  "dist": 10.47,
+                  "time_minutes": 13,
+                  "cost": 1.9
+                },
+                {
+                  "from_name": "Local souq haggling",
+                  "from_lat": 21.327408693745962,
+                  "from_lng": 39.850712379471574,
+                  "to_name": "Historical palaces walking tour",
+                  "to_lat": 21.37377909383303,
+                  "to_lng": 39.81851545982877,
+                  "mode": "🚗 Drive",
+                  "dist": 6.14,
+                  "time_minutes": 7,
+                  "cost": 1.12
+                },
+                {
+                  "from_name": "Historical palaces walking tour",
+                  "from_lat": 21.37377909383303,
+                  "from_lng": 39.81851545982877,
+                  "to_name": "Rooftop café",
+                  "to_lat": 21.335749826942152,
+                  "to_lng": 39.87732277114239,
+                  "mode": "🚗 Drive",
+                  "dist": 7.41,
+                  "time_minutes": 9,
+                  "cost": 1.35
+                },
+                {
+                  "from_name": "Rooftop café",
+                  "from_lat": 21.335749826942152,
+                  "from_lng": 39.87732277114239,
+                  "to_name": "Emaar Al Khlil",
+                  "to_lat": 21.38587056130946,
+                  "to_lng": 39.849538486411866,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 6.27,
+                  "time_minutes": 8,
+                  "cost": 1.14
+                }
+              ],
+              "day_cost": 8.35,
+              "recommendation": ""
+            },
+            "3": {
+              "legs": [
+                {
+                  "from_name": "Emaar Al Khlil",
+                  "from_lat": 21.38587056130946,
+                  "from_lng": 39.849538486411866,
+                  "to_name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+                  "to_lat": 21.4225,
+                  "to_lng": 39.8262,
+                  "mode": "🚗 Drive",
+                  "dist": 4.74,
+                  "time_minutes": 6,
+                  "cost": 0.86
+                },
+                {
+                  "from_name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+                  "from_lat": 21.4225,
+                  "from_lng": 39.8262,
+                  "to_name": "Boulevard Riyadh City",
+                  "to_lat": 21.434457703217614,
+                  "to_lng": 39.86368164949926,
+                  "mode": "🚗 Drive",
+                  "dist": 4.1,
+                  "time_minutes": 5,
+                  "cost": 0.75
+                },
+                {
+                  "from_name": "Boulevard Riyadh City",
+                  "from_lat": 21.434457703217614,
+                  "from_lng": 39.86368164949926,
+                  "to_name": "Al Baik Restaurant (Clock Tower)",
+                  "to_lat": 21.418751,
+                  "to_lng": 39.825558,
+                  "mode": "🚗 Drive",
+                  "dist": 4.32,
+                  "time_minutes": 5,
+                  "cost": 0.78
+                },
+                {
+                  "from_name": "Al Baik Restaurant (Clock Tower)",
+                  "from_lat": 21.418751,
+                  "from_lng": 39.825558,
+                  "to_name": "Masjid al-Haram & Kaaba",
+                  "to_lat": 21.4224779,
+                  "to_lng": 39.8251832,
+                  "mode": "🚶 Walk",
+                  "dist": 0.42,
+                  "time_minutes": 5,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Masjid al-Haram & Kaaba",
+                  "from_lat": 21.4224779,
+                  "from_lng": 39.8251832,
+                  "to_name": "Parked Car",
+                  "to_lat": 21.418751,
+                  "to_lng": 39.825558,
+                  "mode": "🚶 Walk to car",
+                  "dist": 0.42,
+                  "time_minutes": 5,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Parked Car",
+                  "from_lat": 21.418751,
+                  "from_lng": 39.825558,
+                  "to_name": "Emaar Al Khlil",
+                  "to_lat": 21.38587056130946,
+                  "to_lng": 39.849538486411866,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 4.42,
+                  "time_minutes": 5,
+                  "cost": 0.8
+                }
+              ],
+              "day_cost": 3.19,
+              "recommendation": ""
+            },
+            "4": {
+              "legs": [
+                {
+                  "from_name": "Emaar Al Khlil",
+                  "from_lat": 21.38587056130946,
+                  "from_lng": 39.849538486411866,
+                  "to_name": "🔥 TRENDING: Camel Step Coffee",
+                  "to_lat": 21.4225,
+                  "to_lng": 39.8262,
+                  "mode": "🚗 Drive",
+                  "dist": 4.74,
+                  "time_minutes": 6,
+                  "cost": 0.86
+                },
+                {
+                  "from_name": "🔥 TRENDING: Camel Step Coffee",
+                  "from_lat": 21.4225,
+                  "from_lng": 39.8262,
+                  "to_name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+                  "to_lat": 21.3891,
+                  "to_lng": 39.8579,
+                  "mode": "🚗 Drive",
+                  "dist": 4.96,
+                  "time_minutes": 6,
+                  "cost": 0.9
+                },
+                {
+                  "from_name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+                  "from_lat": 21.3891,
+                  "from_lng": 39.8579,
+                  "to_name": "Jabal al-Nour & Cave of Hira",
+                  "to_lat": 21.45806,
+                  "to_lng": 39.86139,
+                  "mode": "🚗 Drive",
+                  "dist": 7.68,
+                  "time_minutes": 9,
+                  "cost": 1.39
+                },
+                {
+                  "from_name": "Jabal al-Nour & Cave of Hira",
+                  "from_lat": 21.45806,
+                  "from_lng": 39.86139,
+                  "to_name": "Modern architecture sightseeing",
+                  "to_lat": 21.320773031621403,
+                  "to_lng": 39.82574477103809,
+                  "mode": "🚗 Drive",
+                  "dist": 15.71,
+                  "time_minutes": 19,
+                  "cost": 2.85
+                },
+                {
+                  "from_name": "Modern architecture sightseeing",
+                  "from_lat": 21.320773031621403,
+                  "from_lng": 39.82574477103809,
+                  "to_name": "Mall exploration",
+                  "to_lat": 21.32949241377018,
+                  "to_lng": 39.89840828816186,
+                  "mode": "🚗 Drive",
+                  "dist": 7.59,
+                  "time_minutes": 9,
+                  "cost": 1.38
+                },
+                {
+                  "from_name": "Mall exploration",
+                  "from_lat": 21.32949241377018,
+                  "from_lng": 39.89840828816186,
+                  "to_name": "Emaar Al Khlil",
+                  "to_lat": 21.38587056130946,
+                  "to_lng": 39.849538486411866,
+                  "mode": "🚗 Drive back to Hotel",
+                  "dist": 8.06,
+                  "time_minutes": 10,
+                  "cost": 1.46
+                },
+                {
+                  "from_name": "Emaar Al Khlil",
+                  "from_lat": 21.38587056130946,
+                  "from_lng": 39.849538486411866,
+                  "to_name": "Riyadh",
+                  "to_lat": 24.7136,
+                  "to_lng": 46.6753,
+                  "mode": "🚗 Return",
+                  "dist": 0,
+                  "time_minutes": 0,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                }
+              ],
+              "day_cost": 8.84,
+              "recommendation": ""
+            }
+          },
+          "total_transit_cost": 23.97,
+          "simulation_routes": {
+            "1": [
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin",
+                "day": 1
+              },
+              {
+                "name": "Emaar Al Khlil",
+                "lat": 21.38587056130946,
+                "lng": 39.849538486411866,
+                "type": "hotel",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: Al Baik",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: Masjid al-Haram & Kaaba",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Abraj Al Bait Clock Tower Museum",
+                "lat": 21.418751,
+                "lng": 39.825558,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Jannat al-Mu'alla",
+                "lat": 21.436944,
+                "lng": 39.829167,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "City center landmark walk",
+                "lat": 21.400803626456625,
+                "lng": 39.782904565645815,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Emaar Al Khlil",
+                "lat": 21.38587056130946,
+                "lng": 39.849538486411866,
+                "type": "hotel_return",
+                "day": 1
+              }
+            ],
+            "2": [
+              {
+                "name": "Emaar Al Khlil",
+                "lat": 21.38587056130946,
+                "lng": 39.849538486411866,
+                "type": "hotel",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                "lat": 21.4633,
+                "lng": 39.8708,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+                "lat": 21.4187,
+                "lng": 39.8261,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Local souq haggling",
+                "lat": 21.327408693745962,
+                "lng": 39.850712379471574,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Historical palaces walking tour",
+                "lat": 21.37377909383303,
+                "lng": 39.81851545982877,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Rooftop café",
+                "lat": 21.335749826942152,
+                "lng": 39.87732277114239,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Emaar Al Khlil",
+                "lat": 21.38587056130946,
+                "lng": 39.849538486411866,
+                "type": "hotel_return",
+                "day": 2
+              }
+            ],
+            "3": [
+              {
+                "name": "Emaar Al Khlil",
+                "lat": 21.38587056130946,
+                "lng": 39.849538486411866,
+                "type": "hotel",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: Cafe Moment",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Boulevard Riyadh City",
+                "lat": 21.434457703217614,
+                "lng": 39.86368164949926,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Al Baik Restaurant (Clock Tower)",
+                "lat": 21.418751,
+                "lng": 39.825558,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Masjid al-Haram & Kaaba",
+                "lat": 21.4224779,
+                "lng": 39.8251832,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Emaar Al Khlil",
+                "lat": 21.38587056130946,
+                "lng": 39.849538486411866,
+                "type": "hotel_return",
+                "day": 3
+              }
+            ],
+            "4": [
+              {
+                "name": "Emaar Al Khlil",
+                "lat": 21.38587056130946,
+                "lng": 39.849538486411866,
+                "type": "hotel",
+                "day": 4
+              },
+              {
+                "name": "🔥 TRENDING: Camel Step Coffee",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+                "lat": 21.3891,
+                "lng": 39.8579,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Jabal al-Nour & Cave of Hira",
+                "lat": 21.45806,
+                "lng": 39.86139,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Modern architecture sightseeing",
+                "lat": 21.320773031621403,
+                "lng": 39.82574477103809,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Mall exploration",
+                "lat": 21.32949241377018,
+                "lng": 39.89840828816186,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Emaar Al Khlil",
+                "lat": 21.38587056130946,
+                "lng": 39.849538486411866,
+                "type": "hotel_return",
+                "day": 4
+              },
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin_return",
+                "day": 4
+              }
+            ]
+          },
+          "full_trip_dataset": [
+            {
+              "from_name": "Riyadh",
+              "from_lat": 24.7136,
+              "from_lng": 46.6753,
+              "to_name": "Emaar Al Khlil",
+              "to_lat": 21.38587056130946,
+              "to_lng": 39.849538486411866,
+              "mode": "🚗 Long-haul",
+              "dist": 0,
+              "time_minutes": 0,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Emaar Al Khlil",
+              "from_lat": 21.38587056130946,
+              "from_lng": 39.849538486411866,
+              "to_name": "🔥 TRENDING: Al Baik",
+              "to_lat": 21.4225,
+              "to_lng": 39.8262,
+              "mode": "🚗 Drive",
+              "dist": 4.74,
+              "time_minutes": 6,
+              "cost": 0.86
+            },
+            {
+              "from_name": "🔥 TRENDING: Al Baik",
+              "from_lat": 21.4225,
+              "from_lng": 39.8262,
+              "to_name": "Abraj Al Bait Clock Tower Museum",
+              "to_lat": 21.418751,
+              "to_lng": 39.825558,
+              "mode": "🚶 Walk",
+              "dist": 0.42,
+              "time_minutes": 5,
+              "cost": 0
+            },
+            {
+              "from_name": "Abraj Al Bait Clock Tower Museum",
+              "from_lat": 21.418751,
+              "from_lng": 39.825558,
+              "to_name": "Parked Car",
+              "to_lat": 21.4225,
+              "to_lng": 39.8262,
+              "mode": "🚶 Walk to car",
+              "dist": 0.42,
+              "time_minutes": 5,
+              "cost": 0
+            },
+            {
+              "from_name": "Parked Car",
+              "from_lat": 21.4225,
+              "from_lng": 39.8262,
+              "to_name": "Jannat al-Mu'alla",
+              "to_lat": 21.436944,
+              "to_lng": 39.829167,
+              "mode": "🚗 Drive",
+              "dist": 1.64,
+              "time_minutes": 2,
+              "cost": 0.3
+            },
+            {
+              "from_name": "Jannat al-Mu'alla",
+              "from_lat": 21.436944,
+              "from_lng": 39.829167,
+              "to_name": "City center landmark walk",
+              "to_lat": 21.400803626456625,
+              "to_lng": 39.782904565645815,
+              "mode": "🚗 Drive",
+              "dist": 6.25,
+              "time_minutes": 8,
+              "cost": 1.14
+            },
+            {
+              "from_name": "City center landmark walk",
+              "from_lat": 21.400803626456625,
+              "from_lng": 39.782904565645815,
+              "to_name": "Emaar Al Khlil",
+              "to_lat": 21.38587056130946,
+              "to_lng": 39.849538486411866,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 7.1,
+              "time_minutes": 9,
+              "cost": 1.29
+            },
+            {
+              "from_name": "Emaar Al Khlil",
+              "from_lat": 21.38587056130946,
+              "from_lng": 39.849538486411866,
+              "to_name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+              "to_lat": 21.4633,
+              "to_lng": 39.8708,
+              "mode": "🚗 Drive",
+              "dist": 8.89,
+              "time_minutes": 11,
+              "cost": 1.61
+            },
+            {
+              "from_name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+              "from_lat": 21.4633,
+              "from_lng": 39.8708,
+              "to_name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+              "to_lat": 21.4187,
+              "to_lng": 39.8261,
+              "mode": "🚗 Drive",
+              "dist": 6.78,
+              "time_minutes": 8,
+              "cost": 1.23
+            },
+            {
+              "from_name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+              "from_lat": 21.4187,
+              "from_lng": 39.8261,
+              "to_name": "Local souq haggling",
+              "to_lat": 21.327408693745962,
+              "to_lng": 39.850712379471574,
+              "mode": "🚗 Drive",
+              "dist": 10.47,
+              "time_minutes": 13,
+              "cost": 1.9
+            },
+            {
+              "from_name": "Local souq haggling",
+              "from_lat": 21.327408693745962,
+              "from_lng": 39.850712379471574,
+              "to_name": "Historical palaces walking tour",
+              "to_lat": 21.37377909383303,
+              "to_lng": 39.81851545982877,
+              "mode": "🚗 Drive",
+              "dist": 6.14,
+              "time_minutes": 7,
+              "cost": 1.12
+            },
+            {
+              "from_name": "Historical palaces walking tour",
+              "from_lat": 21.37377909383303,
+              "from_lng": 39.81851545982877,
+              "to_name": "Rooftop café",
+              "to_lat": 21.335749826942152,
+              "to_lng": 39.87732277114239,
+              "mode": "🚗 Drive",
+              "dist": 7.41,
+              "time_minutes": 9,
+              "cost": 1.35
+            },
+            {
+              "from_name": "Rooftop café",
+              "from_lat": 21.335749826942152,
+              "from_lng": 39.87732277114239,
+              "to_name": "Emaar Al Khlil",
+              "to_lat": 21.38587056130946,
+              "to_lng": 39.849538486411866,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 6.27,
+              "time_minutes": 8,
+              "cost": 1.14
+            },
+            {
+              "from_name": "Emaar Al Khlil",
+              "from_lat": 21.38587056130946,
+              "from_lng": 39.849538486411866,
+              "to_name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+              "to_lat": 21.4225,
+              "to_lng": 39.8262,
+              "mode": "🚗 Drive",
+              "dist": 4.74,
+              "time_minutes": 6,
+              "cost": 0.86
+            },
+            {
+              "from_name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+              "from_lat": 21.4225,
+              "from_lng": 39.8262,
+              "to_name": "Boulevard Riyadh City",
+              "to_lat": 21.434457703217614,
+              "to_lng": 39.86368164949926,
+              "mode": "🚗 Drive",
+              "dist": 4.1,
+              "time_minutes": 5,
+              "cost": 0.75
+            },
+            {
+              "from_name": "Boulevard Riyadh City",
+              "from_lat": 21.434457703217614,
+              "from_lng": 39.86368164949926,
+              "to_name": "Al Baik Restaurant (Clock Tower)",
+              "to_lat": 21.418751,
+              "to_lng": 39.825558,
+              "mode": "🚗 Drive",
+              "dist": 4.32,
+              "time_minutes": 5,
+              "cost": 0.78
+            },
+            {
+              "from_name": "Al Baik Restaurant (Clock Tower)",
+              "from_lat": 21.418751,
+              "from_lng": 39.825558,
+              "to_name": "Masjid al-Haram & Kaaba",
+              "to_lat": 21.4224779,
+              "to_lng": 39.8251832,
+              "mode": "🚶 Walk",
+              "dist": 0.42,
+              "time_minutes": 5,
+              "cost": 0
+            },
+            {
+              "from_name": "Masjid al-Haram & Kaaba",
+              "from_lat": 21.4224779,
+              "from_lng": 39.8251832,
+              "to_name": "Parked Car",
+              "to_lat": 21.418751,
+              "to_lng": 39.825558,
+              "mode": "🚶 Walk to car",
+              "dist": 0.42,
+              "time_minutes": 5,
+              "cost": 0
+            },
+            {
+              "from_name": "Parked Car",
+              "from_lat": 21.418751,
+              "from_lng": 39.825558,
+              "to_name": "Emaar Al Khlil",
+              "to_lat": 21.38587056130946,
+              "to_lng": 39.849538486411866,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 4.42,
+              "time_minutes": 5,
+              "cost": 0.8
+            },
+            {
+              "from_name": "Emaar Al Khlil",
+              "from_lat": 21.38587056130946,
+              "from_lng": 39.849538486411866,
+              "to_name": "Riyadh",
+              "to_lat": 24.7136,
+              "to_lng": 46.6753,
+              "mode": "🚗 Return",
+              "dist": 0,
+              "time_minutes": 0,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Emaar Al Khlil",
+              "from_lat": 21.38587056130946,
+              "from_lng": 39.849538486411866,
+              "to_name": "🔥 TRENDING: Camel Step Coffee",
+              "to_lat": 21.4225,
+              "to_lng": 39.8262,
+              "mode": "🚗 Drive",
+              "dist": 4.74,
+              "time_minutes": 6,
+              "cost": 0.86
+            },
+            {
+              "from_name": "🔥 TRENDING: Camel Step Coffee",
+              "from_lat": 21.4225,
+              "from_lng": 39.8262,
+              "to_name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+              "to_lat": 21.3891,
+              "to_lng": 39.8579,
+              "mode": "🚗 Drive",
+              "dist": 4.96,
+              "time_minutes": 6,
+              "cost": 0.9
+            },
+            {
+              "from_name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+              "from_lat": 21.3891,
+              "from_lng": 39.8579,
+              "to_name": "Jabal al-Nour & Cave of Hira",
+              "to_lat": 21.45806,
+              "to_lng": 39.86139,
+              "mode": "🚗 Drive",
+              "dist": 7.68,
+              "time_minutes": 9,
+              "cost": 1.39
+            },
+            {
+              "from_name": "Jabal al-Nour & Cave of Hira",
+              "from_lat": 21.45806,
+              "from_lng": 39.86139,
+              "to_name": "Modern architecture sightseeing",
+              "to_lat": 21.320773031621403,
+              "to_lng": 39.82574477103809,
+              "mode": "🚗 Drive",
+              "dist": 15.71,
+              "time_minutes": 19,
+              "cost": 2.85
+            },
+            {
+              "from_name": "Modern architecture sightseeing",
+              "from_lat": 21.320773031621403,
+              "from_lng": 39.82574477103809,
+              "to_name": "Mall exploration",
+              "to_lat": 21.32949241377018,
+              "to_lng": 39.89840828816186,
+              "mode": "🚗 Drive",
+              "dist": 7.59,
+              "time_minutes": 9,
+              "cost": 1.38
+            },
+            {
+              "from_name": "Mall exploration",
+              "from_lat": 21.32949241377018,
+              "from_lng": 39.89840828816186,
+              "to_name": "Emaar Al Khlil",
+              "to_lat": 21.38587056130946,
+              "to_lng": 39.849538486411866,
+              "mode": "🚗 Drive back to Hotel",
+              "dist": 8.06,
+              "time_minutes": 10,
+              "cost": 1.46
+            }
+          ]
+        }
+      ],
+      "recommendation": 0
+    },
+    "cached_at": "2026-05-08T11:30:37.822004+00:00"
+  },
+  "5d778e015c9fa61e9c5b52d22051dc03": {
+    "params": {
+      "budget": 11700.0,
+      "travel_mode": "flight",
+      "destination": "makkah",
+      "days": 4,
+      "origin": "riyadh",
+      "vehicle_type": "default",
+      "currency": "SAR",
+      "start_date": "",
+      "end_date": "",
+      "interests": ""
+    },
+    "result": {
+      "paths": [
+        {
+          "transport": {
+            "mode": "flight",
+            "origin": "Riyadh",
+            "destination": "Makkah",
+            "distance_km": 0,
+            "travel_time_str": "2h 0m",
+            "cost_one_way": 0.0,
+            "cost_round_trip": 0.0,
+            "breakdown": "📊  | Estimated distance-based calculation (N/A)",
+            "vehicle_type": "default"
+          },
+          "budget": {
+            "total": 11700.0,
+            "currency": "SAR",
+            "transport": 0.0,
+            "remaining": 11700.0,
+            "days": 4,
+            "lodging": {
+              "total": 0,
+              "per_day": 0,
+              "pending": true,
+              "max_budget": 4680.0,
+              "max_per_day": 1170.0
+            },
+            "food": {
+              "total": 3510.0,
+              "per_day": 877.5
+            },
+            "activities": {
+              "total": 2340.0,
+              "per_day": 585.0
+            },
+            "buffer": {
+              "total": 1170.0,
+              "per_day": 292.5
+            },
+            "is_feasible": true,
+            "warnings": []
+          },
+          "activities": {
+            "destination": "city",
+            "vibe": "Urban exploration, nightlife, shopping, dining",
+            "recommended_city": "Makkah",
+            "daily_plan": {
+              "1": [
+                {
+                  "id": "trend_4_al_baik",
+                  "name": "🔥 TRENDING: Al Baik",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 25.0,
+                  "category": "restaurant",
+                  "description": "Saudi Arabia's legendary fast-food chain, famous for its crispy broasted chicken and spicy garlic sauce. A must-try for locals and pilgrims alike, often with long lines.",
+                  "social_buzz": "Consistently described as a 'legendary fried chicken chain' and a 'favorite among pilgrims and locals', with many stating 'no trip to Makkah is complete without trying Al Baik'.",
+                  "rating": 4.5,
+                  "price_range": "$",
+                  "tags": [
+                    "fast food",
+                    "broasted chicken",
+                    "local favorite",
+                    "iconic",
+                    "affordable"
+                  ],
+                  "source": "Islamic Landmarks, UmrahTransit Team, YouTube, Quora, Reddit"
+                },
+                {
+                  "id": "trend_0_masjid_al-",
+                  "name": "🔥 TRENDING: Masjid al-Haram & Kaaba",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 0.0,
+                  "category": "attraction",
+                  "description": "The holiest site in Islam, housing the Kaaba, the focal point of Muslim prayers worldwide. Millions of pilgrims visit annually for Hajj and Umrah.",
+                  "social_buzz": "The spiritual heart of Makkah, where pilgrims from around the world converge, offering an overwhelming sense of connection and history.",
+                  "rating": 4.9,
+                  "price_range": "$",
+                  "tags": [
+                    "religious",
+                    "pilgrimage",
+                    "historical",
+                    "spiritual",
+                    "iconic"
+                  ],
+                  "source": "MakeMyTrip, Expedia, GetYourGuide, Trip Moments, Wasalt Blog, Islamic Landmarks"
+                },
+                {
+                  "name": "Abraj Al Bait Clock Tower Museum",
+                  "lat": 21.418751,
+                  "lng": 39.825558
+                },
+                {
+                  "name": "Hira Cultural District",
+                  "lat": 21.45806,
+                  "lng": 39.86139
+                },
+                {
+                  "name": "Al Baik Restaurant (Clock Tower)",
+                  "lat": 21.418751,
+                  "lng": 39.825558
+                }
+              ],
+              "2": [
+                {
+                  "id": "trend_5_hira_cultu",
+                  "name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                  "lat": 21.4633,
+                  "lng": 39.8708,
+                  "is_trending_spot": true,
+                  "cost": 0.0,
+                  "category": "attraction",
+                  "description": "Explore the 'Mountain of Light' and the historic Cave of Hira, where Prophet Muhammad (PBUH) received his first revelation. Offers stunning views of Makkah after a hike.",
+                  "social_buzz": "A 'mesmerising Mountain of Light' offering a 'rich Islamic heritage' and an 'unforgettable way to experience' Makkah's spiritual history.",
+                  "rating": 4.8,
+                  "price_range": "$",
+                  "tags": [
+                    "historical",
+                    "spiritual",
+                    "hiking",
+                    "views",
+                    "cultural",
+                    "pilgrimage"
+                  ],
+                  "source": "MakeMyTrip, GetYourGuide, Trip Moments, Wasalt Blog, Islamic Landmarks, Reddit"
+                },
+                {
+                  "id": "trend_1_makkah_clo",
+                  "name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+                  "lat": 21.4187,
+                  "lng": 39.8261,
+                  "is_trending_spot": true,
+                  "cost": 150.0,
+                  "category": "attraction",
+                  "description": "Located within the iconic Abraj Al Bait complex, this museum showcases the history and technology of clockmaking, offering breathtaking panoramic views of the Holy Kaaba.",
+                  "social_buzz": "A magnificent structure decorating the city's skyline, offering an interactive journey through astronomy and timekeeping with breathtaking panoramic views.",
+                  "rating": 4.9,
+                  "price_range": "$$",
+                  "tags": [
+                    "museum",
+                    "views",
+                    "architecture",
+                    "modern",
+                    "educational",
+                    "iconic"
+                  ],
+                  "source": "MakeMyTrip, Expedia, GetYourGuide, Wasalt Blog, Islamic Landmarks"
+                },
+                {
+                  "name": "Local souq haggling",
+                  "lat": 21.374351868682616,
+                  "lng": 39.801342274629484
+                },
+                {
+                  "name": "Boulevard Riyadh City",
+                  "lat": 21.414958827813596,
+                  "lng": 39.909812575002746,
+                  "rating": 4.3,
+                  "review_count": 5432,
+                  "why_go": "Riyadh's premier entertainment district â€” a massive complex with world-class dining, live events, concerts, gaming zones, and themed areas. Think of it as Saudi Arabia's Times Square.",
+                  "reviews": [
+                    {
+                      "user": "Maha R.",
+                      "rating": 4,
+                      "text": "So much to do! We spent 6 hours and still didn't see everything. The Japanese zone is incredible."
+                    },
+                    {
+                      "user": "Omar F.",
+                      "rating": 5,
+                      "text": "The atmosphere at night is electric. Great food, great shows, great people. A must-visit in Riyadh."
+                    },
+                    {
+                      "user": "Jenny L.",
+                      "rating": 4,
+                      "text": "Impressive entertainment complex but can get very crowded on weekends. Go on weekdays if you can."
+                    }
+                  ]
+                },
+                {
+                  "name": "Historical Diriyah tour",
+                  "lat": 21.46103710923214,
+                  "lng": 39.88131650873969,
+                  "rating": 4.5,
+                  "review_count": 1654,
+                  "why_go": "The birthplace of Saudi Arabia and a UNESCO World Heritage Site. The restored mud-brick At-Turaif district showcases 300 years of Saudi history and Najdi architecture at its finest.",
+                  "reviews": [
+                    {
+                      "user": "Fahd K.",
+                      "rating": 5,
+                      "text": "Beautifully restored! The architecture is stunning and the museum tells the story of how Saudi Arabia was founded."
+                    },
+                    {
+                      "user": "Patricia M.",
+                      "rating": 4,
+                      "text": "A peaceful escape from Riyadh's bustle. The restaurants inside the complex are excellent."
+                    },
+                    {
+                      "user": "Saad J.",
+                      "rating": 5,
+                      "text": "Walking through the old streets at sunset is magical. The new Bujairi Terrace restaurants have amazing views."
+                    }
+                  ]
+                }
+              ],
+              "3": [
+                {
+                  "id": "trend_6_the_oasis_",
+                  "name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 300.0,
+                  "category": "restaurant",
+                  "description": "Offers a luxurious Mediterranean dining experience with stunning views of the Haram. Recognized with prestigious awards for culinary excellence and diverse buffet options.",
+                  "social_buzz": "Praised for its 'stunning views of the Haram' and 'culinary excellence', having received 'prestigious accolades'.",
+                  "rating": 4.5,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "fine dining",
+                    "Mediterranean cuisine",
+                    "luxury",
+                    "views",
+                    "hotel dining"
+                  ],
+                  "source": "Islamic Landmarks, Wanderlog, UmrahTransit Team"
+                },
+                {
+                  "id": "trend_2_cafe_momen",
+                  "name": "🔥 TRENDING: Cafe Moment",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 80.0,
+                  "category": "cafe",
+                  "description": "A highly-rated cafe known for offering arguably the most stunning views of Masjid Al Haram, popular for its specialty coffees and desserts like Special French Toast and Chocolate Bomb.",
+                  "social_buzz": "The café everyone finds through TikTok, praised as having the 'most stunning café view in Makkah' and even 'the best cafe view in the world for Muslims'.",
+                  "rating": 4.9,
+                  "price_range": "$$",
+                  "tags": [
+                    "specialty coffee",
+                    "desserts",
+                    "views",
+                    "trending",
+                    "Instagrammable",
+                    "cozy"
+                  ],
+                  "source": "Halal Xplorer, Yandex Maps, Wasalt Blog, Adil Musa"
+                },
+                {
+                  "name": "Masjid al-Haram & Kaaba",
+                  "lat": 21.4224779,
+                  "lng": 39.8251832
+                },
+                {
+                  "name": "Mall exploration",
+                  "lat": 21.43199893615123,
+                  "lng": 39.81355476761024
+                },
+                {
+                  "name": "Historical palaces walking tour",
+                  "lat": 21.409363522750255,
+                  "lng": 39.93224055864391
+                }
+              ],
+              "4": [
+                {
+                  "id": "trend_7_camel_step",
+                  "name": "🔥 TRENDING: Camel Step Coffee",
+                  "lat": 21.4225,
+                  "lng": 39.8262,
+                  "is_trending_spot": true,
+                  "cost": 60.0,
+                  "category": "cafe",
+                  "description": "A trendy specialty coffee spot known for its excellent brews, minimalist vibe, and artful latte art, making it a local favorite for a relaxed break.",
+                  "social_buzz": "Known for 'artful coffee and light bites with social media-worthy presentation', with 'coffee lovers especially raving about its latte art' and considered by some as the 'best specialty cafe in Saudi Arabia'.",
+                  "rating": 4.6,
+                  "price_range": "$$",
+                  "tags": [
+                    "specialty coffee",
+                    "trendy",
+                    "minimalist",
+                    "latte art",
+                    "local favorite"
+                  ],
+                  "source": "Best Cafés in Makkah, YouTube, HalalZilla, Reddit"
+                },
+                {
+                  "id": "trend_3_gurkan_sef",
+                  "name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+                  "lat": 21.3891,
+                  "lng": 39.8579,
+                  "is_trending_spot": true,
+                  "cost": 300.0,
+                  "category": "restaurant",
+                  "description": "A cherished favorite among food enthusiasts, offering delectable Turkish cuisine and succulent steaks in a beautiful, lavish ambiance. Known for exceptional service.",
+                  "social_buzz": "Offers the 'ultimate steak indulgence' where 'culinary excellence meets luxury dining', with guests raving about the exceptional service.",
+                  "rating": 4.5,
+                  "price_range": "$$$$",
+                  "tags": [
+                    "steakhouse",
+                    "Turkish cuisine",
+                    "luxury dining",
+                    "fine dining",
+                    "ambiance"
+                  ],
+                  "source": "Wanderlog, Yandex Maps, Evendo, Islamic Landmarks"
+                },
+                {
+                  "name": "Jannat al-Mu'alla",
+                  "lat": 21.436944,
+                  "lng": 39.829167
+                },
+                {
+                  "name": "Art gallery visit",
+                  "lat": 21.461172113471186,
+                  "lng": 39.92157394394233
+                },
+                {
+                  "name": "Rooftop café",
+                  "lat": 21.40974482993638,
+                  "lng": 39.83414528284879
+                }
+              ]
+            },
+            "hotel": {
+              "name": "Fairmont Makkah Clock Royal Tower",
+              "lat": 21.418751,
+              "lng": 39.825558
+            }
+          },
+          "events": {
+            "city": "Makkah",
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-12",
+            "events": [],
+            "total_event_cost": 0,
+            "scan_source": "file_cache"
+          },
+          "web_research": {
+            "city": "Makkah",
+            "research_date": "2026-05-08",
+            "social_posts": [
+              {
+                "platform": "reddit",
+                "author": "GreenAngelFish",
+                "content": "Reddit users discuss food spots in Makkah and Madinah, recommending Al Romansiah, Lamma Burger in the Clock Tower, and a Pakistani restaurant near Gate 367 in Madinah for chai and parathas.",
+                "category": "restaurant",
+                "relevance_score": 0.95,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHq2q32Otr7wMQbEsRDvMG-C4cwCGn4q66pPf7jdKv_FHmYq6hSqzum0pW9QtL3qY9Xnh7xc0Qb7n-XDukgkOyNE8ultw9EG3whASosF34aK6hm90NJeWVJmh7sEmg26EcX7oTiu875KF0_UvwfiPPJeKIL5ziLHXA7LtoOG3Lj6XRRDlT_pMat-kDrj7V7aEHlfmqQ==",
+                "likes": 7,
+                "posted_date": "March 28, 2026"
+              },
+              {
+                "platform": "reddit",
+                "author": "faisalrs",
+                "content": "A Reddit discussion on affordable food in Makkah suggests Pakistani hotels, shawarma shops near the Clock Tower, and Al Farooj, noting Al Baik is cheap but often crowded.",
+                "category": "restaurant",
+                "relevance_score": 0.9,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGWqQhvqWxO7EIKVPnjcm3HOQhOwYLv9Wy3Pn5XjGV4JjrNpUWSm1Sk0_8mab5tRUVMC5N6cnqCaMeXTKVLrkk62jB8MgJ2NQBiYj8aAjlbIq7nc3JIKRCvT1hDlehqeF4dpUsb-I3JAc0NgnPTZntw_w4WuPRD3_9R4wpTzyGLuoLsg9YTksdZ132UUrXyoQ==",
+                "likes": 0,
+                "posted_date": "November 30, 2024"
+              },
+              {
+                "platform": "blog",
+                "author": "Ihram Travel",
+                "content": "A travel blog post identifies hidden gems in Mecca, such as Jabal al-Noor (Mountain of Light) with the Cave of Hira, Jannat al-Mu'alla cemetery, and the old souq, for a richer spiritual and cultural experience.",
+                "category": "hidden_gem",
+                "relevance_score": 0.92,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELbx10M7665r21MoDSf-M2Ti2HZ7gH4w7DV9RjTvQrQvNjK2bZliAp2c0ctb_bBJ3KjkMqTyzhUhFHWLWMtXo_VE469yxpqI295iLwIlBKKoaZ9cbB27937SHcjgpvBZf6ZcLuv38DuGk1vrdnhOOXhhCupJ25p3AlVAj2wjQNc1gX85F0_90bdw==",
+                "likes": 0,
+                "posted_date": "August 30, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Ubigi eSIM",
+                "content": "A blog post outlines 10 must-try experiences in Mecca, such as visiting Masjid al-Haram, seeing the Black Stone, exploring Mount Arafat, trying traditional Saudi food, and shopping at Abraj Al Bait Mall, along with practical travel tips.",
+                "category": "unique_experience",
+                "relevance_score": 0.9,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHgN0Pe3iDrb9HTk1rXP4kSuBhYr_l7sq3lJ-_0Q4QcZlqK1tcGF2Dl1GMxpzkpyLD7gJyYCKNmw2NKUmBzVbdd-_p-fhVWLbBxREHOzmBQ5cW7cRI0-UVviBb11wVmWWgEgl6whYO99hj0TViOR33IO5WhvBgmUOL1XODRccs2nRahZnVVH-YQ3Hq_XeTK_zqbOw09",
+                "likes": 0,
+                "posted_date": "July 25, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "AI Trip Maker",
+                "content": "A travel guide for Mecca highlights unique food experiences like street food and traditional coffee at Al Khalil Courtyard Cafes, and hidden gems including Mount Thawr and the Makkah Museum.",
+                "category": "restaurant",
+                "relevance_score": 0.88,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGMn6h_pWsqseqDJbgOr3l-VEB-hvzALO5lelvWi7yDmt6oLYKyiSgJgQAmh7aNWpaEGrdah6v66Gb817Cq3j1OqKLZ94B7gSVs7czkdSAKXOcFCAQM-Y-iwFQQsSA5xDA=",
+                "likes": 0,
+                "posted_date": "June 27, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Hujjaj Travels",
+                "content": "A travel tips blog emphasizes securing the right visa, booking hotels near Masjid al-Haram in advance, dressing modestly, staying hydrated, and carrying medications for a comfortable Makkah Ziyarat.",
+                "category": "tip",
+                "relevance_score": 0.9,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHD9BMYPuZceJKqrm-sbkVttqb65HI9qHUoY9LPa_gqPEcMqRDIWwIafU6XQh9MRVCWmroelMKzrgZQs5zjnFPNUT8PbrV_a54KIdj7DEuPtbbRz7SV6aRhpnz4-CTpfzxEFop5cJBXwRiamWvIuUiL1Uq3dEs6Fa9LdOzwYoY5wh0=",
+                "likes": 0,
+                "posted_date": "November 29, 2025"
+              },
+              {
+                "platform": "blog",
+                "author": "Wego.com",
+                "content": "A recent blog post warns that Makkah entry is restricted to Hajj permit holders, residents, and authorized workers until late May 2026, with Umrah season closed. It advises travelers to follow official instructions and keep documents handy.",
+                "category": "warning",
+                "relevance_score": 0.98,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHW_7kiPNuiqlWEoOMgHZhHZRWaX3N8j9d2f2crE1qG82Va3ltcuEWPKJzaM1iDAa9anPv5JdLvYhsgaRcR3lSXhIjNFz1T4JMvy1KDsXGYJ3xTablqbdVpY-TXUAWXRI8YecF8y8VQxamP6UPrM36i9jBa",
+                "likes": 0,
+                "posted_date": "April 28, 2026"
+              },
+              {
+                "platform": "youtube",
+                "author": "Moiz Abbas MA",
+                "content": "A YouTube video offers a walking tour of Makkah's Ibrahim Khalil Road, showcasing traditional shops with souvenirs, dates, and spices, alongside modern malls and cafes, capturing the city's vibrant atmosphere.",
+                "category": "unique_experience",
+                "relevance_score": 0.85,
+                "url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFoun6iMLstljFaJpvXxxlDQghhpJ95G_JL3Tmnj5Rh3SkUUR-KSlp6sUgPeuO3LAEFWc0k9YN6fdGmRvRnYX8Pq8jDNpAF9s5osPlp8W-NcwR5-r3v8kVRwf_O5u3Ji4Be0yMAmQ==",
+                "likes": 0,
+                "posted_date": "December 01, 2025"
+              }
+            ],
+            "trending_spots": [
+              {
+                "name": "Masjid al-Haram & Kaaba",
+                "category": "attraction",
+                "description": "The holiest site in Islam, housing the Kaaba, the focal point of Muslim prayers worldwide. Millions of pilgrims visit annually for Hajj and Umrah.",
+                "price_range": "$",
+                "estimated_cost_sar": 0.0,
+                "rating": 4.9,
+                "source": "MakeMyTrip, Expedia, GetYourGuide, Trip Moments, Wasalt Blog, Islamic Landmarks",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "The spiritual heart of Makkah, where pilgrims from around the world converge, offering an overwhelming sense of connection and history.",
+                "tags": [
+                  "religious",
+                  "pilgrimage",
+                  "historical",
+                  "spiritual",
+                  "iconic"
+                ]
+              },
+              {
+                "name": "Makkah Clock Royal Tower Museum",
+                "category": "attraction",
+                "description": "Located within the iconic Abraj Al Bait complex, this museum showcases the history and technology of clockmaking, offering breathtaking panoramic views of the Holy Kaaba.",
+                "price_range": "$$",
+                "estimated_cost_sar": 150.0,
+                "rating": 4.9,
+                "source": "MakeMyTrip, Expedia, GetYourGuide, Wasalt Blog, Islamic Landmarks",
+                "lat": 21.4187,
+                "lng": 39.8261,
+                "social_buzz": "A magnificent structure decorating the city's skyline, offering an interactive journey through astronomy and timekeeping with breathtaking panoramic views.",
+                "tags": [
+                  "museum",
+                  "views",
+                  "architecture",
+                  "modern",
+                  "educational",
+                  "iconic"
+                ]
+              },
+              {
+                "name": "Cafe Moment",
+                "category": "cafe",
+                "description": "A highly-rated cafe known for offering arguably the most stunning views of Masjid Al Haram, popular for its specialty coffees and desserts like Special French Toast and Chocolate Bomb.",
+                "price_range": "$$",
+                "estimated_cost_sar": 80.0,
+                "rating": 4.9,
+                "source": "Halal Xplorer, Yandex Maps, Wasalt Blog, Adil Musa",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "The café everyone finds through TikTok, praised as having the 'most stunning café view in Makkah' and even 'the best cafe view in the world for Muslims'.",
+                "tags": [
+                  "specialty coffee",
+                  "desserts",
+                  "views",
+                  "trending",
+                  "Instagrammable",
+                  "cozy"
+                ]
+              },
+              {
+                "name": "Gurkan Sef Steakhouse",
+                "category": "restaurant",
+                "description": "A cherished favorite among food enthusiasts, offering delectable Turkish cuisine and succulent steaks in a beautiful, lavish ambiance. Known for exceptional service.",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 300.0,
+                "rating": 4.5,
+                "source": "Wanderlog, Yandex Maps, Evendo, Islamic Landmarks",
+                "lat": 21.3891,
+                "lng": 39.8579,
+                "social_buzz": "Offers the 'ultimate steak indulgence' where 'culinary excellence meets luxury dining', with guests raving about the exceptional service.",
+                "tags": [
+                  "steakhouse",
+                  "Turkish cuisine",
+                  "luxury dining",
+                  "fine dining",
+                  "ambiance"
+                ]
+              },
+              {
+                "name": "Al Baik",
+                "category": "restaurant",
+                "description": "Saudi Arabia's legendary fast-food chain, famous for its crispy broasted chicken and spicy garlic sauce. A must-try for locals and pilgrims alike, often with long lines.",
+                "price_range": "$",
+                "estimated_cost_sar": 25.0,
+                "rating": 4.5,
+                "source": "Islamic Landmarks, UmrahTransit Team, YouTube, Quora, Reddit",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "Consistently described as a 'legendary fried chicken chain' and a 'favorite among pilgrims and locals', with many stating 'no trip to Makkah is complete without trying Al Baik'.",
+                "tags": [
+                  "fast food",
+                  "broasted chicken",
+                  "local favorite",
+                  "iconic",
+                  "affordable"
+                ]
+              },
+              {
+                "name": "Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                "category": "attraction",
+                "description": "Explore the 'Mountain of Light' and the historic Cave of Hira, where Prophet Muhammad (PBUH) received his first revelation. Offers stunning views of Makkah after a hike.",
+                "price_range": "$",
+                "estimated_cost_sar": 0.0,
+                "rating": 4.8,
+                "source": "MakeMyTrip, GetYourGuide, Trip Moments, Wasalt Blog, Islamic Landmarks, Reddit",
+                "lat": 21.4633,
+                "lng": 39.8708,
+                "social_buzz": "A 'mesmerising Mountain of Light' offering a 'rich Islamic heritage' and an 'unforgettable way to experience' Makkah's spiritual history.",
+                "tags": [
+                  "historical",
+                  "spiritual",
+                  "hiking",
+                  "views",
+                  "cultural",
+                  "pilgrimage"
+                ]
+              },
+              {
+                "name": "The Oasis (Raffles Makkah Palace)",
+                "category": "restaurant",
+                "description": "Offers a luxurious Mediterranean dining experience with stunning views of the Haram. Recognized with prestigious awards for culinary excellence and diverse buffet options.",
+                "price_range": "$$$$",
+                "estimated_cost_sar": 300.0,
+                "rating": 4.5,
+                "source": "Islamic Landmarks, Wanderlog, UmrahTransit Team",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "Praised for its 'stunning views of the Haram' and 'culinary excellence', having received 'prestigious accolades'.",
+                "tags": [
+                  "fine dining",
+                  "Mediterranean cuisine",
+                  "luxury",
+                  "views",
+                  "hotel dining"
+                ]
+              },
+              {
+                "name": "Camel Step Coffee",
+                "category": "cafe",
+                "description": "A trendy specialty coffee spot known for its excellent brews, minimalist vibe, and artful latte art, making it a local favorite for a relaxed break.",
+                "price_range": "$$",
+                "estimated_cost_sar": 60.0,
+                "rating": 4.6,
+                "source": "Best Cafés in Makkah, YouTube, HalalZilla, Reddit",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "social_buzz": "Known for 'artful coffee and light bites with social media-worthy presentation', with 'coffee lovers especially raving about its latte art' and considered by some as the 'best specialty cafe in Saudi Arabia'.",
+                "tags": [
+                  "specialty coffee",
+                  "trendy",
+                  "minimalist",
+                  "latte art",
+                  "local favorite"
+                ]
+              }
+            ],
+            "local_insights": [
+              {
+                "tip": "Pack light, loose-fitting, breathable cotton or linen clothing, comfortable walking shoes, a sun hat, UV umbrella, sunglasses, and unscented hygiene products due to the intense heat.",
+                "category": "weather",
+                "source": "Travel blogs, Reddit",
+                "confidence": "high"
+              },
+              {
+                "tip": "Women should wear long, loose-fitting clothing covering shoulders, arms, legs, and chest, and cover their hair with a hijab or light scarf, while men should wear airy thobes or long-sleeve shirts with loose trousers, avoiding shorts that expose knees.",
+                "category": "weather",
+                "source": "Travel blogs, Makkah & Madinah Guide",
+                "confidence": "high"
+              },
+              {
+                "tip": "Book accommodation and flights early, and consider hotels further from Haram that offer shuttle services, as those closer are significantly more expensive.",
+                "category": "money_saving",
+                "source": "Reddit, Travel blogs",
+                "confidence": "high"
+              },
+              {
+                "tip": "Save money on food by opting for street food or local fast-food chains like Al-Baik.",
+                "category": "money_saving",
+                "source": "Reddit, Travel blogs",
+                "confidence": "high"
+              },
+              {
+                "tip": "Utilize public buses for affordable transportation within the city and consider sharing taxis or using ride-hailing apps like Uber, which often offers fixed fares.",
+                "category": "money_saving",
+                "source": "Reddit, Umrah Companions, Makkah Travel",
+                "confidence": "high"
+              },
+              {
+                "tip": "Travel during off-peak seasons or weekdays to potentially find lower flight and hotel costs.",
+                "category": "money_saving",
+                "source": "Makkah & Madinah Blog, Makkah Travel",
+                "confidence": "high"
+              },
+              {
+                "tip": "Reconsider travel to Saudi Arabia due to the volatile security situation in the Middle East, including risks of attacks, escalation, and falling military debris.",
+                "category": "safety",
+                "source": "Smartraveller, Travel.gc.ca, U.S. Department of State",
+                "confidence": "high"
+              },
+              {
+                "tip": "Stay alert in crowded places, keep personal belongings secure, avoid walking alone in remote areas at night, and use registered cabs or ride-hailing apps.",
+                "category": "safety",
+                "source": "Umrah Companions, Travelner Insurance, Mashaer Fleet",
+                "confidence": "high"
+              }
+            ],
+            "weather_summary": "Makkah in May 2026 is expected to be extremely hot with daily high temperatures ranging from 102°F (39°C) to 116°F (47°C), very high heat and humidity, and a low chance of rain.",
+            "scan_successful": true
+          },
+          "dates": {
+            "start_date": "2026-05-09",
+            "end_date": "2026-05-12"
+          },
+          "map": {
+            "origin": {
+              "lat": 24.7136,
+              "lng": 46.6753
+            },
+            "destination": {
+              "lat": 21.3891,
+              "lng": 39.8579
+            },
+            "origin_name": "Riyadh",
+            "dest_name": "Makkah"
+          },
+          "hospitality": {
+            "hotels": [
+              {
+                "id": "Durrat AlJawharah Ho",
+                "name": "Durrat AlJawharah Hotel Makkah",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "This hotel provides rooms with air conditioning and a private bathroom in Mecca.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 180.0,
+                    "final_price_sar": 180.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 252.0,
+                    "final_price_sar": 252.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.431487369664346,
+                "lng": 39.80970438936787,
+                "has_availability": true,
+                "live_price_sar": 180.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 180.0,
+                  "final_price_sar": 180.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Batoul Ajyad Hotel",
+                "name": "Batoul Ajyad Hotel",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "This hotel features good free parking, courteous staff, and clean rooms.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 274.0,
+                    "final_price_sar": 274.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 383.6,
+                    "final_price_sar": 383.6,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.392368638159066,
+                "lng": 39.87461008225087,
+                "has_availability": true,
+                "live_price_sar": 274.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 274.0,
+                  "final_price_sar": 274.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Elaf Qinwan Hotel",
+                "name": "Elaf Qinwan Hotel",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "This hotel offers a scheduled 24-hour shuttle bus to Haram with almost no wait.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 405.0,
+                    "final_price_sar": 405.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 567.0,
+                    "final_price_sar": 567.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.437635395172304,
+                "lng": 39.907484919210496,
+                "has_availability": true,
+                "live_price_sar": 405.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 405.0,
+                  "final_price_sar": 405.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Swissôtel Al Maqam M",
+                "name": "Swissôtel Al Maqam Makkah",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "A centrally located hotel in Mecca with excellent guest ratings.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 416.0,
+                    "final_price_sar": 416.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 582.4,
+                    "final_price_sar": 582.4,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.408599339163448,
+                "lng": 39.90387168037292,
+                "has_availability": true,
+                "live_price_sar": 416.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 416.0,
+                  "final_price_sar": 416.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              },
+              {
+                "id": "Anjum Hotel Makkah",
+                "name": "Anjum Hotel Makkah",
+                "city": "Makkah",
+                "stars": 4,
+                "rating": 5.0,
+                "description": "A highly-rated hotel in Mecca offering a comfortable stay.",
+                "rooms": [
+                  {
+                    "room_type": "Standard",
+                    "base_price_sar": 435.0,
+                    "final_price_sar": 435.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  },
+                  {
+                    "room_type": "Deluxe",
+                    "base_price_sar": 609.0,
+                    "final_price_sar": 609.0,
+                    "available": true,
+                    "source": "Gemini Search"
+                  }
+                ],
+                "amenities": [
+                  "WiFi",
+                  "Parking",
+                  "Air Conditioning",
+                  "Room Service"
+                ],
+                "check_in": "14:00",
+                "check_out": "12:00",
+                "lat": 21.383502744699857,
+                "lng": 39.83724400078363,
+                "has_availability": true,
+                "live_price_sar": 435.0,
+                "price_source": "Gemini Search",
+                "almosafer_url": "https://www.almosafer.com/en/hotels/Makkah/15-05-2026/18-05-2026/2_adult",
+                "best_deal": {
+                  "room_type": "Standard",
+                  "base_price_sar": 435.0,
+                  "final_price_sar": 435.0,
+                  "discount_percent": 0
+                },
+                "vibe": ""
+              }
+            ],
+            "restaurants": [
+              {
+                "id": "233",
+                "name": "Al Romansiah",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 5,
+                "available_tables": 15,
+                "discount_percent": 20.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 30.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 9.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 12.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.43156480005264,
+                "lng": 39.875364678208875
+              },
+              {
+                "id": "234",
+                "name": "Al Ruwad",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 13,
+                "available_tables": 7,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 70.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 21.0,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 28.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.399803845918395,
+                "lng": 39.849407685703916
+              },
+              {
+                "id": "231",
+                "name": "Al Tazaj",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.1,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 8,
+                "available_tables": 12,
+                "discount_percent": 12.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 35.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 10.5,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 14.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.384544743437626,
+                "lng": 39.86170179431753
+              },
+              {
+                "id": "230",
+                "name": "Albaik",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.5,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 10,
+                "available_tables": 10,
+                "discount_percent": 12.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 25.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 7.5,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 10.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.35294816820029,
+                "lng": 39.89201295743423
+              },
+              {
+                "id": "232",
+                "name": "Arabic Foul and Tamees",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.3,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 16,
+                "available_tables": 4,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 15.0,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 4.5,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 6.0,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.435505226850523,
+                "lng": 39.8264912723049
+              },
+              {
+                "id": "236",
+                "name": "Camel Step Coffee",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 13,
+                "available_tables": 7,
+                "discount_percent": 7.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 13.5,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 4.05,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 5.4,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.362946064218068,
+                "lng": 39.90784963228669
+              },
+              {
+                "id": "235",
+                "name": "RATIO Speciality Coffee",
+                "city": "makkah",
+                "vibe": "",
+                "cuisine": null,
+                "rating": 4.0,
+                "operating_hours": {
+                  "open": "12:00",
+                  "close": "23:00"
+                },
+                "total_tables": 20,
+                "reserved_tables": 18,
+                "available_tables": 2,
+                "discount_percent": 0.0,
+                "menu": [
+                  {
+                    "name": "Traditional Kabsa",
+                    "price_sar": 16.5,
+                    "category": "Main",
+                    "is_signature": true,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Lentil Soup",
+                    "price_sar": 4.95,
+                    "category": "Starter",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  },
+                  {
+                    "name": "Date Cake",
+                    "price_sar": 6.6000000000000005,
+                    "category": "Dessert",
+                    "is_signature": false,
+                    "allergens": [],
+                    "dietary": [],
+                    "is_safe": true,
+                    "flagged_allergens": []
+                  }
+                ],
+                "top_dishes": [
+                  "Traditional Kabsa"
+                ],
+                "lat": 21.3952625744156,
+                "lng": 39.82827156647212
+              }
+            ],
+            "travel_costs": {
+              "status": "success",
+              "flights": [],
+              "origin": "riyadh",
+              "destination": "Makkah",
+              "travel_mode": "flight"
+            }
+          },
+          "timeline": {
+            "1": {
+              "legs": [
+                {
+                  "from_name": "Riyadh",
+                  "from_lat": 24.7136,
+                  "from_lng": 46.6753,
+                  "to_name": "Durrat AlJawharah Hotel Makkah",
+                  "to_lat": 21.431487369664346,
+                  "to_lng": 39.80970438936787,
+                  "mode": "✈️ Long-haul",
+                  "dist": 0,
+                  "time_minutes": 120,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                },
+                {
+                  "from_name": "Durrat AlJawharah Hotel Makkah",
+                  "from_lat": 21.431487369664346,
+                  "from_lng": 39.80970438936787,
+                  "to_name": "🔥 TRENDING: Al Baik",
+                  "to_lat": 21.4225,
+                  "to_lng": 39.8262,
+                  "mode": "🚕 Taxi",
+                  "dist": 1.98,
+                  "time_minutes": 2,
+                  "cost": 14.95
+                },
+                {
+                  "from_name": "🔥 TRENDING: Al Baik",
+                  "from_lat": 21.4225,
+                  "from_lng": 39.8262,
+                  "to_name": "Abraj Al Bait Clock Tower Museum",
+                  "to_lat": 21.418751,
+                  "to_lng": 39.825558,
+                  "mode": "🚶 Walk",
+                  "dist": 0.42,
+                  "time_minutes": 5,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Abraj Al Bait Clock Tower Museum",
+                  "from_lat": 21.418751,
+                  "from_lng": 39.825558,
+                  "to_name": "Hira Cultural District",
+                  "to_lat": 21.45806,
+                  "to_lng": 39.86139,
+                  "mode": "🚌 Public Transport",
+                  "dist": 5.73,
+                  "time_minutes": 10,
+                  "cost": 9.3
+                },
+                {
+                  "from_name": "Hira Cultural District",
+                  "from_lat": 21.45806,
+                  "from_lng": 39.86139,
+                  "to_name": "Al Baik Restaurant (Clock Tower)",
+                  "to_lat": 21.418751,
+                  "to_lng": 39.825558,
+                  "mode": "🚌 Public Transport",
+                  "dist": 5.73,
+                  "time_minutes": 10,
+                  "cost": 9.3
+                },
+                {
+                  "from_name": "Al Baik Restaurant (Clock Tower)",
+                  "from_lat": 21.418751,
+                  "from_lng": 39.825558,
+                  "to_name": "Durrat AlJawharah Hotel Makkah",
+                  "to_lat": 21.431487369664346,
+                  "to_lng": 39.80970438936787,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 2.17,
+                  "time_minutes": 2,
+                  "cost": 15.42
+                }
+              ],
+              "day_cost": 48.96,
+              "recommendation": ""
+            },
+            "2": {
+              "legs": [
+                {
+                  "from_name": "Durrat AlJawharah Hotel Makkah",
+                  "from_lat": 21.431487369664346,
+                  "from_lng": 39.80970438936787,
+                  "to_name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                  "to_lat": 21.4633,
+                  "to_lng": 39.8708,
+                  "mode": "🚌 Public Transport",
+                  "dist": 7.25,
+                  "time_minutes": 12,
+                  "cost": 10.43
+                },
+                {
+                  "from_name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                  "from_lat": 21.4633,
+                  "from_lng": 39.8708,
+                  "to_name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+                  "to_lat": 21.4187,
+                  "to_lng": 39.8261,
+                  "mode": "🚌 Public Transport",
+                  "dist": 6.78,
+                  "time_minutes": 12,
+                  "cost": 10.09
+                },
+                {
+                  "from_name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+                  "from_lat": 21.4187,
+                  "from_lng": 39.8261,
+                  "to_name": "Local souq haggling",
+                  "to_lat": 21.374351868682616,
+                  "to_lng": 39.801342274629484,
+                  "mode": "🚌 Public Transport",
+                  "dist": 5.56,
+                  "time_minutes": 10,
+                  "cost": 9.17
+                },
+                {
+                  "from_name": "Local souq haggling",
+                  "from_lat": 21.374351868682616,
+                  "from_lng": 39.801342274629484,
+                  "to_name": "Boulevard Riyadh City",
+                  "to_lat": 21.414958827813596,
+                  "to_lng": 39.909812575002746,
+                  "mode": "🚌 Public Transport",
+                  "dist": 12.1,
+                  "time_minutes": 21,
+                  "cost": 14.08
+                },
+                {
+                  "from_name": "Boulevard Riyadh City",
+                  "from_lat": 21.414958827813596,
+                  "from_lng": 39.909812575002746,
+                  "to_name": "Historical Diriyah tour",
+                  "to_lat": 21.46103710923214,
+                  "to_lng": 39.88131650873969,
+                  "mode": "🚌 Public Transport",
+                  "dist": 5.91,
+                  "time_minutes": 10,
+                  "cost": 9.43
+                },
+                {
+                  "from_name": "Historical Diriyah tour",
+                  "from_lat": 21.46103710923214,
+                  "from_lng": 39.88131650873969,
+                  "to_name": "Durrat AlJawharah Hotel Makkah",
+                  "to_lat": 21.431487369664346,
+                  "to_lng": 39.80970438936787,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 8.11,
+                  "time_minutes": 9,
+                  "cost": 30.27
+                }
+              ],
+              "day_cost": 83.47,
+              "recommendation": ""
+            },
+            "3": {
+              "legs": [
+                {
+                  "from_name": "Durrat AlJawharah Hotel Makkah",
+                  "from_lat": 21.431487369664346,
+                  "from_lng": 39.80970438936787,
+                  "to_name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+                  "to_lat": 21.4225,
+                  "to_lng": 39.8262,
+                  "mode": "🚕 Taxi",
+                  "dist": 1.98,
+                  "time_minutes": 2,
+                  "cost": 14.95
+                },
+                {
+                  "from_name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+                  "from_lat": 21.4225,
+                  "from_lng": 39.8262,
+                  "to_name": "Masjid al-Haram & Kaaba",
+                  "to_lat": 21.4224779,
+                  "to_lng": 39.8251832,
+                  "mode": "🚶 Walk",
+                  "dist": 0.11,
+                  "time_minutes": 1,
+                  "cost": 0
+                },
+                {
+                  "from_name": "Masjid al-Haram & Kaaba",
+                  "from_lat": 21.4224779,
+                  "from_lng": 39.8251832,
+                  "to_name": "Mall exploration",
+                  "to_lat": 21.43199893615123,
+                  "to_lng": 39.81355476761024,
+                  "mode": "🚕 Taxi",
+                  "dist": 1.6,
+                  "time_minutes": 2,
+                  "cost": 14.01
+                },
+                {
+                  "from_name": "Mall exploration",
+                  "from_lat": 21.43199893615123,
+                  "from_lng": 39.81355476761024,
+                  "to_name": "Historical palaces walking tour",
+                  "to_lat": 21.409363522750255,
+                  "to_lng": 39.93224055864391,
+                  "mode": "🚌 Public Transport",
+                  "dist": 12.54,
+                  "time_minutes": 21,
+                  "cost": 14.41
+                },
+                {
+                  "from_name": "Historical palaces walking tour",
+                  "from_lat": 21.409363522750255,
+                  "from_lng": 39.93224055864391,
+                  "to_name": "Durrat AlJawharah Hotel Makkah",
+                  "to_lat": 21.431487369664346,
+                  "to_lng": 39.80970438936787,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 12.92,
+                  "time_minutes": 14,
+                  "cost": 42.3
+                }
+              ],
+              "day_cost": 85.66,
+              "recommendation": ""
+            },
+            "4": {
+              "legs": [
+                {
+                  "from_name": "Durrat AlJawharah Hotel Makkah",
+                  "from_lat": 21.431487369664346,
+                  "from_lng": 39.80970438936787,
+                  "to_name": "🔥 TRENDING: Camel Step Coffee",
+                  "to_lat": 21.4225,
+                  "to_lng": 39.8262,
+                  "mode": "🚕 Taxi",
+                  "dist": 1.98,
+                  "time_minutes": 2,
+                  "cost": 14.95
+                },
+                {
+                  "from_name": "🔥 TRENDING: Camel Step Coffee",
+                  "from_lat": 21.4225,
+                  "from_lng": 39.8262,
+                  "to_name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+                  "to_lat": 21.3891,
+                  "to_lng": 39.8579,
+                  "mode": "🚌 Public Transport",
+                  "dist": 4.96,
+                  "time_minutes": 8,
+                  "cost": 8.72
+                },
+                {
+                  "from_name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+                  "from_lat": 21.3891,
+                  "from_lng": 39.8579,
+                  "to_name": "Jannat al-Mu'alla",
+                  "to_lat": 21.436944,
+                  "to_lng": 39.829167,
+                  "mode": "🚌 Public Transport",
+                  "dist": 6.1,
+                  "time_minutes": 10,
+                  "cost": 9.57
+                },
+                {
+                  "from_name": "Jannat al-Mu'alla",
+                  "from_lat": 21.436944,
+                  "from_lng": 39.829167,
+                  "to_name": "Art gallery visit",
+                  "to_lat": 21.461172113471186,
+                  "to_lng": 39.92157394394233,
+                  "mode": "🚌 Public Transport",
+                  "dist": 9.94,
+                  "time_minutes": 17,
+                  "cost": 12.45
+                },
+                {
+                  "from_name": "Art gallery visit",
+                  "from_lat": 21.461172113471186,
+                  "from_lng": 39.92157394394233,
+                  "to_name": "Rooftop café",
+                  "to_lat": 21.40974482993638,
+                  "to_lng": 39.83414528284879,
+                  "mode": "🚌 Public Transport",
+                  "dist": 10.7,
+                  "time_minutes": 18,
+                  "cost": 13.03
+                },
+                {
+                  "from_name": "Rooftop café",
+                  "from_lat": 21.40974482993638,
+                  "from_lng": 39.83414528284879,
+                  "to_name": "Durrat AlJawharah Hotel Makkah",
+                  "to_lat": 21.431487369664346,
+                  "to_lng": 39.80970438936787,
+                  "mode": "🚕 Taxi back to Hotel",
+                  "dist": 3.5,
+                  "time_minutes": 4,
+                  "cost": 18.75
+                },
+                {
+                  "from_name": "Durrat AlJawharah Hotel Makkah",
+                  "from_lat": 21.431487369664346,
+                  "from_lng": 39.80970438936787,
+                  "to_name": "Riyadh",
+                  "to_lat": 24.7136,
+                  "to_lng": 46.6753,
+                  "mode": "✈️ Return",
+                  "dist": 0,
+                  "time_minutes": 120,
+                  "cost": 0.0,
+                  "type": "inter_city"
+                }
+              ],
+              "day_cost": 77.46,
+              "recommendation": ""
+            }
+          },
+          "total_transit_cost": 295.56,
+          "simulation_routes": {
+            "1": [
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin",
+                "day": 1
+              },
+              {
+                "name": "Durrat AlJawharah Hotel Makkah",
+                "lat": 21.431487369664346,
+                "lng": 39.80970438936787,
+                "type": "hotel",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: Al Baik",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "🔥 TRENDING: Masjid al-Haram & Kaaba",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Abraj Al Bait Clock Tower Museum",
+                "lat": 21.418751,
+                "lng": 39.825558,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Hira Cultural District",
+                "lat": 21.45806,
+                "lng": 39.86139,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Al Baik Restaurant (Clock Tower)",
+                "lat": 21.418751,
+                "lng": 39.825558,
+                "type": "activity",
+                "day": 1
+              },
+              {
+                "name": "Durrat AlJawharah Hotel Makkah",
+                "lat": 21.431487369664346,
+                "lng": 39.80970438936787,
+                "type": "hotel_return",
+                "day": 1
+              }
+            ],
+            "2": [
+              {
+                "name": "Durrat AlJawharah Hotel Makkah",
+                "lat": 21.431487369664346,
+                "lng": 39.80970438936787,
+                "type": "hotel",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+                "lat": 21.4633,
+                "lng": 39.8708,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+                "lat": 21.4187,
+                "lng": 39.8261,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Local souq haggling",
+                "lat": 21.374351868682616,
+                "lng": 39.801342274629484,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Boulevard Riyadh City",
+                "lat": 21.414958827813596,
+                "lng": 39.909812575002746,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Historical Diriyah tour",
+                "lat": 21.46103710923214,
+                "lng": 39.88131650873969,
+                "type": "activity",
+                "day": 2
+              },
+              {
+                "name": "Durrat AlJawharah Hotel Makkah",
+                "lat": 21.431487369664346,
+                "lng": 39.80970438936787,
+                "type": "hotel_return",
+                "day": 2
+              }
+            ],
+            "3": [
+              {
+                "name": "Durrat AlJawharah Hotel Makkah",
+                "lat": 21.431487369664346,
+                "lng": 39.80970438936787,
+                "type": "hotel",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "🔥 TRENDING: Cafe Moment",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Masjid al-Haram & Kaaba",
+                "lat": 21.4224779,
+                "lng": 39.8251832,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Mall exploration",
+                "lat": 21.43199893615123,
+                "lng": 39.81355476761024,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Historical palaces walking tour",
+                "lat": 21.409363522750255,
+                "lng": 39.93224055864391,
+                "type": "activity",
+                "day": 3
+              },
+              {
+                "name": "Durrat AlJawharah Hotel Makkah",
+                "lat": 21.431487369664346,
+                "lng": 39.80970438936787,
+                "type": "hotel_return",
+                "day": 3
+              }
+            ],
+            "4": [
+              {
+                "name": "Durrat AlJawharah Hotel Makkah",
+                "lat": 21.431487369664346,
+                "lng": 39.80970438936787,
+                "type": "hotel",
+                "day": 4
+              },
+              {
+                "name": "🔥 TRENDING: Camel Step Coffee",
+                "lat": 21.4225,
+                "lng": 39.8262,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+                "lat": 21.3891,
+                "lng": 39.8579,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Jannat al-Mu'alla",
+                "lat": 21.436944,
+                "lng": 39.829167,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Art gallery visit",
+                "lat": 21.461172113471186,
+                "lng": 39.92157394394233,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Rooftop café",
+                "lat": 21.40974482993638,
+                "lng": 39.83414528284879,
+                "type": "activity",
+                "day": 4
+              },
+              {
+                "name": "Durrat AlJawharah Hotel Makkah",
+                "lat": 21.431487369664346,
+                "lng": 39.80970438936787,
+                "type": "hotel_return",
+                "day": 4
+              },
+              {
+                "name": "Riyadh",
+                "lat": 24.7136,
+                "lng": 46.6753,
+                "type": "origin_return",
+                "day": 4
+              }
+            ]
+          },
+          "full_trip_dataset": [
+            {
+              "from_name": "Riyadh",
+              "from_lat": 24.7136,
+              "from_lng": 46.6753,
+              "to_name": "Durrat AlJawharah Hotel Makkah",
+              "to_lat": 21.431487369664346,
+              "to_lng": 39.80970438936787,
+              "mode": "✈️ Long-haul",
+              "dist": 0,
+              "time_minutes": 120,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Durrat AlJawharah Hotel Makkah",
+              "from_lat": 21.431487369664346,
+              "from_lng": 39.80970438936787,
+              "to_name": "🔥 TRENDING: Al Baik",
+              "to_lat": 21.4225,
+              "to_lng": 39.8262,
+              "mode": "🚕 Taxi",
+              "dist": 1.98,
+              "time_minutes": 2,
+              "cost": 14.95
+            },
+            {
+              "from_name": "🔥 TRENDING: Al Baik",
+              "from_lat": 21.4225,
+              "from_lng": 39.8262,
+              "to_name": "Abraj Al Bait Clock Tower Museum",
+              "to_lat": 21.418751,
+              "to_lng": 39.825558,
+              "mode": "🚶 Walk",
+              "dist": 0.42,
+              "time_minutes": 5,
+              "cost": 0
+            },
+            {
+              "from_name": "Abraj Al Bait Clock Tower Museum",
+              "from_lat": 21.418751,
+              "from_lng": 39.825558,
+              "to_name": "Hira Cultural District",
+              "to_lat": 21.45806,
+              "to_lng": 39.86139,
+              "mode": "🚌 Public Transport",
+              "dist": 5.73,
+              "time_minutes": 10,
+              "cost": 9.3
+            },
+            {
+              "from_name": "Hira Cultural District",
+              "from_lat": 21.45806,
+              "from_lng": 39.86139,
+              "to_name": "Al Baik Restaurant (Clock Tower)",
+              "to_lat": 21.418751,
+              "to_lng": 39.825558,
+              "mode": "🚌 Public Transport",
+              "dist": 5.73,
+              "time_minutes": 10,
+              "cost": 9.3
+            },
+            {
+              "from_name": "Al Baik Restaurant (Clock Tower)",
+              "from_lat": 21.418751,
+              "from_lng": 39.825558,
+              "to_name": "Durrat AlJawharah Hotel Makkah",
+              "to_lat": 21.431487369664346,
+              "to_lng": 39.80970438936787,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 2.17,
+              "time_minutes": 2,
+              "cost": 15.42
+            },
+            {
+              "from_name": "Durrat AlJawharah Hotel Makkah",
+              "from_lat": 21.431487369664346,
+              "from_lng": 39.80970438936787,
+              "to_name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+              "to_lat": 21.4633,
+              "to_lng": 39.8708,
+              "mode": "🚌 Public Transport",
+              "dist": 7.25,
+              "time_minutes": 12,
+              "cost": 10.43
+            },
+            {
+              "from_name": "🔥 TRENDING: Hira Cultural District (Jabal Al Nour & Cave of Hira)",
+              "from_lat": 21.4633,
+              "from_lng": 39.8708,
+              "to_name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+              "to_lat": 21.4187,
+              "to_lng": 39.8261,
+              "mode": "🚌 Public Transport",
+              "dist": 6.78,
+              "time_minutes": 12,
+              "cost": 10.09
+            },
+            {
+              "from_name": "🔥 TRENDING: Makkah Clock Royal Tower Museum",
+              "from_lat": 21.4187,
+              "from_lng": 39.8261,
+              "to_name": "Local souq haggling",
+              "to_lat": 21.374351868682616,
+              "to_lng": 39.801342274629484,
+              "mode": "🚌 Public Transport",
+              "dist": 5.56,
+              "time_minutes": 10,
+              "cost": 9.17
+            },
+            {
+              "from_name": "Local souq haggling",
+              "from_lat": 21.374351868682616,
+              "from_lng": 39.801342274629484,
+              "to_name": "Boulevard Riyadh City",
+              "to_lat": 21.414958827813596,
+              "to_lng": 39.909812575002746,
+              "mode": "🚌 Public Transport",
+              "dist": 12.1,
+              "time_minutes": 21,
+              "cost": 14.08
+            },
+            {
+              "from_name": "Boulevard Riyadh City",
+              "from_lat": 21.414958827813596,
+              "from_lng": 39.909812575002746,
+              "to_name": "Historical Diriyah tour",
+              "to_lat": 21.46103710923214,
+              "to_lng": 39.88131650873969,
+              "mode": "🚌 Public Transport",
+              "dist": 5.91,
+              "time_minutes": 10,
+              "cost": 9.43
+            },
+            {
+              "from_name": "Historical Diriyah tour",
+              "from_lat": 21.46103710923214,
+              "from_lng": 39.88131650873969,
+              "to_name": "Durrat AlJawharah Hotel Makkah",
+              "to_lat": 21.431487369664346,
+              "to_lng": 39.80970438936787,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 8.11,
+              "time_minutes": 9,
+              "cost": 30.27
+            },
+            {
+              "from_name": "Durrat AlJawharah Hotel Makkah",
+              "from_lat": 21.431487369664346,
+              "from_lng": 39.80970438936787,
+              "to_name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+              "to_lat": 21.4225,
+              "to_lng": 39.8262,
+              "mode": "🚕 Taxi",
+              "dist": 1.98,
+              "time_minutes": 2,
+              "cost": 14.95
+            },
+            {
+              "from_name": "🔥 TRENDING: The Oasis (Raffles Makkah Palace)",
+              "from_lat": 21.4225,
+              "from_lng": 39.8262,
+              "to_name": "Masjid al-Haram & Kaaba",
+              "to_lat": 21.4224779,
+              "to_lng": 39.8251832,
+              "mode": "🚶 Walk",
+              "dist": 0.11,
+              "time_minutes": 1,
+              "cost": 0
+            },
+            {
+              "from_name": "Masjid al-Haram & Kaaba",
+              "from_lat": 21.4224779,
+              "from_lng": 39.8251832,
+              "to_name": "Mall exploration",
+              "to_lat": 21.43199893615123,
+              "to_lng": 39.81355476761024,
+              "mode": "🚕 Taxi",
+              "dist": 1.6,
+              "time_minutes": 2,
+              "cost": 14.01
+            },
+            {
+              "from_name": "Mall exploration",
+              "from_lat": 21.43199893615123,
+              "from_lng": 39.81355476761024,
+              "to_name": "Historical palaces walking tour",
+              "to_lat": 21.409363522750255,
+              "to_lng": 39.93224055864391,
+              "mode": "🚌 Public Transport",
+              "dist": 12.54,
+              "time_minutes": 21,
+              "cost": 14.41
+            },
+            {
+              "from_name": "Historical palaces walking tour",
+              "from_lat": 21.409363522750255,
+              "from_lng": 39.93224055864391,
+              "to_name": "Durrat AlJawharah Hotel Makkah",
+              "to_lat": 21.431487369664346,
+              "to_lng": 39.80970438936787,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 12.92,
+              "time_minutes": 14,
+              "cost": 42.3
+            },
+            {
+              "from_name": "Durrat AlJawharah Hotel Makkah",
+              "from_lat": 21.431487369664346,
+              "from_lng": 39.80970438936787,
+              "to_name": "Riyadh",
+              "to_lat": 24.7136,
+              "to_lng": 46.6753,
+              "mode": "✈️ Return",
+              "dist": 0,
+              "time_minutes": 120,
+              "cost": 0.0,
+              "type": "inter_city"
+            },
+            {
+              "from_name": "Durrat AlJawharah Hotel Makkah",
+              "from_lat": 21.431487369664346,
+              "from_lng": 39.80970438936787,
+              "to_name": "🔥 TRENDING: Camel Step Coffee",
+              "to_lat": 21.4225,
+              "to_lng": 39.8262,
+              "mode": "🚕 Taxi",
+              "dist": 1.98,
+              "time_minutes": 2,
+              "cost": 14.95
+            },
+            {
+              "from_name": "🔥 TRENDING: Camel Step Coffee",
+              "from_lat": 21.4225,
+              "from_lng": 39.8262,
+              "to_name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+              "to_lat": 21.3891,
+              "to_lng": 39.8579,
+              "mode": "🚌 Public Transport",
+              "dist": 4.96,
+              "time_minutes": 8,
+              "cost": 8.72
+            },
+            {
+              "from_name": "🔥 TRENDING: Gurkan Sef Steakhouse",
+              "from_lat": 21.3891,
+              "from_lng": 39.8579,
+              "to_name": "Jannat al-Mu'alla",
+              "to_lat": 21.436944,
+              "to_lng": 39.829167,
+              "mode": "🚌 Public Transport",
+              "dist": 6.1,
+              "time_minutes": 10,
+              "cost": 9.57
+            },
+            {
+              "from_name": "Jannat al-Mu'alla",
+              "from_lat": 21.436944,
+              "from_lng": 39.829167,
+              "to_name": "Art gallery visit",
+              "to_lat": 21.461172113471186,
+              "to_lng": 39.92157394394233,
+              "mode": "🚌 Public Transport",
+              "dist": 9.94,
+              "time_minutes": 17,
+              "cost": 12.45
+            },
+            {
+              "from_name": "Art gallery visit",
+              "from_lat": 21.461172113471186,
+              "from_lng": 39.92157394394233,
+              "to_name": "Rooftop café",
+              "to_lat": 21.40974482993638,
+              "to_lng": 39.83414528284879,
+              "mode": "🚌 Public Transport",
+              "dist": 10.7,
+              "time_minutes": 18,
+              "cost": 13.03
+            },
+            {
+              "from_name": "Rooftop café",
+              "from_lat": 21.40974482993638,
+              "from_lng": 39.83414528284879,
+              "to_name": "Durrat AlJawharah Hotel Makkah",
+              "to_lat": 21.431487369664346,
+              "to_lng": 39.80970438936787,
+              "mode": "🚕 Taxi back to Hotel",
+              "dist": 3.5,
+              "time_minutes": 4,
+              "cost": 18.75
+            }
+          ]
+        }
+      ],
+      "recommendation": 0
+    },
+    "cached_at": "2026-05-08T11:34:26.182976+00:00"
+  }
+}

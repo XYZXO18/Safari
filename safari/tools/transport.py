@@ -22,6 +22,7 @@ from config import (
     ROUTES,
     TRANSPORT_RATES_PER_KM,
     CITY_COORDS,
+    can_travel_by_car,
 )
 from safari.tools.fuel import calculate_driving_cost
 
@@ -206,6 +207,22 @@ def calculate_transport_costs(
     breakdown = ""
     time_mins = 0
 
+    # ── Cross-border car validation ────────────────────────────────────────────
+    if mode_lower in ("car", "driving"):
+        car_ok, car_reason = can_travel_by_car(origin, destination)
+        if not car_ok:
+            return TransportEstimate(
+                mode="car",
+                origin=origin,
+                destination=destination,
+                distance_km=dist,
+                cost_one_way=0.0,
+                cost_round_trip=0.0,
+                travel_time_minutes=0,
+                currency="SAR",
+                breakdown=f"🚫 {car_reason}",
+            )
+
     if mode_lower in ("car", "driving"):
         # ─── Use the local fuel_prices.json database ───────────────────────
         fuel_result = calculate_driving_cost(
@@ -355,7 +372,8 @@ def calculate_transport_costs(
                 provider = "Unknown Transport"
 
             cost_rt = cost_one_way * 2 if round_trip else cost_one_way
-            breakdown = f"📊 {provider} | Estimated distance-based calculation ({cost_one_way / dist:.2f} SAR/km)"
+            rate_str = f"{cost_one_way / dist:.2f} SAR/km" if dist > 0 else "N/A"
+            breakdown = f"📊 {provider} | Estimated distance-based calculation ({rate_str})"
 
 
     return TransportEstimate(
