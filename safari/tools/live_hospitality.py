@@ -4,9 +4,10 @@ Live Hospitality Tool
 Real-time web scraping / LLM-grounded search for hotels, restaurants, and cafes.
 
 Strategy (in priority order):
-  1. Gemini Search Grounding  — if GEMINI_API_KEY is set (most structured output)
-  2. DuckDuckGo Text Search   — free, no API key, parse results with regex
-  3. Fallback Static DB       — existing SQLite (safari/database.py) as last resort
+  1. Almosafer Scraper        — live hotel listings with real prices (hotels only)
+  2. Gemini Search Grounding  — if GEMINI_API_KEY is set (most structured output)
+  3. DuckDuckGo Text Search   — free, no API key, parse results with regex
+  4. Fallback Static DB       — existing SQLite (safari/database.py) as last resort
 
 All functions return List[VenueStub] — the shared Pydantic schema.
 """
@@ -111,24 +112,168 @@ def _gemini_search_venues(
         return []
 
 
+# ─── DuckDuckGo Fallback Search ──────────────────────────────────────────────
+
+def _ddg_search_venues(
+    query: str,
+    venue_type: str,
+    city: str,
+    budget: float,
+    max_results: int = 5,
+) -> List[VenueStub]:
+    """
+    Fallback: DuckDuckGo text search. Parses page snippets for venue names and prices.
+    Less structured than Gemini but requires no API key.
+    """
+    try:
+        from duckduckgo_search import DDGS
+
+        stubs = []
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=max_results * 3))
+
+        # Simple pattern: extract price mentions from snippets
+        price_pattern = re.compile(r"(?:SAR|SR|﷼|USD|\$)\s*([\d,]+(?:\.\d{1,2})?)", re.IGNORECASE)
+
+        for r in results[:max_results * 2]:
+            title = r.get("title", "")
+            body = r.get("body", "")
+            url = r.get("href", "")
+
+            # Try to find a price in the snippet
+            price_match = price_pattern.search(body)
+            price = float(price_match.group(1).replace(",", "")) if price_match else 0.0
+
+            # Basic quality filter: must mention the city
+            if city.lower() not in (title + body).lower():
+                continue
+
+            # Budget filter: skip if price is way over budget
+            if price > 0 and price > budget * 2:
+                continue
+
+            stubs.append(VenueStub(
+                name=title[:80],  # cap title length
+                type=venue_type,
+                price=price,
+                currency="SAR",
+                rating=None,  # DuckDuckGo snippets rarely contain ratings
+                description=body[:200] if body else None,
+                source_url=url,
+            ))
+
+            if len(stubs) >= max_results:
+                break
+
+        logger.info(f"[DuckDuckGo] Found {len(stubs)} {venue_type}(s) in {city}")
+        console.print(f"[bold yellow][D] [Agent 2] DuckDuckGo Search used for {venue_type}s in {city} (Found: {len(stubs)})[/bold yellow]")
+        return stubs
+
+    except ImportError:
+        logger.warning("duckduckgo-search not installed. Run: pip install duckduckgo-search")
+        return []
+    except Exception as e:
+        logger.error(f"[DuckDuckGo] Failed: {e}")
+        return []
+
+
 # ─── Public Tool Functions ───────────────────────────────────────────────────
 
 def search_hotels_live(
     city: str,
-    budget_per_night: float,
+    budget_per_night: float = 500.0,
     currency: str = "SAR",
     max_results: int = 5,
 ) -> List[VenueStub]:
     """
     Search for real hotels with live prices.
-    Tries Gemini → DuckDuckGo. No DB fallback.
+    Tries Almosafer → Gemini → DuckDuckGo. No DB fallback.
+
+    - Almosafer returns real-time listings with current prices.
+    - Every new hotel found via Almosafer is saved to the local DB
+      (name + location only, price is never stored).
+    - If the city catalogue has fewer than 20 hotels, a second Almosafer
+      scrape pass runs to build it up over time.
+    - Falls back to Gemini Search Grounding if Almosafer returns nothing.
+    - Falls back to DuckDuckGo if Gemini is unavailable or fails.
     """
+    # ── 1. Try Almosafer (live scraping) ────────────────────────────────────
+    try:
+        from safari.tools.almosafer import AlmosaferScraper
+        from safari.database import upsert_hotel_static, get_hotel_count
+        from config import CITY_COORDS
+        import random
+
+        console.print(f"[bold cyan][A] [Agent 2] Fetching live hotels from Almosafer for {city}...[/bold cyan]")
+
+        scraper = AlmosaferScraper()
+        raw = scraper.scrape_hotels(city, max_results=max_results)
+
+        stubs: List[VenueStub] = []
+        for h in raw:
+            name = h.get("name", "").strip()
+            if not name:
+                continue
+
+            price = h.get("price_per_night") or 0.0
+            stars = int(h.get("stars") or 4)
+            rating = float(h.get("rating") or 0.0)
+
+            # Save new hotel to DB — name + coords only, price is never stored
+            base = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+            lat = base["lat"] + random.uniform(-0.05, 0.05)
+            lng = base["lng"] + random.uniform(-0.05, 0.05)
+            upsert_hotel_static(city, name, lat, lng, stars)
+
+            stubs.append(VenueStub(
+                name=name,
+                type="hotel",
+                price=price,
+                currency="SAR",
+                rating=rating if rating > 0 else None,
+                description=f"{stars}★ hotel in {city.title()} — live from Almosafer",
+                source_url=scraper.hotel_search_url(city, None, None),
+            ))
+
+        # Catalogue building: if city has <20 known hotels, scrape extra dates to grow it
+        current_count = get_hotel_count(city)
+        if current_count < 20 and len(raw) > 0:
+            try:
+                from datetime import date, timedelta
+                extra_ci = (date.today() + timedelta(days=14)).strftime("%Y-%m-%d")
+                extra_co = (date.today() + timedelta(days=17)).strftime("%Y-%m-%d")
+                extra_raw = scraper.scrape_hotels(city, extra_ci, extra_co, max_results=5)
+                for eh in extra_raw:
+                    ename = eh.get("name", "").strip()
+                    if ename:
+                        base = CITY_COORDS.get(city.lower(), {"lat": 24.7, "lng": 46.7})
+                        elat = base["lat"] + random.uniform(-0.05, 0.05)
+                        elng = base["lng"] + random.uniform(-0.05, 0.05)
+                        upsert_hotel_static(city, ename, elat, elng, int(eh.get("stars") or 4))
+                logger.info(f"[Almosafer] Catalogue for {city}: {get_hotel_count(city)} hotels stored.")
+            except Exception as e:
+                logger.warning(f"[Almosafer] Catalogue build error: {e}")
+
+        if stubs:
+            return stubs[:max_results]
+
+        console.print(f"[bold yellow][A] [Agent 2] Almosafer returned no hotels for {city}, trying Gemini...[/bold yellow]")
+
+    except Exception as e:
+        logger.warning(f"[Almosafer] Failed for {city}: {e}. Falling back to Gemini.")
+
+    # ── 2. Try Gemini Search Grounding ──────────────────────────────────────
     query = (
         f"best hotels in {city} under {budget_per_night} {currency} per night "
         f"with price 2025 2026 booking"
     )
 
     results = _gemini_search_venues(query, "hotel", city, max_results)
+    if results:
+        return results
+
+    # ── 3. Try DuckDuckGo ───────────────────────────────────────────────────
+    results = _ddg_search_venues(query, "hotel", city, budget_per_night, max_results)
     if results:
         return results
 
@@ -158,7 +303,11 @@ def search_restaurants_live(
     if results:
         return results
 
-    console.print(f"[bold red][!] [Agent 2] No live restaurants found for {city}.[/bold red]")
+    results = _ddg_search_venues(query, "restaurant", city, budget_per_meal, max_results)
+    if results:
+        return results
+
+    console.print(f"[bold red][!] [Agent 2] No live restaurants found for {city}. (Fallback DB disabled)[/bold red]")
     return []
 
 
@@ -175,5 +324,9 @@ def search_cafes_live(
     if results:
         return results
 
-    console.print(f"[bold red][!] [Agent 2] No live cafes found for {city}.[/bold red]")
+    results = _ddg_search_venues(query, "cafe", city, 80.0, max_results)
+    if results:
+        return results
+
+    console.print(f"[bold red][!] [Agent 2] No live cafes found for {city}. (Fallback DB disabled)[/bold red]")
     return []
